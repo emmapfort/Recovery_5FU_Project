@@ -1,0 +1,163 @@
+---
+title: "Differential Expression Analysis - Recovery 5FU"
+author: "Emma M Pfortmiller"
+date: "2025-02-14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Load Libraries, warning=FALSE, include=FALSE}
+library(edgeR)
+library(tidyverse)
+library(readr)
+library(BiocGenerics)
+library(gridExtra)
+library(VennDiagram)
+library(kableExtra)
+library(scales)
+library(ggVennDiagram)
+library(Cormotif)
+library(RColorBrewer)
+library(ggpubr)
+
+```
+
+Create the Data Set:
+
+```{r Data Set, include=FALSE}
+
+counts_DE_raw <- read_csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/featureCounts_Concat_Matrix_AllSamples_EMP_250210.csv")
+#View(counts_DE)
+
+#this dataset comes from the csv I saved of all raw counts for each sample - but for this initial try I would like to remove my biological replicate for now
+
+counts_DE <- as.data.frame(counts_DE) %>% 
+        dplyr::select(-"...1") %>% 
+        column_to_rownames(var = "ensembl_gene_id") %>% 
+        dplyr::select(-(contains("Ind6REP")))
+
+#now I've removed that individual, so I'll filter all counts by rowmeans
+#first check the number of variables in the counts file
+##I should have 54 samples if not including Ind6REP
+dim(counts_DE)
+#[1] 78932    54
+
+#now use rowMeans to filter out values with mean < 0 (this means rowMeans > 0 is what I'm left with) for each row/gene in the original file
+rowMeans_DE <- rowMeans(counts_DE)
+counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
+dim(counts_DE_filter)
+#[1] 65925    54
+
+#with this I've filtered out 12268 genes from my raw counts dataset
+
+#I'll double check the appearance of the data after filtering and before filtering
+boxplot(counts_DE, 
+        main = "Recovery DE Unfiltered Counts", 
+        xlab = "Conditions", 
+        ylab = "Counts",
+        ylim = c(-5,40))
+
+
+boxplot(counts_DE_filter, 
+        main = "Recovery DE Filtered Counts", 
+        xlab = "Conditions", 
+        ylab = "Counts",
+        ylim = c(-5,40))
+
+counts_DE_hist_mut <- (t(counts_DE))
+counts_DE_fil_hist_mut <- (t(counts_DE_filter))
+
+hist(counts_DE_hist_mut, main = "Histogram of Raw Counts", ylim = c(-100, 6000000), xlab = "counts", ylab = "Frequency", xlim = c(-1000,150000))
+
+hist(counts_DE_fil_hist_mut, main = "Histogram of Filtered Counts", ylim = c(-100, 6000000), xlab = "counts", ylab = "Frequency", xlim = c(-1000,150000))
+
+
+#now I'll save this dataset as a csv
+#write.csv(counts_DE_filter,  "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/Counts_Matrix_DE_filtered_EMP_250217.csv")
+
+```
+
+
+Now that I've confirmed that the filtering looks good, let's continue on with the pipeline for DE
+```{r Create DGE List Object}
+
+de_list <- DGEList(counts_DE_filter)
+de_list_genes <- DGEList(counts_DE_filter, genes = genes)
+
+#I want to include the genes information, so I'll call that column alone to be its own list
+genes <- counts_DE_filter %>% rownames_to_column(var = "ensembl_gene_id") %>% dplyr::select("ensembl_gene_id")
+
+```
+
+
+Now that I've made my DGElist object, let's calculate normalization factors
+#calcNormFactors doesn’t normalize the data, it just calculates normalization factors for use downstream#
+```{r Normalization Factors Calculation}
+
+#this is the inital file before norm factors are calculated
+de_list_genes$samples
+
+#calculate the normalization factors with method TMM
+de_list_genes_calc <- calcNormFactors(de_list_genes, method = "TMM")
+
+#final file after norm calculation
+de_list_genes_calc$samples
+
+#View(de_list_genes_calc)
+
+```
+
+Now I'll look at the factors I have and pull those out
+- Time
+- Treatment
+- Individual
+```{r Pull Out Factors}
+
+snames <- data.frame("samples" = colnames(de_list_genes_calc)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
+
+#snames_list <- as.list(snames)
+
+snames_time <- snames$Time
+snames_tx <- snames$Treatment
+snames_ind <- snames$Individual
+
+
+#define colors for each of these factors
+#time colors - have 3 timepoints
+time_col <- list(Time = c("24hr" = "#046A38", "24rec" = "#0050B5", "144rec" = "#B3831B"))
+#treatment colors - have 3 treatments
+tx_col <- list(Treatment = c("DMSO" = "#63666D","5FU" = "#DCACED","DOX" = "#499FBD"))
+#individual colors - have 6 individual not including rep at this time
+ind_col <- list(Individual = c("Ind1" = "#003F5C", "Ind2" = "#45AE91", "Ind3" =  "#58508D", "Ind4" = "#BC4099", "Ind5" =  "#FF6361", "Ind6" = "#FF2362"))
+#all colors together 
+all_col <- list(time_col, tx_col, ind_col)
+
+#create a new variable that groups these factors all together
+group2 <- interaction(snames_tx, snames_time)
+group3 <- interaction(snames_tx, snames_time, snames_ind)
+
+```
+
+```{r Multi-dimensional Scaling Plot (MDS)}
+
+plotMDS(de_list_genes_calc, col = as.numeric(group2))
+
+plotMDS(de_list_genes_calc, col = as.numeric(group3))
+
+```
+
+Now that I've put my matrix together, we can start with Voom transformation and linear modeling
+#this specifies a model where each coefficient corresponds to a group mean
+```{r Voom Transformation and Linear Modeling}
+#put together your model
+model_all <- model.matrix(~0 + group3)
+model_all
+
+####Voom####
+
+y <- voom(de_list, model_all, plot = T)
+```
+
