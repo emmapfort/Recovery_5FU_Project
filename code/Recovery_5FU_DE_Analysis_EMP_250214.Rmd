@@ -29,14 +29,14 @@ Create the Data Set:
 
 ```{r Data Set, include=FALSE}
 
-counts_DE_raw <- read_csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/featureCounts_Concat_Matrix_AllSamples_EMP_250210.csv")
+counts_DE_raw <- read_csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_EMP_250210.csv")
 #View(counts_DE)
 
 #this dataset comes from the csv I saved of all raw counts for each sample - but for this initial try I would like to remove my biological replicate for now
 
-counts_DE <- as.data.frame(counts_DE) %>% 
-        dplyr::select(-"...1") %>% 
-        column_to_rownames(var = "ensembl_gene_id") %>% 
+counts_DE <- as.data.frame(Counts_Full_df) %>% 
+        # dplyr::select(-"...1") %>% 
+        # column_to_rownames(var = "ensembl_gene_id") %>% 
         dplyr::select(-(contains("Ind6REP")))
 
 #now I've removed that individual, so I'll filter all counts by rowmeans
@@ -44,12 +44,14 @@ counts_DE <- as.data.frame(counts_DE) %>%
 ##I should have 54 samples if not including Ind6REP
 dim(counts_DE)
 #[1] 78932    54
+#[1] 47727    54 - new
 
 #now use rowMeans to filter out values with mean < 0 (this means rowMeans > 0 is what I'm left with) for each row/gene in the original file
 rowMeans_DE <- rowMeans(counts_DE)
 counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
 dim(counts_DE_filter)
 #[1] 65925    54
+#[1] 39938    54 - new
 
 #with this I've filtered out 12268 genes from my raw counts dataset
 
@@ -76,7 +78,7 @@ hist(counts_DE_fil_hist_mut, main = "Histogram of Filtered Counts", ylim = c(-10
 
 
 #now I'll save this dataset as a csv
-#write.csv(counts_DE_filter,  "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/Counts_Matrix_DE_filtered_EMP_250217.csv")
+#write.csv(counts_DE_filter,  "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/ounts_Matrix_DE_filtered_EMP_250217.csv")
 
 ```
 
@@ -84,11 +86,16 @@ hist(counts_DE_fil_hist_mut, main = "Histogram of Filtered Counts", ylim = c(-10
 Now that I've confirmed that the filtering looks good, let's continue on with the pipeline for DE
 ```{r Create DGE List Object}
 
-de_list <- DGEList(counts_DE_filter)
-de_list_genes <- DGEList(counts_DE_filter, genes = genes)
+de_list <- DGEList(counts_DE)
+
+#de_list <- DGEList(counts_DE_filter)
+#de_list_genes <- DGEList(counts_DE_filter, genes = genes)
 
 #I want to include the genes information, so I'll call that column alone to be its own list
-genes <- counts_DE_filter %>% rownames_to_column(var = "ensembl_gene_id") %>% dplyr::select("ensembl_gene_id")
+genes <- counts_DE %>% rownames_to_column(var = "ensembl_gene_id") %>% dplyr::select("ensembl_gene_id")
+
+#if this comes in handy later - we'll see
+de_list_genes <- DGEList(counts_DE, genes = genes)
 
 ```
 
@@ -98,13 +105,13 @@ Now that I've made my DGElist object, let's calculate normalization factors
 ```{r Normalization Factors Calculation}
 
 #this is the inital file before norm factors are calculated
-de_list_genes$samples
+de_list$samples
 
 #calculate the normalization factors with method TMM
-de_list_genes_calc <- calcNormFactors(de_list_genes, method = "TMM")
+de_list_calc <- calcNormFactors(de_list, method = "TMM")
 
 #final file after norm calculation
-de_list_genes_calc$samples
+de_list_calc$samples
 
 #View(de_list_genes_calc)
 
@@ -116,7 +123,7 @@ Now I'll look at the factors I have and pull those out
 - Individual
 ```{r Pull Out Factors}
 
-snames <- data.frame("samples" = colnames(de_list_genes_calc)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
+snames <- data.frame("samples" = colnames(dge_calc)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
 
 #snames_list <- as.list(snames)
 
@@ -141,11 +148,51 @@ group3 <- interaction(snames_tx, snames_time, snames_ind)
 
 ```
 
+Now let's filter out those lowly-expressed genes according to the limma pipeline
+```{r Filter Lowly Expressed Genes}
+
+####rowMeans > 0####
+rowMeans_DE <- rowMeans(de_list_calc$counts)
+de_list_calc_fil <- de_list_calc[rowMeans_DE > 0,]
+dim(de_list_calc_fil)
+#[1] 65925    54
+
+####rowMeans > 1####
+rowMeans_DE <- rowMeans(de_list_calc$counts)
+de_list_calc_fil_1 <- de_list_calc[rowMeans_DE > 1,]
+dim(de_list_calc_fil_1)
+#[1] 33360    54
+
+####rowMeans > 2####
+rowMeans_DE <- rowMeans(de_list_calc$counts)
+de_list_calc_fil_2 <- de_list_calc[rowMeans_DE > 2,]
+dim(de_list_calc_fil_2)
+#[1] 28917    54
+
+####rowMeans > 3####
+rowMeans_DE <- rowMeans(de_list_calc$counts)
+de_list_calc_fil_3 <- de_list_calc[rowMeans_DE > 3,]
+dim(de_list_calc_fil_3)
+#[1] 26460   54
+
+####rowMeans > 4####
+rowMeans_DE <- rowMeans(de_list_calc$counts)
+de_list_calc_fil_4 <- de_list_calc[rowMeans_DE > 4,]
+dim(de_list_calc_fil_4)
+#[1] 24807   54
+
+```
+
+
 ```{r Multi-dimensional Scaling Plot (MDS)}
 
-plotMDS(de_list_genes_calc, col = as.numeric(group2))
+plotMDS(dge_calc, col = as.numeric(group_1))
 
-plotMDS(de_list_genes_calc, col = as.numeric(group3))
+plotMDS(de_list_calc_fil, col = as.numeric(group3))
+
+plotMDS(de_list_calc_fil, col = as.numeric(group2))
+
+plotMDS(de_list_calc_fil, col = as.numeric(group3))
 
 ```
 
@@ -153,11 +200,133 @@ Now that I've put my matrix together, we can start with Voom transformation and 
 #this specifies a model where each coefficient corresponds to a group mean
 ```{r Voom Transformation and Linear Modeling}
 #put together your model
-model_all <- model.matrix(~0 + group3)
+model_all <- model.matrix(~0 + group2)
 model_all
 
 ####Voom####
 
-y <- voom(de_list, model_all, plot = T)
+y <- voom(de_list_calc_fil_3, model_all, plot = T)
+```
+
+```{r Counts Set for DEG}
+group1 <- interaction(Treatment, Time)
+group1
+mm <- model.matrix(~0 + group1)
+
+colnames(mm) <- c("D24", "F24", "V24", "D24r", "F24r", "V24r", "D144r", "F144r", "V144r")
+
+
+#various filtering cutoffs here
+a <- voom(de_list_calc_fil, mm, plot = TRUE)
+
+b <- voom(de_list_calc_fil_1, mm, plot = TRUE)
+
+c <- voom(de_list_calc_fil_2, mm, plot = TRUE)
+
+d <- voom(de_list_calc_fil_3, mm, plot = TRUE)
+
+e <- voom(de_list_calc_fil_4, mm, plot = TRUE)
+
+
+```
+The graph doesn't look quite right until I filtered by rowMeans > 3
+
+
+```{r Fitting Linear Models in Limma}
+
+fit <- lmFit(d, mm)
+head(coef(fit))
+
+cm <- makeContrasts(
+        V.D24 = D24 - V24,
+        V.F24 = F24 - V24,
+        V.D24r = D24r - V24r,
+        V.F24r = F24r - V24r,
+        V.D144r = D144r - V144r,
+        V.F144r = F144r - V144r,
+        levels = mm
+)
+
+vfit <- lmFit(d, mm)
+vfit <- contrasts.fit(vfit, contrasts = cm)
+efit2 <- eBayes(vfit)
+
+#saveRDS(efit2, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/efit2_final.RDS")
+
+sum <- summary(decideTests(efit2))
+sum
+
+
+```
+
+Now I can make a top table of all of the genes I have, sorted by F
+
+logFC: log2 fold change of tx/veh
+AveExpr: Average expression across all samples, in log2 CPM
+t: logFC divided by its standard error
+P.Value: Raw p-value (based on t) from test that logFC differs from 0
+adj.P.Val: Benjamini-Hochberg false discovery rate adjusted p-value
+B: log-odds that gene is DE (arguably less useful than the other columns)
+```{r Top Table}
+
+top.table <- limma::topTable(efit2, n = Inf, sort.by = "F", adjust.method = "BH")
+#in this code you can also add adjust.method = "BH" for benjamini-hotchberg testing corrections)
+head(top.table)
+
+#write.table(top.table, file = "top.table_5FU_EMP_250217.txt", row.names = F, sep = "\t", quote = F)
+
+#check which genes are DE in this set according to pvalue significance
+# [1] 15294
+
+#now that I've made a large general top table, make one for each comparison
+
+####top.table_V.D24####
+top.table_V.D24 <- topTable(fit = efit4, coef = "V.D24", number = nrow(de_list_calc_fil_3), adjust.method = "BH", p.value = 1, sort.by = "none")
+#head(top.table_V.D24)
+
+####top.table_V.F24####
+top.table_V.F24 <- topTable(fit = efit4, coef = "F.D24", number = nrow(de_list_calc_fil_3), adjust.method = "BH", p.value = 1, sort.by = "none")
+
+####top.table_V.D24r####
+top.table_V.D24 <- topTable(fit = efit4, coef = "V.D24r", number = nrow(de_list_calc_fil_3), adjust.method = "BH", p.value = 1, sort.by = "none")
+#head(top.table_V.D24)
+
+####top.table_V.F24r####
+top.table_V.F24 <- topTable(fit = efit4, coef = "F.D24r", number = nrow(de_list_calc_fil_3), adjust.method = "BH", p.value = 1, sort.by = "none")
+
+####top.table_V.D144r####
+top.table_V.D24 <- topTable(fit = efit4, coef = "V.D144r", number = nrow(de_list_calc_fil_3), adjust.method = "BH", p.value = 1, sort.by = "none")
+#head(top.table_V.D24)
+
+####top.table_V.F144r####
+top.table_V.F24 <- topTable(fit = efit4, coef = "F.D144r", number = nrow(de_list_calc_fil_3), adjust.method = "BH", p.value = 1, sort.by = "none")
+```
+
+Now that I've done pairwise comparisons of my treatments vs vehicles at each timepoint - let's make some volcano plots of my data
+```{r Volcano Plots from Pairwise Gene Analysis}
+
+#define a function to generate volcano plots
+make_vol_plot <- function(top.table, title) {
+        #add significance labels
+        top.table$Significance <- "Not Significant"
+        top.table$Significance[top.table$F]
+}
+
+
+```
+
+I want to go ahead and try refitting my model to include effects for time, tx, and time-tx interactions
+```{r Refit Model}
+
+colnames(mm)
+
+
+
+```
+
+
+Now I'm going to try
+```{r}
+
 ```
 

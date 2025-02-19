@@ -1,0 +1,36 @@
+---
+title: "DE Analysis Recovery RNAseq"
+author: "Emma M Pfortmiller"
+date: "2025-02-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r Libraries, include=FALSE}
+library(ggplot2)
+library(reshape2)
+library(hrbrthemes)
+library(tibble)
+library(tidyverse)
+library(edgebundleR)
+library(readxl)
+library(edgeR)
+library(pheatmap)
+library(ggfortify)
+library(PCAtools)
+library(Cormotif)
+library(RColorBrewer)
+library(biomaRt)
+```
+
+
+When doing this sheet - make sure to put in the new alignment with the updated gtf files
+```{r Sheet with Mapped and Successfully Aligned Reads}
+# library(readr)
+# fC_AllCounts <- read_csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/Recovery_MappingStats_Subread_EMP_241104_250211.csv")
+# View(fC_AllCounts)
+```

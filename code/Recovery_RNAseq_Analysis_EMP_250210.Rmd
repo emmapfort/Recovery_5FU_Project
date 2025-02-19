@@ -27,6 +27,14 @@ library(RColorBrewer)
 library(biomaRt)
 ```
 
+
+
+```{r Sheet with Mapped and Successfully Aligned Reads}
+# library(readr)
+# fC_AllCounts <- read_csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/Recovery_MappingStats_Subread_EMP_241104_250211.csv")
+# View(fC_AllCounts)
+```
+
 These samples (63 in total) have been aligned to the Ensembl 113 release of GRCh38 via subread, and counts have been generated using featureCounts
 
 Data is located under 5FU Project on my computer
@@ -39,39 +47,41 @@ Individual 1 - 84-1 (9 samples)
 #problem sample 24!!
 
 #84-1 DOX_24-> R27
-  Counts_84_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R27_R1.counts.txt")  
+  Counts_84_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R27_R1.counts.txt")  
   #View(Counts_84_DOX_24)
 
+
+
 #84-1 FLUO_24 -> R28
-  Counts_84_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R28_R1.counts.txt")
+  Counts_84_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R28_R1.counts.txt")
   #View(Counts_84_FLUO_24)
   
 #84-1 DMSO_24 -> R29
-  Counts_84_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R29_R1.counts.txt")
+  Counts_84_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R29_R1.counts.txt")
   #View(Counts_84_DMSO_24)
   
 #84-1 DOX_24+24-> R30
-  Counts_84_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R30_R1.counts.txt")
+  Counts_84_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R30_R1.counts.txt")
   #View(Counts_84_DOX_24rec)
   
 #84-1 FLUO_24+24-> R31
-  Counts_84_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R31_R1.counts.txt")
+  Counts_84_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R31_R1.counts.txt")
   #View(Counts_84_FLUO_24rec)
   
 #84-1 DMSO_24+24-> R32
-  Counts_84_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R32_R1.counts.txt")
+  Counts_84_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R32_R1.counts.txt")
   #View(Counts_84_DMSO_24rec)
   
 #84-1 DOX_24+144 -> R33
-  Counts_84_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R33_R1.counts.txt")
+  Counts_84_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R33_R1.counts.txt")
   #View(Counts_84_DOX_144rec)
 
 #84-1 FLUO_24+144 -> R34
-   Counts_84_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R34_R1.counts.txt")
+   Counts_84_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R34_R1.counts.txt")
   #View(Counts_84_FLUO_144rec)
   
 #84-1 DMSO_24+144 -> R35
-   Counts_84_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R35_R1.counts.txt")
+   Counts_84_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R35_R1.counts.txt")
   #View(Counts_84_DMSO_144rec)
   
 ```
@@ -82,39 +92,39 @@ Individual 2 - 87-1 (9 samples)
 #9 samples per cell line
 
 #87-1 DOX_24-> R36
-  Counts_87_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R36_R1.counts.txt")  
+  Counts_87_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R36_R1.counts.txt")  
   #View(Counts_87_DOX_24)
 
 #87-1 FLUO_24 -> R37
-  Counts_87_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R37_R1.counts.txt")
+  Counts_87_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R37_R1.counts.txt")
   #View(Counts_87_FLUO_24)
   
 #87-1 DMSO_24 -> R38
-  Counts_87_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R38_R1.counts.txt")
+  Counts_87_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R38_R1.counts.txt")
   #View(Counts_87_DMSO_24)
   
 #87-1 DOX_24+24-> R39
-  Counts_87_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R39_R1.counts.txt")
+  Counts_87_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R39_R1.counts.txt")
   #View(Counts_87_DOX_24rec)
   
 #87-1 FLUO_24+24-> R40
-  Counts_87_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R40_R1.counts.txt")
+  Counts_87_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R40_R1.counts.txt")
   #View(Counts_87_FLUO_24rec)
   
 #87-1 DMSO_24+24-> R41
-  Counts_87_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R41_R1.counts.txt")
+  Counts_87_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R41_R1.counts.txt")
   #View(Counts_87_DMSO_24rec)
   
 #87-1 DOX_24+144 -> R42
-  Counts_87_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R42_R1.counts.txt")
+  Counts_87_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R42_R1.counts.txt")
   #View(Counts_87_DOX_144rec)
 
 #87-1 FLUO_24+144 -> R43
-   Counts_87_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R43_R1.counts.txt")
+   Counts_87_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R43_R1.counts.txt")
   #View(Counts_87_FLUO_144rec)
   
 #87-1 DMSO_24+144 -> R44
-   Counts_87_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R44_R1.counts.txt")
+   Counts_87_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R44_R1.counts.txt")
   #View(Counts_87_DMSO_144rec)
   
 ```
@@ -125,39 +135,39 @@ Individual 3 - 75-1 (9 samples)
 #9 samples per cell line
 
 #78-1 DOX_24-> R45
-  Counts_78_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R45_R1.counts.txt")  
+  Counts_78_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R45_R1.counts.txt")  
   #View(Counts_78_DOX_24)
 
 #78-1 FLUO_24 -> R46
-  Counts_78_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R46_R1.counts.txt")
+  Counts_78_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R46_R1.counts.txt")
   #View(Counts_78_FLUO_24)
   
 #78-1 DMSO_24 -> R47
-  Counts_78_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R47_R1.counts.txt")
+  Counts_78_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R47_R1.counts.txt")
   #View(Counts_78_DMSO_24)
   
 #78-1 DOX_24+24-> R48
-  Counts_78_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R48_R1.counts.txt")
+  Counts_78_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R48_R1.counts.txt")
   #View(Counts_78_DOX_24rec)
   
 #78-1 FLUO_24+24-> R49
-  Counts_78_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R49_R1.counts.txt")
+  Counts_78_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R49_R1.counts.txt")
   #View(Counts_78_FLUO_24rec)
   
 #78-1 DMSO_24+24-> R50
-  Counts_78_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R50_R1.counts.txt")
+  Counts_78_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R50_R1.counts.txt")
   #View(Counts_78_DMSO_24rec)
   
 #78-1 DOX_24+144 -> R51
-  Counts_78_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R51_R1.counts.txt")
+  Counts_78_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R51_R1.counts.txt")
   #View(Counts_78_DOX_144rec)
 
 #78-1 FLUO_24+144 -> R52
-   Counts_78_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R52_R1.counts.txt")
+   Counts_78_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R52_R1.counts.txt")
   #View(Counts_78_FLUO_144rec)
   
 #78-1 DMSO_24+144 -> R53
-   Counts_78_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R53_R1.counts.txt")
+   Counts_78_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R53_R1.counts.txt")
   #View(Counts_78_DMSO_144rec)
    
 ```
@@ -168,39 +178,39 @@ Individual 4 - 75-1 (9 samples)
 #9 samples per cell line
 
 #75-1 DOX_24-> R54
-  Counts_75_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R54_R1.counts.txt")  
+  Counts_75_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R54_R1.counts.txt")  
   #View(Counts_75_DOX_24)
 
 #75-1 FLUO_24 -> R55
-  Counts_75_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R55_R1.counts.txt")
+  Counts_75_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R55_R1.counts.txt")
   #View(Counts_75_FLUO_24)
   
 #75-1 DMSO_24 -> R56
-  Counts_75_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R56_R1.counts.txt")
+  Counts_75_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R56_R1.counts.txt")
   #View(Counts_75_DMSO_24)
   
 #75-1 DOX_24+24-> R57
-  Counts_75_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R57_R1.counts.txt")
+  Counts_75_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R57_R1.counts.txt")
   #View(Counts_75_DOX_24rec)
   
 #75-1 FLUO_24+24-> R58
-  Counts_75_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R58_R1.counts.txt")
+  Counts_75_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R58_R1.counts.txt")
   #View(Counts_75_FLUO_24rec)
   
 #75-1 DMSO_24+24-> R59
-  Counts_75_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R59_R1.counts.txt")
+  Counts_75_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R59_R1.counts.txt")
   #View(Counts_75_DMSO_24rec)
   
 #75-1 DOX_24+144 -> R60
-  Counts_75_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R60_R1.counts.txt")
+  Counts_75_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R60_R1.counts.txt")
   #View(Counts_75_DOX_144rec)
 
 #75-1 FLUO_24+144 -> R61
-   Counts_75_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R61_R1.counts.txt")
+   Counts_75_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R61_R1.counts.txt")
   #View(Counts_75_FLUO_144rec)
   
 #75-1 DMSO_24+144 -> R62
-   Counts_75_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R62_R1.counts.txt")
+   Counts_75_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R62_R1.counts.txt")
   #View(Counts_75_DMSO_144rec)
    
 ```
@@ -212,39 +222,39 @@ Individual 5 - 17-3 (9 samples)
 #9 samples per cell line
 
 #17-3 DOX_24-> R63
-  Counts_17_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R63_R1.counts.txt")  
+  Counts_17_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R63_R1.counts.txt")  
   #View(Counts_17_DOX_24)
 
 #17-3 FLUO_24 -> R64
-  Counts_17_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R64_R1.counts.txt")
+  Counts_17_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R64_R1.counts.txt")
   #View(Counts_17_FLUO_24)
   
 #17-3 DMSO_24 -> R65
-  Counts_17_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R65_R1.counts.txt")
+  Counts_17_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R65_R1.counts.txt")
   #View(Counts_17_DMSO_24)
   
 #17-3 DOX_24+24-> R66
-  Counts_17_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R66_R1.counts.txt")
+  Counts_17_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R66_R1.counts.txt")
   #View(Counts_17_DOX_24rec)
   
 #17-3 FLUO_24+24-> R67
-  Counts_17_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R67_R1.counts.txt")
+  Counts_17_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R67_R1.counts.txt")
   #View(Counts_17_FLUO_24rec)
   
 #17-3 DMSO_24+24-> R68
-  Counts_17_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R68_R1.counts.txt")
+  Counts_17_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R68_R1.counts.txt")
   #View(Counts_17_DMSO_24rec)
   
 #17-3 DOX_24+144 -> R69
-  Counts_17_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R69_R1.counts.txt")
+  Counts_17_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R69_R1.counts.txt")
   #View(Counts_17_DOX_144rec)
 
 #17-3 FLUO_24+144 -> R70
-   Counts_17_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R70_R1.counts.txt")
+   Counts_17_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R70_R1.counts.txt")
   #View(Counts_17_FLUO_144rec)
   
 #17-3 DMSO_24+144 -> R71
-   Counts_17_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R71_R1.counts.txt")
+   Counts_17_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R71_R1.counts.txt")
   #View(Counts_17_DMSO_144rec)
    
 ```
@@ -256,39 +266,39 @@ Individual 6 - 90-1 (9 samples)
 #9 samples per cell line
 
 #90-1 DOX_24-> R72
-  Counts_90_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R72_R1.counts.txt")  
+  Counts_90_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R72_R1.counts.txt")  
   #View(Counts_90_DOX_24)
 
 #90-1 FLUO_24 -> R73
-  Counts_90_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R73_R1.counts.txt")
+  Counts_90_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R73_R1.counts.txt")
   #View(Counts_90_FLUO_24)
   
 #90-1 DMSO_24 -> R74
-  Counts_90_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R74_R1.counts.txt")
+  Counts_90_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R74_R1.counts.txt")
   #View(Counts_90_DMSO_24)
   
 #90-1 DOX_24+24-> R75
-  Counts_90_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R75_R1.counts.txt")
+  Counts_90_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R75_R1.counts.txt")
   #View(Counts_90_DOX_24rec)
   
 #90-1 FLUO_24+24-> R76
-  Counts_90_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R76_R1.counts.txt")
+  Counts_90_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R76_R1.counts.txt")
   #View(Counts_90_FLUO_24rec)
   
 #90-1 DMSO_24+24-> R77
-  Counts_90_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R77_R1.counts.txt")
+  Counts_90_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R77_R1.counts.txt")
   #View(Counts_90_DMSO_24rec)
   
 #90-1 DOX_24+144 -> R78
-  Counts_90_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R78_R1.counts.txt")
+  Counts_90_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R78_R1.counts.txt")
   #View(Counts_90_DOX_144rec)
 
 #90-1 FLUO_24+144 -> R79
-   Counts_90_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R79_R1.counts.txt")
+   Counts_90_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R79_R1.counts.txt")
   #View(Counts_90_FLUO_144rec)
   
 #90-1 DMSO_24+144 -> R80
-   Counts_90_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R80_R1.counts.txt")
+   Counts_90_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R80_R1.counts.txt")
   #View(Counts_90_DMSO_144rec)
    
 ```
@@ -300,39 +310,39 @@ Individual 7 - 90-1 REP (9 samples)
 #9 samples per cell line
 
 #90-1 REP DOX_24-> R81
-  Counts_90REP_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R81_R1.counts.txt")  
+  Counts_90REP_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R81_R1.counts.txt")  
   #View(Counts_90_DOX_24)
 
 #90-1 REP FLUO_24 -> R82
-  Counts_90REP_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R82_R1.counts.txt")
+  Counts_90REP_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R82_R1.counts.txt")
   #View(Counts_90_FLUO_24)
   
 #90-1 REP DMSO_24 -> R83
-  Counts_90REP_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R83_R1.counts.txt")
+  Counts_90REP_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R83_R1.counts.txt")
   #View(Counts_90_DMSO_24)
   
 #90-1 REP DOX_24+24-> R84
-  Counts_90REP_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R84_R1.counts.txt")
+  Counts_90REP_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R84_R1.counts.txt")
   #View(Counts_90_DOX_24rec)
   
 #90-1 REP FLUO_24+24-> R85
-  Counts_90REP_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R85_R1.counts.txt")
+  Counts_90REP_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R85_R1.counts.txt")
   #View(Counts_90_FLUO_24rec)
   
 #90-1 REP DMSO_24+24-> R86
-  Counts_90REP_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R86_R1.counts.txt")
+  Counts_90REP_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R86_R1.counts.txt")
   #View(Counts_90_DMSO_24rec)
   
 #90-1 REP DOX_24+144 -> R87
-  Counts_90REP_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R87_R1.counts.txt")
+  Counts_90REP_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R87_R1.counts.txt")
   #View(Counts_90_DOX_144rec)
 
 #90-1 REP FLUO_24+144 -> R88
-   Counts_90REP_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R88_R1.counts.txt")
+   Counts_90REP_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R88_R1.counts.txt")
   #View(Counts_90_FLUO_144rec)
   
 #90-1 REP DMSO_24+144 -> R89
-   Counts_90REP_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/counts/MCW_EMP_JT_R89_R1.counts.txt")
+   Counts_90REP_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R89_R1.counts.txt")
   #View(Counts_90_DMSO_144rec)
    
 ```
@@ -752,7 +762,7 @@ hist(fC_Matrix_Full,  xlab = "Unfiltered Counts", xlim = c(-1000,125000), ylim =
 
 ```
 
-```{r QC checks Raw Counts}
+```{r QC checks Raw Counts, fig.height=10, fig.width=12}
 #Now that I've put together my matrix - I will do some QC checks
 
 #Raw Counts
@@ -761,28 +771,164 @@ fC_Matrix_Full
 Counts_Full_df <- data.frame(fC_Matrix_Full)
 
 #define colors
-ind_col <- fill_col_ind_dark
+ind_col <- c("#003F5C", "#45AE91",  "#58508D", "#BC4099", "#8B3E9B", "#FF6361", "#FF2362")
 
-tx_col <- fill_col_tx
+tx_col <- c("#63666D", "#DCACED", "#499FBD")
 
 time_col <- c("#fbb4b9", "#f768a1", "#ae017e")
 
 
 #factor my df to get all the factors
-annotate_Counts <- data.frame("samples" = colnames(Counts_Full_df)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% unite(., col = "Treatment_Time", Treatment, Time, sep = "_", remove = FALSE)
+annotate_Counts <- data.frame("samples" = colnames(Counts_Full_df)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
+#%>% unite(., col = "Treatment_Time", "Treatment", "Time", sep = "_", remove = FALSE)
 
 #now cbind these factors of my data to my raw counts file, transpose first
 
-annotate_Counts_full <- (t(Counts_Full_df)) %>% cbind(., annotate_Counts)
-
+annotate_Counts_full <- (t(Counts_Full_df)) %>%  cbind(., annotate_Counts)
+ 
 #now I'll factor by sample to keep order
 
-Counts_Full_df %>% dplyr::add_row()
+#Counts_Full_df %>% dplyr::add_row()
 
+annot_Counts_full_df <- as.data.frame(t(annotate_Counts_full))
 
 #now that I have all of my factors and my ensembl gene info, I will make some graphs to show the QC data
 
-barplot_RawCounts <- ggplot(map, aes(x = sample, y = Counts))
+reads_by_sample <- c(tx_col)
+fC_AllCounts %>% 
+  ggplot(., aes (x = Conditions, y = Total_Align, fill = Treatment, group_by = Line))+
+  geom_col()+
+ geom_hline(aes(yintercept=20000000))+
+ scale_fill_manual(values=reads_by_sample)+
+  ggtitle(expression("Total number of reads by sample"))+
+  xlab("")+
+  ylab(expression("RNA-sequencing reads"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = "black", angle = 90, hjust = 1, vjust = 0.2),
+        #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
+        strip.text.y = element_text(color = "white"))
+
+
+####Read Counts by Treatment####
+fC_AllCounts %>% 
+  ggplot(., aes (x =Treatment, y= Total_Align, fill = Treatment))+
+  geom_boxplot()+
+ scale_fill_manual(values=reads_by_sample)+
+  ggtitle(expression("Total number of reads by treatment"))+
+  xlab("")+
+  ylab(expression("RNA-sequencing reads"))+
+  theme_bw()+
+  
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = "black", angle = 90, hjust = 1, vjust = 0.2),
+        #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
+        strip.text.y = element_text(color = "white"))
+
+####Total Reads Per Individual####
+fC_AllCounts %>% 
+  ggplot(., aes (x =as.factor(Line), y=Total_Align))+
+  geom_boxplot(aes(fill=as.factor(Line)))+
+ scale_fill_brewer(palette = "Dark2", name = "Individual")+
+  ggtitle(expression("Total number of reads by individual"))+
+  xlab("")+
+  ylab(expression("RNA-sequencing reads"))+
+  theme_bw()+
+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = "black", angle = 0, hjust = 1),
+        #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
+        strip.text.y = element_text(color = "white"))
+
+####Total Mapped Reads Per Drug####
+
+reads_by_sample <- c(tx_col)
+fC_AllCounts %>% 
+  ggplot(., aes (x = Conditions, y = Assigned_Align, fill = Treatment, group_by = Line))+
+  geom_col()+
+ geom_hline(aes(yintercept=20000000))+
+ scale_fill_manual(values=reads_by_sample)+
+  ggtitle(expression("Total number of mapped reads by sample"))+
+  xlab("")+
+  ylab(expression("RNA-sequencing reads"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = "black", angle = 90, hjust = 1, vjust = 0.2),
+        #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
+        strip.text.y = element_text(color = "white"))
+
+
+####Read Counts by Treatment####
+fC_AllCounts %>% 
+  ggplot(., aes (x =Treatment, y= Assigned_Align, fill = Treatment))+
+  geom_boxplot()+
+ scale_fill_manual(values=reads_by_sample)+
+  ggtitle(expression("Total number of mapped reads by treatment"))+
+  xlab("")+
+  ylab(expression("RNA-sequencing reads"))+
+  theme_bw()+
+  
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = "black", angle = 90, hjust = 1, vjust = 0.2),
+        #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
+        strip.text.y = element_text(color = "white"))
+
+####Total Reads Per Individual####
+fC_AllCounts %>% 
+  ggplot(., aes (x =as.factor(Line), y=Assigned_Align))+
+  geom_boxplot(aes(fill=as.factor(Line)))+
+ scale_fill_brewer(palette = "Dark2", name = "Individual")+
+  ggtitle(expression("Total number of mapped reads by individual"))+
+  xlab("")+
+  ylab(expression("RNA-sequencing reads"))+
+  theme_bw()+
+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = "black", angle = 0, hjust = 1),
+        #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
+        strip.text.y = element_text(color = "white"))
+
+####histogram of total counts, unfiltered####
+hist(fC_Matrix_Full_cpm, main = "Recovery All Individuals log2cpm Unfiltered",
+     xlab = expression("log" [2]* "counts per million"))
+
+####histogram of total counts, filtered####
+hist(fC_Matrix_Full_cpm_filter, 
+     main = "Recovery All Individuals log2cpm Filtered", 
+        xlab = expression("log"[2]*"counts per million"))
+
+####boxplot log2cpm all samples####
+
+boxplot(fC_Matrix_Full_cpm, xlab = "Conditions", ylab = expression("log"[2]* "counts per million"), ylim= c(-10, 20), main = "Boxplots of log2cpm per sample")
+
+####boxplot log2cpm filtered all samples####
+
+boxplot(fC_Matrix_Full_cpm_filter, xlab = "Conditions", ylab = expression("log"[2]* "counts per million"), ylim= c(-10, 20), main = "Boxplots of log2cpm per sample")
+
 
 ```
 
@@ -811,13 +957,13 @@ hist(fC_Matrix_Full_cpm, xlab = expression("log" [2]* "counts per million"))
 
 #first check the number of variables in the cpm file
 dim(fC_Matrix_Full_cpm)
-#[1] 78932    63
+#[1] 47727    63
 
 #now use rowMeans to filter out values with mean < 0 (this means rowMeans > 0 is what I'm left with) for each row/gene in the original file
 rowMeans_All <- rowMeans(fC_Matrix_Full_cpm)
 fC_Matrix_Full_cpm_filter <- fC_Matrix_Full_cpm[rowMeans_All > 0,]
 dim(fC_Matrix_Full_cpm_filter)
-#[1] 15674    63
+#[1] 14839    63
 
 #with this I've filtered out a significant number of rows when filtering after cpm conversion - does this make it more balanced?
 
@@ -1150,7 +1296,7 @@ shapes <- c(0, 1, 2, 5, 6, 15, 16, 17, 18)
 
 Now, I want to update these PCA plots to have treatment and time as the primary variables
 Individual will be a fill? Or somehow get some numbers labelled on the points.
-```{r PCA Plots Updated fig.width=6, fig.height=8}
+```{r PCA Plots Updated, fig.width=6, fig.height=8}
 PCA_data <- fC_Matrix_Full_cpm_filter %>% 
   prcomp(.) %>% 
   t()
@@ -1186,37 +1332,37 @@ pca_plot_fun_fill <- function(df,
 #pca_plot_fun_fill(annot_PCA_matrix, col_var = "Tx", shape_var = "Time", fill_var = "Ind")
 
 ####PC1/PC2####
-annot_PCA_matrix %>% ggplot(., aes(x=PC1, y=PC2)) +
-  geom_point(aes(color = Tx, shape = Time, fill = Ind, size = 10)) +
-                       scale_shape_manual(values = c(21, 22, 24)) +
-  scale_fill_manual(values =  fill_col_names)+
-  scale_color_manual(values = c("black", "red", "blue"))+
-  guides(fill=guide_legend(override.aes=list(shape=21)))+
-  guides(color=guide_legend(override.aes=list(shape=21)))+
-  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col,color=fill_col)))
-
-#success! i finally got the legend to represent the colors and shapes
-#now let's make two more for PC2/PC3 and PC3/PC4
-
-####PC2/PC3####
-annot_PCA_matrix %>% ggplot(., aes(x=PC2, y=PC3)) +
-  geom_point(aes(color = Tx, shape = Time, fill = Ind, size = 10)) +
-                       scale_shape_manual(values = c(21, 22, 24)) +
-  scale_fill_manual(values =  fill_col_names)+
-  scale_color_manual(values = c("black", "red", "blue"))+
-  guides(fill=guide_legend(override.aes=list(shape=21)))+
-  guides(color=guide_legend(override.aes=list(shape=21)))+
-  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col,color=fill_col)))
-
-####PC3/PC4####
-annot_PCA_matrix %>% ggplot(., aes(x=PC3, y=PC4)) +
-  geom_point(aes(color = Tx, shape = Time, fill = Ind, size = 10)) +
-                       scale_shape_manual(values = c(21, 22, 24)) +
-  scale_fill_manual(values =  fill_col_names)+
-  scale_color_manual(values = c("black", "red", "blue"))+
-  guides(fill=guide_legend(override.aes=list(shape=21)))+
-  guides(color=guide_legend(override.aes=list(shape=21)))+
-  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col,color=fill_col)))
+# annot_PCA_matrix %>% ggplot(., aes(x=PC1, y=PC2)) +
+#   geom_point(aes(color = Ind, shape = Time, fill = Tx, size = 10)) +
+#                        scale_shape_manual(values = c(21, 22, 24)) +
+#   scale_fill_manual(values =  tx_col)+
+#   scale_color_manual(values = fill_col_ind_dark)+
+#   guides(fill=guide_legend(override.aes=list(shape=25)))+
+#   guides(color=guide_legend(override.aes=list(shape=25)))+
+#   guides(fill=guide_legend(override.aes=list(shape=25,fill=tx_col,color=fill_col_ind_dark)))
+# 
+# #success! i finally got the legend to represent the colors and shapes
+# #now let's make two more for PC2/PC3 and PC3/PC4
+# 
+# ####PC2/PC3####
+# annot_PCA_matrix %>% ggplot(., aes(x=PC2, y=PC3)) +
+#   geom_point(aes(color = Tx, shape = Time, fill = Ind, size = 10)) +
+#                        scale_shape_manual(values = c(21, 22, 24)) +
+#   scale_fill_manual(values =  fill_col_names)+
+#   scale_color_manual(values = c("black", "red", "blue"))+
+#   guides(fill=guide_legend(override.aes=list(shape=21)))+
+#   guides(color=guide_legend(override.aes=list(shape=21)))+
+#   guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col,color=fill_col)))
+# 
+# ####PC3/PC4####
+# annot_PCA_matrix %>% ggplot(., aes(x=PC3, y=PC4)) +
+#   geom_point(aes(color = Tx, shape = Time, fill = Ind, size = 10)) +
+#                        scale_shape_manual(values = c(21, 22, 24)) +
+#   scale_fill_manual(values =  fill_col_names)+
+#   scale_color_manual(values = c("black", "red", "blue"))+
+#   guides(fill=guide_legend(override.aes=list(shape=21)))+
+#   guides(color=guide_legend(override.aes=list(shape=21)))+
+#   guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col,color=fill_col)))
 
 
 #extra info for colors in the graph (fill parameter)
@@ -1320,12 +1466,14 @@ annot_list_hm <- data.frame(Individual = as.factor(c(rep("Ind1", 9), rep("Ind2",
                                                Tx = as.factor(c(rep(tx_factor, 21))), 
                                                Time = as.factor(c(rep(time_factor, 7))))
 
+annot_list_hm <- data.frame(Individual, Treatment, Time)
+
 #Factor 1 - Individual
 Individual <- as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9)))
 
 #Factor 2 - Treatment
 tx_factor <- c("DOX", "FLUO", "DMSO")
-Treatment <- as.factor(c(rep(tx_factor, 21)))
+Tx <- as.factor(c(rep(tx_factor, 21)))
 #view(Treatment)
 
 #Factor 3 - Timepoint
@@ -1356,6 +1504,195 @@ counts_DE_raw %>%
         axis.text.x = element_text(size =10, color = "black", angle = 90, hjust = 1, vjust = 0.2),
         #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
         strip.text.y = element_text(color = "white"))
+
+
+```
+
+
+```{r Differential Expression Analysis Test}
+
+group <- c(rep(c(1, 2, 3, 4, 5, 6, 7, 8, 9), 6))
+group <- factor(group, levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9"))
+
+
+group_1 <- rep(c("DOX_24","FLUO_24",
+                                "DMSO_24",
+                                "DOX_24rec",
+                                "FLUO_24rec",
+                                "DMSO_24rec",
+                                "DOX_144rec",
+                                "FLUO_144rec",
+                                "DMSO_144rec"), 6)
+
+dge <- DGEList.data.frame(counts = counts_DE_filter, group = group_1, genes = row.names(counts_DE_filter))
+
+
+#this is the inital file before norm factors are calculated
+dge$samples
+
+#calculate the normalization factors with method TMM
+dge_calc <- calcNormFactors(dge, method = "TMM")
+
+#final file after norm calculation
+dge_calc$samples
+
+#View(dge_calc)
+
+
+#Create my model matrix
+mm_r <- model.matrix(~0 + group_1)
+
+p <- voom(dge_calc$counts, mm_r, plot = TRUE)
+
+corfit <- duplicateCorrelation(p, mm_r, block = snames_ind)
+
+v <- voom(dge_calc$counts, mm_r, block = snames_ind, correlation = corfit$consensus)
+
+fit <- lmFit(v, mm_r, block = snames_ind, correlation = corfit$consensus)
+
+colnames(mm_r) <- c("DMSO_144rec","DMSO_24","DMSO_24rec","DOX_144rec","DOX_24","DOX_24rec","FLUO_144rec","FLUO_24","FLUO_24rec")
+
+cm_r <- makeContrasts(
+        V.D24 = DOX_24 - DMSO_24,
+        V.F24 = FLUO_24 - DMSO_24,
+        V.D24r = DOX_24rec - DMSO_24rec,
+        V.F24r = FLUO_24rec - DMSO_24rec,
+        V.D144r = DOX_144rec - DMSO_144rec,
+        V.F144r = FLUO_144rec - DMSO_144rec,
+        levels = mm_r
+)
+
+vfit_r <- lmFit(p, mm_r)
+vfit_r <- contrasts.fit(vfit_r, contrasts = cm_r)
+
+efit4 <- eBayes(vfit_r)
+
+results = decideTests(efit4)
+summary(results)
+#these results are from rowMeans >0
+#         V.D24 V.F24 V.D24r V.F24r V.D144r V.F144r
+# Down    6441     0   2644      0     362       1
+# NotSig 45643 65925  48194  65925   63810   65924
+# Up     13841     0  15087      0    1753       0
+
+#these results are from rowMeans > 5
+#        V.D24 V.F24 V.D24r V.F24r V.D144r V.F144r
+# Down    6174     0   2599      0     272       0
+# NotSig 10944 23635  14353  23635   23269   23635
+# Up      6517     0   6683      0      94       0
+
+
+#new results rowMeans >0
+#         V.D24 V.F24 V.D24r V.F24r V.D144r V.F144r
+# Down    4952     0   2282      0     319       0
+# NotSig 24083 39938  25569  39938   37760   39938
+# Up     10903     0  12087      0    1859       0
+
+```
+
+```{r Do This Again But With Filtering- Yay}
+
+counts_DE_raw
+
+counts_DE
+
+####rowMeans >0####
+rowMeans_DE <- rowMeans(counts_DE)
+counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
+dim(counts_DE_filter)
+
+
+####rowMeans >1####
+rowMeans_DE <- rowMeans(counts_DE)
+counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
+dim(counts_DE_filter)
+
+####rowMeans >2####
+rowMeans_DE <- rowMeans(counts_DE)
+counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
+dim(counts_DE_filter)
+
+####rowMeans >3####
+rowMeans_DE <- rowMeans(counts_DE)
+counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
+dim(counts_DE_filter)
+
+####rowMeans >4####
+rowMeans_DE <- rowMeans(counts_DE)
+counts_DE_filter_4 <- counts_DE[rowMeans_DE > 4,]
+dim(counts_DE_filter_4)
+
+####rowMeans >5####
+rowMeans_DE <- rowMeans(counts_DE)
+counts_DE_filter_5 <- counts_DE[rowMeans_DE > 5,]
+dim(counts_DE_filter_5)
+#[1] 23635    54
+```
+
+
+```{r Make a TopTable with Your New Data}
+
+top.table_V.D24 <- topTable(fit = efit4, coef = "V.D24", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+head(top.table_V.D24)
+
+top.table_V.F24 <- topTable(fit = efit4, coef = "V.F24", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+head(top.table_V.F24)
+
+top.table_V.D24r <- topTable(fit = efit4, coef = "V.D24r", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+head(top.table_V.D24r)
+
+top.table_V.F24r <- topTable(fit = efit4, coef = "V.F24r", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+head(top.table_V.F24r)
+
+top.table_V.D144r <- topTable(fit = efit4, coef = "V.D144r", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+head(top.table_V.D144r)
+
+top.table_V.F144r <- topTable(fit = efit4, coef = "V.F144r", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+head(top.table_V.F144r)
+
+top.table_full <- topTable(fit = efit4, n = 20, adjust.method = "BH", resort.by = "logFC")
+head(top.table_full)
+```
+
+
+Volcano Plots
+```{r Volcano Plots from Pairwise Gene Analysis, fig.height=8, fig.width=10}
+
+generate_volcano_plot <- function(toptable, title) {
+  
+  # Add Significance Labels
+  toptable$Significance <- "Not Significant"
+  toptable$Significance[toptable$logFC > 0 & toptable$adj.P.Val < 0.05] <- "Upregulated"
+  toptable$Significance[toptable$logFC < 0 & toptable$adj.P.Val < 0.05] <- "Downregulated"
+
+  # Generate Volcano Plot
+  ggplot(toptable, aes(x = logFC, y = -log10(P.Value), color = Significance)) +
+    geom_point(alpha = 0.4, size = 2) + 
+    scale_color_manual(values = c("Downregulated" = "red", "Upregulated" = "blue", "Not Significant" = "gray")) +
+    xlim(-5, 5) +
+    labs(title = title, x = "log2 Fold Change", y = "-log10 P-value") +
+    theme(legend.position = "none", 
+          plot.title = element_text(size = rel(1.5), hjust = 0.5),
+          axis.title = element_text(size = rel(1.25))) +
+    theme_bw()
+}
+
+#now that I've made a function, I can make volcano plots for each of my comparisons (6 total)
+
+volcano_plots <- list(
+  "V.D24" = generate_volcano_plot(top.table_V.D24, "Volcano Plot DOX 24hr (adj P-val<0.05)"),
+  "V.F24" = generate_volcano_plot(top.table_V.F24, "Volcano Plot 5FU 24hr (adj P-val<0.05)"),
+  "V.D24r" = generate_volcano_plot(top.table_V.D24r, "Volcano Plot DOX 24hr Recovery (adj P-val<0.05)"),
+  "V.F24r" = generate_volcano_plot(top.table_V.F24r, "Volcano Plot 5FU 24hr Recovery (adj P-val<0.05)"),
+  "V.D144r" = generate_volcano_plot(top.table_V.D144r, "Volcano Plot DOX 6d Recovery (adj P-val<0.05)"),
+  "V.F144r" = generate_volcano_plot(top.table_V.F144r, "Volcano Plot 5FU 6d Recovery (adj P-val<0.05)")
+)
+
+# Display each volcano plot
+for (plot_name in names(volcano_plots)) {
+  print(volcano_plots[[plot_name]])
+}
+
 
 
 ```
