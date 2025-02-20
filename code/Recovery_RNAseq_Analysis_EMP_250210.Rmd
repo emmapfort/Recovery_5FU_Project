@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-```{r Libraries, include=FALSE}
+```{r Libraries}
 library(ggplot2)
 library(reshape2)
 library(hrbrthemes)
@@ -18,6 +18,7 @@ library(tibble)
 library(tidyverse)
 library(edgebundleR)
 library(readxl)
+library(readr)
 library(edgeR)
 library(pheatmap)
 library(ggfortify)
@@ -25,17 +26,19 @@ library(PCAtools)
 library(Cormotif)
 library(RColorBrewer)
 library(biomaRt)
+library(RUVSeq)
 ```
 
 
 
 ```{r Sheet with Mapped and Successfully Aligned Reads}
-# library(readr)
-# fC_AllCounts <- read_csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/Recovery_MappingStats_Subread_EMP_241104_250211.csv")
-# View(fC_AllCounts)
+fC_AllCounts <- read_csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/Recovery_MappingStats_Subread_EMP_241104_250211.csv")
+View(fC_AllCounts)
+dim(fC_AllCounts)
+#[1] 63  6
 ```
 
-These samples (63 in total) have been aligned to the Ensembl 113 release of GRCh38 via subread, and counts have been generated using featureCounts
+These samples (63 in total) have been aligned to the Ensembl 113 release of GRCh38 via subread, and counts have been generated using featureCounts with inbuilt hg38 genome
 
 Data is located under 5FU Project on my computer
 All analysis saved in RDirectory Recovery_RNAseq
@@ -753,7 +756,7 @@ colnames(fC_Matrix_AllInd) <- c("ensembl_gene_id",
 fC_Matrix_Full <- fC_Matrix_AllInd %>% remove_rownames %>% column_to_rownames(var = "ensembl_gene_id") %>% as.matrix()
 
 #write this one to a csv so I can hold onto it
-# write.csv(fC_Matrix_AllInd, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_EMP_250210.csv")
+#write.csv(fC_Matrix_AllInd, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_EMP_250220.csv")
 
 boxplot(fC_Matrix_Full,  xlab = "Conditions", ylab = "Unfiltered Counts", ylim= c(-10, 1000), main = "Boxplot of Raw Counts All Individuals")
 
@@ -912,13 +915,17 @@ fC_AllCounts %>%
         #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
         strip.text.y = element_text(color = "white"))
 
+#Have to do a log2cpm conversion here
+
+
+
 ####histogram of total counts, unfiltered####
 hist(fC_Matrix_Full_cpm, main = "Recovery All Individuals log2cpm Unfiltered",
      xlab = expression("log" [2]* "counts per million"))
 
 ####histogram of total counts, filtered####
 hist(fC_Matrix_Full_cpm_filter, 
-     main = "Recovery All Individuals log2cpm Filtered", 
+     main = "Recovery All Individuals log2cpm Filtered rowMeans > 0", 
         xlab = expression("log"[2]*"counts per million"))
 
 ####boxplot log2cpm all samples####
@@ -927,7 +934,7 @@ boxplot(fC_Matrix_Full_cpm, xlab = "Conditions", ylab = expression("log"[2]* "co
 
 ####boxplot log2cpm filtered all samples####
 
-boxplot(fC_Matrix_Full_cpm_filter, xlab = "Conditions", ylab = expression("log"[2]* "counts per million"), ylim= c(-10, 20), main = "Boxplots of log2cpm per sample")
+boxplot(fC_Matrix_Full_cpm_filter, xlab = "Conditions", ylab = expression("log"[2]* "counts per million"), ylim= c(-10, 20), main = "Boxplots of log2cpm Filtered rowMeans > 0 per sample")
 
 
 ```
@@ -949,7 +956,7 @@ boxplot(fC_Matrix_Full_cpm, xlab = "Conditions", ylab = expression("log"[2]* "co
 hist(fC_Matrix_Full_cpm, xlab = expression("log" [2]* "counts per million"))
 
 #write this to a csv just in case to save it
-# write.csv(fC_Matrix_Full_cpm, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_cpm_EMP_250210.csv")
+#write.csv(fC_Matrix_Full_cpm, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_cpm_EMP_250210.csv")
 
 ```
 
@@ -957,13 +964,13 @@ hist(fC_Matrix_Full_cpm, xlab = expression("log" [2]* "counts per million"))
 
 #first check the number of variables in the cpm file
 dim(fC_Matrix_Full_cpm)
-#[1] 47727    63
+#[1] 28395    63
 
 #now use rowMeans to filter out values with mean < 0 (this means rowMeans > 0 is what I'm left with) for each row/gene in the original file
 rowMeans_All <- rowMeans(fC_Matrix_Full_cpm)
 fC_Matrix_Full_cpm_filter <- fC_Matrix_Full_cpm[rowMeans_All > 0,]
 dim(fC_Matrix_Full_cpm_filter)
-#[1] 14839    63
+#[1] 14225    63
 
 #with this I've filtered out a significant number of rows when filtering after cpm conversion - does this make it more balanced?
 
@@ -977,7 +984,7 @@ boxplot(fC_Matrix_Full_cpm_filter,
         ylim = c(-10,15))
 
 #write this to a csv to save
-# write.csv(fC_Matrix_Full_cpm_filter, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_cpm_filtered_EMP_250210.csv")
+#write.csv(fC_Matrix_Full_cpm_filter, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_cpm_filtered_EMP_250210.csv")
 
 ```
 
@@ -1296,7 +1303,7 @@ shapes <- c(0, 1, 2, 5, 6, 15, 16, 17, 18)
 
 Now, I want to update these PCA plots to have treatment and time as the primary variables
 Individual will be a fill? Or somehow get some numbers labelled on the points.
-```{r PCA Plots Updated, fig.width=6, fig.height=8}
+```{r PCA Plots Updated, fig.width=8, fig.height=8}
 PCA_data <- fC_Matrix_Full_cpm_filter %>% 
   prcomp(.) %>% 
   t()
@@ -1409,7 +1416,7 @@ annot_PCA_matrix %>% ggplot(., aes(x=PC3, y=PC4)) +
 ```
 
 
-```{r Heatmaps}
+```{r Correlation Heatmaps, fig.width=12, fig.height=16}
 
 #correlation heatmap for all samples
 
@@ -1438,72 +1445,96 @@ pheatmap(fC_Matrix_Full_cpm_filter_pearsoncor, border_color = "black", legend = 
 
 pheatmap(fC_Matrix_Full_cpm_filter_spearmancor, border_color = "black", legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = "black", fontsize = 12, fontsize_number = 9)
 
-pheatmap(fC_Matrix_Full_cpm_filter_pearsoncor, border_color = "black", legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = "black", fontsize = 10, fontsize_number = 5, annotation_col = annot_list_hm, annotation_colors = annot_col_hm)
-
-pheatmap(fC_Matrix_Full_cpm_filter_spearmancor, border_color = "black", legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = "black", fontsize = 10, fontsize_number = 5, annotation_col = annot_list_hm, annotation_colors = annot_col_hm)
-
-##add in the annotations from below into the dataframe
-row.names(annot_list_hm) <- colnames(fC_Matrix_Full_cpm_filter_pearsoncor)
-row.names(annot_list_hm) <- colnames(fC_Matrix_Full_cpm_filter_spearmancor)
 
 
 #now annotate these heatmaps
 #treatment colors
-tx_col_df <-  list(Treatment = c(UPR = "blue", FLUO = "red", DMSO = "darkgray"))
-
-#individual colors
-ind_col_df <- list(Individual = c(Ind1 = "#66C2A5", Ind2 = "#FC8D62", Ind3 = "#1F78B4", Ind4 = "#E78AC3", Ind5 = "#A6D854", Ind6 = "#FFD92A", Ind6REP = "#8B3E9B"))
-
-#timepoint colors
-time_col_df <- list(Timepoint = c("24hr" = "#046A38", "24rec" = "#0050B5", "144rec" = "#B725AD"))
+# tx_col_df <-  list(Treatment = c(UPR = "blue", FLUO = "red", DMSO = "darkgray"))
+# 
+# #individual colors
+# ind_col_df <- list(Individual = c(Ind1 = "#66C2A5", Ind2 = "#FC8D62", Ind3 = "#1F78B4", Ind4 = "#E78AC3", Ind5 = "#A6D854", Ind6 = "#FFD92A", Ind6REP = "#8B3E9B"))
+# 
+# #timepoint colors
+# time_col_df <- list(Timepoint = c("24" = "#046A38", "24rec" = "#0050B5", "144rec" = "#B725AD"))
 
 #annotation list of colors and values
 annot_col_hm = list(Tx = c(DOX = "red", FLUO = "blue", DMSO = "black"),
                              Ind = c(Ind1 = "#66C2A5", Ind2 = "#FC8D62", Ind3 = "#1F78B4", Ind4 = "#E78AC3", Ind5 = "#A6D854", Ind6 = "#FFD92A", Ind6REP = "#8B3E9B"),
-                             Time = c("24hr" = "#046A38", "24rec" = "#0050B5", "144rec" = "#B725AD"))
+                             Time = c("24" = "#046A38", "24rec" = "#0050B5", "144rec" = "#B725AD"))
 
 annot_list_hm <- data.frame(Individual = as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9))),
                                                Tx = as.factor(c(rep(tx_factor, 21))), 
                                                Time = as.factor(c(rep(time_factor, 7))))
 
-annot_list_hm <- data.frame(Individual, Treatment, Time)
+#annot_list_hm <- data.frame(Individual, Treatment, Time)
 
 #Factor 1 - Individual
-Individual <- as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9)))
+# Individual <- as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9)))
 
 #Factor 2 - Treatment
-tx_factor <- c("DOX", "FLUO", "DMSO")
-Tx <- as.factor(c(rep(tx_factor, 21)))
+# tx_factor <- c("DOX", "FLUO", "DMSO")
+# Tx <- as.factor(c(rep(tx_factor, 21)))
 #view(Treatment)
 
 #Factor 3 - Timepoint
-time_factor <- c(rep("24hr", 3), rep("24rec", 3), rep("144rec", 3))
-Time <- as.factor(c(rep(time_factor, 7)))
+# time_factor <- c(rep("24", 3), rep("24rec", 3), rep("144rec", 3))
+# Time <- as.factor(c(rep(time_factor, 7)))
   
+##add in the annotations from below into the dataframe
+row.names(annot_list_hm) <- colnames(fC_Matrix_Full_cpm_filter_pearsoncor)
+row.names(annot_list_hm) <- colnames(fC_Matrix_Full_cpm_filter_spearmancor)
+
+####ANNOTATED HEATMAPS####
+pheatmap(fC_Matrix_Full_cpm_filter_pearsoncor, border_color = "black", legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = "black", fontsize = 10, fontsize_number = 5, annotation_col = annot_list_hm, annotation_colors = annot_col_hm)
+
+pheatmap(fC_Matrix_Full_cpm_filter_spearmancor, border_color = "black", legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = "black", fontsize = 10, fontsize_number = 5, annotation_col = annot_list_hm, annotation_colors = annot_col_hm)
+
+
 ```
 
  
 ```{r All QC}
-####TOTAL NUMBER OF READS PER SAMPLE####
-tx_col <- list(Treatment = c("DMSO" = "#63666D","5FU" = "#DCACED","DOX" = "#499FBD"))
-counts_DE_raw %>% 
-  filter(type=="") %>% 
-  ggplot(., aes (x =samplenames, y=count, fill = drug, group_by=indv))+
-  geom_col()+
- geom_hline(aes(yintercept=20000000))+
- scale_fill_manual(values=drug_palc)+
-  ggtitle(expression("Total number of reads by sample"))+
-  xlab("")+
-  ylab(expression("RNA -sequencing reads"))+
-  theme_bw()+
-  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
-        axis.title = element_text(size = 15, color = "black"),
-        axis.ticks = element_line(linewidth = 1.5),
-        axis.line = element_line(linewidth = 1.5),
-        axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
-        axis.text.x = element_text(size =10, color = "black", angle = 90, hjust = 1, vjust = 0.2),
-        #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
-        strip.text.y = element_text(color = "white"))
+
+counts_DE_raw <- read_csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_EMP_250220.csv")
+#View(counts_DE)
+
+counts_DE_norep <- as.data.frame(Counts_Full_df) %>% 
+        dplyr::select(-"...1") %>% 
+        dplyr::select(-(contains("Ind6REP")))
+
+#now I've removed that individual, so I'll filter all counts by rowmeans
+#first check the number of variables in the counts file
+##I should have 54 samples if not including Ind6REP
+dim(counts_DE)
+#[1] 78932    54
+#[1] 28395    54 - new inbuilt
+
+####filter by rowMeans >1 to filter more####
+rowMeans_DE <- rowMeans(counts_DE_norep)
+counts_DE_filter1 <- counts_DE_norep[rowMeans_DE > 1,]
+dim(counts_DE_filter1)
+#[1] 65925    54
+#[1] 20443    54 - new inbuilt
+
+# ####TOTAL NUMBER OF READS PER SAMPLE####
+# tx_col <- list(Treatment = c("DMSO" = "#63666D","5FU" = "#DCACED","DOX" = "#499FBD"))
+# counts_DE_raw %>% 
+#   ggplot(., aes (x =samplenames, y=count, fill = drug, group_by=indv))+
+#   geom_col()+
+#  geom_hline(aes(yintercept=20000000))+
+#  scale_fill_manual(values=drug_palc)+
+#   ggtitle(expression("Total number of reads by sample"))+
+#   xlab("")+
+#   ylab(expression("RNA -sequencing reads"))+
+#   theme_bw()+
+#   theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+#         axis.title = element_text(size = 15, color = "black"),
+#         axis.ticks = element_line(linewidth = 1.5),
+#         axis.line = element_line(linewidth = 1.5),
+#         axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
+#         axis.text.x = element_text(size =10, color = "black", angle = 90, hjust = 1, vjust = 0.2),
+#         #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
+#         strip.text.y = element_text(color = "white"))
 
 
 ```
@@ -1524,7 +1555,7 @@ group_1 <- rep(c("DOX_24","FLUO_24",
                                 "FLUO_144rec",
                                 "DMSO_144rec"), 6)
 
-dge <- DGEList.data.frame(counts = counts_DE_filter, group = group_1, genes = row.names(counts_DE_filter))
+dge <- DGEList.data.frame(counts = counts_DE_filter1, group = group_1, genes = row.names(counts_DE_filter))
 
 
 #this is the inital file before norm factors are calculated
@@ -1538,6 +1569,14 @@ dge_calc$samples
 
 #View(dge_calc)
 
+#Pull out factors
+snames <- data.frame("samples" = colnames(dge_calc)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
+
+#snames_list <- as.list(snames)
+
+snames_time <- snames$Time
+snames_tx <- snames$Treatment
+snames_ind <- snames$Individual
 
 #Create my model matrix
 mm_r <- model.matrix(~0 + group_1)
@@ -1584,9 +1623,16 @@ summary(results)
 
 #new results rowMeans >0
 #         V.D24 V.F24 V.D24r V.F24r V.D144r V.F144r
-# Down    4952     0   2282      0     319       0
-# NotSig 24083 39938  25569  39938   37760   39938
-# Up     10903     0  12087      0    1859       0
+# Down    4567     0   2083      0     288       0
+# NotSig 14521 26445  16339  26445   25296   26445
+# Up      7357     0   8023      0     861       0
+
+##still have no DE genes detected for 5FU, only DOX
+
+
+####plot your voom####
+voom_plot <- voom(dge_calc, mm_r, plot = TRUE)
+
 
 ```
 
@@ -1694,6 +1740,41 @@ for (plot_name in names(volcano_plots)) {
 }
 
 
+
+```
+
+Now that I've gone through and figured out the basics of DE - let's remove unwanted variation using ruv
+This uses my replicates to figure out covariates in the data and remove variation occurring due to batch effects or other effects
+We're seeing a batch effect occurring here in PCA and cor. heatmaps
+
+```{r Remove Unwanted Variation - RUVs}
+
+#counts need to be integer values and in a numeric matrix for ruv
+counts_DE_matrix <- as.matrix(counts_DE_filter1)
+dim(counts_DE_matrix)
+#[1] 20443    54 - new inbuilt
+#this does NOT contain the replicate samples, save for later
+
+##this file contains the replicates that I can pull from
+fC_Matrix_cpm_filter_ruv <- as.matrix (fC_Matrix_Full_cpm_filter)
+
+#create a matrix specifying the replicates
+reps <- as.data.frame(fC_Matrix_Full_cpm_filter) %>%
+  dplyr::select(contains("Ind6"))
+dim(reps)
+#[1] 14225    18
+
+View(controls)
+#using the documentation do this:
+controls <- rownames(reps)
+differences <- matrix(data = c(1,10, 2, 11, 3 ,12, 4, 13, 5 ,14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
+seqRUVs <- RUVs(fC_Matrix_cpm_filter_ruv, controls, k=2, differences, isLog = TRUE)
+pData(seqRUVs)
+#head(seqRUVs)
+
+
+###now try putting this in your matrix?
+design <- model.matrix(~0 + group_1, seqRUVs)
 
 ```
 
