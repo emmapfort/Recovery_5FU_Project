@@ -44,7 +44,7 @@ Data is located under 5FU Project on my computer
 All analysis saved in RDirectory Recovery_RNAseq
 
 Individual 1 - 84-1 (9 samples)
-```{r Import Counts Data Individual 1 - 84-1}
+```{r Import Counts Data Individual 1 - 84-1, include=FALSE}
 #abbreviated to the first two numbers of the cell line for ease
 #9 samples per cell line
 #problem sample 24!!
@@ -90,7 +90,7 @@ Individual 1 - 84-1 (9 samples)
 ```
 
 Individual 2 - 87-1 (9 samples)
-```{r Import Counts Individual 2 87-1}
+```{r Import Counts Individual 2 87-1, include=FALSE}
 #abbreviated to the first two numbers of the cell line for ease
 #9 samples per cell line
 
@@ -133,7 +133,7 @@ Individual 2 - 87-1 (9 samples)
 ```
 
 Individual 3 - 75-1 (9 samples)
-```{r Import Counts Individual 3 78-1}
+```{r Import Counts Individual 3 78-1, include=FALSE}
 #abbreviated to the first two numbers of the cell line for ease
 #9 samples per cell line
 
@@ -176,7 +176,7 @@ Individual 3 - 75-1 (9 samples)
 ```
 
 Individual 4 - 75-1 (9 samples)
-```{r Import Counts Individual 4 75-1}
+```{r Import Counts Individual 4 75-1, include=FALSE}
 #abbreviated to the first two numbers of the cell line for ease
 #9 samples per cell line
 
@@ -220,7 +220,7 @@ Individual 4 - 75-1 (9 samples)
 
 
 Individual 5 - 17-3 (9 samples)
-```{r Import Counts Individual 5 17-3}
+```{r Import Counts Individual 5 17-3, include=FALSE}
 #abbreviated to the first two numbers of the cell line for ease
 #9 samples per cell line
 
@@ -264,7 +264,7 @@ Individual 5 - 17-3 (9 samples)
 
 
 Individual 6 - 90-1 (9 samples)
-```{r Import Counts Individual 6 90-1}
+```{r Import Counts Individual 6 90-1, include=FALSE}
 #abbreviated to the first two numbers of the cell line for ease
 #9 samples per cell line
 
@@ -308,7 +308,7 @@ Individual 6 - 90-1 (9 samples)
 
 
 Individual 7 - 90-1 REP (9 samples)
-```{r Import Counts Individual 7 90-1 REP}
+```{r Import Counts Individual 7 90-1 REP, include=FALSE}
 #abbreviated to the first two numbers of the cell line for ease
 #9 samples per cell line
 
@@ -352,7 +352,7 @@ Individual 7 - 90-1 REP (9 samples)
 Now that I have imported all of these counts files, I will make a matrix with all of the samples
 
 First I'll break them up by individual, and then combine them all together
-```{r Counts Matrix 84-1}
+```{r Counts Matrix 84-1, include=FALSE}
 
 fC_Matrix_84_All <-
   data.frame(
@@ -389,7 +389,7 @@ hist(fC_Matrix_84,  xlab = "Unfiltered Counts", xlim = c(-1000,25000), ylim = c(
 
 ```
 
-```{r Counts Matrix Individual 2 87-1}
+```{r Counts Matrix Individual 2 87-1, include=FALSE}
 
 fC_Matrix_87_All <-
   data.frame(
@@ -427,7 +427,7 @@ hist(fC_Matrix_87,  xlab = "Unfiltered Counts", xlim = c(-1000,25000), ylim = c(
 ```
 
 
-```{r Counts Matrix Individual 3 78-1}
+```{r Counts Matrix Individual 3 78-1, include=FALSE}
 
 fC_Matrix_78_All <-
   data.frame(
@@ -465,7 +465,7 @@ hist(fC_Matrix_78,  xlab = "Unfiltered Counts", xlim = c(-1000,25000), ylim = c(
 ```
 
 
-```{r Counts Matrix Individual 4 75-1}
+```{r Counts Matrix Individual 4 75-1, include=FALSE}
 
 fC_Matrix_75_All <-
   data.frame(
@@ -503,7 +503,7 @@ hist(fC_Matrix_75,  xlab = "Unfiltered Counts", xlim = c(-1000,25000), ylim = c(
 ```
 
 
-```{r Counts Matrix Individual 5 17-3}
+```{r Counts Matrix Individual 5 17-3, include=FALSE}
 
 fC_Matrix_17_All <-
   data.frame(
@@ -541,7 +541,7 @@ hist(fC_Matrix_17,  xlab = "Unfiltered Counts", xlim = c(-1000,25000), ylim = c(
 ```
 
 
-```{r Counts Matrix Individual 6 90-1}
+```{r Counts Matrix Individual 6 90-1, include=FALSE}
 
 fC_Matrix_90_All <-
   data.frame(
@@ -579,7 +579,7 @@ hist(fC_Matrix_90,  xlab = "Unfiltered Counts", xlim = c(-1000,25000), ylim = c(
 ```
 
 
-```{r Counts Matrix Individual 6 90-1REP}
+```{r Counts Matrix Individual 6 90-1REP, include=FALSE}
 
 fC_Matrix_90REP_All <-
   data.frame(
@@ -619,7 +619,7 @@ hist(fC_Matrix_90REP,  xlab = "Unfiltered Counts", xlim = c(-1000,25000), ylim =
 
 Now that I've made individual matrices for each individual - I will combine them together into one large matrix
 
-```{r Counts Matrix All Individuals}
+```{r Counts Matrix All Individuals, include=FALSE}
 
 fC_Matrix_AllInd <-
   data.frame(
@@ -1763,18 +1763,41 @@ reps <- as.data.frame(fC_Matrix_Full_cpm_filter) %>%
   dplyr::select(contains("Ind6"))
 dim(reps)
 #[1] 14225    18
+reps_mat <- as.matrix(reps)
 
-View(controls)
 #using the documentation do this:
-controls <- rownames(reps)
-differences <- matrix(data = c(1,10, 2, 11, 3 ,12, 4, 13, 5 ,14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
-seqRUVs <- RUVs(fC_Matrix_cpm_filter_ruv, controls, k=2, differences, isLog = TRUE)
-pData(seqRUVs)
-#head(seqRUVs)
+#controls: gene-by-sample numeric matrix containing counts
+controls <- rownames(fC_Matrix_Full_cpm_filter)
+
+#I have replicates for Individual 6, which I can compare using this method
+#They are matched as following: 
+##col46:55, 47:56, 48:57, 49:58, 50:59, 51:60, 52:61, 53:62, 54:63
+###this is the scIdx argument for reps, the cIdx argument is for genes
+#differences <- matrix(data = c(1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
+differences_full <- matrix(data = c(46, 55, 47, 56, 48 , 57, 49, 58, 50 , 59, 51, 60, 52, 61, 53, 62, 54, 63), byrow = TRUE, nrow = 9)
+
+
+signature(x = "matrix", cIdx = "ANY", k = "numeric", scIdx = "matrix")
+
+
+seqRUVs <- RUVs(rep, controls, k=3, differences_full, isLog = TRUE)
+
+pData(counts_DE)
+head(seqRUVs)
 
 
 ###now try putting this in your matrix?
 design <- model.matrix(~0 + group_1, seqRUVs)
+
+
+
+
+####try it exactly like the documentation and filter afterwards?####
+genes <- rownames(fC_Matrix_Full)[grep("^"), rownames(fC_Matrix_Full)]
+spikes <- rownames()
+
+####leaving off here EMP 25/02/26####
+
 
 ```
 
