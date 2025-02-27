@@ -1557,6 +1557,7 @@ dim(counts_DE)
 
 ```
 
+Now that I've finalized my QC checks, I will go ahead and begin the differential expression analysis pipeline.
 
 ```{r Differential Expression Analysis filtering rowMeans greater than 0, collapse=TRUE}
 
@@ -1580,14 +1581,16 @@ group_1 <- rep(c("DOX_24","FLUO_24",
 
 dge <- DGEList.data.frame(counts = counts_DE_filter, group = group_1, genes = row.names(counts_DE_filter))
 
-#this is the inital file before norm factors are calculated
-dge$samples
+#check the inital file before norm factors are calculated
+#dge$samples
 
 #calculate the normalization factors with method TMM
 dge_calc <- calcNormFactors(dge, method = "TMM")
 
-#final file after norm calculation
-dge_calc$samples
+#check final file after norm calculation
+#dge_calc$samples
+
+#after calculating norm factors, that column was changed.
 
 #View(dge_calc)
 
@@ -1660,14 +1663,14 @@ dim(counts_DE_filter1)
 
 dge1 <- DGEList.data.frame(counts = counts_DE_filter1, group = group_1, genes = row.names(counts_DE_filter1))
 
-#this is the inital file before norm factors are calculated
-dge1$samples
+#check the inital file before norm factors are calculated
+#dge1$samples
 
 #calculate the normalization factors with method TMM
 dge1_calc <- calcNormFactors(dge1, method = "TMM")
 
-#final file after norm calculation
-dge1_calc$samples
+#check final file after norm calculation
+#dge1_calc$samples
 
 #View(dge1_calc)
 
@@ -1723,7 +1726,10 @@ summary(results1)
 ####plot your voom####
 voom_plot1 <- voom(dge1_calc, mm_r1, plot = TRUE)
 ```
+This looks much better! No more noise in the front. 
+I could potentially filter at rowMeans >0.5, but I will leave that for now.
 
+Now I can go ahead and make toptables for safekeeping and later analysis
 
 ```{r Make a TopTable with Your New Data, results='hide',collapse=TRUE}
 
@@ -1791,7 +1797,7 @@ for (plot_name in names(volcano_plots)) {
 
 Now that I've gone through and figured out the basics of DE - let's remove unwanted variation using ruv
 This uses my replicates to figure out covariates in the data and remove variation occurring due to batch effects or other effects
-We're seeing a batch effect occurring here in PCA and cor. heatmaps
+We're seeing a batch effect from RNA extraction (all RNAseq library prep done in a single batch) occurring here in PCA and cor. heatmaps rather than individuals clustering together.
 
 ```{r Remove Unwanted Variation - RUVs}
 
