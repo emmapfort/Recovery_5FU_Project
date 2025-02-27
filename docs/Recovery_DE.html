@@ -37,6 +37,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -339,9 +341,18 @@ div.tocify {
 <li>
   <a href="license.html">License</a>
 </li>
+<li>
+  <a href="Recovery_DE.html">Differential Expression Analysis</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/emmapfort/Recovery_5FU_Project">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -513,15 +524,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttreee77e0d486909d2e3809ef0e71565a33036d0ac7btargetblanke77e0d4a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttreeb086ed19a853d6a04cbee84458b7fd52dc030981targetblankb086ed1a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/e77e0d486909d2e3809ef0e71565a33036d0ac7b" target="_blank">e77e0d4</a>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/b086ed19a853d6a04cbee84458b7fd52dc030981" target="_blank">b086ed1</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttreee77e0d486909d2e3809ef0e71565a33036d0ac7btargetblanke77e0d4a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttreeb086ed19a853d6a04cbee84458b7fd52dc030981targetblankb086ed1a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -531,7 +542,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/e77e0d486909d2e3809ef0e71565a33036d0ac7b" target="_blank">e77e0d4</a>.
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/b086ed19a853d6a04cbee84458b7fd52dc030981" target="_blank">b086ed1</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -548,12 +559,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-
-Untracked files:
-    Untracked:  code/Recovery_RNAseq_Analysis_EMP_250210.Rmd
-
-Unstaged changes:
-    Deleted:    analysis/Recovery_RNAseq_Analysis_EMP_250210.Rmd
 
 </code></pre>
 <p>
@@ -598,6 +603,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/b086ed19a853d6a04cbee84458b7fd52dc030981/analysis/Recovery_DE.Rmd" target="_blank">b086ed1</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+<td>
+wflow_publish(files = "analysis/Recovery_DE.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/emmapfort/Recovery_5FU_Project/41aef3082699655003b27905342a428e6365a1f9/docs/Recovery_DE.html" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -893,7 +932,84 @@ matrix with all of the samples</p>
 together</p>
 <p>Now that I’ve made individual matrices for each individual - I will
 combine them together into one large matrix</p>
-<p><img src="figure/Recovery_DE.Rmd/Counts%20Matrix%20All%20Individuals-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Recovery_DE.Rmd/Counts%20Matrix%20All%20Individuals-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Recovery_DE.Rmd/Counts%20Matrix%20All%20Individuals-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Counts-Matrix-All-Individuals-1">
+Past versions of "Counts Matrix All Individuals-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Counts-Matrix-All-Individuals-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Counts Matrix All Individuals-1.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Recovery_DE.Rmd/Counts%20Matrix%20All%20Individuals-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Counts-Matrix-All-Individuals-2">
+Past versions of "Counts Matrix All Individuals-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Counts-Matrix-All-Individuals-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Counts Matrix All Individuals-2.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#Now that I&#39;ve put together my matrix - I will do some QC checks
 
 #now that I have all of my factors and my gene info, I will make some graphs to show the QC data
@@ -917,6 +1033,43 @@ fC_AllCounts %&gt;%
         #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
         strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/QC%20checks%20Raw%20Counts-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-checks-Raw-Counts-1">
+Past versions of "QC checks Raw Counts-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-checks-Raw-Counts-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/QC checks Raw Counts-1.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 
 ####Read Counts by Treatment####
@@ -938,6 +1091,43 @@ fC_AllCounts %&gt;%
         #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
         strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/QC%20checks%20Raw%20Counts-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-checks-Raw-Counts-2">
+Past versions of "QC checks Raw Counts-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-checks-Raw-Counts-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/QC checks Raw Counts-2.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 ####Total Reads Per Individual####
 fC_AllCounts %&gt;% 
@@ -958,6 +1148,43 @@ fC_AllCounts %&gt;%
         #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
         strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/QC%20checks%20Raw%20Counts-3.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-checks-Raw-Counts-3">
+Past versions of "QC checks Raw Counts-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-checks-Raw-Counts-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/QC checks Raw Counts-3.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 ####Total Mapped Reads Per Drug####
 
@@ -980,6 +1207,43 @@ fC_AllCounts %&gt;%
         #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
         strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/QC%20checks%20Raw%20Counts-4.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-checks-Raw-Counts-4">
+Past versions of "QC checks Raw Counts-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-checks-Raw-Counts-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/QC checks Raw Counts-4.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 
 ####Read Counts by Treatment####
@@ -1001,6 +1265,43 @@ fC_AllCounts %&gt;%
         #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
         strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/QC%20checks%20Raw%20Counts-5.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-checks-Raw-Counts-5">
+Past versions of "QC checks Raw Counts-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-checks-Raw-Counts-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/QC checks Raw Counts-5.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 ####Total Reads Per Individual####
 fC_AllCounts %&gt;% 
@@ -1021,13 +1322,126 @@ fC_AllCounts %&gt;%
         #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
         strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/QC%20checks%20Raw%20Counts-6.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-checks-Raw-Counts-6">
+Past versions of "QC checks Raw Counts-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-checks-Raw-Counts-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/QC checks Raw Counts-6.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now that I’ve made the final full matrix of all samples - 1. convert
 to log2cpm using cpm 2. filter for lowly expressed reads (rowMeans &gt;
 0)</p>
 <pre class="r"><code>boxplot(fC_Matrix_Full_cpm, xlab = &quot;Conditions&quot;, ylab = expression(&quot;log&quot;[2]* &quot;counts per million&quot;), ylim= c(-10, 20))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/log2cpm%20Conversion%20Full%20Matrix-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-log2cpm-Conversion-Full-Matrix-1">
+Past versions of "log2cpm Conversion Full Matrix-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-log2cpm-Conversion-Full-Matrix-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/log2cpm Conversion Full Matrix-1.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>hist(fC_Matrix_Full_cpm, xlab = expression(&quot;log&quot; [2]* &quot;counts per million&quot;))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/log2cpm%20Conversion%20Full%20Matrix-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-log2cpm-Conversion-Full-Matrix-2">
+Past versions of "log2cpm Conversion Full Matrix-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-log2cpm-Conversion-Full-Matrix-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/log2cpm Conversion Full Matrix-2.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#write this to a csv just in case to save it
 #write.csv(fC_Matrix_Full_cpm, &quot;C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_cpm_EMP_250210.csv&quot;)</code></pre>
 <pre class="r"><code>
@@ -1049,12 +1463,88 @@ hist(fC_Matrix_Full_cpm_filter,
      main = &quot;Recovery All Individuals log2cpm Filtered&quot;, 
         xlab = expression(&quot;log&quot;[2]*&quot;counts per million&quot;))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Filter%20Lowly%20Expressed%20Reads%20All%20Samples-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Filter-Lowly-Expressed-Reads-All-Samples-1">
+Past versions of "Filter Lowly Expressed Reads All Samples-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Filter-Lowly-Expressed-Reads-All-Samples-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Filter Lowly Expressed Reads All Samples-1.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>boxplot(fC_Matrix_Full_cpm_filter, 
         main = &quot;Recovery All Individuals log2cpm Filtered&quot;, 
         xlab = &quot;Conditions&quot;, 
         ylab = expression(&quot;log&quot;[2]*&quot;counts per million&quot;),
         ylim = c(-10,15))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Filter%20Lowly%20Expressed%20Reads%20All%20Samples-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Filter-Lowly-Expressed-Reads-All-Samples-2">
+Past versions of "Filter Lowly Expressed Reads All Samples-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Filter-Lowly-Expressed-Reads-All-Samples-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Filter Lowly Expressed Reads All Samples-2.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 #write this to a csv to save
 #write.csv(fC_Matrix_Full_cpm_filter, &quot;C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_cpm_filtered_EMP_250210.csv&quot;)
@@ -1063,19 +1553,171 @@ hist(fC_Matrix_Full_cpm_filter,
 hist(fC_Matrix_Full_cpm, main = &quot;Recovery All Individuals log2cpm Unfiltered&quot;,
      xlab = expression(&quot;log&quot; [2]* &quot;counts per million&quot;))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/QC%20Checks%20Unfiltered%20vs%20Filtered%20Reads-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-1">
+Past versions of "QC Checks Unfiltered vs Filtered Reads-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/QC Checks Unfiltered vs Filtered Reads-1.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####histogram of total counts, filtered####
 hist(fC_Matrix_Full_cpm_filter, 
      main = &quot;Recovery All Individuals log2cpm Filtered rowMeans &gt; 0&quot;, 
         xlab = expression(&quot;log&quot;[2]*&quot;counts per million&quot;))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/QC%20Checks%20Unfiltered%20vs%20Filtered%20Reads-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-2">
+Past versions of "QC Checks Unfiltered vs Filtered Reads-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/QC Checks Unfiltered vs Filtered Reads-2.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####boxplot log2cpm all samples####
 
 boxplot(fC_Matrix_Full_cpm, xlab = &quot;Conditions&quot;, ylab = expression(&quot;log&quot;[2]* &quot;counts per million&quot;), ylim= c(-10, 20), main = &quot;Boxplots of log2cpm per sample&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/QC%20Checks%20Unfiltered%20vs%20Filtered%20Reads-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-3">
+Past versions of "QC Checks Unfiltered vs Filtered Reads-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/QC Checks Unfiltered vs Filtered Reads-3.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####boxplot log2cpm filtered all samples####
 
 boxplot(fC_Matrix_Full_cpm_filter, xlab = &quot;Conditions&quot;, ylab = expression(&quot;log&quot;[2]* &quot;counts per million&quot;), ylim= c(-10, 20), main = &quot;Boxplots of log2cpm Filtered rowMeans &gt; 0 per sample&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/QC%20Checks%20Unfiltered%20vs%20Filtered%20Reads-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-4">
+Past versions of "QC Checks Unfiltered vs Filtered Reads-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/QC Checks Unfiltered vs Filtered Reads-4.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now that I’ve filtered the samples after log2cpm conversion, I can
 start to make heatmaps and PCA plots to look at my data</p>
 <p>After trying and failing to get all three factors on one PCA plot - I
@@ -1119,6 +1761,43 @@ annot_PCA_matrix %&gt;% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
   guides(color=guide_legend(override.aes=list(shape=21)))+
   guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/PCA%20Plots%20Updated-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-PCA-Plots-Updated-1">
+Past versions of "PCA Plots Updated-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-PCA-Plots-Updated-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/PCA Plots Updated-1.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 ####PC2/PC3####
 annot_PCA_matrix %&gt;% ggplot(., aes(x=PC2, y=PC3)) +
@@ -1130,6 +1809,43 @@ annot_PCA_matrix %&gt;% ggplot(., aes(x=PC2, y=PC3)) +
   guides(color=guide_legend(override.aes=list(shape=21)))+
   guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/PCA%20Plots%20Updated-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-PCA-Plots-Updated-2">
+Past versions of "PCA Plots Updated-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-PCA-Plots-Updated-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/PCA Plots Updated-2.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 ####PC3/PC4####
 annot_PCA_matrix %&gt;% ggplot(., aes(x=PC3, y=PC4)) +
@@ -1141,6 +1857,43 @@ annot_PCA_matrix %&gt;% ggplot(., aes(x=PC3, y=PC4)) +
   guides(color=guide_legend(override.aes=list(shape=21)))+
   guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/PCA%20Plots%20Updated-3.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-PCA-Plots-Updated-3">
+Past versions of "PCA Plots Updated-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-PCA-Plots-Updated-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/PCA Plots Updated-3.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 #correlation heatmap for all samples
 
@@ -1168,9 +1921,83 @@ fC_Matrix_Full_cpm_filter_spearmancor &lt;-
 
 pheatmap(fC_Matrix_Full_cpm_filter_pearsoncor, border_color = &quot;black&quot;, legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = &quot;black&quot;, fontsize = 12, fontsize_number = 9)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Correlation%20Heatmaps-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Correlation-Heatmaps-1">
+Past versions of "Correlation Heatmaps-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Correlation-Heatmaps-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Correlation Heatmaps-1.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 pheatmap(fC_Matrix_Full_cpm_filter_spearmancor, border_color = &quot;black&quot;, legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = &quot;black&quot;, fontsize = 12, fontsize_number = 9)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Correlation%20Heatmaps-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Correlation-Heatmaps-2">
+Past versions of "Correlation Heatmaps-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Correlation-Heatmaps-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Correlation Heatmaps-2.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 
 
@@ -1205,9 +2032,85 @@ row.names(annot_list_hm) &lt;- colnames(fC_Matrix_Full_cpm_filter_spearmancor)
 ####ANNOTATED HEATMAPS####
 pheatmap(fC_Matrix_Full_cpm_filter_pearsoncor, border_color = &quot;black&quot;, legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = &quot;black&quot;, fontsize = 10, fontsize_number = 5, annotation_col = annot_list_hm, annotation_colors = annot_col_hm)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Correlation%20Heatmaps-3.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Correlation-Heatmaps-3">
+Past versions of "Correlation Heatmaps-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Correlation-Heatmaps-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Correlation Heatmaps-3.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 pheatmap(fC_Matrix_Full_cpm_filter_spearmancor, border_color = &quot;black&quot;, legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = &quot;black&quot;, fontsize = 10, fontsize_number = 5, annotation_col = annot_list_hm, annotation_colors = annot_col_hm)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Correlation%20Heatmaps-4.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Correlation-Heatmaps-4">
+Past versions of "Correlation Heatmaps-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Correlation-Heatmaps-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Correlation Heatmaps-4.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Now that I’ve finalized my QC checks, I will go ahead and begin the
+differential expression analysis pipeline.</p>
 <pre class="r"><code>
 # group &lt;- c(rep(c(1, 2, 3, 4, 5, 6, 7, 8, 9), 6))
 # group &lt;- factor(group, levels = c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;))
@@ -1230,124 +2133,16 @@ group_1 &lt;- rep(c(&quot;DOX_24&quot;,&quot;FLUO_24&quot;,
 
 dge &lt;- DGEList.data.frame(counts = counts_DE_filter, group = group_1, genes = row.names(counts_DE_filter))
 
-#this is the inital file before norm factors are calculated
-dge$samples
-                       group lib.size norm.factors
-DOX_24_Ind1           DOX_24 23533985            1
-FLUO_24_Ind1         FLUO_24 26970695            1
-DMSO_24_Ind1         DMSO_24 22892686            1
-DOX_24rec_Ind1     DOX_24rec 23932153            1
-FLUO_24rec_Ind1   FLUO_24rec 21879931            1
-DMSO_24rec_Ind1   DMSO_24rec 21337454            1
-DOX_144rec_Ind1   DOX_144rec 18260440            1
-FLUO_144rec_Ind1 FLUO_144rec 18780865            1
-DMSO_144rec_Ind1 DMSO_144rec 28167799            1
-DOX_24_Ind2           DOX_24 20017534            1
-FLUO_24_Ind2         FLUO_24 23930827            1
-DMSO_24_Ind2         DMSO_24 21334270            1
-DOX_24rec_Ind2     DOX_24rec 25714988            1
-FLUO_24rec_Ind2   FLUO_24rec 25160237            1
-DMSO_24rec_Ind2   DMSO_24rec 26356290            1
-DOX_144rec_Ind2   DOX_144rec 23497279            1
-FLUO_144rec_Ind2 FLUO_144rec 24769290            1
-DMSO_144rec_Ind2 DMSO_144rec 25878841            1
-DOX_24_Ind3           DOX_24 23195184            1
-FLUO_24_Ind3         FLUO_24 25146622            1
-DMSO_24_Ind3         DMSO_24 25648723            1
-DOX_24rec_Ind3     DOX_24rec 18250610            1
-FLUO_24rec_Ind3   FLUO_24rec 23122465            1
-DMSO_24rec_Ind3   DMSO_24rec 24364234            1
-DOX_144rec_Ind3   DOX_144rec 19801072            1
-FLUO_144rec_Ind3 FLUO_144rec 29845161            1
-DMSO_144rec_Ind3 DMSO_144rec 22672688            1
-DOX_24_Ind4           DOX_24 20726954            1
-FLUO_24_Ind4         FLUO_24 23704697            1
-DMSO_24_Ind4         DMSO_24 28213836            1
-DOX_24rec_Ind4     DOX_24rec 25911782            1
-FLUO_24rec_Ind4   FLUO_24rec 40622129            1
-DMSO_24rec_Ind4   DMSO_24rec 26124863            1
-DOX_144rec_Ind4   DOX_144rec 24701727            1
-FLUO_144rec_Ind4 FLUO_144rec 24610641            1
-DMSO_144rec_Ind4 DMSO_144rec 25455999            1
-DOX_24_Ind5           DOX_24 22697304            1
-FLUO_24_Ind5         FLUO_24 27856508            1
-DMSO_24_Ind5         DMSO_24 24639151            1
-DOX_24rec_Ind5     DOX_24rec 24885980            1
-FLUO_24rec_Ind5   FLUO_24rec 29665028            1
-DMSO_24rec_Ind5   DMSO_24rec 26036618            1
-DOX_144rec_Ind5   DOX_144rec 27513167            1
-FLUO_144rec_Ind5 FLUO_144rec 23993986            1
-DMSO_144rec_Ind5 DMSO_144rec 24942365            1
-DOX_24_Ind6           DOX_24 25308109            1
-FLUO_24_Ind6         FLUO_24 25269296            1
-DMSO_24_Ind6         DMSO_24 25666994            1
-DOX_24rec_Ind6     DOX_24rec 26209951            1
-FLUO_24rec_Ind6   FLUO_24rec 25079566            1
-DMSO_24rec_Ind6   DMSO_24rec 24465515            1
-DOX_144rec_Ind6   DOX_144rec 23359517            1
-FLUO_144rec_Ind6 FLUO_144rec 22471386            1
-DMSO_144rec_Ind6 DMSO_144rec 25460267            1
+#check the inital file before norm factors are calculated
+#dge$samples
 
 #calculate the normalization factors with method TMM
 dge_calc &lt;- calcNormFactors(dge, method = &quot;TMM&quot;)
 
-#final file after norm calculation
-dge_calc$samples
-                       group lib.size norm.factors
-DOX_24_Ind1           DOX_24 23533985    1.0837997
-FLUO_24_Ind1         FLUO_24 26970695    0.9310699
-DMSO_24_Ind1         DMSO_24 22892686    0.9611153
-DOX_24rec_Ind1     DOX_24rec 23932153    1.2332319
-FLUO_24rec_Ind1   FLUO_24rec 21879931    0.9480185
-DMSO_24rec_Ind1   DMSO_24rec 21337454    0.9725610
-DOX_144rec_Ind1   DOX_144rec 18260440    1.0159884
-FLUO_144rec_Ind1 FLUO_144rec 18780865    0.9797092
-DMSO_144rec_Ind1 DMSO_144rec 28167799    0.9690593
-DOX_24_Ind2           DOX_24 20017534    1.1031490
-FLUO_24_Ind2         FLUO_24 23930827    0.9960906
-DMSO_24_Ind2         DMSO_24 21334270    0.9579222
-DOX_24rec_Ind2     DOX_24rec 25714988    1.0897455
-FLUO_24rec_Ind2   FLUO_24rec 25160237    0.9709110
-DMSO_24rec_Ind2   DMSO_24rec 26356290    0.9632263
-DOX_144rec_Ind2   DOX_144rec 23497279    0.8853001
-FLUO_144rec_Ind2 FLUO_144rec 24769290    0.9818596
-DMSO_144rec_Ind2 DMSO_144rec 25878841    0.9747532
-DOX_24_Ind3           DOX_24 23195184    0.8512838
-FLUO_24_Ind3         FLUO_24 25146622    0.9755381
-DMSO_24_Ind3         DMSO_24 25648723    0.9934558
-DOX_24rec_Ind3     DOX_24rec 18250610    1.3034379
-FLUO_24rec_Ind3   FLUO_24rec 23122465    0.9351582
-DMSO_24rec_Ind3   DMSO_24rec 24364234    0.9693937
-DOX_144rec_Ind3   DOX_144rec 19801072    1.0246641
-FLUO_144rec_Ind3 FLUO_144rec 29845161    0.9803051
-DMSO_144rec_Ind3 DMSO_144rec 22672688    0.9806025
-DOX_24_Ind4           DOX_24 20726954    1.1649074
-FLUO_24_Ind4         FLUO_24 23704697    0.9849905
-DMSO_24_Ind4         DMSO_24 28213836    0.9912683
-DOX_24rec_Ind4     DOX_24rec 25911782    1.1791631
-FLUO_24rec_Ind4   FLUO_24rec 40622129    0.9751981
-DMSO_24rec_Ind4   DMSO_24rec 26124863    0.9981792
-DOX_144rec_Ind4   DOX_144rec 24701727    0.9176890
-FLUO_144rec_Ind4 FLUO_144rec 24610641    0.9816716
-DMSO_144rec_Ind4 DMSO_144rec 25455999    0.9636547
-DOX_24_Ind5           DOX_24 22697304    1.0773544
-FLUO_24_Ind5         FLUO_24 27856508    0.9397778
-DMSO_24_Ind5         DMSO_24 24639151    0.9538894
-DOX_24rec_Ind5     DOX_24rec 24885980    1.2233210
-FLUO_24rec_Ind5   FLUO_24rec 29665028    0.9193648
-DMSO_24rec_Ind5   DMSO_24rec 26036618    0.9527365
-DOX_144rec_Ind5   DOX_144rec 27513167    0.9469333
-FLUO_144rec_Ind5 FLUO_144rec 23993986    0.9381287
-DMSO_144rec_Ind5 DMSO_144rec 24942365    0.9285333
-DOX_24_Ind6           DOX_24 25308109    1.0981454
-FLUO_24_Ind6         FLUO_24 25269296    0.9948090
-DMSO_24_Ind6         DMSO_24 25666994    1.0159532
-DOX_24rec_Ind6     DOX_24rec 26209951    1.1400925
-FLUO_24rec_Ind6   FLUO_24rec 25079566    0.9794435
-DMSO_24rec_Ind6   DMSO_24rec 24465515    0.9860363
-DOX_144rec_Ind6   DOX_144rec 23359517    0.9397642
-FLUO_144rec_Ind6 FLUO_144rec 22471386    0.9892227
-DMSO_144rec_Ind6 DMSO_144rec 25460267    0.9800208
+#check final file after norm calculation
+#dge_calc$samples
+
+#after calculating norm factors, that column was changed.
 
 #View(dge_calc)
 
@@ -1365,6 +2160,46 @@ mm_r &lt;- model.matrix(~0 + group_1)
 
 p &lt;- voom(dge_calc$counts, mm_r, plot = TRUE)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Differential%20Expression%20Analysis%20filtering%20rowMeans%20greater%20than%200-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Differential-Expression-Analysis-filtering-rowMeans-greater-than-0-1">
+Past versions of "Differential Expression Analysis filtering rowMeans
+greater than 0-1.png"
+</button>
+</p>
+<div
+id="fig-no-spaces-Differential-Expression-Analysis-filtering-rowMeans-greater-than-0-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Differential Expression Analysis filtering rowMeans greater than 0-1.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 corfit &lt;- duplicateCorrelation(p, mm_r, block = snames_ind)
 
@@ -1408,6 +2243,46 @@ Up      7357     0   8023      0     861       0
 ####plot your voom####
 voom_plot &lt;- voom(dge_calc, mm_r, plot = TRUE)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Differential%20Expression%20Analysis%20filtering%20rowMeans%20greater%20than%200-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Differential-Expression-Analysis-filtering-rowMeans-greater-than-0-2">
+Past versions of "Differential Expression Analysis filtering rowMeans
+greater than 0-2.png"
+</button>
+</p>
+<div
+id="fig-no-spaces-Differential-Expression-Analysis-filtering-rowMeans-greater-than-0-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Differential Expression Analysis filtering rowMeans greater than 0-2.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>The voom plot for this with rowMeans &gt; 0 has a dip in the front,
 meaning that there is likely some noise left over in my data. I am going
 to filter a bit stricter at rowMeans &gt; 1 with the same process as
@@ -1422,124 +2297,14 @@ dim(counts_DE_filter1)
 
 dge1 &lt;- DGEList.data.frame(counts = counts_DE_filter1, group = group_1, genes = row.names(counts_DE_filter1))
 
-#this is the inital file before norm factors are calculated
-dge1$samples
-                       group lib.size norm.factors
-DOX_24_Ind1           DOX_24 23529436            1
-FLUO_24_Ind1         FLUO_24 26969621            1
-DMSO_24_Ind1         DMSO_24 22891830            1
-DOX_24rec_Ind1     DOX_24rec 23928177            1
-FLUO_24rec_Ind1   FLUO_24rec 21879021            1
-DMSO_24rec_Ind1   DMSO_24rec 21336552            1
-DOX_144rec_Ind1   DOX_144rec 18258678            1
-FLUO_144rec_Ind1 FLUO_144rec 18779997            1
-DMSO_144rec_Ind1 DMSO_144rec 28166609            1
-DOX_24_Ind2           DOX_24 20015891            1
-FLUO_24_Ind2         FLUO_24 23929971            1
-DMSO_24_Ind2         DMSO_24 21333555            1
-DOX_24rec_Ind2     DOX_24rec 25712271            1
-FLUO_24rec_Ind2   FLUO_24rec 25159540            1
-DMSO_24rec_Ind2   DMSO_24rec 26355579            1
-DOX_144rec_Ind2   DOX_144rec 23495279            1
-FLUO_144rec_Ind2 FLUO_144rec 24768504            1
-DMSO_144rec_Ind2 DMSO_144rec 25877847            1
-DOX_24_Ind3           DOX_24 23190452            1
-FLUO_24_Ind3         FLUO_24 25145882            1
-DMSO_24_Ind3         DMSO_24 25647796            1
-DOX_24rec_Ind3     DOX_24rec 18243178            1
-FLUO_24rec_Ind3   FLUO_24rec 23121928            1
-DMSO_24rec_Ind3   DMSO_24rec 24363550            1
-DOX_144rec_Ind3   DOX_144rec 19797829            1
-FLUO_144rec_Ind3 FLUO_144rec 29844009            1
-DMSO_144rec_Ind3 DMSO_144rec 22672047            1
-DOX_24_Ind4           DOX_24 20724269            1
-FLUO_24_Ind4         FLUO_24 23703826            1
-DMSO_24_Ind4         DMSO_24 28212829            1
-DOX_24rec_Ind4     DOX_24rec 25908531            1
-FLUO_24rec_Ind4   FLUO_24rec 40620908            1
-DMSO_24rec_Ind4   DMSO_24rec 26124015            1
-DOX_144rec_Ind4   DOX_144rec 24699442            1
-FLUO_144rec_Ind4 FLUO_144rec 24609834            1
-DMSO_144rec_Ind4 DMSO_144rec 25455151            1
-DOX_24_Ind5           DOX_24 22693201            1
-FLUO_24_Ind5         FLUO_24 27855535            1
-DMSO_24_Ind5         DMSO_24 24638257            1
-DOX_24rec_Ind5     DOX_24rec 24881937            1
-FLUO_24rec_Ind5   FLUO_24rec 29663662            1
-DMSO_24rec_Ind5   DMSO_24rec 26035482            1
-DOX_144rec_Ind5   DOX_144rec 27510410            1
-FLUO_144rec_Ind5 FLUO_144rec 23992921            1
-DMSO_144rec_Ind5 DMSO_144rec 24941416            1
-DOX_24_Ind6           DOX_24 25305699            1
-FLUO_24_Ind6         FLUO_24 25268538            1
-DMSO_24_Ind6         DMSO_24 25666263            1
-DOX_24rec_Ind6     DOX_24rec 26207393            1
-FLUO_24rec_Ind6   FLUO_24rec 25078845            1
-DMSO_24rec_Ind6   DMSO_24rec 24464720            1
-DOX_144rec_Ind6   DOX_144rec 23357605            1
-FLUO_144rec_Ind6 FLUO_144rec 22470700            1
-DMSO_144rec_Ind6 DMSO_144rec 25459487            1
+#check the inital file before norm factors are calculated
+#dge1$samples
 
 #calculate the normalization factors with method TMM
 dge1_calc &lt;- calcNormFactors(dge1, method = &quot;TMM&quot;)
 
-#final file after norm calculation
-dge1_calc$samples
-                       group lib.size norm.factors
-DOX_24_Ind1           DOX_24 23529436    1.1010478
-FLUO_24_Ind1         FLUO_24 26969621    0.9224026
-DMSO_24_Ind1         DMSO_24 22891830    0.9523318
-DOX_24rec_Ind1     DOX_24rec 23928177    1.2419707
-FLUO_24rec_Ind1   FLUO_24rec 21879021    0.9414647
-DMSO_24rec_Ind1   DMSO_24rec 21336552    0.9714352
-DOX_144rec_Ind1   DOX_144rec 18258678    1.0061282
-FLUO_144rec_Ind1 FLUO_144rec 18779997    0.9577701
-DMSO_144rec_Ind1 DMSO_144rec 28166609    0.9633660
-DOX_24_Ind2           DOX_24 20015891    1.1311547
-FLUO_24_Ind2         FLUO_24 23929971    1.0037288
-DMSO_24_Ind2         DMSO_24 21333555    0.9711101
-DOX_24rec_Ind2     DOX_24rec 25712271    1.0919406
-FLUO_24rec_Ind2   FLUO_24rec 25159540    0.9757042
-DMSO_24rec_Ind2   DMSO_24rec 26355579    0.9694902
-DOX_144rec_Ind2   DOX_144rec 23495279    0.8831165
-FLUO_144rec_Ind2 FLUO_144rec 24768504    0.9802117
-DMSO_144rec_Ind2 DMSO_144rec 25877847    0.9735050
-DOX_24_Ind3           DOX_24 23190452    0.8944444
-FLUO_24_Ind3         FLUO_24 25145882    0.9787822
-DMSO_24_Ind3         DMSO_24 25647796    0.9998010
-DOX_24rec_Ind3     DOX_24rec 18243178    1.3366353
-FLUO_24rec_Ind3   FLUO_24rec 23121928    0.9387564
-DMSO_24rec_Ind3   DMSO_24rec 24363550    0.9645367
-DOX_144rec_Ind3   DOX_144rec 19797829    1.0329079
-FLUO_144rec_Ind3 FLUO_144rec 29844009    0.9794210
-DMSO_144rec_Ind3 DMSO_144rec 22672047    0.9717442
-DOX_24_Ind4           DOX_24 20724269    1.2119035
-FLUO_24_Ind4         FLUO_24 23703826    0.9874501
-DMSO_24_Ind4         DMSO_24 28212829    0.9971983
-DOX_24rec_Ind4     DOX_24rec 25908531    1.1839389
-FLUO_24rec_Ind4   FLUO_24rec 40620908    0.9545701
-DMSO_24rec_Ind4   DMSO_24rec 26124015    0.9903031
-DOX_144rec_Ind4   DOX_144rec 24699442    0.9135958
-FLUO_144rec_Ind4 FLUO_144rec 24609834    0.9800993
-DMSO_144rec_Ind4 DMSO_144rec 25455151    0.9499049
-DOX_24_Ind5           DOX_24 22693201    1.1040571
-FLUO_24_Ind5         FLUO_24 27855535    0.9171950
-DMSO_24_Ind5         DMSO_24 24638257    0.9316924
-DOX_24rec_Ind5     DOX_24rec 24881937    1.2117783
-FLUO_24rec_Ind5   FLUO_24rec 29663662    0.8980900
-DMSO_24rec_Ind5   DMSO_24rec 26035482    0.9397879
-DOX_144rec_Ind5   DOX_144rec 27510410    0.9273815
-FLUO_144rec_Ind5 FLUO_144rec 23992921    0.9249558
-DMSO_144rec_Ind5 DMSO_144rec 24941416    0.9177884
-DOX_24_Ind6           DOX_24 25305699    1.1312672
-FLUO_24_Ind6         FLUO_24 25268538    0.9892086
-DMSO_24_Ind6         DMSO_24 25666263    1.0174650
-DOX_24rec_Ind6     DOX_24rec 26207393    1.1422058
-FLUO_24rec_Ind6   FLUO_24rec 25078845    0.9747427
-DMSO_24rec_Ind6   DMSO_24rec 24464720    0.9836358
-DOX_144rec_Ind6   DOX_144rec 23357605    0.9424696
-FLUO_144rec_Ind6 FLUO_144rec 22470700    0.9862254
-DMSO_144rec_Ind6 DMSO_144rec 25459487    0.9808584
+#check final file after norm calculation
+#dge1_calc$samples
 
 #View(dge1_calc)
 
@@ -1557,6 +2322,46 @@ mm_r1 &lt;- model.matrix(~0 + group_1)
 
 p1 &lt;- voom(dge1_calc$counts, mm_r1, plot = TRUE)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Differential%20Expression%20Analysis%20filtering%20rowMeans%20greater%20than%201-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Differential-Expression-Analysis-filtering-rowMeans-greater-than-1-1">
+Past versions of "Differential Expression Analysis filtering rowMeans
+greater than 1-1.png"
+</button>
+</p>
+<div
+id="fig-no-spaces-Differential-Expression-Analysis-filtering-rowMeans-greater-than-1-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Differential Expression Analysis filtering rowMeans greater than 1-1.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 corfit1 &lt;- duplicateCorrelation(p1, mm_r1, block = snames1_ind)
 
@@ -1600,6 +2405,51 @@ Up      6343     0   6838      0     342       0
 ####plot your voom####
 voom_plot1 &lt;- voom(dge1_calc, mm_r1, plot = TRUE)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Differential%20Expression%20Analysis%20filtering%20rowMeans%20greater%20than%201-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Differential-Expression-Analysis-filtering-rowMeans-greater-than-1-2">
+Past versions of "Differential Expression Analysis filtering rowMeans
+greater than 1-2.png"
+</button>
+</p>
+<div
+id="fig-no-spaces-Differential-Expression-Analysis-filtering-rowMeans-greater-than-1-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Differential Expression Analysis filtering rowMeans greater than 1-2.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>This looks much better! No more noise in the front. I could
+potentially filter at rowMeans &gt;0.5, but I will leave that for
+now.</p>
+<p>Now I can go ahead and make toptables for safekeeping and later
+analysis</p>
 <pre class="r"><code>
 top.table_V.D24 &lt;- topTable(fit = efit4, coef = &quot;V.D24&quot;, number = nrow(dge_calc), adjust.method = &quot;BH&quot;, p.value = 1, sort.by = &quot;none&quot;)
 head(top.table_V.D24)
@@ -1657,18 +2507,250 @@ for (plot_name in names(volcano_plots)) {
 }
 Warning: Removed 344 rows containing missing values or values outside the scale range
 (`geom_point()`).</code></pre>
-<p><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-1.png" width="768" style="display: block; margin: auto;" /><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Volcano-Plots-from-Pairwise-Gene-Analysis-1">
+Past versions of "Volcano Plots from Pairwise Gene Analysis-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Volcano-Plots-from-Pairwise-Gene-Analysis-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-1.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Volcano-Plots-from-Pairwise-Gene-Analysis-2">
+Past versions of "Volcano Plots from Pairwise Gene Analysis-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Volcano-Plots-from-Pairwise-Gene-Analysis-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-2.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>Warning: Removed 66 rows containing missing values or values outside the scale range
 (`geom_point()`).</code></pre>
-<p><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-3.png" width="768" style="display: block; margin: auto;" /><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-4.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-3.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Volcano-Plots-from-Pairwise-Gene-Analysis-3">
+Past versions of "Volcano Plots from Pairwise Gene Analysis-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Volcano-Plots-from-Pairwise-Gene-Analysis-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-3.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-4.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Volcano-Plots-from-Pairwise-Gene-Analysis-4">
+Past versions of "Volcano Plots from Pairwise Gene Analysis-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Volcano-Plots-from-Pairwise-Gene-Analysis-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-4.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>Warning: Removed 23 rows containing missing values or values outside the scale range
 (`geom_point()`).</code></pre>
-<p><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-5.png" width="768" style="display: block; margin: auto;" /><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-6.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-5.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Volcano-Plots-from-Pairwise-Gene-Analysis-5">
+Past versions of "Volcano Plots from Pairwise Gene Analysis-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-Volcano-Plots-from-Pairwise-Gene-Analysis-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-5.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-6.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Volcano-Plots-from-Pairwise-Gene-Analysis-6">
+Past versions of "Volcano Plots from Pairwise Gene Analysis-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-Volcano-Plots-from-Pairwise-Gene-Analysis-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-6.png" target="_blank">41aef30</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now that I’ve gone through and figured out the basics of DE - let’s
 remove unwanted variation using ruv This uses my replicates to figure
 out covariates in the data and remove variation occurring due to batch
-effects or other effects We’re seeing a batch effect occurring here in
-PCA and cor. heatmaps</p>
+effects or other effects We’re seeing a batch effect from RNA extraction
+(all RNAseq library prep done in a single batch) occurring here in PCA
+and cor. heatmaps rather than individuals clustering together.</p>
 <pre class="r"><code># #counts need to be integer values and in a numeric matrix for ruv
 # counts_DE_matrix &lt;- as.matrix(counts_DE_filter1)
 # dim(counts_DE_matrix)
