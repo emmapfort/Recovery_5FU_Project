@@ -10,7 +10,5 @@ editor_options:
 
 <<<<<<< HEAD
 =======
-Describe your project.
 
->>>>>>> 2961cc43dbb215ed1843b02358fdd1715266fc89
 This project aims to measure cardiomyocyte responses to DNA-damaging agents following acute treatment and after recovery, including Doxorubicin and 5-Fluorouracil. 
