@@ -8,4 +8,7 @@ editor_options:
   chunk_output_type: console
 ---
 
+
 This project aims to measure cardiomyocyte responses to DNA-damaging agents following acute treatment and after recovery, including Doxorubicin and 5-Fluorouracil. 
+
+This website outlines my analysis of our RNA-seq data, including quality control checks and differential expression analysis.
