@@ -795,7 +795,7 @@ annotate_Counts_full <- (t(Counts_Full_df)) %>%  cbind(., annotate_Counts)
 
 annot_Counts_full_df <- as.data.frame(t(annotate_Counts_full))
 
-#now that I have all of my factors and my ensembl gene info, I will make some graphs to show the QC data
+#now that I have all of my factors and my gene info, I will make some graphs to show the QC data
 
 reads_by_sample <- c(tx_col)
 fC_AllCounts %>% 
@@ -915,34 +915,8 @@ fC_AllCounts %>%
         #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
         strip.text.y = element_text(color = "white"))
 
-#Have to do a log2cpm conversion here
-
-
-
-####histogram of total counts, unfiltered####
-hist(fC_Matrix_Full_cpm, main = "Recovery All Individuals log2cpm Unfiltered",
-     xlab = expression("log" [2]* "counts per million"))
-
-####histogram of total counts, filtered####
-hist(fC_Matrix_Full_cpm_filter, 
-     main = "Recovery All Individuals log2cpm Filtered rowMeans > 0", 
-        xlab = expression("log"[2]*"counts per million"))
-
-####boxplot log2cpm all samples####
-
-boxplot(fC_Matrix_Full_cpm, xlab = "Conditions", ylab = expression("log"[2]* "counts per million"), ylim= c(-10, 20), main = "Boxplots of log2cpm per sample")
-
-####boxplot log2cpm filtered all samples####
-
-boxplot(fC_Matrix_Full_cpm_filter, xlab = "Conditions", ylab = expression("log"[2]* "counts per million"), ylim= c(-10, 20), main = "Boxplots of log2cpm Filtered rowMeans > 0 per sample")
-
 
 ```
-
-
-
-
-
 
 Now that I've made the final full matrix of all samples -
 1. convert to log2cpm
@@ -989,314 +963,355 @@ boxplot(fC_Matrix_Full_cpm_filter,
 ```
 
 
-Now that I've filtered the samples after log2cpm conversion, I can start to make heatmaps and PCA plots to look at my data
-
-```{r PCA Plots All Data}
-#mutate the file so that the samples are rows and columns are genes
-fC_Matrix_Full_cpm_filter_mutate <- data.frame(t(fC_Matrix_Full_cpm_filter))
-
-#now let's separate out the factors we have in this experiment
-#Factor 1 - Individual
-Individual <- as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9)))
-
-#Factor 2 - Treatment
-tx_factor <- c("DOX", "FLUO", "DMSO")
-Treatment <- as.factor(c(rep(tx_factor, 21)))
-#view(Treatment)
-
-#Factor 3 - Timepoint
-time_factor <- c(rep("24hr", 3), rep("24hr Rec", 3), rep("6d Rec", 3))
-Time <- as.factor(c(rep(time_factor, 7)))
-#view(Time)
-
-Full_filter_cpm_mutate_categories <- cbind(Individual, Treatment, Time, fC_Matrix_Full_cpm_filter_mutate)
-
-pca_plot <- prcomp(fC_Matrix_Full_cpm_filter_mutate, scale. = TRUE)
-
-autoplot(pca_plot, data = Full_filter_cpm_mutate_categories, color = "Individual", shape = "Treatment", fill = "Time", size = 5, x=1, y=2)
+```{r QC Checks Unfiltered vs Filtered Reads}
 
 
-autoplot(pca_plot, data = Full_filter_cpm_mutate_categories, fill = "Individual", shape = "Treatment", color = "Time", size = 5, x=1, y=2,
-         scale_fill_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600")),
-         scale_color_manual(values = c("black", "white", "tan")),
-         scale_shape_manual(values = c(22,23,25)),
-         )
+####histogram of total counts, unfiltered####
+hist(fC_Matrix_Full_cpm, main = "Recovery All Individuals log2cpm Unfiltered",
+     xlab = expression("log" [2]* "counts per million"))
 
-#now I want to try ggplot as the previous plot isn't showing my timepoints filled
-#can I pull PC1 and PC2 from my object (pca_plot[["rotation"]])?
+####histogram of total counts, filtered####
+hist(fC_Matrix_Full_cpm_filter, 
+     main = "Recovery All Individuals log2cpm Filtered rowMeans > 0", 
+        xlab = expression("log"[2]*"counts per million"))
 
-#try and mutate it and see what happens with PC1 and PC2
-PCAs <- (pca_plot$rotation)
+####boxplot log2cpm all samples####
 
-ggplot(pca_plot, Full_filter_cpm_mutate_categories_mat, aes(x=1,y=2, color=Time, shape=Treatment, fill=Individual))+
-  geom_point(size=3)+
-  scale_shape_manual(values = c(21, 22, 23) )+
-  scale_color_manual(values = c("white", "darkgray", "black") )+
-  scale_fill_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"))+
-  xlab("PC1")+
-  ylab("PC2")+
-  guides(fill=guide_legend(override.aes = list(shape=c(21,22, 23)), fill=c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"), color=c("white", "darkgray", "black")))
-  
-  
+boxplot(fC_Matrix_Full_cpm, xlab = "Conditions", ylab = expression("log"[2]* "counts per million"), ylim= c(-10, 20), main = "Boxplots of log2cpm per sample")
 
-autoplot(pca_plot, data = Full_filter_cpm_mutate_categories, aes(x=1, y=2), color = Time, shape = Treatment, fill = Individual,
-         scale_shape_manual(values = c(21, 22, 23) ),
-         scale_color_manual(values = c("white", "darkgrey", "black") ),
-         scale_fill_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600")),
-         guides(fill=guide_legend(override.aes = list(shape=c(21,22,23), fill=c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"), color=c("white", "darkgray", "black")))))
+####boxplot log2cpm filtered all samples####
 
+boxplot(fC_Matrix_Full_cpm_filter, xlab = "Conditions", ylab = expression("log"[2]* "counts per million"), ylim= c(-10, 20), main = "Boxplots of log2cpm Filtered rowMeans > 0 per sample")
 
-autoplot(pca_plot, data = Full_filter_cpm_mutate_categories, color = Time, shape = Treatment, fill = Individual)+
-  scale_color_manual(values = c("white", "darkgray", "black"), aesthetics = "color")+
-  scale_fill_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"), aesthetics = "fill")+
-  scale_shape_manual(values = c(25,22,23))
 
 ```
 
-```{r PCA Plots ggplot2 SIMPLIFIED, fig.width=6, fig.height=6}
 
-PCA_data <- fC_Matrix_Full_cpm_filter %>% 
-  prcomp(.) %>% 
-  t()
+Now that I've filtered the samples after log2cpm conversion, I can start to make heatmaps and PCA plots to look at my data
 
-PCA_data_test <- (prcomp(t(fC_Matrix_Full_cpm_filter), scale. = TRUE))
+```{r PCA Plots All Data, include = FALSE}
+# #mutate the file so that the samples are rows and columns are genes
+# fC_Matrix_Full_cpm_filter_mutate <- data.frame(t(fC_Matrix_Full_cpm_filter))
+# 
+# #now let's separate out the factors we have in this experiment
+# #Factor 1 - Individual
+# Individual <- as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9)))
+# 
+# #Factor 2 - Treatment
+# tx_factor <- c("DOX", "FLUO", "DMSO")
+# Treatment <- as.factor(c(rep(tx_factor, 21)))
+# #view(Treatment)
+# 
+# #Factor 3 - Timepoint
+# time_factor <- c(rep("24hr", 3), rep("24hr Rec", 3), rep("6d Rec", 3))
+# Time <- as.factor(c(rep(time_factor, 7)))
+# #view(Time)
+# 
+# Full_filter_cpm_mutate_categories <- cbind(Individual, Treatment, Time, fC_Matrix_Full_cpm_filter_mutate)
+# 
+# pca_plot <- prcomp(fC_Matrix_Full_cpm_filter_mutate, scale. = TRUE)
+# 
+# # autoplot(pca_plot, data = Full_filter_cpm_mutate_categories, color = "Individual", shape = "Treatment", fill = "Time", size = 5, x=1, y=2)
+# 
+# 
+# #now I want to try ggplot as the previous plot isn't showing my timepoints filled
+# #can I pull PC1 and PC2 from my object (pca_plot[["rotation"]])?
+# 
+# #try and mutate it and see what happens with PC1 and PC2
+# PCAs <- (pca_plot$rotation)
+# #make this into a matrix
+# Full_filter_cpm_mutate_categories_mat <- as.matrix(Full_filter_cpm_mutate_categories)
+# 
+# ggplot(pca_plot, Full_filter_cpm_mutate_categories_mat, aes(x=1,y=2, color=Time, shape=Treatment, fill=Individual))+
+#   geom_point(size=3)+
+#   scale_shape_manual(values = c(21, 22, 23) )+
+#   scale_color_manual(values = c("white", "darkgray", "black") )+
+#   scale_fill_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"))+
+#   xlab("PC1")+
+#   ylab("PC2")+
+#   guides(fill=guide_legend(override.aes = list(shape=c(21,22, 23)), fill=c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"), color=c("white", "darkgray", "black")))
+#   
+#   
+# 
+# autoplot(pca_plot, data = Full_filter_cpm_mutate_categories, aes(x=1, y=2), color = Time, shape = Treatment, fill = Individual,
+#          scale_shape_manual(values = c(21, 22, 23) ),
+#          scale_color_manual(values = c("white", "darkgrey", "black") ),
+#          scale_fill_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600")),
+#          guides(fill=guide_legend(override.aes = list(shape=c(21,22,23), fill=c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"), color=c("white", "darkgray", "black")))))
+# 
+# 
+# autoplot(pca_plot, data = Full_filter_cpm_mutate_categories, color = Time, shape = Treatment, fill = Individual)+
+#   scale_color_manual(values = c("white", "darkgray", "black"), aesthetics = "color")+
+#   scale_fill_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"), aesthetics = "fill")+
+#   scale_shape_manual(values = c(25,22,23))
 
-#make a function for pca - pulls stdv and makes a variance plot - look at the variance contributed by each PC
-pca_var_plot <- function(pca) {
-  pca.var <- pca$sdev ^ 2
-  pca.prop <- pca.var / sum(pca.var)
-  var.plot <- 
-    qplot(PC, prop, data = data.frame(PC = 1:length(pca.prop),
-                                      prop = pca.prop)) +
-    labs(title="Variance contributed by each PC",
-         x = "PC", y = "Proportion of Variance")
-  plot(var.plot)
-}
+```
 
-pca_var_plot(PCA_data_test)
+```{r PCA Plots ggplot2 SIMPLIFIED, fig.width=6, fig.height=6, include = FALSE}
 
-
-#make a pca plot function
-pca_plot_fun <- function(df, 
-                         col_var = NULL,
-                         shape_var = NULL,
-                         title = "") {
-  ggplot(df) + geom_point(aes_string(
-    x = "PC1",
-    y = "PC2",
-    color = col_var,
-    shape = shape_var),
-    size = 5) +
-    labs(title = title, x = "PC 1", y = "PC 2") +
-    scale_color_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600")) +
-                       scale_shape_manual(values = c(0, 1, 2, 5, 6, 15, 16, 17, 18))
-  
-}
-
-colorsInd <- c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600")
-
-#now we can go into plotting!
-####make an annotation matrix####
-annot <- data.frame("samples" = colnames(fC_Matrix_Full_cpm_filter)) %>% separate_wider_delim(., cols = samples, names = c("Tx", "Time", "Ind"), delim = "_", cols_remove = FALSE) %>% unite(., col = "Tx_Time", Tx, Time, sep = "_", remove = FALSE)
-
-#combine the prcomp matrix and annotation
-annot_PCA_matrix <- PCA_data_test$x %>% cbind(., annot)
-
-#now you can go ahead and make PCA plots with this matrix! woohoo!
-pca_plot_fun(annot_PCA_matrix, col_var = "Ind", shape_var = "Tx_Time")
-
-annot_PCA_matrix %>% ggplot(., aes(x=PC1, y=PC2, size=6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-  # scale_color_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600")) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-  
-annot_PCA_matrix %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-annot_PCA_matrix %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-#Now that I've successfully generated ggplot PCA plots with Renee's code - now I can subset the data by time
-
-time_24 <- annot_PCA_matrix %>% filter(Time=="24")
-time_24rec <- annot_PCA_matrix %>% filter(Time=="24rec")
-time_144rec <- annot_PCA_matrix %>% filter(Time=="144rec")
-
-####time 24hr####
-time_24 %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-time_24 %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-time_24 %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-####time 24rec####
-time_24rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-time_24rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-time_24rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-####time 144rec####
-time_144rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-time_144rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-time_144rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-#####now that I've broken them up by time, try by treatment####
-
-dox_rec <- annot_PCA_matrix %>% filter(Tx=="DOX")
-fluo_rec <- annot_PCA_matrix %>% filter(Tx=="FLUO")
-dmso_rec <- annot_PCA_matrix %>% filter(Tx=="DMSO")
-
-####DOX####
-dox_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-dox_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-dox_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-####5FU####
-fluo_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-fluo_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-fluo_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-####DMSO VEHICLE####
-dmso_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-dmso_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-dmso_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-#####Now I want to combine them with vehicle to see any effect
-dox_veh_rec <- annot_PCA_matrix %>% filter(Tx!="FLUO")
-fluo_veh_rec <- annot_PCA_matrix %>% filter(Tx!="DOX")
-
-####DOX + DMSO VEHICLE####
-dox_veh_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-dox_veh_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-dox_veh_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-
-####5FU + DMSO VEHICLE####
-fluo_veh_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-fluo_veh_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
-
-fluo_veh_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-  geom_point(aes(color = Tx_Time, shape = Ind)) +
-                       scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-  scale_color_brewer(palette = "Paired")
+# PCA_data <- fC_Matrix_Full_cpm_filter %>% 
+#   prcomp(.) %>% 
+#   t()
+# 
+# PCA_data_test <- (prcomp(t(fC_Matrix_Full_cpm_filter), scale. = TRUE))
+# 
+# #make a function for pca - pulls stdv and makes a variance plot - look at the variance contributed by each PC
+# pca_var_plot <- function(pca) {
+#   pca.var <- pca$sdev ^ 2
+#   pca.prop <- pca.var / sum(pca.var)
+#   var.plot <- 
+#     qplot(PC, prop, data = data.frame(PC = 1:length(pca.prop),
+#                                       prop = pca.prop)) +
+#     labs(title="Variance contributed by each PC",
+#          x = "PC", y = "Proportion of Variance")
+#   plot(var.plot)
+# }
+# 
+# pca_var_plot(PCA_data_test)
+# 
+# 
+# #make a pca plot function
+# # pca_plot_fun <- function(df, 
+# #                          col_var = NULL,
+# #                          shape_var = NULL,
+# #                          title = "") {
+# #   ggplot(df) + geom_point(aes_string(
+# #     x = "PC1",
+# #     y = "PC2",
+# #     color = col_var,
+# #     shape = shape_var),
+# #     size = 5) +
+# #     labs(title = title, x = "PC 1", y = "PC 2") +
+# #     scale_color_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600")) +
+# #                        scale_shape_manual(values = c(0, 1, 2, 5, 6, 15, 16, 17, 18))
+# #   
+# # }
+# 
+# colorsInd <- c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600")
+# 
+# #now we can go into plotting!
+# ####make an annotation matrix####
+# annot <- data.frame("samples" = colnames(fC_Matrix_Full_cpm_filter)) %>% separate_wider_delim(., cols = samples, names = c("Tx", "Time", "Ind"), delim = "_", cols_remove = FALSE) %>% unite(., col = "Tx_Time", Tx, Time, sep = "_", remove = FALSE)
+# 
+# #combine the prcomp matrix and annotation
+# annot_PCA_matrix <- PCA_data_test$x %>% cbind(., annot)
+# 
+# #now you can go ahead and make PCA plots with this matrix! woohoo!
+# pca_plot_fun(annot_PCA_matrix, col_var = "Ind", shape_var = "Tx_Time")
+# 
+# annot_PCA_matrix %>% ggplot(., aes(x=PC1, y=PC2, size=6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#   # scale_color_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600")) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+#   
+# annot_PCA_matrix %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# annot_PCA_matrix %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# #Now that I've successfully generated ggplot PCA plots with Renee's code - now I can subset the data by time
+# 
+# time_24 <- annot_PCA_matrix %>% filter(Time=="24")
+# time_24rec <- annot_PCA_matrix %>% filter(Time=="24rec")
+# time_144rec <- annot_PCA_matrix %>% filter(Time=="144rec")
+# 
+# ####time 24hr####
+# time_24 %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# time_24 %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# time_24 %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# ####time 24rec####
+# time_24rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# time_24rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# time_24rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# ####time 144rec####
+# time_144rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# time_144rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# time_144rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# #####now that I've broken them up by time, try by treatment####
+# 
+# dox_rec <- annot_PCA_matrix %>% filter(Tx=="DOX")
+# fluo_rec <- annot_PCA_matrix %>% filter(Tx=="FLUO")
+# dmso_rec <- annot_PCA_matrix %>% filter(Tx=="DMSO")
+# 
+# ####DOX####
+# dox_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# dox_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# dox_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# ####5FU####
+# fluo_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# fluo_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# fluo_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# ####DMSO VEHICLE####
+# dmso_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# dmso_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# dmso_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# #####Now I want to combine them with vehicle to see any effect
+# dox_veh_rec <- annot_PCA_matrix %>% filter(Tx!="FLUO")
+# fluo_veh_rec <- annot_PCA_matrix %>% filter(Tx!="DOX")
+# 
+# ####DOX + DMSO VEHICLE####
+# dox_veh_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# dox_veh_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# dox_veh_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# 
+# ####5FU + DMSO VEHICLE####
+# fluo_veh_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# fluo_veh_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
+# 
+# fluo_veh_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
+#   geom_point(aes(color = Tx_Time, shape = Ind)) +
+#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
+#   scale_color_brewer(palette = "Paired")
 
 ```
 
 
 After trying and failing to get all three factors on one PCA plot - I will make iterations of each of these with two factors each
 
-```{r PCA Individual Treatment_Time}
+```{r PCA Individual Treatment_Time, include = FALSE}
 
-#mutate the file so that the samples are rows and columns are genes
-fC_Matrix_Full_cpm_filter_mutate_tx_time <- data.frame(t(fC_Matrix_Full_cpm_filter))
+# #mutate the file so that the samples are rows and columns are genes
+# fC_Matrix_Full_cpm_filter_mutate_tx_time <- data.frame(t(fC_Matrix_Full_cpm_filter))
+# 
+# #now let's separate out the factors we have in this experiment
+# #Factor 1 - Individual
+# Individual <- as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9)))
+# 
+# #Factor 2 - Treatment_Time
+# tx_time_factor <- c("DOX_24", "FLUO_24", "DMSO_24", "DOX_24rec", "FLUO_24rec", "DMSO_24rec", "DOX_6drec", "FLUO_6drec", "DMSO_6drec")
+# Treatment_Time <- as.factor(c(rep(tx_time_factor, 7)))
+# #view(Treatment)
+# 
+# Full_filter_cpm_mutate_categories_txtime <- cbind(Individual, Treatment_Time, fC_Matrix_Full_cpm_filter_mutate_tx_time)
+# 
+# pca_plot_txtime <- prcomp(fC_Matrix_Full_cpm_filter_mutate_tx_time, scale. = TRUE)
+# 
+# autoplot(pca_plot_txtime, data = Full_filter_cpm_mutate_categories_txtime, color = "Treatment_Time", shape = "Individual", size = 5, x=1, y=2)
+# 
+# #when I try to use scale_shape_manual under ggplot - it gives the following error:
+# ##Error in scale != 0 : 
+#   ##comparison (!=) is possible only for atomic and list types
+# #maybe try converting to an atomic vector or list?
+# 
+# shapes <- c(0, 1, 2, 5, 6, 15, 16, 17, 18)
 
-#now let's separate out the factors we have in this experiment
-#Factor 1 - Individual
-Individual <- as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9)))
+#make a pca plot function
+# pca_plot_fun_fill <- function(df,
+#                          col_var = NULL,
+#                          shape_var = NULL, 
+#                          fill_var = NULL,
+#                          title = "") {
+#   ggplot(df) + geom_point(aes_string(
+#     x = "PC1",
+#     y = "PC2",
+#     color = col_var,
+#     shape = shape_var,
+#     fill = fill_var,
+#     size = 5)) +
+#     labs(title = title) +
+#     scale_color_manual(values = c("red", "blue", "darkgray")) +
+#                        scale_shape_manual(values = c(0, 1, 2, 5, 6, 15, 16, 17, 18)) +
+#     scale_fill_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"))
+#   
+# }
 
-#Factor 2 - Treatment_Time
-tx_time_factor <- c("DOX_24", "FLUO_24", "DMSO_24", "DOX_24rec", "FLUO_24rec", "DMSO_24rec", "DOX_6drec", "FLUO_6drec", "DMSO_6drec")
-Treatment_Time <- as.factor(c(rep(tx_time_factor, 7)))
-#view(Treatment)
-
-Full_filter_cpm_mutate_categories_txtime <- cbind(Individual, Treatment_Time, fC_Matrix_Full_cpm_filter_mutate_tx_time)
-
-pca_plot_txtime <- prcomp(fC_Matrix_Full_cpm_filter_mutate_tx_time, scale. = TRUE)
-
-autoplot(pca_plot_txtime, data = Full_filter_cpm_mutate_categories_txtime, color = "Treatment_Time", shape = "Individual", size = 5, x=1, y=2)
-
-#when I try to use scale_shape_manual under ggplot - it gives the following error:
-##Error in scale != 0 : 
-  ##comparison (!=) is possible only for atomic and list types
-#maybe try converting to an atomic vector or list?
-
-shapes <- c(0, 1, 2, 5, 6, 15, 16, 17, 18)
 
 ```
 
@@ -1308,28 +1323,13 @@ PCA_data <- fC_Matrix_Full_cpm_filter %>%
   prcomp(.) %>% 
   t()
 
-PCA_data_txtime <- (prcomp(t(fC_Matrix_Full_cpm_filter), scale. = TRUE))
+PCA_data_test <- (prcomp(t(fC_Matrix_Full_cpm_filter), scale. = TRUE))
 
-#make a pca plot function
-pca_plot_fun_fill <- function(df,
-                         col_var = NULL,
-                         shape_var = NULL, 
-                         fill_var = NULL,
-                         title = "") {
-  ggplot(df) + geom_point(aes_string(
-    x = "PC1",
-    y = "PC2",
-    color = col_var,
-    shape = shape_var,
-    fill = fill_var,
-    size = 5)) +
-    labs(title = title) +
-    scale_color_manual(values = c("red", "blue", "darkgray")) +
-                       scale_shape_manual(values = c(0, 1, 2, 5, 6, 15, 16, 17, 18)) +
-    scale_fill_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"))
-  
-}
+####now make an annotation for my PCA####
+annot <- data.frame("samples" = colnames(fC_Matrix_Full_cpm_filter)) %>% separate_wider_delim(., cols = samples, names = c("Tx", "Time", "Ind"), delim = "_", cols_remove = FALSE) %>% unite(., col = "Tx_Time", Tx, Time, sep = "_", remove = FALSE)
 
+#combine the prcomp matrix and annotation
+annot_PCA_matrix <- PCA_data_test$x %>% cbind(., annot)
 
 #now I can make a graph where I have filled values for individual! I have seven colors for seven individuals
 # I have three fill values for three timepoints
@@ -1448,39 +1448,30 @@ pheatmap(fC_Matrix_Full_cpm_filter_spearmancor, border_color = "black", legend =
 
 
 #now annotate these heatmaps
-#treatment colors
-# tx_col_df <-  list(Treatment = c(UPR = "blue", FLUO = "red", DMSO = "darkgray"))
-# 
-# #individual colors
-# ind_col_df <- list(Individual = c(Ind1 = "#66C2A5", Ind2 = "#FC8D62", Ind3 = "#1F78B4", Ind4 = "#E78AC3", Ind5 = "#A6D854", Ind6 = "#FFD92A", Ind6REP = "#8B3E9B"))
-# 
-# #timepoint colors
-# time_col_df <- list(Timepoint = c("24" = "#046A38", "24rec" = "#0050B5", "144rec" = "#B725AD"))
+#Factor 1 - Individual
+Individual <- as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9)))
 
-#annotation list of colors and values
+#Factor 2 - Treatment
+tx_factor <- c("DOX", "FLUO", "DMSO")
+Tx <- as.factor(c(rep(tx_factor, 21)))
+#view(Treatment)
+
+#Factor 3 - Timepoint
+time_factor <- c(rep("24", 3), rep("24rec", 3), rep("144rec", 3))
+Time <- as.factor(c(rep(time_factor, 7)))
+
+####annotation for colors####
 annot_col_hm = list(Tx = c(DOX = "red", FLUO = "blue", DMSO = "black"),
                              Ind = c(Ind1 = "#66C2A5", Ind2 = "#FC8D62", Ind3 = "#1F78B4", Ind4 = "#E78AC3", Ind5 = "#A6D854", Ind6 = "#FFD92A", Ind6REP = "#8B3E9B"),
                              Time = c("24" = "#046A38", "24rec" = "#0050B5", "144rec" = "#B725AD"))
 
+####annotation for values####
 annot_list_hm <- data.frame(Individual = as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9))),
                                                Tx = as.factor(c(rep(tx_factor, 21))), 
                                                Time = as.factor(c(rep(time_factor, 7))))
 
-#annot_list_hm <- data.frame(Individual, Treatment, Time)
-
-#Factor 1 - Individual
-# Individual <- as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9)))
-
-#Factor 2 - Treatment
-# tx_factor <- c("DOX", "FLUO", "DMSO")
-# Tx <- as.factor(c(rep(tx_factor, 21)))
-#view(Treatment)
-
-#Factor 3 - Timepoint
-# time_factor <- c(rep("24", 3), rep("24rec", 3), rep("144rec", 3))
-# Time <- as.factor(c(rep(time_factor, 7)))
   
-##add in the annotations from below into the dataframe
+##add in the annotations from above into the dataframe
 row.names(annot_list_hm) <- colnames(fC_Matrix_Full_cpm_filter_pearsoncor)
 row.names(annot_list_hm) <- colnames(fC_Matrix_Full_cpm_filter_spearmancor)
 
@@ -1499,22 +1490,24 @@ counts_DE_raw <- read_csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RN
 #View(counts_DE)
 
 counts_DE_norep <- as.data.frame(Counts_Full_df) %>% 
-        dplyr::select(-"...1") %>% 
+        #dplyr::select(-"...1") %>% 
         dplyr::select(-(contains("Ind6REP")))
+
+#sometimes when loaded in this dataframe has the column ..1 - if needed uncomment that out
 
 #now I've removed that individual, so I'll filter all counts by rowmeans
 #first check the number of variables in the counts file
 ##I should have 54 samples if not including Ind6REP
-dim(counts_DE)
-#[1] 78932    54
-#[1] 28395    54 - new inbuilt
+dim(counts_DE_norep)
+#[1] 78932    54 - original ensembl annotation
+#[1] 28395    54 - new inbuilt annotation
 
 ####filter by rowMeans >1 to filter more####
 rowMeans_DE <- rowMeans(counts_DE_norep)
 counts_DE_filter1 <- counts_DE_norep[rowMeans_DE > 1,]
 dim(counts_DE_filter1)
-#[1] 65925    54
-#[1] 20443    54 - new inbuilt
+#[1] 65925    54 - original ensembl annotation
+#[1] 20443    54 - new inbuilt annotation
 
 # ####TOTAL NUMBER OF READS PER SAMPLE####
 # tx_col <- list(Treatment = c("DMSO" = "#63666D","5FU" = "#DCACED","DOX" = "#499FBD"))
@@ -1555,7 +1548,7 @@ group_1 <- rep(c("DOX_24","FLUO_24",
                                 "FLUO_144rec",
                                 "DMSO_144rec"), 6)
 
-dge <- DGEList.data.frame(counts = counts_DE_filter1, group = group_1, genes = row.names(counts_DE_filter))
+dge <- DGEList.data.frame(counts = counts_DE_filter1, group = group_1, genes = row.names(counts_DE_filter1))
 
 
 #this is the inital file before norm factors are calculated
@@ -1589,6 +1582,7 @@ v <- voom(dge_calc$counts, mm_r, block = snames_ind, correlation = corfit$consen
 
 fit <- lmFit(v, mm_r, block = snames_ind, correlation = corfit$consensus)
 
+#make sure to check which order the columns are in - otherwise they won't match right (it was moved into alphabetical and number order)
 colnames(mm_r) <- c("DMSO_144rec","DMSO_24","DMSO_24rec","DOX_144rec","DOX_24","DOX_24rec","FLUO_144rec","FLUO_24","FLUO_24rec")
 
 cm_r <- makeContrasts(
@@ -1636,43 +1630,43 @@ voom_plot <- voom(dge_calc, mm_r, plot = TRUE)
 
 ```
 
-```{r Do This Again But With Filtering- Yay}
+```{r Do This Again But With Filtering, include=FALSE}
 
-counts_DE_raw
-
-counts_DE
-
-####rowMeans >0####
-rowMeans_DE <- rowMeans(counts_DE)
-counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
-dim(counts_DE_filter)
-
-
-####rowMeans >1####
-rowMeans_DE <- rowMeans(counts_DE)
-counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
-dim(counts_DE_filter)
-
-####rowMeans >2####
-rowMeans_DE <- rowMeans(counts_DE)
-counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
-dim(counts_DE_filter)
-
-####rowMeans >3####
-rowMeans_DE <- rowMeans(counts_DE)
-counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
-dim(counts_DE_filter)
-
-####rowMeans >4####
-rowMeans_DE <- rowMeans(counts_DE)
-counts_DE_filter_4 <- counts_DE[rowMeans_DE > 4,]
-dim(counts_DE_filter_4)
-
-####rowMeans >5####
-rowMeans_DE <- rowMeans(counts_DE)
-counts_DE_filter_5 <- counts_DE[rowMeans_DE > 5,]
-dim(counts_DE_filter_5)
-#[1] 23635    54
+# counts_DE_raw
+# 
+# counts_DE
+# 
+# ####rowMeans >0####
+# rowMeans_DE <- rowMeans(counts_DE)
+# counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
+# dim(counts_DE_filter)
+# 
+# 
+# ####rowMeans >1####
+# rowMeans_DE <- rowMeans(counts_DE)
+# counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
+# dim(counts_DE_filter)
+# 
+# ####rowMeans >2####
+# rowMeans_DE <- rowMeans(counts_DE)
+# counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
+# dim(counts_DE_filter)
+# 
+# ####rowMeans >3####
+# rowMeans_DE <- rowMeans(counts_DE)
+# counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
+# dim(counts_DE_filter)
+# 
+# ####rowMeans >4####
+# rowMeans_DE <- rowMeans(counts_DE)
+# counts_DE_filter_4 <- counts_DE[rowMeans_DE > 4,]
+# dim(counts_DE_filter_4)
+# 
+# ####rowMeans >5####
+# rowMeans_DE <- rowMeans(counts_DE)
+# counts_DE_filter_5 <- counts_DE[rowMeans_DE > 5,]
+# dim(counts_DE_filter_5)
+# #[1] 23635    54
 ```
 
 
@@ -1696,8 +1690,6 @@ head(top.table_V.D144r)
 top.table_V.F144r <- topTable(fit = efit4, coef = "V.F144r", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
 head(top.table_V.F144r)
 
-top.table_full <- topTable(fit = efit4, n = 20, adjust.method = "BH", resort.by = "logFC")
-head(top.table_full)
 ```
 
 
@@ -1749,54 +1741,54 @@ We're seeing a batch effect occurring here in PCA and cor. heatmaps
 
 ```{r Remove Unwanted Variation - RUVs}
 
-#counts need to be integer values and in a numeric matrix for ruv
-counts_DE_matrix <- as.matrix(counts_DE_filter1)
-dim(counts_DE_matrix)
-#[1] 20443    54 - new inbuilt
-#this does NOT contain the replicate samples, save for later
-
-##this file contains the replicates that I can pull from
-fC_Matrix_cpm_filter_ruv <- as.matrix (fC_Matrix_Full_cpm_filter)
-
-#create a matrix specifying the replicates
-reps <- as.data.frame(fC_Matrix_Full_cpm_filter) %>%
-  dplyr::select(contains("Ind6"))
-dim(reps)
-#[1] 14225    18
-reps_mat <- as.matrix(reps)
-
-#using the documentation do this:
-#controls: gene-by-sample numeric matrix containing counts
-controls <- rownames(fC_Matrix_Full_cpm_filter)
-
-#I have replicates for Individual 6, which I can compare using this method
-#They are matched as following: 
-##col46:55, 47:56, 48:57, 49:58, 50:59, 51:60, 52:61, 53:62, 54:63
-###this is the scIdx argument for reps, the cIdx argument is for genes
-#differences <- matrix(data = c(1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
-differences_full <- matrix(data = c(46, 55, 47, 56, 48 , 57, 49, 58, 50 , 59, 51, 60, 52, 61, 53, 62, 54, 63), byrow = TRUE, nrow = 9)
-
-
-signature(x = "matrix", cIdx = "ANY", k = "numeric", scIdx = "matrix")
-
-
-seqRUVs <- RUVs(rep, controls, k=3, differences_full, isLog = TRUE)
-
-pData(counts_DE)
-head(seqRUVs)
-
-
-###now try putting this in your matrix?
-design <- model.matrix(~0 + group_1, seqRUVs)
-
-
-
-
-####try it exactly like the documentation and filter afterwards?####
-genes <- rownames(fC_Matrix_Full)[grep("^"), rownames(fC_Matrix_Full)]
-spikes <- rownames()
-
-####leaving off here EMP 25/02/26####
+# #counts need to be integer values and in a numeric matrix for ruv
+# counts_DE_matrix <- as.matrix(counts_DE_filter1)
+# dim(counts_DE_matrix)
+# #[1] 20443    54 - new inbuilt
+# #this does NOT contain the replicate samples, save for later
+# 
+# ##this file contains the replicates that I can pull from
+# fC_Matrix_cpm_filter_ruv <- as.matrix (fC_Matrix_Full_cpm_filter)
+# 
+# #create a matrix specifying the replicates
+# reps <- as.data.frame(fC_Matrix_Full_cpm_filter) %>%
+#   dplyr::select(contains("Ind6"))
+# dim(reps)
+# #[1] 14225    18
+# reps_mat <- as.matrix(reps)
+# 
+# #using the documentation do this:
+# #controls: gene-by-sample numeric matrix containing counts
+# controls <- rownames(fC_Matrix_Full_cpm_filter)
+# 
+# #I have replicates for Individual 6, which I can compare using this method
+# #They are matched as following:
+# ##col46:55, 47:56, 48:57, 49:58, 50:59, 51:60, 52:61, 53:62, 54:63
+# ###this is the scIdx argument for reps, the cIdx argument is for genes
+# #differences <- matrix(data = c(1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
+# differences_full <- matrix(data = c(46, 55, 47, 56, 48 , 57, 49, 58, 50 , 59, 51, 60, 52, 61, 53, 62, 54, 63), byrow = TRUE, nrow = 9)
+# 
+# 
+# signature(x = "matrix", cIdx = "ANY", k = "numeric", scIdx = "matrix")
+# 
+# 
+# seqRUVs <- RUVs(rep, controls, k=3, differences_full, isLog = TRUE)
+# 
+# pData(counts_DE)
+# head(seqRUVs)
+# 
+# 
+# ###now try putting this in your matrix?
+# design <- model.matrix(~0 + group_1, seqRUVs)
+# 
+# 
+# 
+# 
+# ####try it exactly like the documentation and filter afterwards?####
+# genes <- rownames(fC_Matrix_Full)[grep("^"), rownames(fC_Matrix_Full)]
+# spikes <- rownames()
+# 
+# ####leaving off here EMP 25/02/26####
 
 
 ```
