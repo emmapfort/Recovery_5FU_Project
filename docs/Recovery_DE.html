@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Emma M Pfortmiller" />
+
+<meta name="date" content="2025-02-10" />
+
+<title>5FU Recovery RNAseq Analysis</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Recovery_RNAseq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">5FU Recovery RNAseq Analysis</h1>
+<h4 class="author">Emma M Pfortmiller</h4>
+<h4 class="date">2025-02-10</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-02-27
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Recovery_5FU/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20250217code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20250217)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20250217code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20250217)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttreee77e0d486909d2e3809ef0e71565a33036d0ac7btargetblanke77e0d4a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/e77e0d486909d2e3809ef0e71565a33036d0ac7b" target="_blank">e77e0d4</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttreee77e0d486909d2e3809ef0e71565a33036d0ac7btargetblanke77e0d4a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/e77e0d486909d2e3809ef0e71565a33036d0ac7b" target="_blank">e77e0d4</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  code/Recovery_RNAseq_Analysis_EMP_250210.Rmd
+
+Unstaged changes:
+    Deleted:    analysis/Recovery_RNAseq_Analysis_EMP_250210.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/Recovery_DE.Rmd</code>) and HTML
+(<code>docs/Recovery_DE.html</code>) files. If you’ve configured a
+remote Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/e77e0d486909d2e3809ef0e71565a33036d0ac7b/analysis/Recovery_DE.Rmd" target="_blank">e77e0d4</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-02-27
+</td>
+<td>
+Make website cohesive and dataframes concise.
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>Welcome to my research website.</p>
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
+Loading required package: limma
+
+Loading required package: ggrepel
+
+
+Attaching package: &#39;PCAtools&#39;
+
+
+The following objects are masked from &#39;package:stats&#39;:
+
+    biplot, screeplot
+
+
+Loading required package: affy
+
+Loading required package: BiocGenerics
+
+
+Attaching package: &#39;BiocGenerics&#39;
+
+
+The following object is masked from &#39;package:limma&#39;:
+
+    plotMA
+
+
+The following objects are masked from &#39;package:lubridate&#39;:
+
+    intersect, setdiff, union
+
+
+The following objects are masked from &#39;package:dplyr&#39;:
+
+    combine, intersect, setdiff, union
+
+
+The following objects are masked from &#39;package:stats&#39;:
+
+    IQR, mad, sd, var, xtabs
+
+
+The following objects are masked from &#39;package:base&#39;:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, saveRDS, setdiff,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+
+Loading required package: Biobase
+
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    &#39;browseVignettes()&#39;. To cite Bioconductor, see
+    &#39;citation(&quot;Biobase&quot;)&#39;, and for packages &#39;citation(&quot;pkgname&quot;)&#39;.
+
+
+
+Attaching package: &#39;affy&#39;
+
+
+The following object is masked from &#39;package:lubridate&#39;:
+
+    pm
+
+
+Loading required package: EDASeq
+
+Loading required package: ShortRead
+
+Loading required package: BiocParallel
+
+Loading required package: Biostrings
+
+Loading required package: S4Vectors
+
+Loading required package: stats4
+
+
+Attaching package: &#39;S4Vectors&#39;
+
+
+The following objects are masked from &#39;package:lubridate&#39;:
+
+    second, second&lt;-
+
+
+The following objects are masked from &#39;package:dplyr&#39;:
+
+    first, rename
+
+
+The following object is masked from &#39;package:tidyr&#39;:
+
+    expand
+
+
+The following object is masked from &#39;package:utils&#39;:
+
+    findMatches
+
+
+The following objects are masked from &#39;package:base&#39;:
+
+    expand.grid, I, unname
+
+
+Loading required package: IRanges
+
+
+Attaching package: &#39;IRanges&#39;
+
+
+The following object is masked from &#39;package:lubridate&#39;:
+
+    %within%
+
+
+The following objects are masked from &#39;package:dplyr&#39;:
+
+    collapse, desc, slice
+
+
+The following object is masked from &#39;package:purrr&#39;:
+
+    reduce
+
+
+The following object is masked from &#39;package:grDevices&#39;:
+
+    windows
+
+
+Loading required package: XVector
+
+
+Attaching package: &#39;XVector&#39;
+
+
+The following object is masked from &#39;package:purrr&#39;:
+
+    compact
+
+
+Loading required package: GenomeInfoDb
+
+
+Attaching package: &#39;Biostrings&#39;
+
+
+The following object is masked from &#39;package:base&#39;:
+
+    strsplit
+
+
+Loading required package: Rsamtools
+
+Loading required package: GenomicRanges
+
+Loading required package: GenomicAlignments
+
+Loading required package: SummarizedExperiment
+
+Loading required package: MatrixGenerics
+
+Loading required package: matrixStats
+
+
+Attaching package: &#39;matrixStats&#39;
+
+
+The following objects are masked from &#39;package:Biobase&#39;:
+
+    anyMissing, rowMedians
+
+
+The following object is masked from &#39;package:dplyr&#39;:
+
+    count
+
+
+
+Attaching package: &#39;MatrixGenerics&#39;
+
+
+The following objects are masked from &#39;package:matrixStats&#39;:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+
+The following object is masked from &#39;package:Biobase&#39;:
+
+    rowMedians
+
+
+
+Attaching package: &#39;GenomicAlignments&#39;
+
+
+The following object is masked from &#39;package:dplyr&#39;:
+
+    last
+
+
+
+Attaching package: &#39;ShortRead&#39;
+
+
+The following object is masked from &#39;package:affy&#39;:
+
+    intensity
+
+
+The following object is masked from &#39;package:dplyr&#39;:
+
+    id
+
+
+The following object is masked from &#39;package:purrr&#39;:
+
+    compose
+
+
+The following object is masked from &#39;package:tibble&#39;:
+
+    view</code></pre>
+<p>These samples (63 in total) have been aligned to the Ensembl 113
+release of GRCh38 via subread, and counts have been generated using
+featureCounts with inbuilt hg38 genome</p>
+<p>Data is located under 5FU Project on my computer All analysis saved
+in RDirectory Recovery_RNAseq</p>
+<p>Individual 1 - 84-1 (9 samples)</p>
+<p>Individual 2 - 87-1 (9 samples)</p>
+<p>Individual 3 - 75-1 (9 samples)</p>
+<p>Individual 4 - 75-1 (9 samples)</p>
+<p>Individual 5 - 17-3 (9 samples)</p>
+<p>Individual 6 - 90-1 (9 samples)</p>
+<p>Individual 7 - 90-1 REP (9 samples)</p>
+<p>Now that I have imported all of these counts files, I will make a
+matrix with all of the samples</p>
+<p>First I’ll break them up by individual, and then combine them all
+together</p>
+<p>Now that I’ve made individual matrices for each individual - I will
+combine them together into one large matrix</p>
+<p><img src="figure/Recovery_DE.Rmd/Counts%20Matrix%20All%20Individuals-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Recovery_DE.Rmd/Counts%20Matrix%20All%20Individuals-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Now that I&#39;ve put together my matrix - I will do some QC checks
+
+#now that I have all of my factors and my gene info, I will make some graphs to show the QC data
+
+reads_by_sample &lt;- c(tx_col)
+fC_AllCounts %&gt;% 
+  ggplot(., aes (x = Conditions, y = Total_Align, fill = Treatment, group_by = Line))+
+  geom_col()+
+ geom_hline(aes(yintercept=20000000))+
+ scale_fill_manual(values=reads_by_sample)+
+  ggtitle(expression(&quot;Total number of reads by sample&quot;))+
+  xlab(&quot;&quot;)+
+  ylab(expression(&quot;RNA-sequencing reads&quot;))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = &quot;black&quot;),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = &quot;black&quot;, angle = 90, hjust = 1, vjust = 0.2),
+        #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
+        strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/QC%20checks%20Raw%20Counts-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+
+####Read Counts by Treatment####
+fC_AllCounts %&gt;% 
+  ggplot(., aes (x =Treatment, y= Total_Align, fill = Treatment))+
+  geom_boxplot()+
+ scale_fill_manual(values=reads_by_sample)+
+  ggtitle(expression(&quot;Total number of reads by treatment&quot;))+
+  xlab(&quot;&quot;)+
+  ylab(expression(&quot;RNA-sequencing reads&quot;))+
+  theme_bw()+
+  
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = &quot;black&quot;),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = &quot;black&quot;, angle = 90, hjust = 1, vjust = 0.2),
+        #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
+        strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/QC%20checks%20Raw%20Counts-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+####Total Reads Per Individual####
+fC_AllCounts %&gt;% 
+  ggplot(., aes (x =as.factor(Line), y=Total_Align))+
+  geom_boxplot(aes(fill=as.factor(Line)))+
+ scale_fill_brewer(palette = &quot;Dark2&quot;, name = &quot;Individual&quot;)+
+  ggtitle(expression(&quot;Total number of reads by individual&quot;))+
+  xlab(&quot;&quot;)+
+  ylab(expression(&quot;RNA-sequencing reads&quot;))+
+  theme_bw()+
+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = &quot;black&quot;),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 1),
+        #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
+        strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/QC%20checks%20Raw%20Counts-3.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+####Total Mapped Reads Per Drug####
+
+reads_by_sample &lt;- c(tx_col)
+fC_AllCounts %&gt;% 
+  ggplot(., aes (x = Conditions, y = Assigned_Align, fill = Treatment, group_by = Line))+
+  geom_col()+
+ geom_hline(aes(yintercept=20000000))+
+ scale_fill_manual(values=reads_by_sample)+
+  ggtitle(expression(&quot;Total number of mapped reads by sample&quot;))+
+  xlab(&quot;&quot;)+
+  ylab(expression(&quot;RNA-sequencing reads&quot;))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = &quot;black&quot;),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = &quot;black&quot;, angle = 90, hjust = 1, vjust = 0.2),
+        #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
+        strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/QC%20checks%20Raw%20Counts-4.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+
+####Read Counts by Treatment####
+fC_AllCounts %&gt;% 
+  ggplot(., aes (x =Treatment, y= Assigned_Align, fill = Treatment))+
+  geom_boxplot()+
+ scale_fill_manual(values=reads_by_sample)+
+  ggtitle(expression(&quot;Total number of mapped reads by treatment&quot;))+
+  xlab(&quot;&quot;)+
+  ylab(expression(&quot;RNA-sequencing reads&quot;))+
+  theme_bw()+
+  
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = &quot;black&quot;),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = &quot;black&quot;, angle = 90, hjust = 1, vjust = 0.2),
+        #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
+        strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/QC%20checks%20Raw%20Counts-5.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+####Total Reads Per Individual####
+fC_AllCounts %&gt;% 
+  ggplot(., aes (x =as.factor(Line), y=Assigned_Align))+
+  geom_boxplot(aes(fill=as.factor(Line)))+
+ scale_fill_brewer(palette = &quot;Dark2&quot;, name = &quot;Individual&quot;)+
+  ggtitle(expression(&quot;Total number of mapped reads by individual&quot;))+
+  xlab(&quot;&quot;)+
+  ylab(expression(&quot;RNA-sequencing reads&quot;))+
+  theme_bw()+
+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = &quot;black&quot;),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 1),
+        #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
+        strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/QC%20checks%20Raw%20Counts-6.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>Now that I’ve made the final full matrix of all samples - 1. convert
+to log2cpm using cpm 2. filter for lowly expressed reads (rowMeans &gt;
+0)</p>
+<pre class="r"><code>boxplot(fC_Matrix_Full_cpm, xlab = &quot;Conditions&quot;, ylab = expression(&quot;log&quot;[2]* &quot;counts per million&quot;), ylim= c(-10, 20))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/log2cpm%20Conversion%20Full%20Matrix-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>hist(fC_Matrix_Full_cpm, xlab = expression(&quot;log&quot; [2]* &quot;counts per million&quot;))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/log2cpm%20Conversion%20Full%20Matrix-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#write this to a csv just in case to save it
+#write.csv(fC_Matrix_Full_cpm, &quot;C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_cpm_EMP_250210.csv&quot;)</code></pre>
+<pre class="r"><code>
+#first check the number of variables in the cpm file
+dim(fC_Matrix_Full_cpm)
+[1] 28395    63
+#[1] 28395    63
+
+#now use rowMeans to filter out values with mean &lt; 0 (this means rowMeans &gt; 0 is what I&#39;m left with) for each row/gene in the original file
+rowMeans_All &lt;- rowMeans(fC_Matrix_Full_cpm)
+fC_Matrix_Full_cpm_filter &lt;- fC_Matrix_Full_cpm[rowMeans_All &gt; 0,]
+dim(fC_Matrix_Full_cpm_filter)
+[1] 14225    63
+#[1] 14225    63
+
+#with this I&#39;ve filtered out a significant number of rows when filtering after cpm conversion - does this make it more balanced?
+
+hist(fC_Matrix_Full_cpm_filter, 
+     main = &quot;Recovery All Individuals log2cpm Filtered&quot;, 
+        xlab = expression(&quot;log&quot;[2]*&quot;counts per million&quot;))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/Filter%20Lowly%20Expressed%20Reads%20All%20Samples-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>boxplot(fC_Matrix_Full_cpm_filter, 
+        main = &quot;Recovery All Individuals log2cpm Filtered&quot;, 
+        xlab = &quot;Conditions&quot;, 
+        ylab = expression(&quot;log&quot;[2]*&quot;counts per million&quot;),
+        ylim = c(-10,15))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/Filter%20Lowly%20Expressed%20Reads%20All%20Samples-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+#write this to a csv to save
+#write.csv(fC_Matrix_Full_cpm_filter, &quot;C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_cpm_filtered_EMP_250210.csv&quot;)
+</code></pre>
+<pre class="r"><code>####histogram of total counts, unfiltered####
+hist(fC_Matrix_Full_cpm, main = &quot;Recovery All Individuals log2cpm Unfiltered&quot;,
+     xlab = expression(&quot;log&quot; [2]* &quot;counts per million&quot;))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/QC%20Checks%20Unfiltered%20vs%20Filtered%20Reads-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>####histogram of total counts, filtered####
+hist(fC_Matrix_Full_cpm_filter, 
+     main = &quot;Recovery All Individuals log2cpm Filtered rowMeans &gt; 0&quot;, 
+        xlab = expression(&quot;log&quot;[2]*&quot;counts per million&quot;))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/QC%20Checks%20Unfiltered%20vs%20Filtered%20Reads-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>####boxplot log2cpm all samples####
+
+boxplot(fC_Matrix_Full_cpm, xlab = &quot;Conditions&quot;, ylab = expression(&quot;log&quot;[2]* &quot;counts per million&quot;), ylim= c(-10, 20), main = &quot;Boxplots of log2cpm per sample&quot;)</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/QC%20Checks%20Unfiltered%20vs%20Filtered%20Reads-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>####boxplot log2cpm filtered all samples####
+
+boxplot(fC_Matrix_Full_cpm_filter, xlab = &quot;Conditions&quot;, ylab = expression(&quot;log&quot;[2]* &quot;counts per million&quot;), ylim= c(-10, 20), main = &quot;Boxplots of log2cpm Filtered rowMeans &gt; 0 per sample&quot;)</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/QC%20Checks%20Unfiltered%20vs%20Filtered%20Reads-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Now that I’ve filtered the samples after log2cpm conversion, I can
+start to make heatmaps and PCA plots to look at my data</p>
+<p>After trying and failing to get all three factors on one PCA plot - I
+will make iterations of each of these with two factors each</p>
+<p>Now, I want to update these PCA plots to have treatment and time as
+the primary variables Individual will be a fill? Or somehow get some
+numbers labelled on the points.</p>
+<pre class="r"><code>PCA_data &lt;- fC_Matrix_Full_cpm_filter %&gt;% 
+  prcomp(.) %&gt;% 
+  t()
+
+PCA_data_test &lt;- (prcomp(t(fC_Matrix_Full_cpm_filter), scale. = TRUE))
+
+####now make an annotation for my PCA####
+annot &lt;- data.frame(&quot;samples&quot; = colnames(fC_Matrix_Full_cpm_filter)) %&gt;% separate_wider_delim(., cols = samples, names = c(&quot;Tx&quot;, &quot;Time&quot;, &quot;Ind&quot;), delim = &quot;_&quot;, cols_remove = FALSE) %&gt;% unite(., col = &quot;Tx_Time&quot;, Tx, Time, sep = &quot;_&quot;, remove = FALSE)
+
+#combine the prcomp matrix and annotation
+annot_PCA_matrix &lt;- PCA_data_test$x %&gt;% cbind(., annot)
+
+#now I can make a graph where I have filled values for individual! I have seven colors for seven individuals
+# I have three fill values for three timepoints
+
+#using annotation matrix above as well as annotated PCA matrix (annot_PCA_matrix)
+
+#extra info for colors in the graph (fill parameter)
+fill_col_ind &lt;- c(&quot;#66C2A5&quot;, &quot;#FC8D62&quot;, &quot;#1F78B4&quot;, &quot;#E78AC3&quot;, &quot;#A6D854&quot;, &quot;#FFD92A&quot;, &quot;#8B3E9B&quot;)
+
+fill_col_ind_dark &lt;- c(&quot;#003F5C&quot;, &quot;#45AE91&quot;,  &quot;#58508D&quot;, &quot;#BC4099&quot;, &quot;#8B3E9B&quot;, &quot;#FF6361&quot;, &quot;#FF2362&quot;)
+
+fill_col_tx &lt;- c(&quot;#63666D&quot;, &quot;#DCACED&quot;, &quot;#499FBD&quot;)
+
+#Now I have to switch the fill and color parameters as it&#39;s doing the opposite of what I wanted: need individuals to be the outline color (color), and tx to be the inside color (fill)
+
+####PC1/PC2####
+annot_PCA_matrix %&gt;% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
+  geom_point(aes(color = Ind, shape = Time, fill = Tx)) +
+                       scale_shape_manual(values = c(21, 22, 24)) +
+  scale_fill_manual(values =  fill_col_tx)+
+  scale_color_manual(values = c(fill_col_ind_dark))+
+  guides(fill=guide_legend(override.aes=list(shape=21)))+
+  guides(color=guide_legend(override.aes=list(shape=21)))+
+  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/PCA%20Plots%20Updated-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+####PC2/PC3####
+annot_PCA_matrix %&gt;% ggplot(., aes(x=PC2, y=PC3)) +
+  geom_point(aes(color = Ind, shape = Time, fill = Tx, size = 10)) +
+                       scale_shape_manual(values = c(21, 22, 24)) +
+  scale_fill_manual(values =  fill_col_tx)+
+  scale_color_manual(values = c(fill_col_ind_dark))+
+  guides(fill=guide_legend(override.aes=list(shape=21)))+
+  guides(color=guide_legend(override.aes=list(shape=21)))+
+  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/PCA%20Plots%20Updated-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+####PC3/PC4####
+annot_PCA_matrix %&gt;% ggplot(., aes(x=PC3, y=PC4)) +
+  geom_point(aes(color = Ind, shape = Time, fill = Tx, size = 10)) +
+                       scale_shape_manual(values = c(21, 22, 24)) +
+  scale_fill_manual(values =  fill_col_tx)+
+  scale_color_manual(values = c(fill_col_ind_dark))+
+  guides(fill=guide_legend(override.aes=list(shape=21)))+
+  guides(color=guide_legend(override.aes=list(shape=21)))+
+  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/PCA%20Plots%20Updated-3.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+#correlation heatmap for all samples
+
+####PEARSON FILTERED####
+fC_Matrix_Full_cpm_filter_pearsoncor &lt;-
+  cor(
+    fC_Matrix_Full_cpm_filter,
+    y = NULL,
+    use = &quot;everything&quot;,
+    method = &quot;pearson&quot;
+  )
+
+####SPEARMAN FILTERED####
+fC_Matrix_Full_cpm_filter_spearmancor &lt;-
+  cor(
+    fC_Matrix_Full_cpm_filter,
+    y = NULL,
+    use = &quot;everything&quot;,
+    method = &quot;spearman&quot;
+  )
+
+
+
+#Now let&#39;s graph these correlations
+
+pheatmap(fC_Matrix_Full_cpm_filter_pearsoncor, border_color = &quot;black&quot;, legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = &quot;black&quot;, fontsize = 12, fontsize_number = 9)</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/Correlation%20Heatmaps-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+pheatmap(fC_Matrix_Full_cpm_filter_spearmancor, border_color = &quot;black&quot;, legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = &quot;black&quot;, fontsize = 12, fontsize_number = 9)</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/Correlation%20Heatmaps-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+
+
+#now annotate these heatmaps
+#Factor 1 - Individual
+Individual &lt;- as.factor(c(rep(&quot;Ind1&quot;, 9), rep(&quot;Ind2&quot;, 9), rep(&quot;Ind3&quot;, 9), rep(&quot;Ind4&quot;, 9), rep(&quot;Ind5&quot;, 9), rep(&quot;Ind6&quot;, 9), rep(&quot;Ind6REP&quot;, 9)))
+
+#Factor 2 - Treatment
+tx_factor &lt;- c(&quot;DOX&quot;, &quot;FLUO&quot;, &quot;DMSO&quot;)
+Tx &lt;- as.factor(c(rep(tx_factor, 21)))
+#view(Treatment)
+
+#Factor 3 - Timepoint
+time_factor &lt;- c(rep(&quot;24&quot;, 3), rep(&quot;24rec&quot;, 3), rep(&quot;144rec&quot;, 3))
+Time &lt;- as.factor(c(rep(time_factor, 7)))
+
+####annotation for colors####
+annot_col_hm = list(Tx = c(DOX = &quot;red&quot;, FLUO = &quot;blue&quot;, DMSO = &quot;black&quot;),
+                             Ind = c(Ind1 = &quot;#66C2A5&quot;, Ind2 = &quot;#FC8D62&quot;, Ind3 = &quot;#1F78B4&quot;, Ind4 = &quot;#E78AC3&quot;, Ind5 = &quot;#A6D854&quot;, Ind6 = &quot;#FFD92A&quot;, Ind6REP = &quot;#8B3E9B&quot;),
+                             Time = c(&quot;24&quot; = &quot;#046A38&quot;, &quot;24rec&quot; = &quot;#0050B5&quot;, &quot;144rec&quot; = &quot;#B725AD&quot;))
+
+####annotation for values####
+annot_list_hm &lt;- data.frame(Individual = as.factor(c(rep(&quot;Ind1&quot;, 9), rep(&quot;Ind2&quot;, 9), rep(&quot;Ind3&quot;, 9), rep(&quot;Ind4&quot;, 9), rep(&quot;Ind5&quot;, 9), rep(&quot;Ind6&quot;, 9), rep(&quot;Ind6REP&quot;, 9))),
+                                               Tx = as.factor(c(rep(tx_factor, 21))), 
+                                               Time = as.factor(c(rep(time_factor, 7))))
+
+  
+##add in the annotations from above into the dataframe
+row.names(annot_list_hm) &lt;- colnames(fC_Matrix_Full_cpm_filter_pearsoncor)
+row.names(annot_list_hm) &lt;- colnames(fC_Matrix_Full_cpm_filter_spearmancor)
+
+####ANNOTATED HEATMAPS####
+pheatmap(fC_Matrix_Full_cpm_filter_pearsoncor, border_color = &quot;black&quot;, legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = &quot;black&quot;, fontsize = 10, fontsize_number = 5, annotation_col = annot_list_hm, annotation_colors = annot_col_hm)</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/Correlation%20Heatmaps-3.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+pheatmap(fC_Matrix_Full_cpm_filter_spearmancor, border_color = &quot;black&quot;, legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = &quot;black&quot;, fontsize = 10, fontsize_number = 5, annotation_col = annot_list_hm, annotation_colors = annot_col_hm)</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/Correlation%20Heatmaps-4.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+# group &lt;- c(rep(c(1, 2, 3, 4, 5, 6, 7, 8, 9), 6))
+# group &lt;- factor(group, levels = c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;))
+
+
+####rowMeans &gt; 0 Filtering####
+rowMeans_DE &lt;- rowMeans(counts_DE)
+counts_DE_filter &lt;- counts_DE[rowMeans_DE &gt; 0,]
+dim(counts_DE_filter)
+[1] 26445    54
+
+group_1 &lt;- rep(c(&quot;DOX_24&quot;,&quot;FLUO_24&quot;,
+                                &quot;DMSO_24&quot;,
+                                &quot;DOX_24rec&quot;,
+                                &quot;FLUO_24rec&quot;,
+                                &quot;DMSO_24rec&quot;,
+                                &quot;DOX_144rec&quot;,
+                                &quot;FLUO_144rec&quot;,
+                                &quot;DMSO_144rec&quot;), 6)
+
+dge &lt;- DGEList.data.frame(counts = counts_DE_filter, group = group_1, genes = row.names(counts_DE_filter))
+
+#this is the inital file before norm factors are calculated
+dge$samples
+                       group lib.size norm.factors
+DOX_24_Ind1           DOX_24 23533985            1
+FLUO_24_Ind1         FLUO_24 26970695            1
+DMSO_24_Ind1         DMSO_24 22892686            1
+DOX_24rec_Ind1     DOX_24rec 23932153            1
+FLUO_24rec_Ind1   FLUO_24rec 21879931            1
+DMSO_24rec_Ind1   DMSO_24rec 21337454            1
+DOX_144rec_Ind1   DOX_144rec 18260440            1
+FLUO_144rec_Ind1 FLUO_144rec 18780865            1
+DMSO_144rec_Ind1 DMSO_144rec 28167799            1
+DOX_24_Ind2           DOX_24 20017534            1
+FLUO_24_Ind2         FLUO_24 23930827            1
+DMSO_24_Ind2         DMSO_24 21334270            1
+DOX_24rec_Ind2     DOX_24rec 25714988            1
+FLUO_24rec_Ind2   FLUO_24rec 25160237            1
+DMSO_24rec_Ind2   DMSO_24rec 26356290            1
+DOX_144rec_Ind2   DOX_144rec 23497279            1
+FLUO_144rec_Ind2 FLUO_144rec 24769290            1
+DMSO_144rec_Ind2 DMSO_144rec 25878841            1
+DOX_24_Ind3           DOX_24 23195184            1
+FLUO_24_Ind3         FLUO_24 25146622            1
+DMSO_24_Ind3         DMSO_24 25648723            1
+DOX_24rec_Ind3     DOX_24rec 18250610            1
+FLUO_24rec_Ind3   FLUO_24rec 23122465            1
+DMSO_24rec_Ind3   DMSO_24rec 24364234            1
+DOX_144rec_Ind3   DOX_144rec 19801072            1
+FLUO_144rec_Ind3 FLUO_144rec 29845161            1
+DMSO_144rec_Ind3 DMSO_144rec 22672688            1
+DOX_24_Ind4           DOX_24 20726954            1
+FLUO_24_Ind4         FLUO_24 23704697            1
+DMSO_24_Ind4         DMSO_24 28213836            1
+DOX_24rec_Ind4     DOX_24rec 25911782            1
+FLUO_24rec_Ind4   FLUO_24rec 40622129            1
+DMSO_24rec_Ind4   DMSO_24rec 26124863            1
+DOX_144rec_Ind4   DOX_144rec 24701727            1
+FLUO_144rec_Ind4 FLUO_144rec 24610641            1
+DMSO_144rec_Ind4 DMSO_144rec 25455999            1
+DOX_24_Ind5           DOX_24 22697304            1
+FLUO_24_Ind5         FLUO_24 27856508            1
+DMSO_24_Ind5         DMSO_24 24639151            1
+DOX_24rec_Ind5     DOX_24rec 24885980            1
+FLUO_24rec_Ind5   FLUO_24rec 29665028            1
+DMSO_24rec_Ind5   DMSO_24rec 26036618            1
+DOX_144rec_Ind5   DOX_144rec 27513167            1
+FLUO_144rec_Ind5 FLUO_144rec 23993986            1
+DMSO_144rec_Ind5 DMSO_144rec 24942365            1
+DOX_24_Ind6           DOX_24 25308109            1
+FLUO_24_Ind6         FLUO_24 25269296            1
+DMSO_24_Ind6         DMSO_24 25666994            1
+DOX_24rec_Ind6     DOX_24rec 26209951            1
+FLUO_24rec_Ind6   FLUO_24rec 25079566            1
+DMSO_24rec_Ind6   DMSO_24rec 24465515            1
+DOX_144rec_Ind6   DOX_144rec 23359517            1
+FLUO_144rec_Ind6 FLUO_144rec 22471386            1
+DMSO_144rec_Ind6 DMSO_144rec 25460267            1
+
+#calculate the normalization factors with method TMM
+dge_calc &lt;- calcNormFactors(dge, method = &quot;TMM&quot;)
+
+#final file after norm calculation
+dge_calc$samples
+                       group lib.size norm.factors
+DOX_24_Ind1           DOX_24 23533985    1.0837997
+FLUO_24_Ind1         FLUO_24 26970695    0.9310699
+DMSO_24_Ind1         DMSO_24 22892686    0.9611153
+DOX_24rec_Ind1     DOX_24rec 23932153    1.2332319
+FLUO_24rec_Ind1   FLUO_24rec 21879931    0.9480185
+DMSO_24rec_Ind1   DMSO_24rec 21337454    0.9725610
+DOX_144rec_Ind1   DOX_144rec 18260440    1.0159884
+FLUO_144rec_Ind1 FLUO_144rec 18780865    0.9797092
+DMSO_144rec_Ind1 DMSO_144rec 28167799    0.9690593
+DOX_24_Ind2           DOX_24 20017534    1.1031490
+FLUO_24_Ind2         FLUO_24 23930827    0.9960906
+DMSO_24_Ind2         DMSO_24 21334270    0.9579222
+DOX_24rec_Ind2     DOX_24rec 25714988    1.0897455
+FLUO_24rec_Ind2   FLUO_24rec 25160237    0.9709110
+DMSO_24rec_Ind2   DMSO_24rec 26356290    0.9632263
+DOX_144rec_Ind2   DOX_144rec 23497279    0.8853001
+FLUO_144rec_Ind2 FLUO_144rec 24769290    0.9818596
+DMSO_144rec_Ind2 DMSO_144rec 25878841    0.9747532
+DOX_24_Ind3           DOX_24 23195184    0.8512838
+FLUO_24_Ind3         FLUO_24 25146622    0.9755381
+DMSO_24_Ind3         DMSO_24 25648723    0.9934558
+DOX_24rec_Ind3     DOX_24rec 18250610    1.3034379
+FLUO_24rec_Ind3   FLUO_24rec 23122465    0.9351582
+DMSO_24rec_Ind3   DMSO_24rec 24364234    0.9693937
+DOX_144rec_Ind3   DOX_144rec 19801072    1.0246641
+FLUO_144rec_Ind3 FLUO_144rec 29845161    0.9803051
+DMSO_144rec_Ind3 DMSO_144rec 22672688    0.9806025
+DOX_24_Ind4           DOX_24 20726954    1.1649074
+FLUO_24_Ind4         FLUO_24 23704697    0.9849905
+DMSO_24_Ind4         DMSO_24 28213836    0.9912683
+DOX_24rec_Ind4     DOX_24rec 25911782    1.1791631
+FLUO_24rec_Ind4   FLUO_24rec 40622129    0.9751981
+DMSO_24rec_Ind4   DMSO_24rec 26124863    0.9981792
+DOX_144rec_Ind4   DOX_144rec 24701727    0.9176890
+FLUO_144rec_Ind4 FLUO_144rec 24610641    0.9816716
+DMSO_144rec_Ind4 DMSO_144rec 25455999    0.9636547
+DOX_24_Ind5           DOX_24 22697304    1.0773544
+FLUO_24_Ind5         FLUO_24 27856508    0.9397778
+DMSO_24_Ind5         DMSO_24 24639151    0.9538894
+DOX_24rec_Ind5     DOX_24rec 24885980    1.2233210
+FLUO_24rec_Ind5   FLUO_24rec 29665028    0.9193648
+DMSO_24rec_Ind5   DMSO_24rec 26036618    0.9527365
+DOX_144rec_Ind5   DOX_144rec 27513167    0.9469333
+FLUO_144rec_Ind5 FLUO_144rec 23993986    0.9381287
+DMSO_144rec_Ind5 DMSO_144rec 24942365    0.9285333
+DOX_24_Ind6           DOX_24 25308109    1.0981454
+FLUO_24_Ind6         FLUO_24 25269296    0.9948090
+DMSO_24_Ind6         DMSO_24 25666994    1.0159532
+DOX_24rec_Ind6     DOX_24rec 26209951    1.1400925
+FLUO_24rec_Ind6   FLUO_24rec 25079566    0.9794435
+DMSO_24rec_Ind6   DMSO_24rec 24465515    0.9860363
+DOX_144rec_Ind6   DOX_144rec 23359517    0.9397642
+FLUO_144rec_Ind6 FLUO_144rec 22471386    0.9892227
+DMSO_144rec_Ind6 DMSO_144rec 25460267    0.9800208
+
+#View(dge_calc)
+
+#Pull out factors
+snames &lt;- data.frame(&quot;samples&quot; = colnames(dge_calc)) %&gt;% separate_wider_delim(., cols = samples, names = c(&quot;Treatment&quot;, &quot;Time&quot;, &quot;Individual&quot;), delim = &quot;_&quot;, cols_remove = FALSE)
+
+#snames_list &lt;- as.list(snames)
+
+snames_time &lt;- snames$Time
+snames_tx &lt;- snames$Treatment
+snames_ind &lt;- snames$Individual
+
+#Create my model matrix
+mm_r &lt;- model.matrix(~0 + group_1)
+
+p &lt;- voom(dge_calc$counts, mm_r, plot = TRUE)</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/Differential%20Expression%20Analysis%20filtering%20rowMeans%20greater%20than%200-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+corfit &lt;- duplicateCorrelation(p, mm_r, block = snames_ind)
+
+v &lt;- voom(dge_calc$counts, mm_r, block = snames_ind, correlation = corfit$consensus)
+
+fit &lt;- lmFit(v, mm_r, block = snames_ind, correlation = corfit$consensus)
+
+#make sure to check which order the columns are in - otherwise they won&#39;t match right (it was moved into alphabetical and number order)
+colnames(mm_r) &lt;- c(&quot;DMSO_144rec&quot;,&quot;DMSO_24&quot;,&quot;DMSO_24rec&quot;,&quot;DOX_144rec&quot;,&quot;DOX_24&quot;,&quot;DOX_24rec&quot;,&quot;FLUO_144rec&quot;,&quot;FLUO_24&quot;,&quot;FLUO_24rec&quot;)
+
+cm_r &lt;- makeContrasts(
+        V.D24 = DOX_24 - DMSO_24,
+        V.F24 = FLUO_24 - DMSO_24,
+        V.D24r = DOX_24rec - DMSO_24rec,
+        V.F24r = FLUO_24rec - DMSO_24rec,
+        V.D144r = DOX_144rec - DMSO_144rec,
+        V.F144r = FLUO_144rec - DMSO_144rec,
+        levels = mm_r
+)
+
+vfit_r &lt;- lmFit(p, mm_r)
+vfit_r &lt;- contrasts.fit(vfit_r, contrasts = cm_r)
+
+efit2 &lt;- eBayes(vfit_r)
+
+results = decideTests(efit2)
+summary(results)
+       V.D24 V.F24 V.D24r V.F24r V.D144r V.F144r
+Down    4567     0   2083      0     288       0
+NotSig 14521 26445  16339  26445   25296   26445
+Up      7357     0   8023      0     861       0
+#inbuilt annotation results rowMeans &gt;0
+#         V.D24 V.F24 V.D24r V.F24r V.D144r V.F144r
+# Down    4567     0   2083      0     288       0
+# NotSig 14521 26445  16339  26445   25296   26445
+# Up      7357     0   8023      0     861       0
+
+## have no DE genes detected for 5FU, only DOX
+
+
+####plot your voom####
+voom_plot &lt;- voom(dge_calc, mm_r, plot = TRUE)</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/Differential%20Expression%20Analysis%20filtering%20rowMeans%20greater%20than%200-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The voom plot for this with rowMeans &gt; 0 has a dip in the front,
+meaning that there is likely some noise left over in my data. I am going
+to filter a bit stricter at rowMeans &gt; 1 with the same process as
+above.</p>
+<pre class="r"><code>
+####rowMeans &gt;1####
+rowMeans_DE &lt;- rowMeans(counts_DE)
+counts_DE_filter1 &lt;- counts_DE[rowMeans_DE &gt; 1,]
+dim(counts_DE_filter1)
+[1] 20443    54
+
+
+dge1 &lt;- DGEList.data.frame(counts = counts_DE_filter1, group = group_1, genes = row.names(counts_DE_filter1))
+
+#this is the inital file before norm factors are calculated
+dge1$samples
+                       group lib.size norm.factors
+DOX_24_Ind1           DOX_24 23529436            1
+FLUO_24_Ind1         FLUO_24 26969621            1
+DMSO_24_Ind1         DMSO_24 22891830            1
+DOX_24rec_Ind1     DOX_24rec 23928177            1
+FLUO_24rec_Ind1   FLUO_24rec 21879021            1
+DMSO_24rec_Ind1   DMSO_24rec 21336552            1
+DOX_144rec_Ind1   DOX_144rec 18258678            1
+FLUO_144rec_Ind1 FLUO_144rec 18779997            1
+DMSO_144rec_Ind1 DMSO_144rec 28166609            1
+DOX_24_Ind2           DOX_24 20015891            1
+FLUO_24_Ind2         FLUO_24 23929971            1
+DMSO_24_Ind2         DMSO_24 21333555            1
+DOX_24rec_Ind2     DOX_24rec 25712271            1
+FLUO_24rec_Ind2   FLUO_24rec 25159540            1
+DMSO_24rec_Ind2   DMSO_24rec 26355579            1
+DOX_144rec_Ind2   DOX_144rec 23495279            1
+FLUO_144rec_Ind2 FLUO_144rec 24768504            1
+DMSO_144rec_Ind2 DMSO_144rec 25877847            1
+DOX_24_Ind3           DOX_24 23190452            1
+FLUO_24_Ind3         FLUO_24 25145882            1
+DMSO_24_Ind3         DMSO_24 25647796            1
+DOX_24rec_Ind3     DOX_24rec 18243178            1
+FLUO_24rec_Ind3   FLUO_24rec 23121928            1
+DMSO_24rec_Ind3   DMSO_24rec 24363550            1
+DOX_144rec_Ind3   DOX_144rec 19797829            1
+FLUO_144rec_Ind3 FLUO_144rec 29844009            1
+DMSO_144rec_Ind3 DMSO_144rec 22672047            1
+DOX_24_Ind4           DOX_24 20724269            1
+FLUO_24_Ind4         FLUO_24 23703826            1
+DMSO_24_Ind4         DMSO_24 28212829            1
+DOX_24rec_Ind4     DOX_24rec 25908531            1
+FLUO_24rec_Ind4   FLUO_24rec 40620908            1
+DMSO_24rec_Ind4   DMSO_24rec 26124015            1
+DOX_144rec_Ind4   DOX_144rec 24699442            1
+FLUO_144rec_Ind4 FLUO_144rec 24609834            1
+DMSO_144rec_Ind4 DMSO_144rec 25455151            1
+DOX_24_Ind5           DOX_24 22693201            1
+FLUO_24_Ind5         FLUO_24 27855535            1
+DMSO_24_Ind5         DMSO_24 24638257            1
+DOX_24rec_Ind5     DOX_24rec 24881937            1
+FLUO_24rec_Ind5   FLUO_24rec 29663662            1
+DMSO_24rec_Ind5   DMSO_24rec 26035482            1
+DOX_144rec_Ind5   DOX_144rec 27510410            1
+FLUO_144rec_Ind5 FLUO_144rec 23992921            1
+DMSO_144rec_Ind5 DMSO_144rec 24941416            1
+DOX_24_Ind6           DOX_24 25305699            1
+FLUO_24_Ind6         FLUO_24 25268538            1
+DMSO_24_Ind6         DMSO_24 25666263            1
+DOX_24rec_Ind6     DOX_24rec 26207393            1
+FLUO_24rec_Ind6   FLUO_24rec 25078845            1
+DMSO_24rec_Ind6   DMSO_24rec 24464720            1
+DOX_144rec_Ind6   DOX_144rec 23357605            1
+FLUO_144rec_Ind6 FLUO_144rec 22470700            1
+DMSO_144rec_Ind6 DMSO_144rec 25459487            1
+
+#calculate the normalization factors with method TMM
+dge1_calc &lt;- calcNormFactors(dge1, method = &quot;TMM&quot;)
+
+#final file after norm calculation
+dge1_calc$samples
+                       group lib.size norm.factors
+DOX_24_Ind1           DOX_24 23529436    1.1010478
+FLUO_24_Ind1         FLUO_24 26969621    0.9224026
+DMSO_24_Ind1         DMSO_24 22891830    0.9523318
+DOX_24rec_Ind1     DOX_24rec 23928177    1.2419707
+FLUO_24rec_Ind1   FLUO_24rec 21879021    0.9414647
+DMSO_24rec_Ind1   DMSO_24rec 21336552    0.9714352
+DOX_144rec_Ind1   DOX_144rec 18258678    1.0061282
+FLUO_144rec_Ind1 FLUO_144rec 18779997    0.9577701
+DMSO_144rec_Ind1 DMSO_144rec 28166609    0.9633660
+DOX_24_Ind2           DOX_24 20015891    1.1311547
+FLUO_24_Ind2         FLUO_24 23929971    1.0037288
+DMSO_24_Ind2         DMSO_24 21333555    0.9711101
+DOX_24rec_Ind2     DOX_24rec 25712271    1.0919406
+FLUO_24rec_Ind2   FLUO_24rec 25159540    0.9757042
+DMSO_24rec_Ind2   DMSO_24rec 26355579    0.9694902
+DOX_144rec_Ind2   DOX_144rec 23495279    0.8831165
+FLUO_144rec_Ind2 FLUO_144rec 24768504    0.9802117
+DMSO_144rec_Ind2 DMSO_144rec 25877847    0.9735050
+DOX_24_Ind3           DOX_24 23190452    0.8944444
+FLUO_24_Ind3         FLUO_24 25145882    0.9787822
+DMSO_24_Ind3         DMSO_24 25647796    0.9998010
+DOX_24rec_Ind3     DOX_24rec 18243178    1.3366353
+FLUO_24rec_Ind3   FLUO_24rec 23121928    0.9387564
+DMSO_24rec_Ind3   DMSO_24rec 24363550    0.9645367
+DOX_144rec_Ind3   DOX_144rec 19797829    1.0329079
+FLUO_144rec_Ind3 FLUO_144rec 29844009    0.9794210
+DMSO_144rec_Ind3 DMSO_144rec 22672047    0.9717442
+DOX_24_Ind4           DOX_24 20724269    1.2119035
+FLUO_24_Ind4         FLUO_24 23703826    0.9874501
+DMSO_24_Ind4         DMSO_24 28212829    0.9971983
+DOX_24rec_Ind4     DOX_24rec 25908531    1.1839389
+FLUO_24rec_Ind4   FLUO_24rec 40620908    0.9545701
+DMSO_24rec_Ind4   DMSO_24rec 26124015    0.9903031
+DOX_144rec_Ind4   DOX_144rec 24699442    0.9135958
+FLUO_144rec_Ind4 FLUO_144rec 24609834    0.9800993
+DMSO_144rec_Ind4 DMSO_144rec 25455151    0.9499049
+DOX_24_Ind5           DOX_24 22693201    1.1040571
+FLUO_24_Ind5         FLUO_24 27855535    0.9171950
+DMSO_24_Ind5         DMSO_24 24638257    0.9316924
+DOX_24rec_Ind5     DOX_24rec 24881937    1.2117783
+FLUO_24rec_Ind5   FLUO_24rec 29663662    0.8980900
+DMSO_24rec_Ind5   DMSO_24rec 26035482    0.9397879
+DOX_144rec_Ind5   DOX_144rec 27510410    0.9273815
+FLUO_144rec_Ind5 FLUO_144rec 23992921    0.9249558
+DMSO_144rec_Ind5 DMSO_144rec 24941416    0.9177884
+DOX_24_Ind6           DOX_24 25305699    1.1312672
+FLUO_24_Ind6         FLUO_24 25268538    0.9892086
+DMSO_24_Ind6         DMSO_24 25666263    1.0174650
+DOX_24rec_Ind6     DOX_24rec 26207393    1.1422058
+FLUO_24rec_Ind6   FLUO_24rec 25078845    0.9747427
+DMSO_24rec_Ind6   DMSO_24rec 24464720    0.9836358
+DOX_144rec_Ind6   DOX_144rec 23357605    0.9424696
+FLUO_144rec_Ind6 FLUO_144rec 22470700    0.9862254
+DMSO_144rec_Ind6 DMSO_144rec 25459487    0.9808584
+
+#View(dge1_calc)
+
+#Pull out factors
+snames1 &lt;- data.frame(&quot;samples&quot; = colnames(dge1_calc)) %&gt;% separate_wider_delim(., cols = samples, names = c(&quot;Treatment&quot;, &quot;Time&quot;, &quot;Individual&quot;), delim = &quot;_&quot;, cols_remove = FALSE)
+
+#snames_list &lt;- as.list(snames)
+
+snames1_time &lt;- snames1$Time
+snames1_tx &lt;- snames1$Treatment
+snames1_ind &lt;- snames1$Individual
+
+#Create my model matrix
+mm_r1 &lt;- model.matrix(~0 + group_1)
+
+p1 &lt;- voom(dge1_calc$counts, mm_r1, plot = TRUE)</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/Differential%20Expression%20Analysis%20filtering%20rowMeans%20greater%20than%201-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+corfit1 &lt;- duplicateCorrelation(p1, mm_r1, block = snames1_ind)
+
+v1 &lt;- voom(dge1_calc$counts, mm_r1, block = snames1_ind, correlation = corfit1$consensus)
+
+fit1 &lt;- lmFit(v1, mm_r1, block = snames1_ind, correlation = corfit1$consensus)
+
+#make sure to check which order the columns are in - otherwise they won&#39;t match right (it was moved into alphabetical and number order)
+colnames(mm_r1) &lt;- c(&quot;DMSO_144rec&quot;,&quot;DMSO_24&quot;,&quot;DMSO_24rec&quot;,&quot;DOX_144rec&quot;,&quot;DOX_24&quot;,&quot;DOX_24rec&quot;,&quot;FLUO_144rec&quot;,&quot;FLUO_24&quot;,&quot;FLUO_24rec&quot;)
+
+cm_r1 &lt;- makeContrasts(
+        V.D24 = DOX_24 - DMSO_24,
+        V.F24 = FLUO_24 - DMSO_24,
+        V.D24r = DOX_24rec - DMSO_24rec,
+        V.F24r = FLUO_24rec - DMSO_24rec,
+        V.D144r = DOX_144rec - DMSO_144rec,
+        V.F144r = FLUO_144rec - DMSO_144rec,
+        levels = mm_r1
+)
+
+vfit_r1 &lt;- lmFit(p1, mm_r1)
+vfit_r1 &lt;- contrasts.fit(vfit_r1, contrasts = cm_r1)
+
+efit4 &lt;- eBayes(vfit_r1)
+
+results1 = decideTests(efit4)
+summary(results1)
+       V.D24 V.F24 V.D24r V.F24r V.D144r V.F144r
+Down    4640     0   2120      0     263       0
+NotSig  9460 20443  11485  20443   19838   20443
+Up      6343     0   6838      0     342       0
+#inbuilt annotation results rowMeans &gt;0
+#         V.D24 V.F24 V.D24r V.F24r V.D144r V.F144r
+# Down    4567     0   2083      0     288       0
+# NotSig 14521 26445  16339  26445   25296   26445
+# Up      7357     0   8023      0     861       0
+
+## have no DE genes detected for 5FU, only DOX
+
+
+####plot your voom####
+voom_plot1 &lt;- voom(dge1_calc, mm_r1, plot = TRUE)</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/Differential%20Expression%20Analysis%20filtering%20rowMeans%20greater%20than%201-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+top.table_V.D24 &lt;- topTable(fit = efit4, coef = &quot;V.D24&quot;, number = nrow(dge_calc), adjust.method = &quot;BH&quot;, p.value = 1, sort.by = &quot;none&quot;)
+head(top.table_V.D24)
+
+top.table_V.F24 &lt;- topTable(fit = efit4, coef = &quot;V.F24&quot;, number = nrow(dge_calc), adjust.method = &quot;BH&quot;, p.value = 1, sort.by = &quot;none&quot;)
+head(top.table_V.F24)
+
+top.table_V.D24r &lt;- topTable(fit = efit4, coef = &quot;V.D24r&quot;, number = nrow(dge_calc), adjust.method = &quot;BH&quot;, p.value = 1, sort.by = &quot;none&quot;)
+head(top.table_V.D24r)
+
+top.table_V.F24r &lt;- topTable(fit = efit4, coef = &quot;V.F24r&quot;, number = nrow(dge_calc), adjust.method = &quot;BH&quot;, p.value = 1, sort.by = &quot;none&quot;)
+head(top.table_V.F24r)
+
+top.table_V.D144r &lt;- topTable(fit = efit4, coef = &quot;V.D144r&quot;, number = nrow(dge_calc), adjust.method = &quot;BH&quot;, p.value = 1, sort.by = &quot;none&quot;)
+head(top.table_V.D144r)
+
+top.table_V.F144r &lt;- topTable(fit = efit4, coef = &quot;V.F144r&quot;, number = nrow(dge_calc), adjust.method = &quot;BH&quot;, p.value = 1, sort.by = &quot;none&quot;)
+head(top.table_V.F144r)
+</code></pre>
+<p>Volcano Plots</p>
+<pre class="r"><code>
+generate_volcano_plot &lt;- function(toptable, title) {
+  
+  # Add Significance Labels
+  toptable$Significance &lt;- &quot;Not Significant&quot;
+  toptable$Significance[toptable$logFC &gt; 0 &amp; toptable$adj.P.Val &lt; 0.05] &lt;- &quot;Upregulated&quot;
+  toptable$Significance[toptable$logFC &lt; 0 &amp; toptable$adj.P.Val &lt; 0.05] &lt;- &quot;Downregulated&quot;
+
+  # Generate Volcano Plot
+  ggplot(toptable, aes(x = logFC, y = -log10(P.Value), color = Significance)) +
+    geom_point(alpha = 0.4, size = 2) + 
+    scale_color_manual(values = c(&quot;Downregulated&quot; = &quot;red&quot;, &quot;Upregulated&quot; = &quot;blue&quot;, &quot;Not Significant&quot; = &quot;gray&quot;)) +
+    xlim(-5, 5) +
+    labs(title = title, x = &quot;log2 Fold Change&quot;, y = &quot;-log10 P-value&quot;) +
+    theme(legend.position = &quot;none&quot;, 
+          plot.title = element_text(size = rel(1.5), hjust = 0.5),
+          axis.title = element_text(size = rel(1.25))) +
+    theme_bw()
+}
+
+#now that I&#39;ve made a function, I can make volcano plots for each of my comparisons (6 total)
+
+volcano_plots &lt;- list(
+  &quot;V.D24&quot; = generate_volcano_plot(top.table_V.D24, &quot;Volcano Plot DOX 24hr (adj P-val&lt;0.05)&quot;),
+  &quot;V.F24&quot; = generate_volcano_plot(top.table_V.F24, &quot;Volcano Plot 5FU 24hr (adj P-val&lt;0.05)&quot;),
+  &quot;V.D24r&quot; = generate_volcano_plot(top.table_V.D24r, &quot;Volcano Plot DOX 24hr Recovery (adj P-val&lt;0.05)&quot;),
+  &quot;V.F24r&quot; = generate_volcano_plot(top.table_V.F24r, &quot;Volcano Plot 5FU 24hr Recovery (adj P-val&lt;0.05)&quot;),
+  &quot;V.D144r&quot; = generate_volcano_plot(top.table_V.D144r, &quot;Volcano Plot DOX 6d Recovery (adj P-val&lt;0.05)&quot;),
+  &quot;V.F144r&quot; = generate_volcano_plot(top.table_V.F144r, &quot;Volcano Plot 5FU 6d Recovery (adj P-val&lt;0.05)&quot;)
+)
+
+# Display each volcano plot
+for (plot_name in names(volcano_plots)) {
+  print(volcano_plots[[plot_name]])
+}
+Warning: Removed 344 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-1.png" width="768" style="display: block; margin: auto;" /><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre><code>Warning: Removed 66 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-3.png" width="768" style="display: block; margin: auto;" /><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-4.png" width="768" style="display: block; margin: auto;" /></p>
+<pre><code>Warning: Removed 23 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+<p><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-5.png" width="768" style="display: block; margin: auto;" /><img src="figure/Recovery_DE.Rmd/Volcano%20Plots%20from%20Pairwise%20Gene%20Analysis-6.png" width="768" style="display: block; margin: auto;" /></p>
+<p>Now that I’ve gone through and figured out the basics of DE - let’s
+remove unwanted variation using ruv This uses my replicates to figure
+out covariates in the data and remove variation occurring due to batch
+effects or other effects We’re seeing a batch effect occurring here in
+PCA and cor. heatmaps</p>
+<pre class="r"><code># #counts need to be integer values and in a numeric matrix for ruv
+# counts_DE_matrix &lt;- as.matrix(counts_DE_filter1)
+# dim(counts_DE_matrix)
+# #[1] 20443    54 - new inbuilt
+# #this does NOT contain the replicate samples, save for later
+# 
+# ##this file contains the replicates that I can pull from
+# fC_Matrix_cpm_filter_ruv &lt;- as.matrix (fC_Matrix_Full_cpm_filter)
+# 
+# #create a matrix specifying the replicates
+# reps &lt;- as.data.frame(fC_Matrix_Full_cpm_filter) %&gt;%
+#   dplyr::select(contains(&quot;Ind6&quot;))
+# dim(reps)
+# #[1] 14225    18
+# reps_mat &lt;- as.matrix(reps)
+# 
+# #using the documentation do this:
+# #controls: gene-by-sample numeric matrix containing counts
+# controls &lt;- rownames(fC_Matrix_Full_cpm_filter)
+# 
+# #I have replicates for Individual 6, which I can compare using this method
+# #They are matched as following:
+# ##col46:55, 47:56, 48:57, 49:58, 50:59, 51:60, 52:61, 53:62, 54:63
+# ###this is the scIdx argument for reps, the cIdx argument is for genes
+# #differences &lt;- matrix(data = c(1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
+# differences_full &lt;- matrix(data = c(46, 55, 47, 56, 48 , 57, 49, 58, 50 , 59, 51, 60, 52, 61, 53, 62, 54, 63), byrow = TRUE, nrow = 9)
+# 
+# 
+# signature(x = &quot;matrix&quot;, cIdx = &quot;ANY&quot;, k = &quot;numeric&quot;, scIdx = &quot;matrix&quot;)
+# 
+# 
+# seqRUVs &lt;- RUVs(rep, controls, k=3, differences_full, isLog = TRUE)
+# 
+# pData(counts_DE)
+# head(seqRUVs)
+# 
+# 
+# ###now try putting this in your matrix?
+# design &lt;- model.matrix(~0 + group_1, seqRUVs)
+# 
+# 
+# 
+# 
+# ####try it exactly like the documentation and filter afterwards?####
+# genes &lt;- rownames(fC_Matrix_Full)[grep(&quot;^&quot;), rownames(fC_Matrix_Full)]
+# spikes &lt;- rownames()
+# 
+# ####leaving off here EMP 25/02/26####</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.2 (2024-10-31 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 22000)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] RUVSeq_1.40.0               EDASeq_2.40.0              
+ [3] ShortRead_1.64.0            GenomicAlignments_1.42.0   
+ [5] SummarizedExperiment_1.36.0 MatrixGenerics_1.18.1      
+ [7] matrixStats_1.4.1           Rsamtools_2.22.0           
+ [9] GenomicRanges_1.58.0        Biostrings_2.74.0          
+[11] GenomeInfoDb_1.42.3         XVector_0.46.0             
+[13] IRanges_2.40.0              S4Vectors_0.44.0           
+[15] BiocParallel_1.40.0         biomaRt_2.62.1             
+[17] RColorBrewer_1.1-3          Cormotif_1.52.0            
+[19] affy_1.84.0                 Biobase_2.66.0             
+[21] BiocGenerics_0.52.0         PCAtools_2.18.0            
+[23] ggrepel_0.9.6               ggfortify_0.4.17           
+[25] pheatmap_1.0.12             edgeR_4.4.0                
+[27] limma_3.62.1                readxl_1.4.3               
+[29] edgebundleR_0.1.4           lubridate_1.9.3            
+[31] forcats_1.0.0               stringr_1.5.1              
+[33] dplyr_1.1.4                 purrr_1.0.2                
+[35] readr_2.1.5                 tidyr_1.3.1                
+[37] tidyverse_2.0.0             tibble_3.2.1               
+[39] hrbrthemes_0.8.7            reshape2_1.4.4             
+[41] ggplot2_3.5.1               workflowr_1.7.1            
+
+loaded via a namespace (and not attached):
+  [1] later_1.4.1               BiocIO_1.16.0            
+  [3] bitops_1.0-9              filelock_1.0.3           
+  [5] R.oo_1.27.0               cellranger_1.1.0         
+  [7] preprocessCore_1.68.0     XML_3.99-0.18            
+  [9] lifecycle_1.0.4           httr2_1.1.0              
+ [11] pwalign_1.2.0             rprojroot_2.0.4          
+ [13] vroom_1.6.5               MASS_7.3-61              
+ [15] processx_3.8.5            lattice_0.22-6           
+ [17] magrittr_2.0.3            sass_0.4.9               
+ [19] rmarkdown_2.29            jquerylib_0.1.4          
+ [21] yaml_2.3.10               httpuv_1.6.15            
+ [23] cowplot_1.1.3             DBI_1.2.3                
+ [25] abind_1.4-8               zlibbioc_1.52.0          
+ [27] R.utils_2.12.3            RCurl_1.98-1.16          
+ [29] rappdirs_0.3.3            git2r_0.35.0             
+ [31] gdtools_0.4.1             GenomeInfoDbData_1.2.13  
+ [33] irlba_2.3.5.1             dqrng_0.4.1              
+ [35] DelayedMatrixStats_1.28.1 codetools_0.2-20         
+ [37] DelayedArray_0.32.0       xml2_1.3.6               
+ [39] tidyselect_1.2.1          farver_2.1.2             
+ [41] UCSC.utils_1.2.0          ScaledMatrix_1.14.0      
+ [43] BiocFileCache_2.14.0      jsonlite_1.8.9           
+ [45] systemfonts_1.1.0         tools_4.4.2              
+ [47] progress_1.2.3            Rcpp_1.0.13-1            
+ [49] glue_1.8.0                gridExtra_2.3            
+ [51] Rttf2pt1_1.3.12           SparseArray_1.6.0        
+ [53] xfun_0.49                 withr_3.0.2              
+ [55] BiocManager_1.30.25       fastmap_1.2.0            
+ [57] latticeExtra_0.6-30       callr_3.7.6              
+ [59] digest_0.6.37             rsvd_1.0.5               
+ [61] timechange_0.3.0          R6_2.6.1                 
+ [63] mime_0.12                 colorspace_2.1-1         
+ [65] jpeg_0.1-10               RSQLite_2.3.8            
+ [67] R.methodsS3_1.8.2         generics_0.1.3           
+ [69] fontLiberation_0.1.0      rtracklayer_1.66.0       
+ [71] prettyunits_1.2.0         httr_1.4.7               
+ [73] htmlwidgets_1.6.4         S4Arrays_1.6.0           
+ [75] whisker_0.4.1             pkgconfig_2.0.3          
+ [77] gtable_0.3.6              blob_1.2.4               
+ [79] hwriter_1.3.2.1           htmltools_0.5.8.1        
+ [81] fontBitstreamVera_0.1.1   scales_1.3.0             
+ [83] png_0.1-8                 knitr_1.49               
+ [85] rstudioapi_0.17.1         tzdb_0.4.0               
+ [87] rjson_0.2.23              curl_6.0.1               
+ [89] cachem_1.1.0              parallel_4.4.2           
+ [91] extrafont_0.19            AnnotationDbi_1.68.0     
+ [93] restfulr_0.0.15           pillar_1.10.1            
+ [95] grid_4.4.2                vctrs_0.6.5              
+ [97] promises_1.3.2            BiocSingular_1.22.0      
+ [99] dbplyr_2.5.0              beachmat_2.22.0          
+[101] xtable_1.8-4              extrafontdb_1.0          
+[103] evaluate_1.0.3            GenomicFeatures_1.58.0   
+[105] cli_3.6.3                 locfit_1.5-9.10          
+[107] compiler_4.4.2            rlang_1.1.4              
+[109] crayon_1.5.3              labeling_0.4.3           
+[111] aroma.light_3.36.0        interp_1.1-6             
+[113] ps_1.8.1                  getPass_0.2-4            
+[115] plyr_1.8.9                fs_1.6.5                 
+[117] stringi_1.8.4             deldir_2.0-4             
+[119] munsell_0.5.1             fontquiver_0.2.1         
+[121] Matrix_1.7-1              hms_1.1.3                
+[123] sparseMatrixStats_1.18.0  bit64_4.5.2              
+[125] KEGGREST_1.46.0           statmod_1.5.0            
+[127] shiny_1.10.0              igraph_2.1.1             
+[129] memoise_2.0.1             affyio_1.76.0            
+[131] bslib_0.9.0               bit_4.5.0                </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
