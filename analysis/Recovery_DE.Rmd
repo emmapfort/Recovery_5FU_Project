@@ -1516,9 +1516,10 @@ pheatmap(fC_Matrix_Full_cpm_filter_spearmancor, border_color = "black", legend =
 counts_DE_raw <- read_csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_EMP_250220.csv")
 #View(counts_DE)
 
-counts_DE <- as.data.frame(Counts_Full_df) %>% 
+counts_DE <- as.data.frame(Counts_Full_df) 
+#%>% 
         #dplyr::select(-"...1") %>% 
-        dplyr::select(-(contains("Ind6REP")))
+        #dplyr::select(-(contains("Ind6REP")))
 
 #sometimes when loaded in this dataframe has the column ..1 - if needed uncomment that out
 
@@ -1799,57 +1800,274 @@ Now that I've gone through and figured out the basics of DE - let's remove unwan
 This uses my replicates to figure out covariates in the data and remove variation occurring due to batch effects or other effects
 We're seeing a batch effect from RNA extraction (all RNAseq library prep done in a single batch) occurring here in PCA and cor. heatmaps rather than individuals clustering together.
 
-```{r Remove Unwanted Variation - RUVs}
+```{r Remove Unwanted Variation - RUVs, include = FALSE}
 
-# #counts need to be integer values and in a numeric matrix for ruv
-# counts_DE_matrix <- as.matrix(counts_DE_filter1)
-# dim(counts_DE_matrix)
-# #[1] 20443    54 - new inbuilt
-# #this does NOT contain the replicate samples, save for later
-# 
-# ##this file contains the replicates that I can pull from
-# fC_Matrix_cpm_filter_ruv <- as.matrix (fC_Matrix_Full_cpm_filter)
-# 
-# #create a matrix specifying the replicates
-# reps <- as.data.frame(fC_Matrix_Full_cpm_filter) %>%
-#   dplyr::select(contains("Ind6"))
-# dim(reps)
-# #[1] 14225    18
-# reps_mat <- as.matrix(reps)
-# 
-# #using the documentation do this:
-# #controls: gene-by-sample numeric matrix containing counts
-# controls <- rownames(fC_Matrix_Full_cpm_filter)
-# 
-# #I have replicates for Individual 6, which I can compare using this method
-# #They are matched as following:
-# ##col46:55, 47:56, 48:57, 49:58, 50:59, 51:60, 52:61, 53:62, 54:63
-# ###this is the scIdx argument for reps, the cIdx argument is for genes
-# #differences <- matrix(data = c(1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
-# differences_full <- matrix(data = c(46, 55, 47, 56, 48 , 57, 49, 58, 50 , 59, 51, 60, 52, 61, 53, 62, 54, 63), byrow = TRUE, nrow = 9)
-# 
-# 
-# signature(x = "matrix", cIdx = "ANY", k = "numeric", scIdx = "matrix")
-# 
-# 
-# seqRUVs <- RUVs(rep, controls, k=3, differences_full, isLog = TRUE)
-# 
-# pData(counts_DE)
-# head(seqRUVs)
-# 
-# 
-# ###now try putting this in your matrix?
-# design <- model.matrix(~0 + group_1, seqRUVs)
-# 
-# 
-# 
-# 
-# ####try it exactly like the documentation and filter afterwards?####
-# genes <- rownames(fC_Matrix_Full)[grep("^"), rownames(fC_Matrix_Full)]
-# spikes <- rownames()
-# 
-# ####leaving off here EMP 25/02/26####
+#counts need to be integer values and in a numeric matrix for ruv
+counts_DE_matrix <- as.matrix(counts_DE_filter1)
+dim(counts_DE_matrix)
+#[1] 20443    54 - new inbuilt
+#this does NOT contain the replicate samples, save for later
+
+##this file contains the replicates that I can pull from
+fC_Matrix_cpm_filter_ruv <- as.matrix (fC_Matrix_Full_cpm_filter)
+
+#create a matrix specifying the replicates
+reps <- as.data.frame(fC_Matrix_Full_cpm_filter) %>%
+  dplyr::select(contains("Ind6"))
+dim(reps)
+#[1] 14225    18
+reps_mat <- as.matrix(reps)
+
+#using the documentation do this:
+#controls: gene-by-sample numeric matrix containing counts
+controls <- rownames(fC_Matrix_Full_cpm_filter)
+
+#I have replicates for Individual 6, which I can compare using this method
+#They are matched as following:
+##col46:55, 47:56, 48:57, 49:58, 50:59, 51:60, 52:61, 53:62, 54:63
+###this is the scIdx argument for reps, the cIdx argument is for genes
+#differences <- matrix(data = c(1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
+differences_full <- matrix(data = c(46, 55, 47, 56, 48 , 57, 49, 58, 50 , 59, 51, 60, 52, 61, 53, 62, 54, 63), byrow = TRUE, nrow = 9)
 
 
+signature(x = "matrix", cIdx = "ANY", k = "numeric", scIdx = "matrix")
+
+
+seqRUVs <- RUVs(rep, controls, k=3, differences_full, isLog = TRUE)
+
+pData(counts_DE)
+head(seqRUVs)
+
+
+###now try putting this in your matrix?
+design <- model.matrix(~0 + group_1, seqRUVs)
+
+
+
+
+####try it exactly like the documentation and filter afterwards?####
+genes <- rownames(fC_Matrix_Full)[grep("^"), rownames(fC_Matrix_Full)]
+spikes <- rownames()
+
+####leaving off here EMP 25/02/26####
+
+
+```
+
+
+
+
+
+# Omar stuff 
+
+```{r Remove Unwanted Variation - RUVs, include = FALSE}
+vignette("RUVSeq")
+library("EDASeq")
+RUVSeq::makeGroups() %>% help()
+comrade_groups <- makeGroups(annot$Tx_Time) 
+comrade_groups <- comrade_groups %>% as.matrix()
+
+gene_names_comrade <- counts_DE_filter1 %>% rownames() %>% as.double()
+counts_DE_filter1_ES <- EDASeq::newSeqExpressionSet(counts = counts_DE_filter1)
+
+counts_DE_filter1_ES
+
+counts_DE_filter1_ES %>% assay() 
+set3 <- RUVSeq::RUVs(x = counts_DE_filter1_ES, cIdx = gene_names_comrade, k=1, scIdx = comrade_groups, isLog = FALSE)
+
+#counts need to be integer values and in a numeric matrix for ruv
+counts_DE_matrix <- as.matrix(counts_DE_filter1)
+dim(counts_DE_matrix)
+counts_DE_matrix %>% head
+counts_DE_matrix %>% rownames() %>% unique() %>% length()
+
+#[1] 20443    54 - new inbuilt
+#this does NOT contain the replicate samples, save for later
+
+##this file contains the replicates that I can pull from
+fC_Matrix_cpm_filter_ruv <- as.matrix (fC_Matrix_Full_cpm_filter)
+fC_Matrix_cpm_filter_ruv
+
+#create a matrix specifying the replicates
+reps <- as.data.frame(fC_Matrix_Full_cpm_filter) %>%
+  dplyr::select(contains("Ind6"))
+dim(reps)
+#[1] 14225    18
+reps_mat <- as.matrix(reps)
+
+#using the documentation do this:
+#controls: gene-by-sample numeric matrix containing counts
+controls <- rownames(fC_Matrix_Full_cpm_filter)
+
+#I have replicates for Individual 6, which I can compare using this method
+#They are matched as following:
+##col46:55, 47:56, 48:57, 49:58, 50:59, 51:60, 52:61, 53:62, 54:63
+###this is the scIdx argument for reps, the cIdx argument is for genes
+#differences <- matrix(data = c(1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
+differences_full <- matrix(data = c(46, 55, 47, 56, 48 , 57, 49, 58, 50 , 59, 51, 60, 52, 61, 53, 62, 54, 63), byrow = TRUE, nrow = 9)
+
+
+signature(x = "matrix", cIdx = "ANY", k = "numeric", scIdx = "matrix")
+
+
+seqRUVs <- RUVs(rep, controls, k=3, differences_full, isLog = TRUE)
+
+pData(counts_DE)
+head(seqRUVs)
+
+
+###now try putting this in your matrix?
+design <- model.matrix(~0 + group_1, seqRUVs)
+
+
+
+
+####try it exactly like the documentation and filter afterwards?####
+genes <- rownames(fC_Matrix_Full)[grep("^"), rownames(fC_Matrix_Full)]
+spikes <- rownames()
+
+####leaving off here EMP 25/02/27####
+
+
+```
+
+
+```{r Remove Unwanted Variation with RUVs}
+#OMAR NEW CODE
+fC_Matrix_Full_cpm_filter
+dim(fC_Matrix_Full_cpm_filter)
+
+#now I want to un-log transform this data - square it?
+fC_Matrix_Full_new <- fC_Matrix_Full_cpm_filter^2
+dim(fC_Matrix_Full_new)
+
+
+#  counts need to be integer values and in a numeric matrix
+# note: the log transformation needs to be accounted for in the isLog argument in RUVs function.
+counts <- as.matrix(fC_Matrix_Full_cpm_filter)
+
+# Create a DataFrame for the phenoData
+phenoData <- DataFrame(annot)
+
+# Now create the RangedSummarizedExperiment necessary for RUVs input
+# looks like it did need both the phenodata and the counts.
+set <- SummarizedExperiment(assays =  counts, metadata =phenoData)
+
+# Generate a background matrix
+# The column "Cond" holds the comparisons that you actually want to make. DOX_24, DMSO_24,5FU_24, DOX_3,etc.
+scIdx <-RUVSeq::makeGroups(phenoData$Tx_Time)
+scIdx
+# Apply RUVs function from RUVSeq
+# note: for now just get code to work. "k" will be iteratively adjusted over time depending on your PCA.
+set <- RUVSeq::RUVs(x = counts, k =1, scIdx = scIdx, isLog = TRUE)
+
+#DO NOT USE THESE COUNTS FOR LINEAR MODELING EMMA
+
+
+
+
+
+
+
+# get the ruv weights to put into the linear model. n weights = k.
+RUV_df <- set$W %>% as.data.frame()
+RUV_df$Names <- rownames(RUV_df)
+
+# Make sure the data frame names match 
+RUV_df_rm <- RUV_df[RUV_df$Names %in% annot_new$samples, ] 
+RUV_1 <-  RUV_df_rm$W_1
+
+
+# before ruv
+prcomp_res <- prcomp(t(counts), scale. = TRUE, center = TRUE, )
+ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", size =4)+
+  theme_bw()+
+  ggtitle("No RUV")
+# after ruv
+prcomp_res <- prcomp(t(set$normalizedCounts), scale. = TRUE, center = TRUE, )
+ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", size =4)+
+  theme_bw()+
+  ggtitle("RUV, comrade")
+
+
+
+####rowMeans >1####
+# rowMeans_DE <- rowMeans(counts_DE)
+# counts_DE_filter1 <- counts_DE[rowMeans_DE > 1,]
+# dim(counts_DE_filter1)
+
+fC_Matrix_Full_new %>% head()
+fC_Matrix_Full_new %>% dim()
+
+dge1 <- DGEList.data.frame(counts = matrix_cpm_new, group = group_1, genes = row.names(matrix_cpm_new))
+
+#check the inital file before norm factors are calculated
+#dge1$samples
+
+#calculate the normalization factors with method TMM
+dge1_calc <- calcNormFactors(dge1, method = "TMM")
+
+#check final file after norm calculation
+#dge1_calc$samples
+
+#View(dge1_calc)
+
+#Pull out factors
+snames1 <- data.frame("samples" = colnames(dge1_calc)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
+
+#snames_list <- as.list(snames)
+snames1_ind <- snames1$Individual
+
+# Make sure the names match 
+annot_new$samples == RUV_df_rm$Names
+annot_new$RUV_1 <- RUV_df_rm$W_1
+
+
+#Create my model matrix
+mm_r1 <- model.matrix(~0 + group_1 + RUV_1, data = annot_new)
+
+p1 <- voom(dge1_calc$counts, mm_r1, plot = TRUE)
+
+corfit1 <- duplicateCorrelation(p1, mm_r1, block = snames1_ind)
+
+v1 <- voom(dge1_calc$counts, mm_r1, block = snames1_ind, correlation = corfit1$consensus)
+
+fit1 <- lmFit(v1, mm_r1, block = snames1_ind, correlation = corfit1$consensus)
+
+
+#make sure to check which order the columns are in - otherwise they won't match right (it was moved into alphabetical and number order)
+
+mm_r1_names <- str_replace(string = colnames(mm_r1), pattern = "group_1", replacement = "")
+design <- model.matrix(~ group_1 + RUV_1 , annot_new)
+colnames(mm_r1) <- mm_r1_names
+
+cm_r1 <- makeContrasts(
+        V.D24 = DOX_24 - DMSO_24,
+        V.F24 = FLUO_24 - DMSO_24,
+        V.D24r = DOX_24rec - DMSO_24rec,
+        V.F24r = FLUO_24rec - DMSO_24rec,
+        V.D144r = DOX_144rec - DMSO_144rec,
+        V.F144r = FLUO_144rec - DMSO_144rec,
+        RUV_1_24 = RUV_1 - DMSO_24,
+        RUV_1_24r = RUV_1 - DMSO_24rec,
+        RUV_1_144r = RUV_1 - DMSO_144rec,
+        levels = mm_r1
+)
+
+vfit_r1 <- lmFit(p1, mm_r1)
+vfit_r1 <- contrasts.fit(vfit_r1, contrasts = cm_r1)
+
+efit4 <- eBayes(vfit_r1)
+
+results1 = decideTests(efit4)
+summary(results1)
+
+toptable_Dupcor_DOX <- topTable(efit4, coef = "V.D24", number = nrow(dge1_calc$counts), p.value = 1)
+toptable_Dupcor_DOXrec <- topTable(efit4, coef = "V.D24r", number = nrow(dge1_calc$counts), p.value = 1)
+toptable_Dupcor_DOX144 <- topTable(efit4, coef = "V.D144r", number = nrow(dge1_calc$counts), p.value = 1)
+
+toptable_Dupcor_DOX$logFC %>% hist()
+toptable_Dupcor_DOXrec$logFC %>% hist()
+toptable_Dupcor_DOX144$logFC %>% hist()
 ```
 
