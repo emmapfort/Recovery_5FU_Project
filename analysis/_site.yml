@@ -9,6 +9,8 @@ navbar:
     href: about.html
   - text: License
     href: license.html
+  - text: Dose-Response Analysis
+    href: Recovery_DRC.html
   - text: Differential Expression Analysis
     href: Recovery_DE.html
   right:
