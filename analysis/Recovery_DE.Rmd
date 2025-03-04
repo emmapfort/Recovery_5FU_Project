@@ -1796,6 +1796,69 @@ for (plot_name in names(volcano_plots)) {
 
 ```
 
+
+```{r Pull Out Genes of Interest}
+library(biomaRt)
+fC_df_filter_cpm <- as.data.frame(fC_Matrix_Full_cpm_filter)
+my_data <- rownames_to_column(fC_df_filter_cpm, var = "entrezgene_id")
+# my_data_int <- as.integer(my_data$entrezgene_id)
+
+# ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
+# my_attributes <- c('entrezgene_id', 'hgnc_symbol')
+# gene_list <- getBM(attributes=my_attributes,
+#                    filters = "entrezgene_id",
+#                    values = my_data$entrezgene_id,
+#                    mart = ensembl) 
+# gene_list_df <- as.data.frame(gene_list)
+# AllGenes_filtered <- left_join(gene_list_df, my_data_int, by = "entrezgene_id")
+
+#This currently isn't working how I want it to, come back to this
+
+my_data 
+my_data_Fluo <- my_data %>% dplyr::select(c("entrezgene_id", "FLUO_24_Ind1", "FLUO_24rec_Ind1", "FLUO_144rec_Ind1", "FLUO_24_Ind2", "FLUO_24rec_Ind2", "FLUO_144rec_Ind2", "FLUO_24_Ind3", "FLUO_24rec_Ind3", "FLUO_144rec_Ind3", "FLUO_24_Ind4", "FLUO_24rec_Ind4", "FLUO_144rec_Ind4", "FLUO_24_Ind5", "FLUO_24rec_Ind5", "FLUO_144rec_Ind5", "FLUO_24_Ind6", "FLUO_24rec_Ind6", "FLUO_144rec_Ind6", "FLUO_24_Ind6REP", "FLUO_24rec_Ind6REP", "FLUO_144rec_Ind6REP"))
+
+###MDM2 - 4193###
+MDM2 <- my_data %>% filter(entrezgene_id=="4193")
+MDM2_melt <- melt(MDM2, variable.name = "sample")
+ggplot(MDM2_melt, aes(x=value, y=sample, fill = sample))+
+  ggtitle("MDM2")+
+    geom_bar(stat = "identity", width = 0.8)+
+  theme(legend.position = "none")+
+  scale_fill_manual(values = col_tx_large)+
+    xlab("log2cpm")+
+  ylab("Conditions")
+
+MDM2_fluo <- my_data_Fluo %>% filter(entrezgene_id=="4193")
+MDM2_melt_fluo <- melt(MDM2_fluo, variable.name = "sample")
+ggplot(MDM2_melt_fluo, aes(x=value, y=sample, fill = sample))+
+  ggtitle("MDM2")+
+    geom_bar(stat = "identity", width = 0.8)+
+  theme(legend.position = "none")+
+  scale_fill_manual(values = indcol_large)+
+    xlab("log2cpm")+
+  ylab("Conditions")
+
+
+col_tx_large <- rep(c("#499FBD" ,"#DCACED", "#63666D"), 21)
+indcol_large <- c(rep("#003F5C"),3, rep("#45AE91"),3, rep("#58508D"),3 , rep("#BC4099"),3, (rep("#8B3E9B"),3), (rep("#FF6361"),3), rep("#FF2362"), 3)
+
+
+####CDKN1A - 1026####
+CDKN1A <- my_data %>% filter(entrezgene_id=="1026")
+CDKN1A_melt <- melt(CDKN1A, variable.name = "sample")
+ggplot(CDKN1A_melt, aes(x=value, y=sample, fill = sample))+
+  ggtitle("CDKN1A")+
+    geom_bar(stat = "identity", width = 0.8)+
+  theme(legend.position = "none")+
+  scale_fill_manual(values = col_tx_large)+
+    xlab("log2cpm")+
+  ylab("Conditions")
+
+
+```
+
+
+
 Now that I've gone through and figured out the basics of DE - let's remove unwanted variation using ruv
 This uses my replicates to figure out covariates in the data and remove variation occurring due to batch effects or other effects
 We're seeing a batch effect from RNA extraction (all RNAseq library prep done in a single batch) occurring here in PCA and cor. heatmaps rather than individuals clustering together.
