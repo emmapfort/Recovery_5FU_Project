@@ -342,6 +342,9 @@ div.tocify {
   <a href="license.html">License</a>
 </li>
 <li>
+  <a href="Recovery_DRC.html">Dose-Response Analysis</a>
+</li>
+<li>
   <a href="Recovery_DE.html">Differential Expression Analysis</a>
 </li>
       </ul>
@@ -393,7 +396,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-03-03
+<strong>Last updated:</strong> 2025-03-07
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -524,15 +527,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttreef49b130d552e1e2832ed81d9ee5ba386985fcb4ftargetblankf49b130a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttreedba3d2a287618bfe3f74056bad4785b13568b6bdtargetblankdba3d2aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/f49b130d552e1e2832ed81d9ee5ba386985fcb4f" target="_blank">f49b130</a>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/dba3d2a287618bfe3f74056bad4785b13568b6bd" target="_blank">dba3d2a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttreef49b130d552e1e2832ed81d9ee5ba386985fcb4ftargetblankf49b130a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttreedba3d2a287618bfe3f74056bad4785b13568b6bdtargetblankdba3d2aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -542,7 +545,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/f49b130d552e1e2832ed81d9ee5ba386985fcb4f" target="_blank">f49b130</a>.
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/dba3d2a287618bfe3f74056bad4785b13568b6bd" target="_blank">dba3d2a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -559,6 +562,10 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  MDM2_boxplot_1500x600_EMP_250307.png
+    Untracked:  MDM2_boxplot_grouped_1500x600_EMP_250307.png
 
 Unstaged changes:
     Modified:   analysis/Recovery_DE.Rmd
@@ -606,6 +613,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/emmapfort/Recovery_5FU_Project/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/Recovery_DRC.html" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -748,6 +772,43 @@ boxplot(dox24hr78$Ind2_78_Fin ~ dox24hr78$Conc,
         main = &quot;DOXORUBICIN 24hr 78-1 Raw Data&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2024hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-24hr-1">
+Past versions of "Boxplots Raw Data 24hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-24hr-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 24hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 75-1 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -769,6 +830,43 @@ boxplot(dox24hr75$Ind1_75_Fin ~ dox24hr75$Conc,
         main = &quot;DOXORUBICIN 24hr 75-1 Raw Data&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2024hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-24hr-2">
+Past versions of "Boxplots Raw Data 24hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-24hr-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 24hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 17-3 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -790,6 +888,43 @@ boxplot(dox24hr17$Ind3_17_Fin ~ dox24hr17$Conc,
         main = &quot;DOXORUBICIN 24hr 17-3 Raw Data&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2024hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-24hr-3">
+Past versions of "Boxplots Raw Data 24hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-24hr-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 24hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 #FLUO 78-1 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -812,6 +947,43 @@ boxplot(fluo24hr78$Ind2_78_Fin ~ fluo24hr78$Conc,
         main = &quot;5-FLUOROURACIL 24hr 78-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2024hr-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-24hr-4">
+Past versions of "Boxplots Raw Data 24hr-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-24hr-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 24hr-4.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 75-1 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -833,6 +1005,43 @@ boxplot(fluo24hr75$Ind1_75_Fin ~ fluo24hr75$Conc,
         main = &quot;5-FLUOROURACIL 24hr 75-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2024hr-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-24hr-5">
+Past versions of "Boxplots Raw Data 24hr-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-24hr-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 24hr-5.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 17-3 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -854,6 +1063,43 @@ boxplot(fluo24hr17$Ind3_17_Fin ~ fluo24hr17$Conc,
         main = &quot;5-FLUOROURACIL 24hr 17-3&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2024hr-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-24hr-6">
+Past versions of "Boxplots Raw Data 24hr-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-24hr-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 24hr-6.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO 78-1 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -876,6 +1122,43 @@ boxplot(dmso24hr78$Ind2_78_Fin ~ dmso24hr78$Conc,
         main = &quot;DMSO VEHICLE 24hr 78-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2024hr-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-24hr-7">
+Past versions of "Boxplots Raw Data 24hr-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-24hr-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 24hr-7.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 75-1 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -897,6 +1180,43 @@ boxplot(dmso24hr75$Ind1_75_Fin ~ dmso24hr75$Conc,
         main = &quot;DMSO VEHICLE 24hr 75-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2024hr-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-24hr-8">
+Past versions of "Boxplots Raw Data 24hr-8.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-24hr-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 24hr-8.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 17-3 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -918,6 +1238,43 @@ boxplot(dmso24hr17$Ind3_17_Fin ~ dmso24hr17$Conc,
         main = &quot;DMSO VEHICLE 24hr 17-3&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2024hr-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-24hr-9">
+Past versions of "Boxplots Raw Data 24hr-9.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-24hr-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 24hr-9.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now let’s look at the raw data for the 48hr timepoint</p>
 <pre class="r"><code>#####DOX Samples#####
 #DOX 78-1 48HR
@@ -941,6 +1298,43 @@ boxplot(dox48hr78$Ind2_78_Fin ~ dox48hr78$Conc,
         main = &quot;DOXORUBICIN 48hr 78-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2048hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-48hr-1">
+Past versions of "Boxplots Raw Data 48hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-48hr-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 48hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DOXO 75-1 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -962,6 +1356,43 @@ boxplot(dox48hr75$Ind1_75_Fin ~ dox48hr75$Conc,
         main = &quot;DOXORUBICIN 48hr 75-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2048hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-48hr-2">
+Past versions of "Boxplots Raw Data 48hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-48hr-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 48hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DOX 17-3 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -983,6 +1414,43 @@ boxplot(dox48hr17$Ind3_17_Fin ~ dox48hr17$Conc,
         main = &quot;DOXORUBICIN 48hr 17-3&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2048hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-48hr-3">
+Past versions of "Boxplots Raw Data 48hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-48hr-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 48hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 #FLUO 78-1 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -1005,6 +1473,43 @@ boxplot(fluo48hr78$Ind2_78_Fin ~ fluo48hr78$Conc,
         main = &quot;5-FLUOROURACIL 48hr 78-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2048hr-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-48hr-4">
+Past versions of "Boxplots Raw Data 48hr-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-48hr-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 48hr-4.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 75-1 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1026,6 +1531,43 @@ boxplot(fluo48hr75$Ind1_75_Fin ~ fluo48hr75$Conc,
         main = &quot;5-FLUOROURACIL 48hr 75-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2048hr-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-48hr-5">
+Past versions of "Boxplots Raw Data 48hr-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-48hr-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 48hr-5.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 17-3 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1047,6 +1589,43 @@ boxplot(fluo48hr17$Ind3_17_Fin ~ fluo48hr17$Conc,
         main = &quot;5-FLUOROURACIL 48hr 17-3&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2048hr-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-48hr-6">
+Past versions of "Boxplots Raw Data 48hr-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-48hr-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 48hr-6.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO 78-1 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -1069,6 +1648,43 @@ boxplot(dmso48hr78$Ind2_78_Fin ~ dmso48hr78$Conc,
         main = &quot;DMSO VEHICLE 48hr 78-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2048hr-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-48hr-7">
+Past versions of "Boxplots Raw Data 48hr-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-48hr-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 48hr-7.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 75-1 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1090,6 +1706,43 @@ boxplot(dmso48hr75$Ind1_75_Fin ~ dmso48hr75$Conc,
         main = &quot;DMSO VEHICLE 48hr 75-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2048hr-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-48hr-8">
+Past versions of "Boxplots Raw Data 48hr-8.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-48hr-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 48hr-8.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 17-3 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1111,6 +1764,43 @@ boxplot(dmso48hr17$Ind3_17_Fin ~ dmso48hr17$Conc,
         main = &quot;DMSO VEHICLE 48hr 17-3&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2048hr-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-48hr-9">
+Past versions of "Boxplots Raw Data 48hr-9.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-48hr-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 48hr-9.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DOX Samples#####
 #DOX 78-1 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -1133,6 +1823,43 @@ boxplot(dox72hr78$Ind2_78_Fin ~ dox72hr78$Conc,
         main = &quot;DOXORUBICIN 72hr 78-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2072hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-72hr-1">
+Past versions of "Boxplots Raw Data 72hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-72hr-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 72hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DOX 75-1 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1154,6 +1881,43 @@ boxplot(dox72hr75$Ind1_75_Fin ~ dox72hr75$Conc,
         main = &quot;DOXORUBICIN 72hr 75-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2072hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-72hr-2">
+Past versions of "Boxplots Raw Data 72hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-72hr-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 72hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DOX 17-3 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1175,6 +1939,43 @@ boxplot(dox72hr17$Ind3_17_Fin ~ dox72hr17$Conc,
         main = &quot;DOXORUBICIN 72hr 17-3&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2072hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-72hr-3">
+Past versions of "Boxplots Raw Data 72hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-72hr-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 72hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 #FLUO 78-1 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -1197,6 +1998,43 @@ boxplot(fluo72hr78$Ind2_78_Fin ~ fluo72hr78$Conc,
         main = &quot;5-FLUOROURACIL 72hr 78-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2072hr-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-72hr-4">
+Past versions of "Boxplots Raw Data 72hr-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-72hr-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 72hr-4.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 75-1 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1218,6 +2056,43 @@ boxplot(fluo72hr75$Ind1_75_Fin ~ fluo72hr75$Conc,
         main = &quot;5-FLUOROURACIL 72hr 75-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2072hr-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-72hr-5">
+Past versions of "Boxplots Raw Data 72hr-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-72hr-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 72hr-5.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 17-3 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1239,6 +2114,43 @@ boxplot(fluo72hr17$Ind3_17_Fin ~ fluo72hr17$Conc,
         main = &quot;5-FLUOROURACIL 72hr 17-3&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2072hr-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-72hr-6">
+Past versions of "Boxplots Raw Data 72hr-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-72hr-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 72hr-6.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO 78-1 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -1261,6 +2173,43 @@ boxplot(dmso72hr78$Ind2_78_Fin ~ dmso72hr78$Conc,
         main = &quot;DMSO VEHICLE 72hr 78-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2072hr-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-72hr-7">
+Past versions of "Boxplots Raw Data 72hr-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-72hr-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 72hr-7.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 75-1 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1282,6 +2231,43 @@ boxplot(dmso72hr75$Ind1_75_Fin ~ dmso72hr75$Conc,
         main = &quot;DMSO VEHICLE 72hr 75-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2072hr-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-72hr-8">
+Past versions of "Boxplots Raw Data 72hr-8.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-72hr-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 72hr-8.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 17-3 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1303,6 +2289,43 @@ boxplot(dmso72hr17$Ind3_17_Fin ~ dmso72hr17$Conc,
         main = &quot;DMSO VEHICLE 72hr 17-3&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Raw%20Data%2072hr-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Raw-Data-72hr-9">
+Past versions of "Boxplots Raw Data 72hr-9.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Raw-Data-72hr-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Raw Data 72hr-9.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now that I’ve taken a look at the raw data, let’s look at the
 analyzed data step by step The following steps were taken in analysis:
 1. Import raw fluorescence values (RFLU) from platereader, baseline 0hr
@@ -1333,6 +2356,43 @@ boxplot(dox24hr78$Ind2_78_Fin_noBG ~ dox24hr78$Conc,
         main = &quot;DOXORUBICIN 24hr 78-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20removed%2024hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-removed-24hr-1">
+Past versions of "Boxplots BG removed 24hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-removed-24hr-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG removed 24hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 75-1 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1354,6 +2414,43 @@ boxplot(dox24hr75$Ind1_75_Fin_noBG ~ dox24hr75$Conc,
         main = &quot;DOXORUBICIN 24hr 75-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20removed%2024hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-removed-24hr-2">
+Past versions of "Boxplots BG removed 24hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-removed-24hr-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG removed 24hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 17-3 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1375,6 +2472,43 @@ boxplot(dox24hr17$Ind3_17_Fin_noBG ~ dox24hr17$Conc,
         main = &quot;DOXORUBICIN 24hr 17-3 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20removed%2024hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-removed-24hr-3">
+Past versions of "Boxplots BG removed 24hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-removed-24hr-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG removed 24hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 #FLUO 78-1 no BG 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -1397,6 +2531,43 @@ boxplot(fluo24hr78$Ind2_78_Fin_noBG ~ fluo24hr78$Conc,
         main = &quot;5-FLUOROURACIL 24hr 78-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20removed%2024hr-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-removed-24hr-4">
+Past versions of "Boxplots BG removed 24hr-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-removed-24hr-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG removed 24hr-4.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 75-1 no BG 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1418,6 +2589,43 @@ boxplot(fluo24hr75$Ind1_75_Fin_noBG ~ fluo24hr75$Conc,
         main = &quot;5-FLUOROURACIL 24hr 75-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20removed%2024hr-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-removed-24hr-5">
+Past versions of "Boxplots BG removed 24hr-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-removed-24hr-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG removed 24hr-5.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 17-3 no BG 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1439,6 +2647,43 @@ boxplot(fluo24hr17$Ind3_17_Fin_noBG ~ fluo24hr17$Conc,
         main = &quot;5-FLUOROURACIL 24hr 17-3 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20removed%2024hr-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-removed-24hr-6">
+Past versions of "Boxplots BG removed 24hr-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-removed-24hr-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG removed 24hr-6.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO 78-1 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -1461,6 +2706,43 @@ boxplot(dmso24hr78$Ind2_78_Fin_noBG ~ dmso24hr78$Conc,
         main = &quot;DMSO VEHICLE 24hr 78-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20removed%2024hr-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-removed-24hr-7">
+Past versions of "Boxplots BG removed 24hr-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-removed-24hr-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG removed 24hr-7.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 75-1 no BG 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1482,6 +2764,43 @@ boxplot(dmso24hr75$Ind1_75_Fin_noBG ~ dmso24hr75$Conc,
         main = &quot;DMSO VEHICLE 24hr 75-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20removed%2024hr-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-removed-24hr-8">
+Past versions of "Boxplots BG removed 24hr-8.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-removed-24hr-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG removed 24hr-8.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 17-3 no BG 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1503,6 +2822,43 @@ boxplot(dmso24hr17$Ind3_17_Fin_noBG ~ dmso24hr17$Conc,
         main = &quot;DMSO VEHICLE 24hr 17-3 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20removed%2024hr-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-removed-24hr-9">
+Past versions of "Boxplots BG removed 24hr-9.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-removed-24hr-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG removed 24hr-9.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DOX Samples#####
 #dox 78-1 no BG 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -1525,6 +2881,43 @@ boxplot(dox48hr78$Ind2_78_Fin_noBG ~ dox48hr78$Conc,
         main = &quot;DOXORUBICIN 48hr 78-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2048hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-48hr-1">
+Past versions of "Boxplots BG Removed 48hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-48hr-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 48hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 75-1 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1546,6 +2939,43 @@ boxplot(dox48hr75$Ind1_75_Fin_noBG ~ dox48hr75$Conc,
         main = &quot;DOXORUBICIN 48hr 75-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2048hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-48hr-2">
+Past versions of "Boxplots BG Removed 48hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-48hr-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 48hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 17-3 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1567,6 +2997,43 @@ boxplot(dox48hr17$Ind3_17_Fin_noBG ~ dox48hr17$Conc,
         main = &quot;DOXORUBICIN 48hr 17-3 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2048hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-48hr-3">
+Past versions of "Boxplots BG Removed 48hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-48hr-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 48hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 #FLUO 78-1 no BG 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -1589,6 +3056,43 @@ boxplot(fluo48hr78$Ind2_78_Fin_noBG ~ fluo48hr78$Conc,
         main = &quot;5-FLUOROURACIL 48hr 78-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2048hr-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-48hr-4">
+Past versions of "Boxplots BG Removed 48hr-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-48hr-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 48hr-4.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 75-1 no BG 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1610,6 +3114,43 @@ boxplot(fluo48hr75$Ind1_75_Fin_noBG ~ fluo48hr75$Conc,
         main = &quot;5-FLUOROURACIL 48hr 75-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2048hr-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-48hr-5">
+Past versions of "Boxplots BG Removed 48hr-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-48hr-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 48hr-5.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 17-3 no BG 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1631,6 +3172,43 @@ boxplot(fluo48hr17$Ind3_17_Fin_noBG ~ fluo48hr17$Conc,
         main = &quot;5-FLUOROURACIL 48hr 17-3 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2048hr-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-48hr-6">
+Past versions of "Boxplots BG Removed 48hr-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-48hr-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 48hr-6.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO 78-1 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -1653,6 +3231,43 @@ boxplot(dmso48hr78$Ind2_78_Fin_noBG ~ dmso48hr78$Conc,
         main = &quot;DMSO VEHICLE 48hr 78-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2048hr-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-48hr-7">
+Past versions of "Boxplots BG Removed 48hr-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-48hr-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 48hr-7.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 75-1 no BG 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1674,6 +3289,43 @@ boxplot(dmso48hr75$Ind1_75_Fin_noBG ~ dmso48hr75$Conc,
         main = &quot;DMSO VEHICLE 48hr 75-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2048hr-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-48hr-8">
+Past versions of "Boxplots BG Removed 48hr-8.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-48hr-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 48hr-8.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 17-3 no BG 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1695,6 +3347,43 @@ boxplot(dmso48hr17$Ind3_17_Fin_noBG ~ dmso48hr17$Conc,
         main = &quot;DMSO VEHICLE 48hr 17-3 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2048hr-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-48hr-9">
+Past versions of "Boxplots BG Removed 48hr-9.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-48hr-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 48hr-9.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DOX Samples#####
 #dox 78-1 no BG 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -1717,6 +3406,43 @@ boxplot(dox72hr78$Ind2_78_Fin_noBG ~ dox72hr78$Conc,
         main = &quot;DOXORUBICIN 72hr 78-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2072hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-72hr-1">
+Past versions of "Boxplots BG Removed 72hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-72hr-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 72hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 75-1 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1738,6 +3464,43 @@ boxplot(dox72hr75$Ind1_75_Fin_noBG ~ dox72hr75$Conc,
         main = &quot;DOXORUBICIN 72hr 75-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2072hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-72hr-2">
+Past versions of "Boxplots BG Removed 72hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-72hr-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 72hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 17-3 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1759,6 +3522,43 @@ boxplot(dox72hr17$Ind3_17_Fin_noBG ~ dox72hr17$Conc,
         main = &quot;DOXORUBICIN 72hr 17-3 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2072hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-72hr-3">
+Past versions of "Boxplots BG Removed 72hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-72hr-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 72hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 #FLUO 78-1 no BG 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -1781,6 +3581,43 @@ boxplot(fluo72hr78$Ind2_78_Fin_noBG ~ fluo72hr78$Conc,
         main = &quot;5-FLUOROURACIL 72hr 78-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2072hr-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-72hr-4">
+Past versions of "Boxplots BG Removed 72hr-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-72hr-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 72hr-4.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 75-1 no BG 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1802,6 +3639,43 @@ boxplot(fluo72hr75$Ind1_75_Fin_noBG ~ fluo72hr75$Conc,
         main = &quot;5-FLUOROURACIL 72hr 75-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2072hr-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-72hr-5">
+Past versions of "Boxplots BG Removed 72hr-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-72hr-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 72hr-5.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 17-3 no BG 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1823,6 +3697,43 @@ boxplot(fluo72hr17$Ind3_17_Fin_noBG ~ fluo72hr17$Conc,
         main = &quot;5-FLUOROURACIL 72hr 17-3 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2072hr-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-72hr-6">
+Past versions of "Boxplots BG Removed 72hr-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-72hr-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 72hr-6.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO 78-1 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -1845,6 +3756,43 @@ boxplot(dmso72hr78$Ind2_78_Fin_noBG ~ dmso72hr78$Conc,
         main = &quot;DMSO VEHICLE 72hr 78-1&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2072hr-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-72hr-7">
+Past versions of "Boxplots BG Removed 72hr-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-72hr-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 72hr-7.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 75-1 no BG 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1866,6 +3814,43 @@ boxplot(dmso72hr75$Ind1_75_Fin_noBG ~ dmso72hr75$Conc,
         main = &quot;DMSO VEHICLE 72hr 75-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2072hr-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-72hr-8">
+Past versions of "Boxplots BG Removed 72hr-8.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-72hr-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 72hr-8.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 17-3 no BG 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1887,6 +3872,43 @@ boxplot(dmso72hr17$Ind3_17_Fin_noBG ~ dmso72hr17$Conc,
         main = &quot;DMSO VEHICLE 72hr 17-3 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20BG%20Removed%2072hr-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-BG-Removed-72hr-9">
+Past versions of "Boxplots BG Removed 72hr-9.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-BG-Removed-72hr-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots BG Removed 72hr-9.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now let’s plot the next step: subtracting the empty wells</p>
 <pre class="r"><code>#####DOX Samples#####
 #dox 78-1 Empty Wells 24HR
@@ -1910,6 +3932,44 @@ boxplot(dox24hr78$Ind2_78_Fin_noBG_Low ~ dox24hr78$Conc,
         main = &quot;DOXORUBICIN 24hr 78-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2024hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-1">
+Past versions of "Boxplots Empty Wells Removed 24hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 24hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 75-1 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1931,6 +3991,44 @@ boxplot(dox24hr75$Ind1_75_Fin_noBG_Low ~ dox24hr75$Conc,
         main = &quot;DOXORUBICIN 24hr 75-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2024hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-2">
+Past versions of "Boxplots Empty Wells Removed 24hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 24hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 17-3 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1952,6 +4050,44 @@ boxplot(dox24hr17$Ind3_17_Fin_noBG_Low ~ dox24hr17$Conc,
         main = &quot;DOXORUBICIN 24hr 17-3 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2024hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-3">
+Past versions of "Boxplots Empty Wells Removed 24hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 24hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 #FLUO 78-1 no BG 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -1974,6 +4110,44 @@ boxplot(fluo24hr78$Ind2_78_Fin_noBG_Low ~ fluo24hr78$Conc,
         main = &quot;5-FLUOROURACIL 24hr 78-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2024hr-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-4">
+Past versions of "Boxplots Empty Wells Removed 24hr-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 24hr-4.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 75-1 no BG Empty 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -1995,6 +4169,44 @@ boxplot(fluo24hr75$Ind1_75_Fin_noBG_Low ~ fluo24hr75$Conc,
         main = &quot;5-FLUOROURACIL 24hr 75-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2024hr-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-5">
+Past versions of "Boxplots Empty Wells Removed 24hr-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 24hr-5.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 17-3 no BG Empty 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2016,6 +4228,44 @@ boxplot(fluo24hr17$Ind3_17_Fin_noBG_Low ~ fluo24hr17$Conc,
         main = &quot;5-FLUOROURACIL 24hr 17-3 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2024hr-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-6">
+Past versions of "Boxplots Empty Wells Removed 24hr-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 24hr-6.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO 78-1 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -2038,6 +4288,44 @@ boxplot(dmso24hr78$Ind2_78_Fin_noBG_Low ~ dmso24hr78$Conc,
         main = &quot;DMSO VEHICLE 24hr 78-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2024hr-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-7">
+Past versions of "Boxplots Empty Wells Removed 24hr-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 24hr-7.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 75-1 no BG Empty 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2059,6 +4347,44 @@ boxplot(dmso24hr75$Ind1_75_Fin_noBG_Low ~ dmso24hr75$Conc,
         main = &quot;DMSO VEHICLE 24hr 75-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2024hr-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-8">
+Past versions of "Boxplots Empty Wells Removed 24hr-8.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 24hr-8.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 17-3 no BG Empty 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2080,6 +4406,44 @@ boxplot(dmso24hr17$Ind3_17_Fin_noBG_Low ~ dmso24hr17$Conc,
         main = &quot;DMSO VEHICLE 24hr 17-3 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2024hr-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-9">
+Past versions of "Boxplots Empty Wells Removed 24hr-9.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-24hr-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 24hr-9.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DOX Samples#####
 #dox 78-1 Empty Wells 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -2102,6 +4466,44 @@ boxplot(dox48hr78$Ind2_78_Fin_noBG_Low ~ dox48hr78$Conc,
         main = &quot;DOXORUBICIN 48hr 78-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2048hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-1">
+Past versions of "Boxplots Empty Wells Removed 48hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 48hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 75-1 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2123,6 +4525,44 @@ boxplot(dox48hr75$Ind1_75_Fin_noBG_Low ~ dox48hr75$Conc,
         main = &quot;DOXORUBICIN 48hr 75-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2048hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-2">
+Past versions of "Boxplots Empty Wells Removed 48hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 48hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 17-3 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2144,6 +4584,44 @@ boxplot(dox48hr17$Ind3_17_Fin_noBG_Low ~ dox48hr17$Conc,
         main = &quot;DOXORUBICIN 48hr 17-3 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2048hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-3">
+Past versions of "Boxplots Empty Wells Removed 48hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 48hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 #FLUO 78-1 no BG 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -2166,6 +4644,44 @@ boxplot(fluo48hr78$Ind2_78_Fin_noBG_Low ~ fluo48hr78$Conc,
         main = &quot;5-FLUOROURACIL 48hr 78-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2048hr-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-4">
+Past versions of "Boxplots Empty Wells Removed 48hr-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 48hr-4.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 75-1 no BG Empty 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2187,6 +4703,44 @@ boxplot(fluo48hr75$Ind1_75_Fin_noBG_Low ~ fluo48hr75$Conc,
         main = &quot;5-FLUOROURACIL 48hr 75-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2048hr-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-5">
+Past versions of "Boxplots Empty Wells Removed 48hr-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 48hr-5.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 17-3 no BG Empty 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2208,6 +4762,44 @@ boxplot(fluo48hr17$Ind3_17_Fin_noBG_Low ~ fluo48hr17$Conc,
         main = &quot;5-FLUOROURACIL 48hr 17-3 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2048hr-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-6">
+Past versions of "Boxplots Empty Wells Removed 48hr-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 48hr-6.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO 78-1 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -2230,6 +4822,44 @@ boxplot(dmso48hr78$Ind2_78_Fin_noBG_Low ~ dmso48hr78$Conc,
         main = &quot;DMSO VEHICLE 48hr 78-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2048hr-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-7">
+Past versions of "Boxplots Empty Wells Removed 48hr-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 48hr-7.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 75-1 no BG Empty 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2251,6 +4881,44 @@ boxplot(dmso48hr75$Ind1_75_Fin_noBG_Low ~ dmso48hr75$Conc,
         main = &quot;DMSO VEHICLE 48hr 75-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2048hr-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-8">
+Past versions of "Boxplots Empty Wells Removed 48hr-8.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 48hr-8.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 17-3 no BG Empty 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2272,6 +4940,44 @@ boxplot(dmso48hr17$Ind3_17_Fin_noBG_Low ~ dmso48hr17$Conc,
         main = &quot;DMSO VEHICLE 48hr 17-3 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2048hr-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-9">
+Past versions of "Boxplots Empty Wells Removed 48hr-9.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-48hr-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 48hr-9.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DOX Samples#####
 #dox 78-1 Empty Wells 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -2294,6 +5000,44 @@ boxplot(dox72hr78$Ind2_78_Fin_noBG_Low ~ dox72hr78$Conc,
         main = &quot;DOXORUBICIN 72hr 78-1 no BG&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2072hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-1">
+Past versions of "Boxplots Empty Wells Removed 72hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 72hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 75-1 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2315,6 +5059,44 @@ boxplot(dox72hr75$Ind1_75_Fin_noBG_Low ~ dox72hr75$Conc,
         main = &quot;DOXORUBICIN 72hr 75-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2072hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-2">
+Past versions of "Boxplots Empty Wells Removed 72hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 72hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 17-3 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2336,6 +5118,44 @@ boxplot(dox72hr17$Ind3_17_Fin_noBG_Low ~ dox72hr17$Conc,
         main = &quot;DOXORUBICIN 72hr 17-3 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2072hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-3">
+Past versions of "Boxplots Empty Wells Removed 72hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 72hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 #FLUO 78-1 no BG 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -2358,6 +5178,44 @@ boxplot(fluo72hr78$Ind2_78_Fin_noBG_Low ~ fluo72hr78$Conc,
         main = &quot;5-FLUOROURACIL 72hr 78-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2072hr-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-4">
+Past versions of "Boxplots Empty Wells Removed 72hr-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 72hr-4.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 75-1 no BG Empty 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2379,6 +5237,44 @@ boxplot(fluo72hr75$Ind1_75_Fin_noBG_Low ~ fluo72hr75$Conc,
         main = &quot;5-FLUOROURACIL 72hr 75-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2072hr-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-5">
+Past versions of "Boxplots Empty Wells Removed 72hr-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 72hr-5.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 17-3 no BG Empty 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2400,6 +5296,44 @@ boxplot(fluo72hr17$Ind3_17_Fin_noBG_Low ~ fluo72hr17$Conc,
         main = &quot;5-FLUOROURACIL 72hr 17-3 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2072hr-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-6">
+Past versions of "Boxplots Empty Wells Removed 72hr-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 72hr-6.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO 78-1 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -2422,6 +5356,44 @@ boxplot(dmso72hr78$Ind2_78_Fin_noBG_Low ~ dmso72hr78$Conc,
         main = &quot;DMSO VEHICLE 72hr 78-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2072hr-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-7">
+Past versions of "Boxplots Empty Wells Removed 72hr-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 72hr-7.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 75-1 no BG Empty 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2443,6 +5415,44 @@ boxplot(dmso72hr75$Ind1_75_Fin_noBG_Low ~ dmso72hr75$Conc,
         main = &quot;DMSO VEHICLE 72hr 75-1 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2072hr-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-8">
+Past versions of "Boxplots Empty Wells Removed 72hr-8.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 72hr-8.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 17-3 no BG Empty 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2464,6 +5474,44 @@ boxplot(dmso72hr17$Ind3_17_Fin_noBG_Low ~ dmso72hr17$Conc,
         main = &quot;DMSO VEHICLE 72hr 17-3 no BG Empty&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Empty%20Wells%20Removed%2072hr-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-9">
+Past versions of "Boxplots Empty Wells Removed 72hr-9.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Empty-Wells-Removed-72hr-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Empty Wells Removed 72hr-9.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now let’s plot the third step: dividing the matched vehicle
 values</p>
 <pre class="r"><code>#####DOX Samples#####
@@ -2488,6 +5536,44 @@ boxplot(dox24hr78$Ind2_78_Fin_noBG_Low_Veh ~ dox24hr78$Conc,
         main = &quot;DOXORUBICIN 24hr 78-1 no BG Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2024hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-1">
+Past versions of "Boxplots Matched Vehicle Divided 24hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 24hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 75-1 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2509,6 +5595,44 @@ boxplot(dox24hr75$Ind1_75_Fin_noBG_Low_Veh ~ dox24hr75$Conc,
         main = &quot;DOXORUBICIN 24hr 75-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2024hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-2">
+Past versions of "Boxplots Matched Vehicle Divided 24hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 24hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 17-3 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2530,6 +5654,44 @@ boxplot(dox24hr17$Ind3_17_Fin_noBG_Low_Veh ~ dox24hr17$Conc,
         main = &quot;DOXORUBICIN 24hr 17-3 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2024hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-3">
+Past versions of "Boxplots Matched Vehicle Divided 24hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 24hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 #FLUO 78-1 no BG 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -2552,6 +5714,44 @@ boxplot(fluo24hr78$Ind2_78_Fin_noBG_Low_Veh ~ fluo24hr78$Conc,
         main = &quot;5-FLUOROURACIL 24hr 78-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2024hr-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-4">
+Past versions of "Boxplots Matched Vehicle Divided 24hr-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 24hr-4.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 75-1 no BG Empty 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2573,6 +5773,44 @@ boxplot(fluo24hr75$Ind1_75_Fin_noBG_Low_Veh ~ fluo24hr75$Conc,
         main = &quot;5-FLUOROURACIL 24hr 75-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2024hr-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-5">
+Past versions of "Boxplots Matched Vehicle Divided 24hr-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 24hr-5.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 17-3 no BG Empty 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2594,6 +5832,44 @@ boxplot(fluo24hr17$Ind3_17_Fin_noBG_Low_Veh ~ fluo24hr17$Conc,
         main = &quot;5-FLUOROURACIL 24hr 17-3 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2024hr-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-6">
+Past versions of "Boxplots Matched Vehicle Divided 24hr-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 24hr-6.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO 78-1 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -2616,6 +5892,44 @@ boxplot(dmso24hr78$Ind2_78_Fin_noBG_Low_Veh ~ dmso24hr78$Conc,
         main = &quot;DMSO VEHICLE 24hr 78-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2024hr-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-7">
+Past versions of "Boxplots Matched Vehicle Divided 24hr-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 24hr-7.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 75-1 no BG Empty 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2637,6 +5951,44 @@ boxplot(dmso24hr75$Ind1_75_Fin_noBG_Low_Veh ~ dmso24hr75$Conc,
         main = &quot;DMSO VEHICLE 24hr 75-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2024hr-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-8">
+Past versions of "Boxplots Matched Vehicle Divided 24hr-8.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 24hr-8.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 17-3 no BG Empty 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2658,6 +6010,44 @@ boxplot(dmso24hr17$Ind3_17_Fin_noBG_Low_Veh ~ dmso24hr17$Conc,
         main = &quot;DMSO VEHICLE 24hr 17-3 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2024hr-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-9">
+Past versions of "Boxplots Matched Vehicle Divided 24hr-9.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-24hr-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 24hr-9.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DOX Samples#####
 #dox 78-1 Veh 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -2680,6 +6070,44 @@ boxplot(dox48hr78$Ind2_78_Fin_noBG_Low_Veh ~ dox48hr78$Conc,
         main = &quot;DOXORUBICIN 48hr 78-1 no BG Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2048hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-1">
+Past versions of "Boxplots Matched Vehicle Divided 48hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 48hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 75-1 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2701,6 +6129,44 @@ boxplot(dox48hr75$Ind1_75_Fin_noBG_Low_Veh ~ dox48hr75$Conc,
         main = &quot;DOXORUBICIN 48hr 75-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2048hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-2">
+Past versions of "Boxplots Matched Vehicle Divided 48hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 48hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 17-3 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2722,6 +6188,44 @@ boxplot(dox48hr17$Ind3_17_Fin_noBG_Low_Veh ~ dox48hr17$Conc,
         main = &quot;DOXORUBICIN 48hr 17-3 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2048hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-3">
+Past versions of "Boxplots Matched Vehicle Divided 48hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 48hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 #FLUO 78-1 no BG 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -2744,6 +6248,44 @@ boxplot(fluo48hr78$Ind2_78_Fin_noBG_Low_Veh ~ fluo48hr78$Conc,
         main = &quot;5-FLUOROURACIL 48hr 78-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2048hr-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-4">
+Past versions of "Boxplots Matched Vehicle Divided 48hr-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 48hr-4.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 75-1 no BG Empty 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2765,6 +6307,44 @@ boxplot(fluo48hr75$Ind1_75_Fin_noBG_Low_Veh ~ fluo48hr75$Conc,
         main = &quot;5-FLUOROURACIL 48hr 75-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2048hr-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-5">
+Past versions of "Boxplots Matched Vehicle Divided 48hr-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 48hr-5.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 17-3 no BG Empty 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2786,6 +6366,44 @@ boxplot(fluo48hr17$Ind3_17_Fin_noBG_Low_Veh ~ fluo48hr17$Conc,
         main = &quot;5-FLUOROURACIL 48hr 17-3 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2048hr-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-6">
+Past versions of "Boxplots Matched Vehicle Divided 48hr-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 48hr-6.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO 78-1 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -2808,6 +6426,44 @@ boxplot(dmso48hr78$Ind2_78_Fin_noBG_Low_Veh ~ dmso48hr78$Conc,
         main = &quot;DMSO VEHICLE 48hr 78-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2048hr-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-7">
+Past versions of "Boxplots Matched Vehicle Divided 48hr-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 48hr-7.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 75-1 no BG Empty 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2829,6 +6485,44 @@ boxplot(dmso48hr75$Ind1_75_Fin_noBG_Low_Veh ~ dmso48hr75$Conc,
         main = &quot;DMSO VEHICLE 48hr 75-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2048hr-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-8">
+Past versions of "Boxplots Matched Vehicle Divided 48hr-8.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 48hr-8.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 17-3 no BG Empty 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2850,6 +6544,44 @@ boxplot(dmso48hr17$Ind3_17_Fin_noBG_Low_Veh ~ dmso48hr17$Conc,
         main = &quot;DMSO VEHICLE 48hr 17-3 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2048hr-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-9">
+Past versions of "Boxplots Matched Vehicle Divided 48hr-9.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-48hr-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 48hr-9.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DOX Samples#####
 #dox 78-1 Veh 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -2872,6 +6604,44 @@ boxplot(dox72hr78$Ind2_78_Fin_noBG_Low_Veh ~ dox72hr78$Conc,
         main = &quot;DOXORUBICIN 72hr 78-1 no BG Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2072hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-1">
+Past versions of "Boxplots Matched Vehicle Divided 72hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 72hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 75-1 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2893,6 +6663,44 @@ boxplot(dox72hr75$Ind1_75_Fin_noBG_Low_Veh ~ dox72hr75$Conc,
         main = &quot;DOXORUBICIN 72hr 75-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2072hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-2">
+Past versions of "Boxplots Matched Vehicle Divided 72hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 72hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#dox 17-3 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2914,6 +6722,44 @@ boxplot(dox72hr17$Ind3_17_Fin_noBG_Low_Veh ~ dox72hr17$Conc,
         main = &quot;DOXORUBICIN 72hr 17-3 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2072hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-3">
+Past versions of "Boxplots Matched Vehicle Divided 72hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 72hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 #FLUO 78-1 no BG 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -2936,6 +6782,44 @@ boxplot(fluo72hr78$Ind2_78_Fin_noBG_Low_Veh ~ fluo72hr78$Conc,
         main = &quot;5-FLUOROURACIL 72hr 78-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2072hr-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-4">
+Past versions of "Boxplots Matched Vehicle Divided 72hr-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 72hr-4.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 75-1 no BG Empty 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2957,6 +6841,44 @@ boxplot(fluo72hr75$Ind1_75_Fin_noBG_Low_Veh ~ fluo72hr75$Conc,
         main = &quot;5-FLUOROURACIL 72hr 75-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2072hr-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-5">
+Past versions of "Boxplots Matched Vehicle Divided 72hr-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-5"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 72hr-5.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#FLUO 17-3 no BG Empty 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -2978,6 +6900,44 @@ boxplot(fluo72hr17$Ind3_17_Fin_noBG_Low_Veh ~ fluo72hr17$Conc,
         main = &quot;5-FLUOROURACIL 72hr 17-3 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2072hr-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-6">
+Past versions of "Boxplots Matched Vehicle Divided 72hr-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-6"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 72hr-6.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO 78-1 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -3000,6 +6960,44 @@ boxplot(dmso72hr78$Ind2_78_Fin_noBG_Low_Veh ~ dmso72hr78$Conc,
         main = &quot;DMSO VEHICLE 72hr 78-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2072hr-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-7">
+Past versions of "Boxplots Matched Vehicle Divided 72hr-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-7"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 72hr-7.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 75-1 no BG Empty 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -3021,6 +7019,44 @@ boxplot(dmso72hr75$Ind1_75_Fin_noBG_Low_Veh ~ dmso72hr75$Conc,
         main = &quot;DMSO VEHICLE 72hr 75-1 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2072hr-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-8">
+Past versions of "Boxplots Matched Vehicle Divided 72hr-8.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-8"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 72hr-8.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#DMSO 17-3 no BG Empty 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3), nrow = 2, ncol = 2), heights = c(0.5, 2, 2, 2))
@@ -3042,6 +7078,44 @@ boxplot(dmso72hr17$Ind3_17_Fin_noBG_Low_Veh ~ dmso72hr17$Conc,
         main = &quot;DMSO VEHICLE 72hr 17-3 no BG Empty Veh&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Matched%20Vehicle%20Divided%2072hr-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-9">
+Past versions of "Boxplots Matched Vehicle Divided 72hr-9.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Matched-Vehicle-Divided-72hr-9"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Matched Vehicle Divided 72hr-9.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now for the final step, dividing the final timepoint by the initial
 baseline reading at 0hr</p>
 <pre class="r"><code>#####DOX Samples#####
@@ -3073,6 +7147,43 @@ boxplot(dox24hr17$Ind3_17_Div ~ dox24hr17$Conc,
         main = &quot;17-3 Div&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Final%20Data%2024hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Final-Data-24hr-1">
+Past versions of "Boxplots Final Data 24hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Final-Data-24hr-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Final Data 24hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3, 1, 4), nrow = 2, ncol = 3), heights = c(0.5, 2, 2, 2))
@@ -3101,6 +7212,43 @@ boxplot(fluo24hr17$Ind3_17_Div ~ fluo24hr17$Conc,
         main = &quot;17-3 Div&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Final%20Data%2024hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Final-Data-24hr-2">
+Past versions of "Boxplots Final Data 24hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Final-Data-24hr-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Final Data 24hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO All 24HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -3130,6 +7278,43 @@ boxplot(dmso24hr17$Ind3_17_Div ~ dmso24hr17$Conc,
         main = &quot;17-3 Div&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Final%20Data%2024hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Final-Data-24hr-3">
+Past versions of "Boxplots Final Data 24hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Final-Data-24hr-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Final Data 24hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DOX Samples#####
 #dox All 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -3159,6 +7344,43 @@ boxplot(dox48hr17$Ind3_17_Div ~ dox48hr17$Conc,
         main = &quot;17-3 Div&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Final%20Data%2048hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Final-Data-48hr-1">
+Past versions of "Boxplots Final Data 48hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Final-Data-48hr-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Final Data 48hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3, 1, 4), nrow = 2, ncol = 3), heights = c(0.5, 2, 2, 2))
@@ -3187,6 +7409,43 @@ boxplot(fluo48hr17$Ind3_17_Div ~ fluo48hr17$Conc,
         main = &quot;17-3 Div&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Final%20Data%2048hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Final-Data-48hr-2">
+Past versions of "Boxplots Final Data 48hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Final-Data-48hr-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Final Data 48hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO All 48HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -3216,6 +7475,43 @@ boxplot(dmso48hr17$Ind3_17_Div ~ dmso48hr17$Conc,
         main = &quot;17-3 Div&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Final%20Data%2048hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Final-Data-48hr-3">
+Past versions of "Boxplots Final Data 48hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Final-Data-48hr-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Final Data 48hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DOX Samples#####
 #dox All 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -3245,6 +7541,43 @@ boxplot(dox72hr17$Ind3_17_Div ~ dox72hr17$Conc,
         main = &quot;17-3 Div&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Final%20Data%2072hr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Final-Data-72hr-1">
+Past versions of "Boxplots Final Data 72hr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Final-Data-72hr-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Final Data 72hr-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####FLUO samples#####
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3, 1, 4), nrow = 2, ncol = 3), heights = c(0.5, 2, 2, 2))
@@ -3273,6 +7606,43 @@ boxplot(fluo72hr17$Ind3_17_Div ~ fluo72hr17$Conc,
         main = &quot;17-3 Div&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Final%20Data%2072hr-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Final-Data-72hr-2">
+Past versions of "Boxplots Final Data 72hr-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Final-Data-72hr-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Final Data 72hr-2.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#####DMSO samples#####
 #DMSO All 72HR
 par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
@@ -3302,6 +7672,43 @@ boxplot(dmso72hr17$Ind3_17_Div ~ dmso72hr17$Conc,
         main = &quot;17-3 Div&quot;
 )</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/Boxplots%20Final%20Data%2072hr-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Boxplots-Final-Data-72hr-3">
+Past versions of "Boxplots Final Data 72hr-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Boxplots-Final-Data-72hr-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/Boxplots Final Data 72hr-3.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now that I’ve plotted out all of the analysis steps and nothing looks
 amiss, let’s start fitting my models for DRC I used the DRC package in R
 At this point, I am only showing the relevant data for both treatments,
@@ -3445,6 +7852,44 @@ par(new=TRUE)
 doxtox72_17_model &lt;- drm(response~Conc, data = dox72tox_17, fct = LL.4(fixed = c(NA, 0, 100, NA)))
 plot(doxtox72_17_model, add = TRUE, col = &quot;#254F5E&quot;, lwd = 4, lty = c(3), type = &quot;none&quot;)</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/DRCs%20Doxorubicin%20All%20Timepoints-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-DRCs-Doxorubicin-All-Timepoints-1">
+Past versions of "DRCs Doxorubicin All Timepoints-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-DRCs-Doxorubicin-All-Timepoints-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/DRCs Doxorubicin All Timepoints-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
 layout(matrix(c(1, 2, 1, 3, 1, 4), nrow = 2, ncol = 3), heights = c(0.3, 1, 1, 1))
 #layout.show(3)
@@ -3500,6 +7945,44 @@ par(new=TRUE)
 fluotox72_17_model &lt;- drm(response~Conc, data = fluo72tox_17, fct = LL.4(fixed = c(NA, NA, NA, NA)))
 plot(fluotox72_17_model, add = TRUE, col = &quot;#EACDF4&quot;, lwd = 4, lty = c(3), type = &quot;none&quot;)</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/DRCs%205-Fluorouracil%20All%20Timepoints-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-DRCs-5-Fluorouracil-All-Timepoints-1">
+Past versions of "DRCs 5-Fluorouracil All Timepoints-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-DRCs-5-Fluorouracil-All-Timepoints-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/DRCs 5-Fluorouracil All Timepoints-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Test to see if I can plot all of these on the same plot using colors
 and lines</p>
 <pre class="r"><code>#for this to work I need to find unique lines/colors for all of these 
@@ -3600,6 +8083,43 @@ plot(fluotox72_17_model, add = TRUE, col = &quot;#674C71&quot;, lwd = 4, lty = c
 
 legend(x = &quot;bottomleft&quot;, legend = c(&quot;Ind1 24hr&quot;, &quot;Ind2 24hr&quot;, &quot;Ind3 24hr&quot;, &quot;Ind1 48hr&quot;, &quot;Ind2 48hr&quot;, &quot;Ind3 48hr&quot;, &quot;Ind1 72hr&quot;, &quot;Ind2 72hr&quot;, &quot;Ind3 72hr&quot;), lty = c(1, 1, 1, 2, 2, 2, 3, 3, 3, 1), col = rep(c(&quot;#DCACED&quot;, &quot;#9B72AA&quot;, &quot;#674C71&quot;),3), lwd = 4)</code></pre>
 <p><img src="figure/Recovery_DRC.Rmd/DRCs%20All%20Timepoints-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-DRCs-All-Timepoints-1">
+Past versions of "DRCs All Timepoints-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-DRCs-All-Timepoints-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/109e14b3c22f86cc354396e06ea4c3cd23e72321/docs/figure/Recovery_DRC.Rmd/DRCs All Timepoints-1.png" target="_blank">109e14b</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#had to change the legends to show all of the line types and colors
 #24hr = line 1, 48hr = line 2, 72hr = line 3</code></pre>
 <br>
