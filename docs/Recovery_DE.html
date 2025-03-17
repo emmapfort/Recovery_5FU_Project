@@ -375,7 +375,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -386,8 +386,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -400,9 +400,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>Recovery_5FU/</code> <span
@@ -425,21 +425,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -530,15 +527,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttree9ca54e95f48bbdb3dbb73ad1b181472bbb904808targetblank9ca54e9a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttreea4bd51c5652ffbabf183774f8fce769f89fab35etargetblanka4bd51ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/9ca54e95f48bbdb3dbb73ad1b181472bbb904808" target="_blank">9ca54e9</a>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/a4bd51c5652ffbabf183774f8fce769f89fab35e" target="_blank">a4bd51c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttree9ca54e95f48bbdb3dbb73ad1b181472bbb904808targetblank9ca54e9a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttreea4bd51c5652ffbabf183774f8fce769f89fab35etargetblanka4bd51ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +545,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/9ca54e95f48bbdb3dbb73ad1b181472bbb904808" target="_blank">9ca54e9</a>.
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/a4bd51c5652ffbabf183774f8fce769f89fab35e" target="_blank">a4bd51c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -566,18 +563,6 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/heartgenes.csv
-
-Untracked files:
-    Untracked:  CDKN1A_geneplot_Boxplot_EMP_250311.png
-    Untracked:  CardiacGenes_Recovery_EMP_250317.png
-    Untracked:  MDM2_boxplot_1500x600_EMP_250307.png
-    Untracked:  MDM2_boxplot_grouped_1500x600_EMP_250307.png
-    Untracked:  MDM2_geneplot_Boxplot_EMP_250311.png
-    Untracked:  SIRT1_geneplot_Boxplot_EMP_250311.png
-    Untracked:  data/ensembl_backup.RDS
-
-Unstaged changes:
-    Modified:   analysis/Recovery_DE.Rmd
 
 </code></pre>
 <p>
@@ -622,6 +607,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/analysis/Recovery_DE.Rmd" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+<td>
+wflow_git_commit(all = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/emmapfort/Recovery_5FU_Project/46dd9751dab5111a423bee62077fa28c0304cb66/docs/Recovery_DE.html" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+<td>
+wflow_git_commit(all = TRUE)
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1144,6 +1163,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/QC checks Raw Counts-1.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/QC checks Raw Counts-1.png" target="_blank">41aef30</a>
 </td>
 <td>
@@ -1200,6 +1230,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/QC checks Raw Counts-2.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/QC checks Raw Counts-2.png" target="_blank">41aef30</a>
@@ -1318,6 +1359,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/QC checks Raw Counts-4.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/QC checks Raw Counts-4.png" target="_blank">41aef30</a>
 </td>
 <td>
@@ -1374,6 +1426,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/QC checks Raw Counts-5.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/QC checks Raw Counts-5.png" target="_blank">41aef30</a>
@@ -1872,6 +1935,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/PCA Plots Updated-1.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/PCA Plots Updated-1.png" target="_blank">41aef30</a>
 </td>
 <td>
@@ -1920,6 +1994,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/PCA Plots Updated-2.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/PCA Plots Updated-2.png" target="_blank">41aef30</a>
 </td>
 <td>
@@ -1966,6 +2051,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/PCA Plots Updated-3.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/PCA Plots Updated-3.png" target="_blank">41aef30</a>
@@ -2283,6 +2379,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/Differential Expression Analysis filtering rowMeans greater than 0-1.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Differential Expression Analysis filtering rowMeans greater than 0-1.png" target="_blank">41aef30</a>
 </td>
 <td>
@@ -2366,6 +2473,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/Differential Expression Analysis filtering rowMeans greater than 0-2.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Differential Expression Analysis filtering rowMeans greater than 0-2.png" target="_blank">41aef30</a>
 </td>
 <td>
@@ -2443,6 +2561,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/Differential Expression Analysis filtering rowMeans greater than 1-1.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Differential Expression Analysis filtering rowMeans greater than 1-1.png" target="_blank">41aef30</a>
@@ -2526,6 +2655,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/Differential Expression Analysis filtering rowMeans greater than 1-2.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Differential Expression Analysis filtering rowMeans greater than 1-2.png" target="_blank">41aef30</a>
@@ -2629,6 +2769,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-1.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-1.png" target="_blank">41aef30</a>
 </td>
 <td>
@@ -2666,6 +2817,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-2.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-2.png" target="_blank">41aef30</a>
@@ -2709,6 +2871,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-3.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-3.png" target="_blank">41aef30</a>
 </td>
 <td>
@@ -2746,6 +2919,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-4.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-4.png" target="_blank">41aef30</a>
@@ -2789,6 +2973,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-5.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-5.png" target="_blank">41aef30</a>
 </td>
 <td>
@@ -2826,6 +3021,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/46dd9751dab5111a423bee62077fa28c0304cb66/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-6.png" target="_blank">46dd975</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/41aef3082699655003b27905342a428e6365a1f9/docs/figure/Recovery_DE.Rmd/Volcano Plots from Pairwise Gene Analysis-6.png" target="_blank">41aef30</a>
@@ -26338,6 +26544,43 @@ ggplot(MDM2_melt, aes(x=value, y=sample, fill = sample))+
     xlab(&quot;log2cpm&quot;)+
   ylab(&quot;Conditions&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Pull%20Out%20Genes%20of%20Interest-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Pull-Out-Genes-of-Interest-1">
+Past versions of "Pull Out Genes of Interest-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Pull-Out-Genes-of-Interest-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/Pull Out Genes of Interest-1.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>###FLUO ONLY####
 MDM2_fluo &lt;- my_data_Fluo %&gt;% filter(entrezgene_id==&quot;4193&quot;)
 MDM2_melt_fluo &lt;- melt(MDM2_fluo, variable.name = &quot;sample&quot;)</code></pre>
@@ -26350,6 +26593,43 @@ MDM2_melt_fluo &lt;- melt(MDM2_fluo, variable.name = &quot;sample&quot;)</code><
     xlab(&quot;log2cpm&quot;)+
   ylab(&quot;Conditions&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Pull%20Out%20Genes%20of%20Interest-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Pull-Out-Genes-of-Interest-2">
+Past versions of "Pull Out Genes of Interest-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Pull-Out-Genes-of-Interest-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/Pull Out Genes of Interest-2.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####CDKN1A - 1026####
 CDKN1A &lt;- my_data %&gt;% filter(entrezgene_id==&quot;1026&quot;)
 CDKN1A_new &lt;- as.data.frame(CDKN1A) %&gt;% dplyr::select(&quot;entrezgene_id&quot;, &quot;DOX_24_Ind1&quot;, &quot;DOX_24rec_Ind1&quot;, &quot;DOX_144rec_Ind1&quot;, &quot;FLUO_24_Ind1&quot;, &quot;FLUO_24rec_Ind1&quot;, &quot;FLUO_144rec_Ind1&quot;, &quot;DMSO_24_Ind1&quot;, &quot;DMSO_24rec_Ind1&quot;, &quot;DMSO_144rec_Ind1&quot;,&quot;DOX_24_Ind2&quot;, &quot;DOX_24rec_Ind2&quot;, &quot;DOX_144rec_Ind2&quot;, &quot;FLUO_24_Ind2&quot;, &quot;FLUO_24rec_Ind2&quot;, &quot;FLUO_144rec_Ind2&quot;, &quot;DMSO_24_Ind2&quot;, &quot;DMSO_24rec_Ind2&quot;, &quot;DMSO_144rec_Ind2&quot;, &quot;DOX_24_Ind3&quot;, &quot;DOX_24rec_Ind3&quot;, &quot;DOX_144rec_Ind3&quot;, &quot;FLUO_24_Ind3&quot;, &quot;FLUO_24rec_Ind3&quot;, &quot;FLUO_144rec_Ind3&quot;, &quot;DMSO_24_Ind3&quot;, &quot;DMSO_24rec_Ind3&quot;, &quot;DMSO_144rec_Ind3&quot;, &quot;DOX_24_Ind4&quot;, &quot;DOX_24rec_Ind4&quot;, &quot;DOX_144rec_Ind4&quot;, &quot;FLUO_24_Ind4&quot;, &quot;FLUO_24rec_Ind4&quot;, &quot;FLUO_144rec_Ind4&quot;, &quot;DMSO_24_Ind4&quot;, &quot;DMSO_24rec_Ind4&quot;, &quot;DMSO_144rec_Ind4&quot;, &quot;DOX_24_Ind5&quot;, &quot;DOX_24rec_Ind5&quot;, &quot;DOX_144rec_Ind5&quot;, &quot;FLUO_24_Ind5&quot;, &quot;FLUO_24rec_Ind5&quot;, &quot;FLUO_144rec_Ind5&quot;, &quot;DMSO_24_Ind5&quot;, &quot;DMSO_24rec_Ind5&quot;, &quot;DMSO_144rec_Ind5&quot;, &quot;DOX_24_Ind6&quot;, &quot;DOX_24rec_Ind6&quot;, &quot;DOX_144rec_Ind6&quot;, &quot;FLUO_24_Ind6&quot;, &quot;FLUO_24rec_Ind6&quot;, &quot;FLUO_144rec_Ind6&quot;, &quot;DMSO_24_Ind6&quot;, &quot;DMSO_24rec_Ind6&quot;, &quot;DMSO_144rec_Ind6&quot;, &quot;DOX_24_Ind6REP&quot;, &quot;DOX_24rec_Ind6REP&quot;, &quot;DOX_144rec_Ind6REP&quot;, &quot;FLUO_24_Ind6REP&quot;, &quot;FLUO_24rec_Ind6REP&quot;, &quot;FLUO_144rec_Ind6REP&quot;, &quot;DMSO_24_Ind6REP&quot;, &quot;DMSO_24rec_Ind6REP&quot;, &quot;DMSO_144rec_Ind6REP&quot;)
@@ -26376,6 +26656,43 @@ ggplot(CDKN1A_melt, aes(x=value, y=sample, fill = sample))+
     xlab(&quot;log2cpm&quot;)+
   ylab(&quot;Conditions&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Pull%20Out%20Genes%20of%20Interest-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Pull-Out-Genes-of-Interest-3">
+Past versions of "Pull Out Genes of Interest-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Pull-Out-Genes-of-Interest-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/Pull Out Genes of Interest-3.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####SIRT1 - 23411####
 SIRT1 &lt;- my_data %&gt;% filter(entrezgene_id==&quot;23411&quot;)
 SIRT1_new &lt;- as.data.frame(SIRT1) %&gt;% dplyr::select(&quot;entrezgene_id&quot;, &quot;DOX_24_Ind1&quot;, &quot;DOX_24rec_Ind1&quot;, &quot;DOX_144rec_Ind1&quot;, &quot;FLUO_24_Ind1&quot;, &quot;FLUO_24rec_Ind1&quot;, &quot;FLUO_144rec_Ind1&quot;, &quot;DMSO_24_Ind1&quot;, &quot;DMSO_24rec_Ind1&quot;, &quot;DMSO_144rec_Ind1&quot;,&quot;DOX_24_Ind2&quot;, &quot;DOX_24rec_Ind2&quot;, &quot;DOX_144rec_Ind2&quot;, &quot;FLUO_24_Ind2&quot;, &quot;FLUO_24rec_Ind2&quot;, &quot;FLUO_144rec_Ind2&quot;, &quot;DMSO_24_Ind2&quot;, &quot;DMSO_24rec_Ind2&quot;, &quot;DMSO_144rec_Ind2&quot;, &quot;DOX_24_Ind3&quot;, &quot;DOX_24rec_Ind3&quot;, &quot;DOX_144rec_Ind3&quot;, &quot;FLUO_24_Ind3&quot;, &quot;FLUO_24rec_Ind3&quot;, &quot;FLUO_144rec_Ind3&quot;, &quot;DMSO_24_Ind3&quot;, &quot;DMSO_24rec_Ind3&quot;, &quot;DMSO_144rec_Ind3&quot;, &quot;DOX_24_Ind4&quot;, &quot;DOX_24rec_Ind4&quot;, &quot;DOX_144rec_Ind4&quot;, &quot;FLUO_24_Ind4&quot;, &quot;FLUO_24rec_Ind4&quot;, &quot;FLUO_144rec_Ind4&quot;, &quot;DMSO_24_Ind4&quot;, &quot;DMSO_24rec_Ind4&quot;, &quot;DMSO_144rec_Ind4&quot;, &quot;DOX_24_Ind5&quot;, &quot;DOX_24rec_Ind5&quot;, &quot;DOX_144rec_Ind5&quot;, &quot;FLUO_24_Ind5&quot;, &quot;FLUO_24rec_Ind5&quot;, &quot;FLUO_144rec_Ind5&quot;, &quot;DMSO_24_Ind5&quot;, &quot;DMSO_24rec_Ind5&quot;, &quot;DMSO_144rec_Ind5&quot;, &quot;DOX_24_Ind6&quot;, &quot;DOX_24rec_Ind6&quot;, &quot;DOX_144rec_Ind6&quot;, &quot;FLUO_24_Ind6&quot;, &quot;FLUO_24rec_Ind6&quot;, &quot;FLUO_144rec_Ind6&quot;, &quot;DMSO_24_Ind6&quot;, &quot;DMSO_24rec_Ind6&quot;, &quot;DMSO_144rec_Ind6&quot;, &quot;DOX_24_Ind6REP&quot;, &quot;DOX_24rec_Ind6REP&quot;, &quot;DOX_144rec_Ind6REP&quot;, &quot;FLUO_24_Ind6REP&quot;, &quot;FLUO_24rec_Ind6REP&quot;, &quot;FLUO_144rec_Ind6REP&quot;, &quot;DMSO_24_Ind6REP&quot;, &quot;DMSO_24rec_Ind6REP&quot;, &quot;DMSO_144rec_Ind6REP&quot;)
@@ -26404,6 +26721,43 @@ SIRT1_melt &lt;- melt(SIRT1, variable.name = &quot;sample&quot;)</code></pre>
     xlab(&quot;log2cpm&quot;)+
   ylab(&quot;Conditions&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Pull%20Out%20Genes%20of%20Interest-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Pull-Out-Genes-of-Interest-4">
+Past versions of "Pull Out Genes of Interest-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Pull-Out-Genes-of-Interest-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/Pull Out Genes of Interest-4.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####Pull out genes and make them into boxplots with points for each individual####
 ####MDM2####
 MDM2_melt_df_all2 %&gt;% ggplot(aes(x = txtime, y = value))+
@@ -26416,6 +26770,43 @@ MDM2_melt_df_all2 %&gt;% ggplot(aes(x = txtime, y = value))+
   xlab(&quot;Conditions&quot;)+
   ylab(&quot;log2cpm&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Pull%20Out%20Genes%20of%20Interest-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Pull-Out-Genes-of-Interest-5">
+Past versions of "Pull Out Genes of Interest-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-Pull-Out-Genes-of-Interest-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/Pull Out Genes of Interest-5.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####CDKN1A####
 CDKN1A_melt_df_all2 %&gt;% ggplot(aes(x = txtime, y = value))+
   geom_boxplot(aes(fill = tx))+
@@ -26427,6 +26818,43 @@ CDKN1A_melt_df_all2 %&gt;% ggplot(aes(x = txtime, y = value))+
   xlab(&quot;Conditions&quot;)+
   ylab(&quot;log2cpm&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Pull%20Out%20Genes%20of%20Interest-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Pull-Out-Genes-of-Interest-6">
+Past versions of "Pull Out Genes of Interest-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-Pull-Out-Genes-of-Interest-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/Pull Out Genes of Interest-6.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####SIRT1####
 SIRT1_melt_df_all2 %&gt;% ggplot(aes(x = txtime, y = value))+
   geom_boxplot(aes(fill = tx))+
@@ -26438,6 +26866,43 @@ SIRT1_melt_df_all2 %&gt;% ggplot(aes(x = txtime, y = value))+
   xlab(&quot;Conditions&quot;)+
   ylab(&quot;log2cpm&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Pull%20Out%20Genes%20of%20Interest-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Pull-Out-Genes-of-Interest-7">
+Past versions of "Pull Out Genes of Interest-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-Pull-Out-Genes-of-Interest-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/Pull Out Genes of Interest-7.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now that I’ve pulled out some select genes for each condition - let’s
 look at some typically expressed cardiac genes to check whether they are
 present in this dataset</p>
@@ -26481,6 +26946,44 @@ fungraph %&gt;%
         axis.text = element_text(size =10, color = &quot;black&quot;, angle = 0),
         strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/Typical%20genes%20expressed%20in%20iPSC-CMs-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Typical-genes-expressed-in-iPSC-CMs-1">
+Past versions of "Typical genes expressed in iPSC-CMs-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Typical-genes-expressed-in-iPSC-CMs-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/Typical genes expressed in iPSC-CMs-1.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now that I’ve gone through and figured out the basics of DE - let’s
 remove unwanted variation using ruv This uses my replicates to figure
 out covariates in the data and remove variation occurring due to batch
@@ -50411,6 +50914,43 @@ than 6 becomes difficult to discriminate
 <pre><code>Warning: Removed 9 rows containing missing values or values outside the scale range
 (`geom_point()`).</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-1">
+Past versions of "RUVs Correction-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-1.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># after ruv k=1
 prcomp_res &lt;- prcomp(t(set$normalizedCounts), scale. = FALSE, center = TRUE)
 ggplot2::autoplot(prcomp_res, data = annot, colour = &quot;Tx_Time&quot;, shape = &quot;Ind&quot;, size =4)+
@@ -50423,6 +50963,43 @@ than 6 becomes difficult to discriminate
 Removed 9 rows containing missing values or values outside the scale range
 (`geom_point()`).</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-2">
+Past versions of "RUVs Correction-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-2.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># after ruv k=2
 prcomp_res &lt;- prcomp(t(set2$normalizedCounts), scale. = FALSE, center = TRUE)
 ggplot2::autoplot(prcomp_res, data = annot, colour = &quot;Tx_Time&quot;, shape = &quot;Ind&quot;, size =4)+
@@ -50435,6 +51012,43 @@ than 6 becomes difficult to discriminate
 Removed 9 rows containing missing values or values outside the scale range
 (`geom_point()`).</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-3">
+Past versions of "RUVs Correction-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-3.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># after ruv k=3
 prcomp_res &lt;- prcomp(t(set3$normalizedCounts), scale. = FALSE, center = TRUE)
 ggplot2::autoplot(prcomp_res, data = annot, colour = &quot;Tx_Time&quot;, shape = &quot;Ind&quot;, size =4)+
@@ -50447,6 +51061,43 @@ than 6 becomes difficult to discriminate
 Removed 9 rows containing missing values or values outside the scale range
 (`geom_point()`).</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-4">
+Past versions of "RUVs Correction-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-4.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#after ruv k=4
 prcomp_res &lt;- prcomp(t(set4$normalizedCounts), scale. = FALSE, center = TRUE)
 ggplot2::autoplot(prcomp_res, data = annot, colour = &quot;Tx_Time&quot;, shape = &quot;Ind&quot;, size =4)+
@@ -50459,6 +51110,43 @@ than 6 becomes difficult to discriminate
 Removed 9 rows containing missing values or values outside the scale range
 (`geom_point()`).</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-5">
+Past versions of "RUVs Correction-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-5.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># after ruv k=5
 prcomp_res &lt;- prcomp(t(set5$normalizedCounts), scale. = FALSE, center = TRUE)
 ggplot2::autoplot(prcomp_res, data = annot, colour = &quot;Tx_Time&quot;, shape = &quot;Ind&quot;, size =4)+
@@ -50471,6 +51159,43 @@ than 6 becomes difficult to discriminate
 Removed 9 rows containing missing values or values outside the scale range
 (`geom_point()`).</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-6">
+Past versions of "RUVs Correction-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-6.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####new PCA plots no correction####
 prcomp_res &lt;- prcomp(t(counts), scale. = FALSE, center = TRUE)
 annot_prcomp_res &lt;- prcomp_res$x %&gt;% cbind(., annot)
@@ -50485,6 +51210,43 @@ annot_prcomp_res %&gt;% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
   guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))+
   ggtitle(&quot;no RUVs&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-7">
+Past versions of "RUVs Correction-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-7.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>###with RUVs correction####
 #k=1
 prcomp_res_1 &lt;- prcomp(t(set$normalizedCounts), scale. = FALSE, center = TRUE)
@@ -50500,6 +51262,43 @@ annot_prcomp_res_1 %&gt;% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
   guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))+
   ggtitle(&quot;RUVs k=1&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-8">
+Past versions of "RUVs Correction-8.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-8.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#k=2
 prcomp_res_2 &lt;- prcomp(t(set2$normalizedCounts), scale. = FALSE, center = TRUE)
 annot_prcomp_res_2 &lt;- prcomp_res_2$x %&gt;% cbind(., annot)
@@ -50514,6 +51313,43 @@ annot_prcomp_res_2 %&gt;% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
   guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))+
   ggtitle(&quot;RUVs k=2&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-9">
+Past versions of "RUVs Correction-9.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-9.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#k=3
 prcomp_res_3 &lt;- prcomp(t(set3$normalizedCounts), scale. = FALSE, center = TRUE)
 annot_prcomp_res_3 &lt;- prcomp_res_3$x %&gt;% cbind(., annot)
@@ -50528,6 +51364,43 @@ annot_prcomp_res_3 %&gt;% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
   guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))+
   ggtitle(&quot;RUVs k=3&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-10">
+Past versions of "RUVs Correction-10.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-10.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#k=4
 prcomp_res_4 &lt;- prcomp(t(set4$normalizedCounts), scale. = FALSE, center = TRUE)
 annot_prcomp_res_4 &lt;- prcomp_res_4$x %&gt;% cbind(., annot)
@@ -50542,6 +51415,43 @@ annot_prcomp_res_4 %&gt;% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
   guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))+
   ggtitle(&quot;RUVs k=4&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-11.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-11">
+Past versions of "RUVs Correction-11.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-11" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-11.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#k=5
 prcomp_res_5 &lt;- prcomp(t(set5$normalizedCounts), scale. = FALSE, center = TRUE)
 annot_prcomp_res_5 &lt;- prcomp_res_5$x %&gt;% cbind(., annot)
@@ -50556,6 +51466,43 @@ annot_prcomp_res_5 %&gt;% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
   guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))+
   ggtitle(&quot;RUVs k=5&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-12.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-12">
+Past versions of "RUVs Correction-12.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-12" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-12.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>group_2 &lt;- rep(c(&quot;DOX_24&quot;,&quot;FLUO_24&quot;,
                                 &quot;DMSO_24&quot;,
                                 &quot;DOX_24rec&quot;,
@@ -50638,6 +51585,43 @@ mm_r1 &lt;- model.matrix(~0 + group_2 + RUV_1, data = annot)
 
 p1 &lt;- voom(dge1_calc$counts, mm_r1, plot = TRUE)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-13.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-13">
+Past versions of "RUVs Correction-13.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-13" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-13.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>corfit1 &lt;- duplicateCorrelation(p1, mm_r1, block = snames1_ind)
 
 v1 &lt;- voom(dge1_calc$counts, mm_r1, block = snames1_ind, correlation = corfit1$consensus)
@@ -50649,6 +51633,43 @@ mm_r2 &lt;- model.matrix(~0 + group_2 + RUV_2, data = annot)
 
 p2 &lt;- voom(dge1_calc$counts, mm_r2, plot = TRUE)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-14.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-14">
+Past versions of "RUVs Correction-14.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-14" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-14.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>corfit2 &lt;- duplicateCorrelation(p2, mm_r2, block = snames1_ind)
 
 v2 &lt;- voom(dge1_calc$counts, mm_r2, block = snames1_ind, correlation = corfit2$consensus)
@@ -50660,6 +51681,43 @@ mm_r3 &lt;- model.matrix(~0 + group_2 + RUV_3, data = annot)
 
 p3 &lt;- voom(dge1_calc$counts, mm_r3, plot = TRUE)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-15.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-15">
+Past versions of "RUVs Correction-15.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-15" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-15.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>corfit3 &lt;- duplicateCorrelation(p3, mm_r3, block = snames1_ind)
 
 v3 &lt;- voom(dge1_calc$counts, mm_r3, block = snames1_ind, correlation = corfit3$consensus)
@@ -50671,6 +51729,43 @@ mm_r4 &lt;- model.matrix(~0 + group_2 + RUV_4, data = annot)
 
 p4 &lt;- voom(dge1_calc$counts, mm_r4, plot = TRUE)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-16.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-16">
+Past versions of "RUVs Correction-16.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-16" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-16.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>corfit4 &lt;- duplicateCorrelation(p4, mm_r4, block = snames1_ind)
 
 v4 &lt;- voom(dge1_calc$counts, mm_r4, block = snames1_ind, correlation = corfit4$consensus)
@@ -50682,6 +51777,43 @@ mm_r5 &lt;- model.matrix(~0 + group_2 + RUV_5, data = annot)
 
 p5 &lt;- voom(dge1_calc$counts, mm_r5, plot = TRUE)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-17.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-17">
+Past versions of "RUVs Correction-17.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-17" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-17.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>corfit5 &lt;- duplicateCorrelation(p5, mm_r5, block = snames1_ind)
 
 v5 &lt;- voom(dge1_calc$counts, mm_r5, block = snames1_ind, correlation = corfit5$consensus)
@@ -50850,10 +51982,121 @@ toptable_Dupcor_DOX144 &lt;- topTable(efit1, coef = &quot;V.D144r&quot;, number 
 #k=1 plots
 toptable_Dupcor_DOX$logFC %&gt;% hist(, main= &quot;RUVs k=1 DOX 24hr Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-18.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-18">
+Past versions of "RUVs Correction-18.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-18" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-18.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>toptable_Dupcor_DOXrec$logFC %&gt;% hist(, main = &quot;RUVs k=1 DOX 24Rec Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-19.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-19">
+Past versions of "RUVs Correction-19.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-19" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-19.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>toptable_Dupcor_DOX144$logFC %&gt;% hist(, main = &quot;RUVs k=1 DOX 144Rec Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-20.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-20">
+Past versions of "RUVs Correction-20.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-20" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-20.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#k=2
 toptable2_Dupcor_DOX &lt;- topTable(efit2, coef = &quot;V.D24&quot;, number = nrow(dge1_calc$counts), p.value = 1)
 toptable2_Dupcor_DOXrec &lt;- topTable(efit2, coef = &quot;V.D24r&quot;, number = nrow(dge1_calc$counts), p.value = 1)
@@ -50861,10 +52104,121 @@ toptable2_Dupcor_DOX144 &lt;- topTable(efit2, coef = &quot;V.D144r&quot;, number
 #k=2 plots
 toptable2_Dupcor_DOX$logFC %&gt;% hist(, main= &quot;RUVs k=2 DOX 24hr Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-21.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-21">
+Past versions of "RUVs Correction-21.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-21" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-21.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>toptable2_Dupcor_DOXrec$logFC %&gt;% hist(, main = &quot;RUVs k=2 DOX 24Rec Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-22.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-22">
+Past versions of "RUVs Correction-22.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-22" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-22.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>toptable2_Dupcor_DOX144$logFC %&gt;% hist(, main = &quot;RUVs k=2 DOX 144Rec Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-23.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-23">
+Past versions of "RUVs Correction-23.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-23" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-23.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#k=3
 toptable3_Dupcor_DOX &lt;- topTable(efit3, coef = &quot;V.D24&quot;, number = nrow(dge1_calc$counts), p.value = 1)
 toptable3_Dupcor_DOXrec &lt;- topTable(efit3, coef = &quot;V.D24r&quot;, number = nrow(dge1_calc$counts), p.value = 1)
@@ -50872,10 +52226,121 @@ toptable3_Dupcor_DOX144 &lt;- topTable(efit3, coef = &quot;V.D144r&quot;, number
 #k=3 plots
 toptable3_Dupcor_DOX$logFC %&gt;% hist(, main= &quot;RUVs k=3 DOX 24hr Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-24.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-24">
+Past versions of "RUVs Correction-24.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-24" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-24.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>toptable3_Dupcor_DOXrec$logFC %&gt;% hist(, main = &quot;RUVs k=3 DOX 24Rec Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-25.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-25">
+Past versions of "RUVs Correction-25.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-25" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-25.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>toptable3_Dupcor_DOX144$logFC %&gt;% hist(, main = &quot;RUVs k=3 DOX 144Rec Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-26.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-26">
+Past versions of "RUVs Correction-26.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-26" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-26.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#k=4
 toptable4_Dupcor_DOX &lt;- topTable(efit4, coef = &quot;V.D24&quot;, number = nrow(dge1_calc$counts), p.value = 1)
 toptable4_Dupcor_DOXrec &lt;- topTable(efit4, coef = &quot;V.D24r&quot;, number = nrow(dge1_calc$counts), p.value = 1)
@@ -50883,10 +52348,121 @@ toptable4_Dupcor_DOX144 &lt;- topTable(efit4, coef = &quot;V.D144r&quot;, number
 #k=4 plots
 toptable4_Dupcor_DOX$logFC %&gt;% hist(, main= &quot;RUVs k=4 DOX 24hr Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-27.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-27">
+Past versions of "RUVs Correction-27.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-27" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-27.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>toptable4_Dupcor_DOXrec$logFC %&gt;% hist(, main = &quot;RUVs k=4 DOX 24Rec Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-28.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-28">
+Past versions of "RUVs Correction-28.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-28" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-28.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>toptable4_Dupcor_DOX144$logFC %&gt;% hist(, main = &quot;RUVs k=4 DOX 144Rec Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-29.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-29">
+Past versions of "RUVs Correction-29.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-29" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-29.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#k=5
 toptable5_Dupcor_DOX &lt;- topTable(efit5, coef = &quot;V.D24&quot;, number = nrow(dge1_calc$counts), p.value = 1)
 toptable5_Dupcor_DOXrec &lt;- topTable(efit5, coef = &quot;V.D24r&quot;, number = nrow(dge1_calc$counts), p.value = 1)
@@ -50894,10 +52470,121 @@ toptable5_Dupcor_DOX144 &lt;- topTable(efit5, coef = &quot;V.D144r&quot;, number
 #k=5 plots
 toptable5_Dupcor_DOX$logFC %&gt;% hist(, main= &quot;RUVs k=5 DOX 24hr Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-30.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-30">
+Past versions of "RUVs Correction-30.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-30" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-30.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>toptable5_Dupcor_DOXrec$logFC %&gt;% hist(, main = &quot;RUVs k=5 DOX 24Rec Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-31.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-31">
+Past versions of "RUVs Correction-31.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-31" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-31.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>toptable5_Dupcor_DOX144$logFC %&gt;% hist(, main = &quot;RUVs k=5 DOX 144Rec Toptable&quot;)</code></pre>
 <p><img src="figure/Recovery_DE.Rmd/RUVs%20Correction-32.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RUVs-Correction-32">
+Past versions of "RUVs Correction-32.png"
+</button>
+</p>
+<div id="fig-no-spaces-RUVs-Correction-32" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a4bd51c5652ffbabf183774f8fce769f89fab35e/docs/figure/Recovery_DE.Rmd/RUVs Correction-32.png" target="_blank">a4bd51c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now I want to attempt to use Cormotif to look at motifs within my
 conditions</p>
 <br>
