@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-```{r Libraries, echo=FALSE, results='hide'}
+```{r Libraries, echo=FALSE, results='hide', collapse=TRUE}
 library(ggplot2)
 library(reshape2)
 library(hrbrthemes)
@@ -789,7 +789,7 @@ Counts_Full_df <- data.frame(fC_Matrix_Full)
 #define colors
 ind_col <- c("#003F5C", "#45AE91",  "#58508D", "#BC4099", "#8B3E9B", "#FF6361", "#FF2362")
 
-tx_col <- c("#63666D", "#DCACED", "#499FBD")
+tx_col <- c("#499FBD", "#DCACED","#63666D")
 
 time_col <- c("#fbb4b9", "#f768a1", "#ae017e")
 
@@ -1403,7 +1403,7 @@ fill_col_ind <- c("#66C2A5", "#FC8D62", "#1F78B4", "#E78AC3", "#A6D854", "#FFD92
 
 fill_col_ind_dark <- c("#003F5C", "#45AE91",  "#58508D", "#BC4099", "#8B3E9B", "#FF6361", "#FF2362")
 
-fill_col_tx <- c("#63666D", "#DCACED", "#499FBD")
+fill_col_tx <- c("#499FBD", "#DCACED", "#63666D")
 
 #Now I have to switch the fill and color parameters as it's doing the opposite of what I wanted: need individuals to be the outline color (color), and tx to be the inside color (fill)
 
@@ -1580,7 +1580,16 @@ group_1 <- rep(c("DOX_24","FLUO_24",
                                 "FLUO_144rec",
                                 "DMSO_144rec"), 6)
 
-dge <- DGEList.data.frame(counts = counts_DE_filter, group = group_1, genes = row.names(counts_DE_filter))
+group_2 <- rep(c("DOX_24","FLUO_24",
+                                "DMSO_24",
+                                "DOX_24rec",
+                                "FLUO_24rec",
+                                "DMSO_24rec",
+                                "DOX_144rec",
+                                "FLUO_144rec",
+                                "DMSO_144rec"), 7)
+
+dge <- DGEList.data.frame(counts = counts_DE_filter, group = group_2, genes = row.names(counts_DE_filter))
 
 #check the inital file before norm factors are calculated
 #dge$samples
@@ -1605,7 +1614,7 @@ snames_tx <- snames$Treatment
 snames_ind <- snames$Individual
 
 #Create my model matrix
-mm_r <- model.matrix(~0 + group_1)
+mm_r <- model.matrix(~0 + group_2)
 
 p <- voom(dge_calc$counts, mm_r, plot = TRUE)
 
@@ -1662,7 +1671,7 @@ counts_DE_filter1 <- counts_DE[rowMeans_DE > 1,]
 dim(counts_DE_filter1)
 
 
-dge1 <- DGEList.data.frame(counts = counts_DE_filter1, group = group_1, genes = row.names(counts_DE_filter1))
+dge1 <- DGEList.data.frame(counts = counts_DE_filter1, group = group_2, genes = row.names(counts_DE_filter1))
 
 #check the inital file before norm factors are calculated
 #dge1$samples
@@ -1685,7 +1694,7 @@ snames1_tx <- snames1$Treatment
 snames1_ind <- snames1$Individual
 
 #Create my model matrix
-mm_r1 <- model.matrix(~0 + group_1)
+mm_r1 <- model.matrix(~0 + group_2)
 
 p1 <- voom(dge1_calc$counts, mm_r1, plot = TRUE)
 
@@ -1798,28 +1807,48 @@ for (plot_name in names(volcano_plots)) {
 
 
 ```{r Pull Out Genes of Interest}
-library(biomaRt)
 fC_df_filter_cpm <- as.data.frame(fC_Matrix_Full_cpm_filter)
 my_data <- rownames_to_column(fC_df_filter_cpm, var = "entrezgene_id")
-# my_data_int <- as.integer(my_data$entrezgene_id)
+col_tx_large <- rep(c("#499FBD" ,"#DCACED", "#63666D"), 21)
+col_tx_large_2 <- c(rep("#499FBD" , 3), rep("#DCACED", 3), rep("#63666D", 3), 21)
 
-# ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
-# my_attributes <- c('entrezgene_id', 'hgnc_symbol')
-# gene_list <- getBM(attributes=my_attributes,
-#                    filters = "entrezgene_id",
-#                    values = my_data$entrezgene_id,
-#                    mart = ensembl) 
-# gene_list_df <- as.data.frame(gene_list)
-# AllGenes_filtered <- left_join(gene_list_df, my_data_int, by = "entrezgene_id")
 
-#This currently isn't working how I want it to, come back to this
+##Add columns with more information to each gene I pull out##
+ind_names <- c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9))
+time_names <- c(rep("24", 3), rep("24rec", 3), rep("144rec", 3))
+time_names2 <- c("24", "24rec", "144rec")
+time_names <- c(rep(time_names, 7))
+time_names2 <- c(rep(time_names2, 7))
+tx_names <- c("DOX", "FLUO", "DMSO")
+tx_names <- c(rep(tx_names, 21))
+tx_names2 <- c(rep("DOX", 3), rep("FLUO", 3), rep("DMSO", 3))
+tx_names2 <- c(rep(tx_names2, 21))
+txtime_names <- c("DOX_24", "FLUO_24", "DMSO_24", "DOX_24rec", "FLUO_24rec", "DMSO_24rec", "DOX_144rec",   "FLUO_144rec",  "DMSO_144rec")
+txtime_names <- c(rep(txtime_names, 7))
+txtime_names2 <- c("DOX_24", "DOX_24rec", "DOX_144rec", "FLUO_24", "FLUO_24rec", "FLUO_144rec","DMSO_24", "DMSO_24rec", "DMSO_144rec")
+txtime_names2 <- c(rep(txtime_names2, 7))
+
 
 my_data 
 my_data_Fluo <- my_data %>% dplyr::select(c("entrezgene_id", "FLUO_24_Ind1", "FLUO_24rec_Ind1", "FLUO_144rec_Ind1", "FLUO_24_Ind2", "FLUO_24rec_Ind2", "FLUO_144rec_Ind2", "FLUO_24_Ind3", "FLUO_24rec_Ind3", "FLUO_144rec_Ind3", "FLUO_24_Ind4", "FLUO_24rec_Ind4", "FLUO_144rec_Ind4", "FLUO_24_Ind5", "FLUO_24rec_Ind5", "FLUO_144rec_Ind5", "FLUO_24_Ind6", "FLUO_24rec_Ind6", "FLUO_144rec_Ind6", "FLUO_24_Ind6REP", "FLUO_24rec_Ind6REP", "FLUO_144rec_Ind6REP"))
 
 ###MDM2 - 4193###
 MDM2 <- my_data %>% filter(entrezgene_id=="4193")
+MDM2_new <- as.data.frame(MDM2) %>% dplyr::select("entrezgene_id", "DOX_24_Ind1", "DOX_24rec_Ind1", "DOX_144rec_Ind1", "FLUO_24_Ind1", "FLUO_24rec_Ind1", "FLUO_144rec_Ind1", "DMSO_24_Ind1", "DMSO_24rec_Ind1", "DMSO_144rec_Ind1","DOX_24_Ind2", "DOX_24rec_Ind2", "DOX_144rec_Ind2", "FLUO_24_Ind2", "FLUO_24rec_Ind2", "FLUO_144rec_Ind2", "DMSO_24_Ind2", "DMSO_24rec_Ind2", "DMSO_144rec_Ind2", "DOX_24_Ind3", "DOX_24rec_Ind3", "DOX_144rec_Ind3", "FLUO_24_Ind3", "FLUO_24rec_Ind3", "FLUO_144rec_Ind3", "DMSO_24_Ind3", "DMSO_24rec_Ind3", "DMSO_144rec_Ind3", "DOX_24_Ind4", "DOX_24rec_Ind4", "DOX_144rec_Ind4", "FLUO_24_Ind4", "FLUO_24rec_Ind4", "FLUO_144rec_Ind4", "DMSO_24_Ind4", "DMSO_24rec_Ind4", "DMSO_144rec_Ind4", "DOX_24_Ind5", "DOX_24rec_Ind5", "DOX_144rec_Ind5", "FLUO_24_Ind5", "FLUO_24rec_Ind5", "FLUO_144rec_Ind5", "DMSO_24_Ind5", "DMSO_24rec_Ind5", "DMSO_144rec_Ind5", "DOX_24_Ind6", "DOX_24rec_Ind6", "DOX_144rec_Ind6", "FLUO_24_Ind6", "FLUO_24rec_Ind6", "FLUO_144rec_Ind6", "DMSO_24_Ind6", "DMSO_24rec_Ind6", "DMSO_144rec_Ind6", "DOX_24_Ind6REP", "DOX_24rec_Ind6REP", "DOX_144rec_Ind6REP", "FLUO_24_Ind6REP", "FLUO_24rec_Ind6REP", "FLUO_144rec_Ind6REP", "DMSO_24_Ind6REP", "DMSO_24rec_Ind6REP", "DMSO_144rec_Ind6REP")
 MDM2_melt <- melt(MDM2, variable.name = "sample")
+MDM2_melt_new <- melt(MDM2_new, variable.name = "sample")
+
+MDM2_melt_df <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+MDM2_melt_df2 <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+MDM2_melt_df_all <- cbind(MDM2_melt, MDM2_melt_df)
+MDM2_melt_df_all2 <- cbind(MDM2_melt_new, MDM2_melt_df2)
+
 ggplot(MDM2_melt, aes(x=value, y=sample, fill = sample))+
   ggtitle("MDM2")+
     geom_bar(stat = "identity", width = 0.8)+
@@ -1827,25 +1856,35 @@ ggplot(MDM2_melt, aes(x=value, y=sample, fill = sample))+
   scale_fill_manual(values = col_tx_large)+
     xlab("log2cpm")+
   ylab("Conditions")
-
+###FLUO ONLY####
 MDM2_fluo <- my_data_Fluo %>% filter(entrezgene_id=="4193")
 MDM2_melt_fluo <- melt(MDM2_fluo, variable.name = "sample")
 ggplot(MDM2_melt_fluo, aes(x=value, y=sample, fill = sample))+
   ggtitle("MDM2")+
     geom_bar(stat = "identity", width = 0.8)+
   theme(legend.position = "none")+
-  scale_fill_manual(values = indcol_large)+
+  scale_fill_manual(values = col_tx_large)+
     xlab("log2cpm")+
   ylab("Conditions")
 
 
-col_tx_large <- rep(c("#499FBD" ,"#DCACED", "#63666D"), 21)
-indcol_large <- c(rep("#003F5C"),3, rep("#45AE91"),3, rep("#58508D"),3 , rep("#BC4099"),3, (rep("#8B3E9B"),3), (rep("#FF6361"),3), rep("#FF2362"), 3)
-
-
 ####CDKN1A - 1026####
 CDKN1A <- my_data %>% filter(entrezgene_id=="1026")
+CDKN1A_new <- as.data.frame(CDKN1A) %>% dplyr::select("entrezgene_id", "DOX_24_Ind1", "DOX_24rec_Ind1", "DOX_144rec_Ind1", "FLUO_24_Ind1", "FLUO_24rec_Ind1", "FLUO_144rec_Ind1", "DMSO_24_Ind1", "DMSO_24rec_Ind1", "DMSO_144rec_Ind1","DOX_24_Ind2", "DOX_24rec_Ind2", "DOX_144rec_Ind2", "FLUO_24_Ind2", "FLUO_24rec_Ind2", "FLUO_144rec_Ind2", "DMSO_24_Ind2", "DMSO_24rec_Ind2", "DMSO_144rec_Ind2", "DOX_24_Ind3", "DOX_24rec_Ind3", "DOX_144rec_Ind3", "FLUO_24_Ind3", "FLUO_24rec_Ind3", "FLUO_144rec_Ind3", "DMSO_24_Ind3", "DMSO_24rec_Ind3", "DMSO_144rec_Ind3", "DOX_24_Ind4", "DOX_24rec_Ind4", "DOX_144rec_Ind4", "FLUO_24_Ind4", "FLUO_24rec_Ind4", "FLUO_144rec_Ind4", "DMSO_24_Ind4", "DMSO_24rec_Ind4", "DMSO_144rec_Ind4", "DOX_24_Ind5", "DOX_24rec_Ind5", "DOX_144rec_Ind5", "FLUO_24_Ind5", "FLUO_24rec_Ind5", "FLUO_144rec_Ind5", "DMSO_24_Ind5", "DMSO_24rec_Ind5", "DMSO_144rec_Ind5", "DOX_24_Ind6", "DOX_24rec_Ind6", "DOX_144rec_Ind6", "FLUO_24_Ind6", "FLUO_24rec_Ind6", "FLUO_144rec_Ind6", "DMSO_24_Ind6", "DMSO_24rec_Ind6", "DMSO_144rec_Ind6", "DOX_24_Ind6REP", "DOX_24rec_Ind6REP", "DOX_144rec_Ind6REP", "FLUO_24_Ind6REP", "FLUO_24rec_Ind6REP", "FLUO_144rec_Ind6REP", "DMSO_24_Ind6REP", "DMSO_24rec_Ind6REP", "DMSO_144rec_Ind6REP")
 CDKN1A_melt <- melt(CDKN1A, variable.name = "sample")
+CDKN1A_melt_new <- melt(CDKN1A_new, variable.name = "sample")
+
+CDKN1A_melt_df <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+CDKN1A_melt_df2 <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+CDKN1A_melt_df_all <- cbind(CDKN1A_melt, CDKN1A_melt_df)
+CDKN1A_melt_df_all2 <- cbind(CDKN1A_melt_new, CDKN1A_melt_df2)
+
 ggplot(CDKN1A_melt, aes(x=value, y=sample, fill = sample))+
   ggtitle("CDKN1A")+
     geom_bar(stat = "identity", width = 0.8)+
@@ -1855,8 +1894,115 @@ ggplot(CDKN1A_melt, aes(x=value, y=sample, fill = sample))+
   ylab("Conditions")
 
 
+####SIRT1 - 23411####
+SIRT1 <- my_data %>% filter(entrezgene_id=="23411")
+SIRT1_new <- as.data.frame(SIRT1) %>% dplyr::select("entrezgene_id", "DOX_24_Ind1", "DOX_24rec_Ind1", "DOX_144rec_Ind1", "FLUO_24_Ind1", "FLUO_24rec_Ind1", "FLUO_144rec_Ind1", "DMSO_24_Ind1", "DMSO_24rec_Ind1", "DMSO_144rec_Ind1","DOX_24_Ind2", "DOX_24rec_Ind2", "DOX_144rec_Ind2", "FLUO_24_Ind2", "FLUO_24rec_Ind2", "FLUO_144rec_Ind2", "DMSO_24_Ind2", "DMSO_24rec_Ind2", "DMSO_144rec_Ind2", "DOX_24_Ind3", "DOX_24rec_Ind3", "DOX_144rec_Ind3", "FLUO_24_Ind3", "FLUO_24rec_Ind3", "FLUO_144rec_Ind3", "DMSO_24_Ind3", "DMSO_24rec_Ind3", "DMSO_144rec_Ind3", "DOX_24_Ind4", "DOX_24rec_Ind4", "DOX_144rec_Ind4", "FLUO_24_Ind4", "FLUO_24rec_Ind4", "FLUO_144rec_Ind4", "DMSO_24_Ind4", "DMSO_24rec_Ind4", "DMSO_144rec_Ind4", "DOX_24_Ind5", "DOX_24rec_Ind5", "DOX_144rec_Ind5", "FLUO_24_Ind5", "FLUO_24rec_Ind5", "FLUO_144rec_Ind5", "DMSO_24_Ind5", "DMSO_24rec_Ind5", "DMSO_144rec_Ind5", "DOX_24_Ind6", "DOX_24rec_Ind6", "DOX_144rec_Ind6", "FLUO_24_Ind6", "FLUO_24rec_Ind6", "FLUO_144rec_Ind6", "DMSO_24_Ind6", "DMSO_24rec_Ind6", "DMSO_144rec_Ind6", "DOX_24_Ind6REP", "DOX_24rec_Ind6REP", "DOX_144rec_Ind6REP", "FLUO_24_Ind6REP", "FLUO_24rec_Ind6REP", "FLUO_144rec_Ind6REP", "DMSO_24_Ind6REP", "DMSO_24rec_Ind6REP", "DMSO_144rec_Ind6REP")
+SIRT1_melt <- melt(SIRT1, variable.name = "sample")
+SIRT1_melt_new <- melt(SIRT1_new, variable.name = "sample")
+
+SIRT1_melt_df <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+SIRT1_melt_df2 <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+SIRT1_melt_df_all <- cbind(SIRT1_melt, SIRT1_melt_df)
+SIRT1_melt_df_all2 <- cbind(SIRT1_melt_new, SIRT1_melt_df2)
+
+SIRT1_melt <- melt(SIRT1, variable.name = "sample")
+ggplot(SIRT1_melt, aes(x=value, y=sample, fill = sample))+
+  ggtitle("SIRT1")+
+    geom_bar(stat = "identity", width = 0.8)+
+  theme(legend.position = "none")+
+  scale_fill_manual(values = col_tx_large)+
+    xlab("log2cpm")+
+  ylab("Conditions")
+
+
+####Pull out genes and make them into boxplots with points for each individual####
+####MDM2####
+MDM2_melt_df_all2 %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "MDM2")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")
+
+####CDKN1A####
+CDKN1A_melt_df_all2 %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "CDKN1A")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")
+
+
+####SIRT1####
+SIRT1_melt_df_all2 %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "SIRT1")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")
+
 ```
 
+Now that I've pulled out some select genes for each condition - let's look at some typically expressed cardiac genes to check whether they are present in this dataset
+
+```{r Typical genes expressed in iPSC-CMs}
+fC_df_filter_cpm <- as.data.frame(fC_Matrix_Full_cpm_filter)
+my_data <- rownames_to_column(fC_df_filter_cpm, var = "entrezgene_id")
+###now let's pull some classic cardiac genes expressed in iPSC-CMs###
+genecardiccheck <- c("MYH7", "TNNT2","MYH6","ACTN2","BMP3","TNNI3","RYR2","CACNA1C","KCNQ1", "HCN1", "ADRB1", "ADRB2")
+
+# ensembl <- useMart("ensembl", dataset="hsapiens_gene_ensembl")
+# saveRDS(ensembl, "data/ensembl_backup.RDS")
+ensembl <- readRDS("data/ensembl_backup.RDS")
+my_chr <- c(1:22, 'M', 'X', 'Y')  ## creates a filter for each database
+
+my_attributes <- c('entrezgene_id', 'ensembl_gene_id', 'hgnc_symbol')
+
+heartgenes <- getBM(attributes=my_attributes,filters ='hgnc_symbol',
+                values = genecardiccheck, mart = ensembl)
+write.csv(heartgenes, "data/heartgenes.csv")
+heartgenes <-read.csv("data/heartgenes.csv")
+
+fungraph <- as.data.frame(fC_df_filter_cpm[rownames(fC_df_filter_cpm) %in% heartgenes$entrezgene_id,])
+
+
+fungraph %>% 
+  rownames_to_column("entrezgene_id") %>% 
+  pivot_longer(-entrezgene_id, names_to = "samples",values_to = "counts") %>% 
+  mutate(gene = case_match(entrezgene_id,"88"~"ACTN2","153"~"ADRB1",
+  "154"~"ADRB2","651"~"BMP3","775"~"CACNA1C", "100874369"~"CACNA1C","348980"~"HCN1",
+                           "3784"~"KCNQ1", "4624"~"MYH6","4625"~"MYH7","6262"~"RYR2",
+                           "7137"~"TNNI3","7139"~"TNNT2",.default = entrezgene_id)) %>% 
+  ggplot(., aes(x=reorder(gene,counts,decreasing=TRUE), y=counts))+
+  geom_boxplot()+
+  ggtitle(expression("Expression of typical cardiac tissue genes"))+
+  xlab("")+
+  ylab(expression("log"[2]~"cpm"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+
+```
 
 
 Now that I've gone through and figured out the basics of DE - let's remove unwanted variation using ruv
@@ -1864,139 +2010,278 @@ This uses my replicates to figure out covariates in the data and remove variatio
 We're seeing a batch effect from RNA extraction (all RNAseq library prep done in a single batch) occurring here in PCA and cor. heatmaps rather than individuals clustering together.
 
 ```{r Remove Unwanted Variation - RUVs, include = FALSE}
-
-#counts need to be integer values and in a numeric matrix for ruv
-counts_DE_matrix <- as.matrix(counts_DE_filter1)
-dim(counts_DE_matrix)
-#[1] 20443    54 - new inbuilt
-#this does NOT contain the replicate samples, save for later
-
-##this file contains the replicates that I can pull from
-fC_Matrix_cpm_filter_ruv <- as.matrix (fC_Matrix_Full_cpm_filter)
-
-#create a matrix specifying the replicates
-reps <- as.data.frame(fC_Matrix_Full_cpm_filter) %>%
-  dplyr::select(contains("Ind6"))
-dim(reps)
-#[1] 14225    18
-reps_mat <- as.matrix(reps)
-
-#using the documentation do this:
-#controls: gene-by-sample numeric matrix containing counts
-controls <- rownames(fC_Matrix_Full_cpm_filter)
-
-#I have replicates for Individual 6, which I can compare using this method
-#They are matched as following:
-##col46:55, 47:56, 48:57, 49:58, 50:59, 51:60, 52:61, 53:62, 54:63
-###this is the scIdx argument for reps, the cIdx argument is for genes
-#differences <- matrix(data = c(1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
-differences_full <- matrix(data = c(46, 55, 47, 56, 48 , 57, 49, 58, 50 , 59, 51, 60, 52, 61, 53, 62, 54, 63), byrow = TRUE, nrow = 9)
-
-
-signature(x = "matrix", cIdx = "ANY", k = "numeric", scIdx = "matrix")
-
-
-seqRUVs <- RUVs(rep, controls, k=3, differences_full, isLog = TRUE)
-
-pData(counts_DE)
-head(seqRUVs)
-
-
-###now try putting this in your matrix?
-design <- model.matrix(~0 + group_1, seqRUVs)
-
-
-
-
-####try it exactly like the documentation and filter afterwards?####
-genes <- rownames(fC_Matrix_Full)[grep("^"), rownames(fC_Matrix_Full)]
-spikes <- rownames()
-
-####leaving off here EMP 25/02/26####
-
-
-```
-
-
-
-
-
-# Omar stuff 
-
-```{r Remove Unwanted Variation - RUVs, include = FALSE}
-vignette("RUVSeq")
-library("EDASeq")
-RUVSeq::makeGroups() %>% help()
-comrade_groups <- makeGroups(annot$Tx_Time) 
-comrade_groups <- comrade_groups %>% as.matrix()
-
-gene_names_comrade <- counts_DE_filter1 %>% rownames() %>% as.double()
-counts_DE_filter1_ES <- EDASeq::newSeqExpressionSet(counts = counts_DE_filter1)
-
-counts_DE_filter1_ES
-
-counts_DE_filter1_ES %>% assay() 
-set3 <- RUVSeq::RUVs(x = counts_DE_filter1_ES, cIdx = gene_names_comrade, k=1, scIdx = comrade_groups, isLog = FALSE)
-
-#counts need to be integer values and in a numeric matrix for ruv
-counts_DE_matrix <- as.matrix(counts_DE_filter1)
-dim(counts_DE_matrix)
-counts_DE_matrix %>% head
-counts_DE_matrix %>% rownames() %>% unique() %>% length()
-
-#[1] 20443    54 - new inbuilt
-#this does NOT contain the replicate samples, save for later
-
-##this file contains the replicates that I can pull from
-fC_Matrix_cpm_filter_ruv <- as.matrix (fC_Matrix_Full_cpm_filter)
-fC_Matrix_cpm_filter_ruv
-
-#create a matrix specifying the replicates
-reps <- as.data.frame(fC_Matrix_Full_cpm_filter) %>%
-  dplyr::select(contains("Ind6"))
-dim(reps)
-#[1] 14225    18
-reps_mat <- as.matrix(reps)
-
-#using the documentation do this:
-#controls: gene-by-sample numeric matrix containing counts
-controls <- rownames(fC_Matrix_Full_cpm_filter)
-
-#I have replicates for Individual 6, which I can compare using this method
-#They are matched as following:
-##col46:55, 47:56, 48:57, 49:58, 50:59, 51:60, 52:61, 53:62, 54:63
-###this is the scIdx argument for reps, the cIdx argument is for genes
-#differences <- matrix(data = c(1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
-differences_full <- matrix(data = c(46, 55, 47, 56, 48 , 57, 49, 58, 50 , 59, 51, 60, 52, 61, 53, 62, 54, 63), byrow = TRUE, nrow = 9)
-
-
-signature(x = "matrix", cIdx = "ANY", k = "numeric", scIdx = "matrix")
-
-
-seqRUVs <- RUVs(rep, controls, k=3, differences_full, isLog = TRUE)
-
-pData(counts_DE)
-head(seqRUVs)
-
-
-###now try putting this in your matrix?
-design <- model.matrix(~0 + group_1, seqRUVs)
-
-
-
-
-####try it exactly like the documentation and filter afterwards?####
-genes <- rownames(fC_Matrix_Full)[grep("^"), rownames(fC_Matrix_Full)]
-spikes <- rownames()
-
-####leaving off here EMP 25/02/27####
+# 
+# #counts need to be integer values and in a numeric matrix for ruv
+# counts_DE_matrix <- as.matrix(counts_DE_filter1)
+# dim(counts_DE_matrix)
+# #[1] 20443    54 - new inbuilt
+# #this does NOT contain the replicate samples, save for later
+# 
+# ##this file contains the replicates that I can pull from
+# fC_Matrix_cpm_filter_ruv <- as.matrix (fC_Matrix_Full_cpm_filter)
+# 
+# #create a matrix specifying the replicates
+# reps <- as.data.frame(fC_Matrix_Full_cpm_filter) %>%
+#   dplyr::select(contains("Ind6"))
+# dim(reps)
+# #[1] 14225    18
+# reps_mat <- as.matrix(reps)
+# 
+# #using the documentation do this:
+# #controls: gene-by-sample numeric matrix containing counts
+# controls <- rownames(fC_Matrix_Full_cpm_filter)
+# 
+# #I have replicates for Individual 6, which I can compare using this method
+# #They are matched as following:
+# ##col46:55, 47:56, 48:57, 49:58, 50:59, 51:60, 52:61, 53:62, 54:63
+# ###this is the scIdx argument for reps, the cIdx argument is for genes
+# #differences <- matrix(data = c(1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
+# differences_full <- matrix(data = c(46, 55, 47, 56, 48 , 57, 49, 58, 50 , 59, 51, 60, 52, 61, 53, 62, 54, 63), byrow = TRUE, nrow = 9)
+# 
+# 
+# signature(x = "matrix", cIdx = "ANY", k = "numeric", scIdx = "matrix")
+# 
+# 
+# seqRUVs <- RUVs(rep, controls, k=3, differences_full, isLog = TRUE)
+# 
+# pData(counts_DE)
+# head(seqRUVs)
+# 
+# 
+# ###now try putting this in your matrix?
+# design <- model.matrix(~0 + group_1, seqRUVs)
+# 
+# 
+# 
+# 
+# ####try it exactly like the documentation and filter afterwards?####
+# genes <- rownames(fC_Matrix_Full)[grep("^"), rownames(fC_Matrix_Full)]
+# spikes <- rownames()
+# 
+# ####leaving off here EMP 25/02/26####
 
 
 ```
 
 
-```{r Remove Unwanted Variation with RUVs}
-#OMAR NEW CODE - EMMA EDITS
+
+
+
+```{r Remove Unwanted Variation - RUVs New, include = FALSE}
+#omar stuff
+
+# vignette("RUVSeq")
+# library("EDASeq")
+# RUVSeq::makeGroups() %>% help()
+# comrade_groups <- makeGroups(annot$Tx_Time) 
+# comrade_groups <- comrade_groups %>% as.matrix()
+# 
+# gene_names_comrade <- counts_DE_filter1 %>% rownames() %>% as.double()
+# counts_DE_filter1_ES <- EDASeq::newSeqExpressionSet(counts = counts_DE_filter1)
+# 
+# counts_DE_filter1_ES
+# 
+# counts_DE_filter1_ES %>% assay() 
+# set3 <- RUVSeq::RUVs(x = counts_DE_filter1_ES, cIdx = gene_names_comrade, k=1, scIdx = comrade_groups, isLog = FALSE)
+# 
+# #counts need to be integer values and in a numeric matrix for ruv
+# counts_DE_matrix <- as.matrix(counts_DE_filter1)
+# dim(counts_DE_matrix)
+# counts_DE_matrix %>% head
+# counts_DE_matrix %>% rownames() %>% unique() %>% length()
+# 
+# #[1] 20443    54 - new inbuilt
+# #this does NOT contain the replicate samples, save for later
+# 
+# ##this file contains the replicates that I can pull from
+# fC_Matrix_cpm_filter_ruv <- as.matrix (fC_Matrix_Full_cpm_filter)
+# fC_Matrix_cpm_filter_ruv
+# 
+# #create a matrix specifying the replicates
+# reps <- as.data.frame(fC_Matrix_Full_cpm_filter) %>%
+#   dplyr::select(contains("Ind6"))
+# dim(reps)
+# #[1] 14225    18
+# reps_mat <- as.matrix(reps)
+# 
+# #using the documentation do this:
+# #controls: gene-by-sample numeric matrix containing counts
+# controls <- rownames(fC_Matrix_Full_cpm_filter)
+# 
+# #I have replicates for Individual 6, which I can compare using this method
+# #They are matched as following:
+# ##col46:55, 47:56, 48:57, 49:58, 50:59, 51:60, 52:61, 53:62, 54:63
+# ###this is the scIdx argument for reps, the cIdx argument is for genes
+# #differences <- matrix(data = c(1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
+# differences_full <- matrix(data = c(46, 55, 47, 56, 48 , 57, 49, 58, 50 , 59, 51, 60, 52, 61, 53, 62, 54, 63), byrow = TRUE, nrow = 9)
+# 
+# 
+# signature(x = "matrix", cIdx = "ANY", k = "numeric", scIdx = "matrix")
+# 
+# 
+# seqRUVs <- RUVs(rep, controls, k=3, differences_full, isLog = TRUE)
+# 
+# pData(counts_DE)
+# head(seqRUVs)
+# 
+# 
+# ###now try putting this in your matrix?
+# design <- model.matrix(~0 + group_1, seqRUVs)
+# 
+# 
+# 
+# 
+# ####try it exactly like the documentation and filter afterwards?####
+# genes <- rownames(fC_Matrix_Full)[grep("^"), rownames(fC_Matrix_Full)]
+# spikes <- rownames()
+# 
+# ####leaving off here EMP 25/02/27####
+# 
+
+```
+
+
+```{r Remove Unwanted Variation with RUVs, include = FALSE}
+# #OMAR NEW CODE - EMMA EDITS
+# fC_Matrix_Full_cpm_filter
+# dim(fC_Matrix_Full_cpm_filter)
+# 
+# #now I want to un-log transform this data - square it?
+# fC_Matrix_Full_new <- fC_Matrix_Full_cpm_filter^2
+# dim(fC_Matrix_Full_new)
+# 
+# 
+# #  counts need to be integer values and in a numeric matrix
+# # note: the log transformation needs to be accounted for in the isLog argument in RUVs function.
+# counts <- as.matrix(fC_Matrix_Full)
+# 
+# # Create a DataFrame for the phenoData
+# phenoData <- DataFrame(annot)
+# 
+# # Now create the RangedSummarizedExperiment necessary for RUVs input
+# # looks like it did need both the phenodata and the counts.
+# set <- SummarizedExperiment(assays =  counts, metadata = phenoData)
+# 
+# # Generate a background matrix
+# # The column "Cond" holds the comparisons that you actually want to make. DOX_24, DMSO_24,5FU_24, DOX_3,etc.
+# scIdx <-RUVSeq::makeGroups(phenoData$Tx_Time)
+# scIdx
+# # Apply RUVs function from RUVSeq
+# # note: for now just get code to work. "k" will be iteratively adjusted over time depending on your PCA.
+# set <- RUVSeq::RUVs(x = counts, k =1, scIdx = scIdx, isLog = FALSE)
+# 
+# #DO NOT USE THESE COUNTS FOR LINEAR MODELING EMMA
+# 
+# 
+# 
+# 
+# 
+# # get the ruv weights to put into the linear model. n weights = k.
+# RUV_df <- set$W %>% as.data.frame()
+# RUV_df$Names <- rownames(RUV_df)
+# 
+# # Make sure the data frame names match 
+# RUV_df_rm <- RUV_df[RUV_df$Names %in% annot_new$samples, ] 
+# RUV_1 <-  RUV_df_rm$W_1
+# 
+# 
+# # before ruv
+# prcomp_res <- prcomp(t(counts), scale. = TRUE, center = TRUE, )
+# ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", size =4)+
+#   theme_bw()+
+#   ggtitle("No RUV")
+# # after ruv
+# prcomp_res <- prcomp(t(set$normalizedCounts), scale. = TRUE, center = TRUE, )
+# ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", size =4)+
+#   theme_bw()+
+#   ggtitle("RUV Corrected")
+# 
+# 
+# #Now that I've calculated the weights for RUV correction, I want to put my raw counts data into my model
+# 
+# 
+# counts_DE %>% head()
+# counts_DE %>% dim()
+# 
+# raw_counts_mat <- counts_DE %>% dplyr::select(-(contains("Ind6REP"))) %>% as.matrix()
+# dim(raw_counts_mat)
+# 
+# #I want to make sure that I only have 54 observations in this dataset, removing the biological replicate samples (doesn't matter whether you remove Ind6 or Ind6REP, but I will choose Ind6REP)
+# 
+# dge1 <- DGEList.data.frame(counts = raw_counts_mat, group = group_2, genes = row.names(raw_counts_mat))
+# 
+# #check the initial file before norm factors are calculated
+# #dge1$samples
+# 
+# #calculate the normalization factors with method TMM
+# dge1_calc <- calcNormFactors(dge1, method = "TMM")
+# 
+# #check final file after norm calculation
+# #dge1_calc$samples
+# 
+# #View(dge1_calc)
+# 
+# #Pull out factors
+# snames1 <- data.frame("samples" = colnames(dge1_calc)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
+# 
+# #snames_list <- as.list(snames)
+# snames1_ind <- snames1$Individual
+# 
+# # Make sure the names match 
+# annot_new$samples == RUV_df_rm$Names
+# annot_new$RUV_1 <- RUV_df_rm$W_1
+# 
+# 
+# #Create my model matrix
+# mm_r1 <- model.matrix(~0 + group_1 + RUV_1, data = annot_new)
+# 
+# p1 <- voom(dge1_calc$counts, mm_r1, plot = TRUE)
+# 
+# corfit1 <- duplicateCorrelation(p1, mm_r1, block = snames1_ind)
+# 
+# v1 <- voom(dge1_calc$counts, mm_r1, block = snames1_ind, correlation = corfit1$consensus)
+# 
+# fit1 <- lmFit(v1, mm_r1, block = snames1_ind, correlation = corfit1$consensus)
+# 
+# 
+# #make sure to check which order the columns are in - otherwise they won't match right (it was moved into alphabetical and number order)
+# 
+# mm_r1_names <- str_replace(string = colnames(mm_r1), pattern = "group_1", replacement = "")
+# design <- model.matrix(~ group_1 + RUV_1 , annot_new)
+# colnames(mm_r1) <- mm_r1_names
+# 
+# cm_r1 <- makeContrasts(
+#         V.D24 = DOX_24 - DMSO_24,
+#         V.F24 = FLUO_24 - DMSO_24,
+#         V.D24r = DOX_24rec - DMSO_24rec,
+#         V.F24r = FLUO_24rec - DMSO_24rec,
+#         V.D144r = DOX_144rec - DMSO_144rec,
+#         V.F144r = FLUO_144rec - DMSO_144rec,
+#         RUV_1_24 = RUV_1 - DMSO_24,
+#         RUV_1_24r = RUV_1 - DMSO_24rec,
+#         RUV_1_144r = RUV_1 - DMSO_144rec,
+#         levels = mm_r1
+# )
+# 
+# vfit_r1 <- lmFit(p1, mm_r1)
+# vfit_r1 <- contrasts.fit(vfit_r1, contrasts = cm_r1)
+# 
+# efit4 <- eBayes(vfit_r1)
+# 
+# results1 = decideTests(efit4)
+# summary(results1)
+# 
+# toptable_Dupcor_DOX <- topTable(efit4, coef = "V.D24", number = nrow(dge1_calc$counts), p.value = 1)
+# toptable_Dupcor_DOXrec <- topTable(efit4, coef = "V.D24r", number = nrow(dge1_calc$counts), p.value = 1)
+# toptable_Dupcor_DOX144 <- topTable(efit4, coef = "V.D144r", number = nrow(dge1_calc$counts), p.value = 1)
+# 
+# toptable_Dupcor_DOX$logFC %>% hist(., main = "DOX vs VEH 24hr")
+# toptable_Dupcor_DOXrec$logFC %>% hist(., main = "DOX vs VEH 24hr Recovery")
+# toptable_Dupcor_DOX144$logFC %>% hist(., main = "DOX vs VEH 6d Recovery")
+```
+
+
+```{r RUVs Correction}
 fC_Matrix_Full_cpm_filter
 dim(fC_Matrix_Full_cpm_filter)
 
@@ -2007,14 +2292,15 @@ dim(fC_Matrix_Full_new)
 
 #  counts need to be integer values and in a numeric matrix
 # note: the log transformation needs to be accounted for in the isLog argument in RUVs function.
-counts <- as.matrix(fC_Matrix_Full_cpm_filter)
+# however, I'll be using raw counts only for this instance
+counts <- as.matrix(fC_Matrix_Full)
 
 # Create a DataFrame for the phenoData
 phenoData <- DataFrame(annot)
 
 # Now create the RangedSummarizedExperiment necessary for RUVs input
 # looks like it did need both the phenodata and the counts.
-set <- SummarizedExperiment(assays =  counts, metadata =phenoData)
+set <- SummarizedExperiment(assays =  counts, metadata = phenoData)
 
 # Generate a background matrix
 # The column "Cond" holds the comparisons that you actually want to make. DOX_24, DMSO_24,5FU_24, DOX_3,etc.
@@ -2024,45 +2310,193 @@ scIdx
 # note: for now just get code to work. "k" will be iteratively adjusted over time depending on your PCA.
 set <- RUVSeq::RUVs(x = counts, k =1, scIdx = scIdx, isLog = TRUE)
 
-#DO NOT USE THESE COUNTS FOR LINEAR MODELING EMMA
+set2 <- RUVSeq::RUVs(x = counts, k =2, scIdx = scIdx, isLog = TRUE)
 
+set3 <- RUVSeq::RUVs(x = counts, k =3, scIdx = scIdx, isLog = TRUE)
 
+set4 <- RUVSeq::RUVs(x = counts, k =4, scIdx = scIdx, isLog = TRUE)
 
+set5 <- RUVSeq::RUVs(x = counts, k =5, scIdx = scIdx, isLog = TRUE)
 
+#DO NOT USE THESE COUNTS FOR LINEAR MODELING
 
 # get the ruv weights to put into the linear model. n weights = k.
+#this one is k=1
 RUV_df <- set$W %>% as.data.frame()
 RUV_df$Names <- rownames(RUV_df)
 
+#k=2
+RUV_df2 <- set2$W %>% as.data.frame()
+RUV_df2$Names <- rownames(RUV_df2)
+
+#k=3
+RUV_df3 <- set3$W %>% as.data.frame()
+RUV_df3$Names <- rownames(RUV_df3)
+
+
+#k=4
+RUV_df4 <- set4$W %>% as.data.frame()
+RUV_df4$Names <- rownames(RUV_df4)
+
+#k=5
+RUV_df5 <- set5$W %>% as.data.frame()
+RUV_df5$Names <- rownames(RUV_df5)
+
 # Make sure the data frame names match 
-RUV_df_rm <- RUV_df[RUV_df$Names %in% annot_new$samples, ] 
+#k=1
+RUV_df_rm <- RUV_df[RUV_df$Names %in% annot$samples, ] 
 RUV_1 <-  RUV_df_rm$W_1
+
+#k=2
+RUV_df_rm2 <- RUV_df2[RUV_df2$Names %in% annot$samples, ] 
+RUV_2 <-  RUV_df_rm2$W_2
+
+#k=3
+RUV_df_rm3 <- RUV_df3[RUV_df3$Names %in% annot$samples, ] 
+RUV_3 <-  RUV_df_rm3$W_3
+
+#k=4
+RUV_df_rm4 <- RUV_df4[RUV_df4$Names %in% annot$samples, ] 
+RUV_4 <-  RUV_df_rm4$W_4
+
+#k=5
+RUV_df_rm5 <- RUV_df5[RUV_df5$Names %in% annot$samples, ] 
+RUV_5 <-  RUV_df_rm5$W_5
 
 
 # before ruv
-prcomp_res <- prcomp(t(counts), scale. = TRUE, center = TRUE, )
+prcomp_res <- prcomp(t(counts), scale. = FALSE, center = TRUE)
 ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", size =4)+
   theme_bw()+
   ggtitle("No RUV")
-# after ruv
-prcomp_res <- prcomp(t(set$normalizedCounts), scale. = TRUE, center = TRUE, )
+
+# after ruv k=1
+prcomp_res <- prcomp(t(set$normalizedCounts), scale. = FALSE, center = TRUE)
 ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", size =4)+
   theme_bw()+
-  ggtitle("RUV Corrected")
+  ggtitle("RUV Corrected k=1")
+
+# after ruv k=2
+prcomp_res <- prcomp(t(set2$normalizedCounts), scale. = FALSE, center = TRUE)
+ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", size =4)+
+  theme_bw()+
+  ggtitle("RUV Corrected k=2")
+
+# after ruv k=3
+prcomp_res <- prcomp(t(set3$normalizedCounts), scale. = FALSE, center = TRUE)
+ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", size =4)+
+  theme_bw()+
+  ggtitle("RUV Corrected k=3")
+
+#after ruv k=4
+prcomp_res <- prcomp(t(set4$normalizedCounts), scale. = FALSE, center = TRUE)
+ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", size =4)+
+  theme_bw()+
+  ggtitle("RUV Corrected k=4")
+
+# after ruv k=5
+prcomp_res <- prcomp(t(set5$normalizedCounts), scale. = FALSE, center = TRUE)
+ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", size =4)+
+  theme_bw()+
+  ggtitle("RUV Corrected k=5")
 
 
-#Now that I've calculated the weights for RUV correction, I want to put my raw counts data into my model
+####new PCA plots no correction####
+prcomp_res <- prcomp(t(counts), scale. = FALSE, center = TRUE)
+annot_prcomp_res <- prcomp_res$x %>% cbind(., annot)
+
+annot_prcomp_res %>% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
+  geom_point(aes(color = Ind, shape = Time, fill = Tx)) +
+                       scale_shape_manual(values = c(21, 22, 24)) +
+  scale_fill_manual(values =  fill_col_tx)+
+  scale_color_manual(values = c(fill_col_ind_dark))+
+  guides(fill=guide_legend(override.aes=list(shape=21)))+
+  guides(color=guide_legend(override.aes=list(shape=21)))+
+  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))+
+  ggtitle("no RUVs")
+
+###with RUVs correction####
+#k=1
+prcomp_res_1 <- prcomp(t(set$normalizedCounts), scale. = FALSE, center = TRUE)
+annot_prcomp_res_1 <- prcomp_res_1$x %>% cbind(., annot)
+
+annot_prcomp_res_1 %>% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
+  geom_point(aes(color = Ind, shape = Time, fill = Tx)) +
+                       scale_shape_manual(values = c(21, 22, 24)) +
+  scale_fill_manual(values =  fill_col_tx)+
+  scale_color_manual(values = c(fill_col_ind_dark))+
+  guides(fill=guide_legend(override.aes=list(shape=21)))+
+  guides(color=guide_legend(override.aes=list(shape=21)))+
+  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))+
+  ggtitle("RUVs k=1")
+  
+#k=2
+prcomp_res_2 <- prcomp(t(set2$normalizedCounts), scale. = FALSE, center = TRUE)
+annot_prcomp_res_2 <- prcomp_res_2$x %>% cbind(., annot)
+
+annot_prcomp_res_2 %>% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
+  geom_point(aes(color = Ind, shape = Time, fill = Tx)) +
+                       scale_shape_manual(values = c(21, 22, 24)) +
+  scale_fill_manual(values =  fill_col_tx)+
+  scale_color_manual(values = c(fill_col_ind_dark))+
+  guides(fill=guide_legend(override.aes=list(shape=21)))+
+  guides(color=guide_legend(override.aes=list(shape=21)))+
+  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))+
+  ggtitle("RUVs k=2")
+
+#k=3
+prcomp_res_3 <- prcomp(t(set3$normalizedCounts), scale. = FALSE, center = TRUE)
+annot_prcomp_res_3 <- prcomp_res_3$x %>% cbind(., annot)
+
+annot_prcomp_res_3 %>% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
+  geom_point(aes(color = Ind, shape = Time, fill = Tx)) +
+                       scale_shape_manual(values = c(21, 22, 24)) +
+  scale_fill_manual(values =  fill_col_tx)+
+  scale_color_manual(values = c(fill_col_ind_dark))+
+  guides(fill=guide_legend(override.aes=list(shape=21)))+
+  guides(color=guide_legend(override.aes=list(shape=21)))+
+  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))+
+  ggtitle("RUVs k=3")
+
+#k=4
+prcomp_res_4 <- prcomp(t(set4$normalizedCounts), scale. = FALSE, center = TRUE)
+annot_prcomp_res_4 <- prcomp_res_4$x %>% cbind(., annot)
+
+annot_prcomp_res_4 %>% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
+  geom_point(aes(color = Ind, shape = Time, fill = Tx)) +
+                       scale_shape_manual(values = c(21, 22, 24)) +
+  scale_fill_manual(values =  fill_col_tx)+
+  scale_color_manual(values = c(fill_col_ind_dark))+
+  guides(fill=guide_legend(override.aes=list(shape=21)))+
+  guides(color=guide_legend(override.aes=list(shape=21)))+
+  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))+
+  ggtitle("RUVs k=4")
+
+#k=5
+prcomp_res_5 <- prcomp(t(set5$normalizedCounts), scale. = FALSE, center = TRUE)
+annot_prcomp_res_5 <- prcomp_res_5$x %>% cbind(., annot)
+
+annot_prcomp_res_5 %>% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
+  geom_point(aes(color = Ind, shape = Time, fill = Tx)) +
+                       scale_shape_manual(values = c(21, 22, 24)) +
+  scale_fill_manual(values =  fill_col_tx)+
+  scale_color_manual(values = c(fill_col_ind_dark))+
+  guides(fill=guide_legend(override.aes=list(shape=21)))+
+  guides(color=guide_legend(override.aes=list(shape=21)))+
+  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))+
+  ggtitle("RUVs k=5")
+
+group_2 <- rep(c("DOX_24","FLUO_24",
+                                "DMSO_24",
+                                "DOX_24rec",
+                                "FLUO_24rec",
+                                "DMSO_24rec",
+                                "DOX_144rec",
+                                "FLUO_144rec",
+                                "DMSO_144rec"), 7)
 
 
-counts_DE %>% head()
-counts_DE %>% dim()
-
-raw_counts_mat <- counts_DE %>% dplyr::select(-(contains("Ind6REP"))) %>% as.matrix()
-dim(raw_counts_mat)
-
-#I want to make sure that I only have 54 observations in this dataset, removing the biological replicate samples (doesn't matter whether you remove Ind6 or Ind6REP, but I will choose Ind6REP)
-
-dge1 <- DGEList.data.frame(counts = raw_counts_mat, group = group_1, genes = row.names(raw_counts_mat))
+dge1 <- DGEList.data.frame(counts = fC_Matrix_Full, group = group_2, genes = row.names(fC_Matrix_Full))
 
 #check the initial file before norm factors are calculated
 #dge1$samples
@@ -2082,12 +2516,30 @@ snames1 <- data.frame("samples" = colnames(dge1_calc)) %>% separate_wider_delim(
 snames1_ind <- snames1$Individual
 
 # Make sure the names match 
-annot_new$samples == RUV_df_rm$Names
-annot_new$RUV_1 <- RUV_df_rm$W_1
+#k=1
+annot$samples == RUV_df_rm$Names
+annot$RUV_1 <- RUV_df_rm$W_1
+
+#k=2
+annot$samples == RUV_df_rm2$Names
+annot$RUV_2 <- RUV_df_rm2$W_2
+
+#k=3
+annot$samples == RUV_df_rm3$Names
+annot$RUV_3 <- RUV_df_rm3$W_3
+
+#k=4
+annot$samples == RUV_df_rm4$Names
+annot$RUV_4 <- RUV_df_rm4$W_4
+
+#k=5
+annot$samples == RUV_df_rm5$Names
+annot$RUV_5 <- RUV_df_rm5$W_5
 
 
-#Create my model matrix
-mm_r1 <- model.matrix(~0 + group_1 + RUV_1, data = annot_new)
+#Create my model matrix 
+#k=1
+mm_r1 <- model.matrix(~0 + group_2 + RUV_1, data = annot)
 
 p1 <- voom(dge1_calc$counts, mm_r1, plot = TRUE)
 
@@ -2097,13 +2549,73 @@ v1 <- voom(dge1_calc$counts, mm_r1, block = snames1_ind, correlation = corfit1$c
 
 fit1 <- lmFit(v1, mm_r1, block = snames1_ind, correlation = corfit1$consensus)
 
+#k=2
+mm_r2 <- model.matrix(~0 + group_2 + RUV_2, data = annot)
+
+p2 <- voom(dge1_calc$counts, mm_r2, plot = TRUE)
+
+corfit2 <- duplicateCorrelation(p2, mm_r2, block = snames1_ind)
+
+v2 <- voom(dge1_calc$counts, mm_r2, block = snames1_ind, correlation = corfit2$consensus)
+
+fit2 <- lmFit(v2, mm_r2, block = snames1_ind, correlation = corfit2$consensus)
+
+#k=3
+mm_r3 <- model.matrix(~0 + group_2 + RUV_3, data = annot)
+
+p3 <- voom(dge1_calc$counts, mm_r3, plot = TRUE)
+
+corfit3 <- duplicateCorrelation(p3, mm_r3, block = snames1_ind)
+
+v3 <- voom(dge1_calc$counts, mm_r3, block = snames1_ind, correlation = corfit3$consensus)
+
+fit3 <- lmFit(v3, mm_r3, block = snames1_ind, correlation = corfit3$consensus)
+
+#k=4
+mm_r4 <- model.matrix(~0 + group_2 + RUV_4, data = annot)
+
+p4 <- voom(dge1_calc$counts, mm_r4, plot = TRUE)
+
+corfit4 <- duplicateCorrelation(p4, mm_r4, block = snames1_ind)
+
+v4 <- voom(dge1_calc$counts, mm_r4, block = snames1_ind, correlation = corfit4$consensus)
+
+fit4 <- lmFit(v4, mm_r4, block = snames1_ind, correlation = corfit4$consensus)
+
+#k=5
+mm_r5 <- model.matrix(~0 + group_2 + RUV_5, data = annot)
+
+p5 <- voom(dge1_calc$counts, mm_r5, plot = TRUE)
+
+corfit5 <- duplicateCorrelation(p5, mm_r5, block = snames1_ind)
+
+v5 <- voom(dge1_calc$counts, mm_r5, block = snames1_ind, correlation = corfit5$consensus)
+
+fit5 <- lmFit(v5, mm_r5, block = snames1_ind, correlation = corfit5$consensus)
 
 #make sure to check which order the columns are in - otherwise they won't match right (it was moved into alphabetical and number order)
-
-mm_r1_names <- str_replace(string = colnames(mm_r1), pattern = "group_1", replacement = "")
-design <- model.matrix(~ group_1 + RUV_1 , annot_new)
+#k=1
+mm_r1_names <- str_replace(string = colnames(mm_r1), pattern = "group_2", replacement = "")
+design <- model.matrix(~ group_2 + RUV_1 , annot)
 colnames(mm_r1) <- mm_r1_names
+#k=2
+mm_r2_names <- str_replace(string = colnames(mm_r2), pattern = "group_2", replacement = "")
+design <- model.matrix(~ group_2 + RUV_2 , annot)
+colnames(mm_r2) <- mm_r2_names
+#k=3
+mm_r3_names <- str_replace(string = colnames(mm_r3), pattern = "group_2", replacement = "")
+design <- model.matrix(~ group_2 + RUV_3 , annot)
+colnames(mm_r3) <- mm_r3_names
+#k=4
+mm_r4_names <- str_replace(string = colnames(mm_r4), pattern = "group_2", replacement = "")
+design <- model.matrix(~ group_2 + RUV_4 , annot)
+colnames(mm_r4) <- mm_r4_names
+#k=5
+mm_r5_names <- str_replace(string = colnames(mm_r5), pattern = "group_2", replacement = "")
+design <- model.matrix(~ group_2 + RUV_5 , annot)
+colnames(mm_r5) <- mm_r5_names
 
+#k=1
 cm_r1 <- makeContrasts(
         V.D24 = DOX_24 - DMSO_24,
         V.F24 = FLUO_24 - DMSO_24,
@@ -2117,160 +2629,169 @@ cm_r1 <- makeContrasts(
         levels = mm_r1
 )
 
+#k=2
+cm_r2 <- makeContrasts(
+        V.D24 = DOX_24 - DMSO_24,
+        V.F24 = FLUO_24 - DMSO_24,
+        V.D24r = DOX_24rec - DMSO_24rec,
+        V.F24r = FLUO_24rec - DMSO_24rec,
+        V.D144r = DOX_144rec - DMSO_144rec,
+        V.F144r = FLUO_144rec - DMSO_144rec,
+        RUV_2_24 = RUV_2 - DMSO_24,
+        RUV_2_24r = RUV_2 - DMSO_24rec,
+        RUV_2_144r = RUV_2 - DMSO_144rec,
+        levels = mm_r2
+)
+#k=3
+cm_r3 <- makeContrasts(
+        V.D24 = DOX_24 - DMSO_24,
+        V.F24 = FLUO_24 - DMSO_24,
+        V.D24r = DOX_24rec - DMSO_24rec,
+        V.F24r = FLUO_24rec - DMSO_24rec,
+        V.D144r = DOX_144rec - DMSO_144rec,
+        V.F144r = FLUO_144rec - DMSO_144rec,
+        RUV_3_24 = RUV_3 - DMSO_24,
+        RUV_3_24r = RUV_3 - DMSO_24rec,
+        RUV_3_144r = RUV_3 - DMSO_144rec,
+        levels = mm_r3
+)
+
+#k=4
+cm_r4 <- makeContrasts(
+        V.D24 = DOX_24 - DMSO_24,
+        V.F24 = FLUO_24 - DMSO_24,
+        V.D24r = DOX_24rec - DMSO_24rec,
+        V.F24r = FLUO_24rec - DMSO_24rec,
+        V.D144r = DOX_144rec - DMSO_144rec,
+        V.F144r = FLUO_144rec - DMSO_144rec,
+        RUV_4_24 = RUV_4 - DMSO_24,
+        RUV_4_24r = RUV_4 - DMSO_24rec,
+        RUV_4_144r = RUV_4 - DMSO_144rec,
+        levels = mm_r4
+)
+
+#k=5
+cm_r5 <- makeContrasts(
+        V.D24 = DOX_24 - DMSO_24,
+        V.F24 = FLUO_24 - DMSO_24,
+        V.D24r = DOX_24rec - DMSO_24rec,
+        V.F24r = FLUO_24rec - DMSO_24rec,
+        V.D144r = DOX_144rec - DMSO_144rec,
+        V.F144r = FLUO_144rec - DMSO_144rec,
+        RUV_5_24 = RUV_5 - DMSO_24,
+        RUV_5_24r = RUV_5 - DMSO_24rec,
+        RUV_5_144r = RUV_5 - DMSO_144rec,
+        levels = mm_r5
+)
+
+
+#k=1
 vfit_r1 <- lmFit(p1, mm_r1)
 vfit_r1 <- contrasts.fit(vfit_r1, contrasts = cm_r1)
+#k=2
+vfit_r2 <- lmFit(p2, mm_r2)
+vfit_r2 <- contrasts.fit(vfit_r2, contrasts = cm_r2)
+#k=3
+vfit_r3 <- lmFit(p3, mm_r3)
+vfit_r3 <- contrasts.fit(vfit_r3, contrasts = cm_r3)
+#k=4
+vfit_r4 <- lmFit(p4, mm_r4)
+vfit_r4 <- contrasts.fit(vfit_r4, contrasts = cm_r4)
+#k=5
+vfit_r5 <- lmFit(p5, mm_r5)
+vfit_r5 <- contrasts.fit(vfit_r5, contrasts = cm_r5)
 
-efit4 <- eBayes(vfit_r1)
 
-results1 = decideTests(efit4)
+#k=1
+efit1 <- eBayes(vfit_r1)
+#k=2
+efit2 <- eBayes(vfit_r2)
+#k=3
+efit3 <- eBayes(vfit_r3)
+#k=4
+efit4 <- eBayes(vfit_r4)
+#k=5
+efit5 <- eBayes(vfit_r5)
+
+#k=1
+results1 = decideTests(efit1)
 summary(results1)
+#k=2
+results2 = decideTests(efit2)
+summary(results2)
+#k=3
+results3 = decideTests(efit3)
+summary(results3)
+#k=4
+results4 = decideTests(efit4)
+summary(results4)
+#k=5
+results5 = decideTests(efit5)
+summary(results5)
 
-toptable_Dupcor_DOX <- topTable(efit4, coef = "V.D24", number = nrow(dge1_calc$counts), p.value = 1)
-toptable_Dupcor_DOXrec <- topTable(efit4, coef = "V.D24r", number = nrow(dge1_calc$counts), p.value = 1)
-toptable_Dupcor_DOX144 <- topTable(efit4, coef = "V.D144r", number = nrow(dge1_calc$counts), p.value = 1)
+#k=1
+toptable_Dupcor_DOX <- topTable(efit1, coef = "V.D24", number = nrow(dge1_calc$counts), p.value = 1)
+toptable_Dupcor_DOXrec <- topTable(efit1, coef = "V.D24r", number = nrow(dge1_calc$counts), p.value = 1)
+toptable_Dupcor_DOX144 <- topTable(efit1, coef = "V.D144r", number = nrow(dge1_calc$counts), p.value = 1)
+#k=1 plots
+toptable_Dupcor_DOX$logFC %>% hist(, main= "RUVs k=1 DOX 24hr Toptable")
+toptable_Dupcor_DOXrec$logFC %>% hist(, main = "RUVs k=1 DOX 24Rec Toptable")
+toptable_Dupcor_DOX144$logFC %>% hist(, main = "RUVs k=1 DOX 144Rec Toptable")
 
-toptable_Dupcor_DOX$logFC %>% hist(., main = "DOX vs VEH 24hr")
-toptable_Dupcor_DOXrec$logFC %>% hist(., main = "DOX vs VEH 24hr Recovery")
-toptable_Dupcor_DOX144$logFC %>% hist(., main = "DOX vs VEH 6d Recovery")
+#k=2
+toptable2_Dupcor_DOX <- topTable(efit2, coef = "V.D24", number = nrow(dge1_calc$counts), p.value = 1)
+toptable2_Dupcor_DOXrec <- topTable(efit2, coef = "V.D24r", number = nrow(dge1_calc$counts), p.value = 1)
+toptable2_Dupcor_DOX144 <- topTable(efit2, coef = "V.D144r", number = nrow(dge1_calc$counts), p.value = 1)
+#k=2 plots
+toptable2_Dupcor_DOX$logFC %>% hist(, main= "RUVs k=2 DOX 24hr Toptable")
+toptable2_Dupcor_DOXrec$logFC %>% hist(, main = "RUVs k=2 DOX 24Rec Toptable")
+toptable2_Dupcor_DOX144$logFC %>% hist(, main = "RUVs k=2 DOX 144Rec Toptable")
+
+#k=3
+toptable3_Dupcor_DOX <- topTable(efit3, coef = "V.D24", number = nrow(dge1_calc$counts), p.value = 1)
+toptable3_Dupcor_DOXrec <- topTable(efit3, coef = "V.D24r", number = nrow(dge1_calc$counts), p.value = 1)
+toptable3_Dupcor_DOX144 <- topTable(efit3, coef = "V.D144r", number = nrow(dge1_calc$counts), p.value = 1)
+#k=3 plots
+toptable3_Dupcor_DOX$logFC %>% hist(, main= "RUVs k=3 DOX 24hr Toptable")
+toptable3_Dupcor_DOXrec$logFC %>% hist(, main = "RUVs k=3 DOX 24Rec Toptable")
+toptable3_Dupcor_DOX144$logFC %>% hist(, main = "RUVs k=3 DOX 144Rec Toptable")
+
+#k=4
+toptable4_Dupcor_DOX <- topTable(efit4, coef = "V.D24", number = nrow(dge1_calc$counts), p.value = 1)
+toptable4_Dupcor_DOXrec <- topTable(efit4, coef = "V.D24r", number = nrow(dge1_calc$counts), p.value = 1)
+toptable4_Dupcor_DOX144 <- topTable(efit4, coef = "V.D144r", number = nrow(dge1_calc$counts), p.value = 1)
+#k=4 plots
+toptable4_Dupcor_DOX$logFC %>% hist(, main= "RUVs k=4 DOX 24hr Toptable")
+toptable4_Dupcor_DOXrec$logFC %>% hist(, main = "RUVs k=4 DOX 24Rec Toptable")
+toptable4_Dupcor_DOX144$logFC %>% hist(, main = "RUVs k=4 DOX 144Rec Toptable")
+
+#k=5
+toptable5_Dupcor_DOX <- topTable(efit5, coef = "V.D24", number = nrow(dge1_calc$counts), p.value = 1)
+toptable5_Dupcor_DOXrec <- topTable(efit5, coef = "V.D24r", number = nrow(dge1_calc$counts), p.value = 1)
+toptable5_Dupcor_DOX144 <- topTable(efit5, coef = "V.D144r", number = nrow(dge1_calc$counts), p.value = 1)
+#k=5 plots
+toptable5_Dupcor_DOX$logFC %>% hist(, main= "RUVs k=5 DOX 24hr Toptable")
+toptable5_Dupcor_DOXrec$logFC %>% hist(, main = "RUVs k=5 DOX 24Rec Toptable")
+toptable5_Dupcor_DOX144$logFC %>% hist(, main = "RUVs k=5 DOX 144Rec Toptable")
+
 ```
 
 
-```{r}
-#OMAR NEW CODE
-fC_Matrix_Full_cpm_filter
-dim(fC_Matrix_Full_cpm_filter)
+```{r pvalue and adj pvalue plots of DE, include=FALSE}
 
-#now I want to un-log transform this data - square it?
-fC_Matrix_Full_new <- fC_Matrix_Full_cpm_filter^2
-dim(fC_Matrix_Full_new)
+####DOX####
 
 
-#  counts need to be integer values and in a numeric matrix
-# note: the log transformation needs to be accounted for in the isLog argument in RUVs function.
-counts <- as.matrix(fC_Matrix_Full_cpm_filter)
 
-# Create a DataFrame for the phenoData
-phenoData <- DataFrame(annot)
-
-# Now create the RangedSummarizedExperiment necessary for RUVs input
-# looks like it did need both the phenodata and the counts.
-set <- SummarizedExperiment(assays =  counts, metadata =phenoData)
-
-# Generate a background matrix
-# The column "Cond" holds the comparisons that you actually want to make. DOX_24, DMSO_24,5FU_24, DOX_3,etc.
-scIdx <-RUVSeq::makeGroups(phenoData$Tx_Time)
-scIdx
-# Apply RUVs function from RUVSeq
-# note: for now just get code to work. "k" will be iteratively adjusted over time depending on your PCA.
-set <- RUVSeq::RUVs(x = counts, k =1, scIdx = scIdx, isLog = TRUE)
-
-#DO NOT USE THESE COUNTS FOR LINEAR MODELING EMMA
-
-squu
+```
 
 
 
 
-
-# get the ruv weights to put into the linear model. n weights = k.
-RUV_df <- set$W %>% as.data.frame()
-RUV_df$Names <- rownames(RUV_df)
-
-# Make sure the data frame names match 
-RUV_df_rm <- RUV_df[RUV_df$Names %in% annot_new$samples, ] 
-RUV_1 <-  RUV_df_rm$W_1
-
-
-# before ruv
-prcomp_res <- prcomp(t(counts), scale. = TRUE, center = TRUE, )
-ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", size =4)+
-  theme_bw()+
-  ggtitle("No RUV")
-# after ruv
-prcomp_res <- prcomp(t(set$normalizedCounts), scale. = TRUE, center = TRUE, )
-ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", size =4)+
-  theme_bw()+
-  ggtitle("RUV, comrade")
+Now I want to attempt to use Cormotif to look at motifs within my conditions
+```{r Cormotif, include=FALSE}
 
 
 
-####rowMeans >1####
-# rowMeans_DE <- rowMeans(counts_DE)
-# counts_DE_filter1 <- counts_DE[rowMeans_DE > 1,]
-# dim(counts_DE_filter1)
-
-fC_Matrix_Full_new %>% head()
-fC_Matrix_Full_new %>% dim()
-
-dge1 <- DGEList.data.frame(counts = matrix_cpm_new, group = group_1, genes = row.names(matrix_cpm_new))
-
-#check the initial file before norm factors are calculated
-#dge1$samples
-
-#calculate the normalization factors with method TMM
-dge1_calc <- calcNormFactors(dge1, method = "TMM")
-
-#check final file after norm calculation
-#dge1_calc$samples
-
-#View(dge1_calc)
-
-#Pull out factors
-snames1 <- data.frame("samples" = colnames(dge1_calc)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
-
-#snames_list <- as.list(snames)
-snames1_ind <- snames1$Individual
-
-# Make sure the names match 
-annot_new$samples == RUV_df_rm$Names
-annot_new$RUV_1 <- RUV_df_rm$W_1
-
-
-#Create my model matrix
-mm_r1 <- model.matrix(~0 + group_1 + RUV_1, data = annot_new)
-
-p1 <- voom(dge1_calc$counts, mm_r1, plot = TRUE)
-
-corfit1 <- duplicateCorrelation(p1, mm_r1, block = snames1_ind)
-
-v1 <- voom(dge1_calc$counts, mm_r1, block = snames1_ind, correlation = corfit1$consensus)
-
-fit1 <- lmFit(v1, mm_r1, block = snames1_ind, correlation = corfit1$consensus)
-
-
-#make sure to check which order the columns are in - otherwise they won't match right (it was moved into alphabetical and number order)
-
-mm_r1_names <- str_replace(string = colnames(mm_r1), pattern = "group_1", replacement = "")
-design <- model.matrix(~ group_1 + RUV_1 , annot_new)
-colnames(mm_r1) <- mm_r1_names
-
-cm_r1 <- makeContrasts(
-        V.D24 = DOX_24 - DMSO_24,
-        V.F24 = FLUO_24 - DMSO_24,
-        V.D24r = DOX_24rec - DMSO_24rec,
-        V.F24r = FLUO_24rec - DMSO_24rec,
-        V.D144r = DOX_144rec - DMSO_144rec,
-        V.F144r = FLUO_144rec - DMSO_144rec,
-        RUV_1_24 = RUV_1 - DMSO_24,
-        RUV_1_24r = RUV_1 - DMSO_24rec,
-        RUV_1_144r = RUV_1 - DMSO_144rec,
-        levels = mm_r1
-)
-
-vfit_r1 <- lmFit(p1, mm_r1)
-vfit_r1 <- contrasts.fit(vfit_r1, contrasts = cm_r1)
-
-efit4 <- eBayes(vfit_r1)
-
-results1 = decideTests(efit4)
-summary(results1)
-
-toptable_Dupcor_DOX <- topTable(efit4, coef = "V.D24", number = nrow(dge1_calc$counts), p.value = 1)
-toptable_Dupcor_DOXrec <- topTable(efit4, coef = "V.D24r", number = nrow(dge1_calc$counts), p.value = 1)
-toptable_Dupcor_DOX144 <- topTable(efit4, coef = "V.D144r", number = nrow(dge1_calc$counts), p.value = 1)
-
-toptable_Dupcor_DOX$logFC %>% hist()
-toptable_Dupcor_DOXrec$logFC %>% hist()
-toptable_Dupcor_DOX144$logFC %>% hist()
 ```
 
