@@ -7,13 +7,11 @@ navbar:
     href: index.html
   - text: About
     href: about.html
-  - text: License
-    href: license.html
-  - text: Dose-Response Analysis
+  - text: Dose-Response
     href: Recovery_DRC.html
-  - text: QC Checks RNAseq
+  - text: Quality Control RNAseq
     href: Recovery_RNAseq.html
-  - text: Differential Expression Analysis
+  - text: Differential Expression
     href: Recovery_DE.html
   right:
   - icon: fab fa-github
@@ -21,7 +19,8 @@ navbar:
     href: https://github.com/emmapfort/Recovery_5FU_Project
 output:
   workflowr::wflow_html:
-    toc: yes
-    toc_float: yes
+    toc: true
+    toc_depth: 2
+    toc_float: true
     theme: journal
     highlight: textmate
