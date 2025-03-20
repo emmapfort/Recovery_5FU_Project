@@ -11,6 +11,8 @@ navbar:
     href: license.html
   - text: Dose-Response Analysis
     href: Recovery_DRC.html
+  - text: QC Checks RNAseq
+    href: Recovery_RNAseq.html
   - text: Differential Expression Analysis
     href: Recovery_DE.html
   right:

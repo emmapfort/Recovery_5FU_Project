@@ -1,5 +1,5 @@
 ---
-title: "5FU Recovery RNAseq Analysis"
+title: "Recovery DE Analysis"
 author: "Emma M Pfortmiller"
 date: "2025-02-10"
 site: workflowr::wflow_site
@@ -10,7 +10,7 @@ output:
     toc_float: true
     theme: journal
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 Welcome to my research website.
@@ -19,6 +19,16 @@ Welcome to my research website.
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
 
 ```{r Libraries, echo=FALSE, results='hide', collapse=TRUE}
 library(ggplot2)
@@ -37,1539 +47,50 @@ library(Cormotif)
 library(RColorBrewer)
 library(biomaRt)
 library(RUVSeq)
+library(Rfast)
 ```
 
+To begin the differential expression (DE) pipeline, I will start by making the data frames I will use.
 
+For DE, I need a dataframe that is:
+1. log2cpm transformed
+2. filtered by rowMeans > 0
+3. rownames from the log2cpm filter pulled out
+4. has only the shared rows (genes) that are present in the filtered log2cpm dataframe
 
-```{r Sheet with Mapped and Successfully Aligned Reads, include = FALSE}
-fC_AllCounts <- read_csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/Recovery_MappingStats_Subread_EMP_241104_250211.csv")
-View(fC_AllCounts)
-dim(fC_AllCounts)
-#[1] 63  6
-```
+I made a filtered gene object based on these parameters, and will filter the counts_DE object by this
 
-These samples (63 in total) have been aligned to the Ensembl 113 release of GRCh38 via subread, and counts have been generated using featureCounts with inbuilt hg38 genome
 
-Data is located under 5FU Project on my computer
-All analysis saved in RDirectory Recovery_RNAseq
-
-Individual 1 - 84-1 (9 samples)
-```{r Import Counts Data Individual 1 - 84-1, include=FALSE}
-#abbreviated to the first two numbers of the cell line for ease
-#9 samples per cell line
-#problem sample 24!!
-
-#84-1 DOX_24-> R27
-  Counts_84_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R27_R1.counts.txt")  
-  #View(Counts_84_DOX_24)
-
-
-
-#84-1 FLUO_24 -> R28
-  Counts_84_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R28_R1.counts.txt")
-  #View(Counts_84_FLUO_24)
-  
-#84-1 DMSO_24 -> R29
-  Counts_84_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R29_R1.counts.txt")
-  #View(Counts_84_DMSO_24)
-  
-#84-1 DOX_24+24-> R30
-  Counts_84_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R30_R1.counts.txt")
-  #View(Counts_84_DOX_24rec)
-  
-#84-1 FLUO_24+24-> R31
-  Counts_84_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R31_R1.counts.txt")
-  #View(Counts_84_FLUO_24rec)
-  
-#84-1 DMSO_24+24-> R32
-  Counts_84_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R32_R1.counts.txt")
-  #View(Counts_84_DMSO_24rec)
-  
-#84-1 DOX_24+144 -> R33
-  Counts_84_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R33_R1.counts.txt")
-  #View(Counts_84_DOX_144rec)
-
-#84-1 FLUO_24+144 -> R34
-   Counts_84_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R34_R1.counts.txt")
-  #View(Counts_84_FLUO_144rec)
-  
-#84-1 DMSO_24+144 -> R35
-   Counts_84_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R35_R1.counts.txt")
-  #View(Counts_84_DMSO_144rec)
-  
-```
-
-Individual 2 - 87-1 (9 samples)
-```{r Import Counts Individual 2 87-1, include=FALSE}
-#abbreviated to the first two numbers of the cell line for ease
-#9 samples per cell line
-
-#87-1 DOX_24-> R36
-  Counts_87_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R36_R1.counts.txt")  
-  #View(Counts_87_DOX_24)
-
-#87-1 FLUO_24 -> R37
-  Counts_87_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R37_R1.counts.txt")
-  #View(Counts_87_FLUO_24)
-  
-#87-1 DMSO_24 -> R38
-  Counts_87_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R38_R1.counts.txt")
-  #View(Counts_87_DMSO_24)
-  
-#87-1 DOX_24+24-> R39
-  Counts_87_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R39_R1.counts.txt")
-  #View(Counts_87_DOX_24rec)
-  
-#87-1 FLUO_24+24-> R40
-  Counts_87_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R40_R1.counts.txt")
-  #View(Counts_87_FLUO_24rec)
-  
-#87-1 DMSO_24+24-> R41
-  Counts_87_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R41_R1.counts.txt")
-  #View(Counts_87_DMSO_24rec)
-  
-#87-1 DOX_24+144 -> R42
-  Counts_87_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R42_R1.counts.txt")
-  #View(Counts_87_DOX_144rec)
-
-#87-1 FLUO_24+144 -> R43
-   Counts_87_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R43_R1.counts.txt")
-  #View(Counts_87_FLUO_144rec)
-  
-#87-1 DMSO_24+144 -> R44
-   Counts_87_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R44_R1.counts.txt")
-  #View(Counts_87_DMSO_144rec)
-  
-```
-
-Individual 3 - 75-1 (9 samples)
-```{r Import Counts Individual 3 78-1, include=FALSE}
-#abbreviated to the first two numbers of the cell line for ease
-#9 samples per cell line
-
-#78-1 DOX_24-> R45
-  Counts_78_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R45_R1.counts.txt")  
-  #View(Counts_78_DOX_24)
-
-#78-1 FLUO_24 -> R46
-  Counts_78_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R46_R1.counts.txt")
-  #View(Counts_78_FLUO_24)
-  
-#78-1 DMSO_24 -> R47
-  Counts_78_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R47_R1.counts.txt")
-  #View(Counts_78_DMSO_24)
-  
-#78-1 DOX_24+24-> R48
-  Counts_78_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R48_R1.counts.txt")
-  #View(Counts_78_DOX_24rec)
-  
-#78-1 FLUO_24+24-> R49
-  Counts_78_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R49_R1.counts.txt")
-  #View(Counts_78_FLUO_24rec)
-  
-#78-1 DMSO_24+24-> R50
-  Counts_78_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R50_R1.counts.txt")
-  #View(Counts_78_DMSO_24rec)
-  
-#78-1 DOX_24+144 -> R51
-  Counts_78_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R51_R1.counts.txt")
-  #View(Counts_78_DOX_144rec)
-
-#78-1 FLUO_24+144 -> R52
-   Counts_78_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R52_R1.counts.txt")
-  #View(Counts_78_FLUO_144rec)
-  
-#78-1 DMSO_24+144 -> R53
-   Counts_78_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R53_R1.counts.txt")
-  #View(Counts_78_DMSO_144rec)
-   
-```
-
-Individual 4 - 75-1 (9 samples)
-```{r Import Counts Individual 4 75-1, include=FALSE}
-#abbreviated to the first two numbers of the cell line for ease
-#9 samples per cell line
-
-#75-1 DOX_24-> R54
-  Counts_75_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R54_R1.counts.txt")  
-  #View(Counts_75_DOX_24)
-
-#75-1 FLUO_24 -> R55
-  Counts_75_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R55_R1.counts.txt")
-  #View(Counts_75_FLUO_24)
-  
-#75-1 DMSO_24 -> R56
-  Counts_75_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R56_R1.counts.txt")
-  #View(Counts_75_DMSO_24)
-  
-#75-1 DOX_24+24-> R57
-  Counts_75_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R57_R1.counts.txt")
-  #View(Counts_75_DOX_24rec)
-  
-#75-1 FLUO_24+24-> R58
-  Counts_75_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R58_R1.counts.txt")
-  #View(Counts_75_FLUO_24rec)
-  
-#75-1 DMSO_24+24-> R59
-  Counts_75_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R59_R1.counts.txt")
-  #View(Counts_75_DMSO_24rec)
-  
-#75-1 DOX_24+144 -> R60
-  Counts_75_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R60_R1.counts.txt")
-  #View(Counts_75_DOX_144rec)
-
-#75-1 FLUO_24+144 -> R61
-   Counts_75_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R61_R1.counts.txt")
-  #View(Counts_75_FLUO_144rec)
-  
-#75-1 DMSO_24+144 -> R62
-   Counts_75_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R62_R1.counts.txt")
-  #View(Counts_75_DMSO_144rec)
-   
-```
-
-
-Individual 5 - 17-3 (9 samples)
-```{r Import Counts Individual 5 17-3, include=FALSE}
-#abbreviated to the first two numbers of the cell line for ease
-#9 samples per cell line
-
-#17-3 DOX_24-> R63
-  Counts_17_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R63_R1.counts.txt")  
-  #View(Counts_17_DOX_24)
-
-#17-3 FLUO_24 -> R64
-  Counts_17_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R64_R1.counts.txt")
-  #View(Counts_17_FLUO_24)
-  
-#17-3 DMSO_24 -> R65
-  Counts_17_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R65_R1.counts.txt")
-  #View(Counts_17_DMSO_24)
-  
-#17-3 DOX_24+24-> R66
-  Counts_17_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R66_R1.counts.txt")
-  #View(Counts_17_DOX_24rec)
-  
-#17-3 FLUO_24+24-> R67
-  Counts_17_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R67_R1.counts.txt")
-  #View(Counts_17_FLUO_24rec)
-  
-#17-3 DMSO_24+24-> R68
-  Counts_17_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R68_R1.counts.txt")
-  #View(Counts_17_DMSO_24rec)
-  
-#17-3 DOX_24+144 -> R69
-  Counts_17_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R69_R1.counts.txt")
-  #View(Counts_17_DOX_144rec)
-
-#17-3 FLUO_24+144 -> R70
-   Counts_17_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R70_R1.counts.txt")
-  #View(Counts_17_FLUO_144rec)
-  
-#17-3 DMSO_24+144 -> R71
-   Counts_17_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R71_R1.counts.txt")
-  #View(Counts_17_DMSO_144rec)
-   
-```
-
-
-Individual 6 - 90-1 (9 samples)
-```{r Import Counts Individual 6 90-1, include=FALSE}
-#abbreviated to the first two numbers of the cell line for ease
-#9 samples per cell line
-
-#90-1 DOX_24-> R72
-  Counts_90_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R72_R1.counts.txt")  
-  #View(Counts_90_DOX_24)
-
-#90-1 FLUO_24 -> R73
-  Counts_90_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R73_R1.counts.txt")
-  #View(Counts_90_FLUO_24)
-  
-#90-1 DMSO_24 -> R74
-  Counts_90_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R74_R1.counts.txt")
-  #View(Counts_90_DMSO_24)
-  
-#90-1 DOX_24+24-> R75
-  Counts_90_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R75_R1.counts.txt")
-  #View(Counts_90_DOX_24rec)
-  
-#90-1 FLUO_24+24-> R76
-  Counts_90_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R76_R1.counts.txt")
-  #View(Counts_90_FLUO_24rec)
-  
-#90-1 DMSO_24+24-> R77
-  Counts_90_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R77_R1.counts.txt")
-  #View(Counts_90_DMSO_24rec)
-  
-#90-1 DOX_24+144 -> R78
-  Counts_90_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R78_R1.counts.txt")
-  #View(Counts_90_DOX_144rec)
-
-#90-1 FLUO_24+144 -> R79
-   Counts_90_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R79_R1.counts.txt")
-  #View(Counts_90_FLUO_144rec)
-  
-#90-1 DMSO_24+144 -> R80
-   Counts_90_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R80_R1.counts.txt")
-  #View(Counts_90_DMSO_144rec)
-   
-```
-
-
-Individual 7 - 90-1 REP (9 samples)
-```{r Import Counts Individual 7 90-1 REP, include=FALSE}
-#abbreviated to the first two numbers of the cell line for ease
-#9 samples per cell line
-
-#90-1 REP DOX_24-> R81
-  Counts_90REP_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R81_R1.counts.txt")  
-  #View(Counts_90_DOX_24)
-
-#90-1 REP FLUO_24 -> R82
-  Counts_90REP_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R82_R1.counts.txt")
-  #View(Counts_90_FLUO_24)
-  
-#90-1 REP DMSO_24 -> R83
-  Counts_90REP_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R83_R1.counts.txt")
-  #View(Counts_90_DMSO_24)
-  
-#90-1 REP DOX_24+24-> R84
-  Counts_90REP_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R84_R1.counts.txt")
-  #View(Counts_90_DOX_24rec)
-  
-#90-1 REP FLUO_24+24-> R85
-  Counts_90REP_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R85_R1.counts.txt")
-  #View(Counts_90_FLUO_24rec)
-  
-#90-1 REP DMSO_24+24-> R86
-  Counts_90REP_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R86_R1.counts.txt")
-  #View(Counts_90_DMSO_24rec)
-  
-#90-1 REP DOX_24+144 -> R87
-  Counts_90REP_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R87_R1.counts.txt")
-  #View(Counts_90_DOX_144rec)
-
-#90-1 REP FLUO_24+144 -> R88
-   Counts_90REP_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R88_R1.counts.txt")
-  #View(Counts_90_FLUO_144rec)
-  
-#90-1 REP DMSO_24+144 -> R89
-   Counts_90REP_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R89_R1.counts.txt")
-  #View(Counts_90_DMSO_144rec)
-   
-```
-Now that I have imported all of these counts files, I will make a matrix with all of the samples
-
-First I'll break them up by individual, and then combine them all together
-```{r Counts Matrix 84-1, include=FALSE}
-
-fC_Matrix_84_All <-
-  data.frame(
-    Counts_84_DOX_24,
-    Counts_84_FLUO_24$MCW_EMP_JT_R28_R1.bam,
-    Counts_84_DMSO_24$MCW_EMP_JT_R29_R1.bam,
-    Counts_84_DOX_24rec$MCW_EMP_JT_R30_R1.bam,
-    Counts_84_FLUO_24rec$MCW_EMP_JT_R31_R1.bam,
-    Counts_84_DMSO_24rec$MCW_EMP_JT_R32_R1.bam,
-    Counts_84_DOX_144rec$MCW_EMP_JT_R33_R1.bam,
-    Counts_84_FLUO_144rec$MCW_EMP_JT_R34_R1.bam,
-    Counts_84_DMSO_144rec$MCW_EMP_JT_R35_R1.bam
-  )
-colnames(fC_Matrix_84_All) <- c("ensembl_gene_id", 
-                                "DOX_24_Ind1",
-                                "FLUO_24_Ind1",
-                                "DMSO_24_Ind1",
-                                "DOX_24rec_Ind1",
-                                "FLUO_24rec_Ind1",
-                                "DMSO_24rec_Ind1",
-                                "DOX_144rec_Ind1",
-                                "FLUO_144rec_Ind1",
-                                "DMSO_144rec_Ind1")
-
-fC_Matrix_84 <- fC_Matrix_84_All %>% remove_rownames %>% column_to_rownames(var = "ensembl_gene_id") %>% as.matrix()
-
-#write this one to a csv so I can hold onto it
-#write.csv(fC_Matrix_84_All, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_84-1_EMP_250210.csv")
-
-boxplot(fC_Matrix_84,  xlab = "Conditions", ylab = "Unfiltered Counts", ylim= c(-10, 100), main = "Boxplot of Raw Counts 84-1")
-
-hist(fC_Matrix_84,  xlab = "Unfiltered Counts", xlim = c(-1000,25000), ylim = c(-100, 20000), main = "Histogram of Raw Counts 84-1")
-
-
-```
-
-```{r Counts Matrix Individual 2 87-1, include=FALSE}
-
-fC_Matrix_87_All <-
-  data.frame(
-    Counts_87_DOX_24,
-    Counts_87_FLUO_24$MCW_EMP_JT_R37_R1.bam,
-    Counts_87_DMSO_24$MCW_EMP_JT_R38_R1.bam,
-    Counts_87_DOX_24rec$MCW_EMP_JT_R39_R1.bam,
-    Counts_87_FLUO_24rec$MCW_EMP_JT_R40_R1.bam,
-    Counts_87_DMSO_24rec$MCW_EMP_JT_R41_R1.bam,
-    Counts_87_DOX_144rec$MCW_EMP_JT_R42_R1.bam,
-    Counts_87_FLUO_144rec$MCW_EMP_JT_R43_R1.bam,
-    Counts_87_DMSO_144rec$MCW_EMP_JT_R44_R1.bam
-  )
-colnames(fC_Matrix_87_All) <- c("ensembl_gene_id", 
-                                "DOX_24_Ind2",
-                                "FLUO_24_Ind2",
-                                "DMSO_24_Ind2",
-                                "DOX_24rec_Ind2",
-                                "FLUO_24rec_Ind2",
-                                "DMSO_24rec_Ind2",
-                                "DOX_144rec_Ind2",
-                                "FLUO_144rec_Ind2",
-                                "DMSO_144rec_Ind2")
-
-fC_Matrix_87 <- fC_Matrix_87_All %>% remove_rownames %>% column_to_rownames(var = "ensembl_gene_id") %>% as.matrix()
-
-#write this one to a csv so I can hold onto it
-# write.csv(fC_Matrix_87_All, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_87-1_EMP_250210.csv")
-
-boxplot(fC_Matrix_87,  xlab = "Conditions", ylab = "Unfiltered Counts", ylim= c(-10, 100), main = "Boxplot of Raw Counts 87-1")
-
-hist(fC_Matrix_87,  xlab = "Unfiltered Counts", xlim = c(-1000,25000), ylim = c(-100, 20000), main = "Histogram of Raw Counts 87-1")
-
-
-```
-
-
-```{r Counts Matrix Individual 3 78-1, include=FALSE}
-
-fC_Matrix_78_All <-
-  data.frame(
-    Counts_78_DOX_24,
-    Counts_78_FLUO_24$MCW_EMP_JT_R46_R1.bam,
-    Counts_78_DMSO_24$MCW_EMP_JT_R47_R1.bam,
-    Counts_78_DOX_24rec$MCW_EMP_JT_R48_R1.bam,
-    Counts_78_FLUO_24rec$MCW_EMP_JT_R49_R1.bam,
-    Counts_78_DMSO_24rec$MCW_EMP_JT_R50_R1.bam,
-    Counts_78_DOX_144rec$MCW_EMP_JT_R51_R1.bam,
-    Counts_78_FLUO_144rec$MCW_EMP_JT_R52_R1.bam,
-    Counts_78_DMSO_144rec$MCW_EMP_JT_R53_R1.bam
-  )
-colnames(fC_Matrix_78_All) <- c("ensembl_gene_id", 
-                                "DOX_24_Ind3",
-                                "FLUO_24_Ind3",
-                                "DMSO_24_Ind3",
-                                "DOX_24rec_Ind3",
-                                "FLUO_24rec_Ind3",
-                                "DMSO_24rec_Ind3",
-                                "DOX_144rec_Ind3",
-                                "FLUO_144rec_Ind3",
-                                "DMSO_144rec_Ind3")
-
-fC_Matrix_78 <- fC_Matrix_78_All %>% remove_rownames %>% column_to_rownames(var = "ensembl_gene_id") %>% as.matrix()
-
-#write this one to a csv so I can hold onto it
-# write.csv(fC_Matrix_78_All, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_78-1_EMP_250210.csv")
-
-boxplot(fC_Matrix_78,  xlab = "Conditions", ylab = "Unfiltered Counts", ylim= c(-10, 100), main = "Boxplot of Raw Counts 78-1")
-
-hist(fC_Matrix_78,  xlab = "Unfiltered Counts", xlim = c(-1000,25000), ylim = c(-100, 20000), main = "Histogram of Raw Counts 78-1")
-
-
-```
-
-
-```{r Counts Matrix Individual 4 75-1, include=FALSE}
-
-fC_Matrix_75_All <-
-  data.frame(
-    Counts_75_DOX_24,
-    Counts_75_FLUO_24$MCW_EMP_JT_R55_R1.bam,
-    Counts_75_DMSO_24$MCW_EMP_JT_R56_R1.bam,
-    Counts_75_DOX_24rec$MCW_EMP_JT_R57_R1.bam,
-    Counts_75_FLUO_24rec$MCW_EMP_JT_R58_R1.bam,
-    Counts_75_DMSO_24rec$MCW_EMP_JT_R59_R1.bam,
-    Counts_75_DOX_144rec$MCW_EMP_JT_R60_R1.bam,
-    Counts_75_FLUO_144rec$MCW_EMP_JT_R61_R1.bam,
-    Counts_75_DMSO_144rec$MCW_EMP_JT_R62_R1.bam
-  )
-colnames(fC_Matrix_75_All) <- c("ensembl_gene_id", 
-                                "DOX_24_Ind4",
-                                "FLUO_24_Ind4",
-                                "DMSO_24_Ind4",
-                                "DOX_24rec_Ind4",
-                                "FLUO_24rec_Ind4",
-                                "DMSO_24rec_Ind4",
-                                "DOX_144rec_Ind4",
-                                "FLUO_144rec_Ind4",
-                                "DMSO_144rec_Ind4")
-
-fC_Matrix_75 <- fC_Matrix_75_All %>% remove_rownames %>% column_to_rownames(var = "ensembl_gene_id") %>% as.matrix()
-
-#write this one to a csv so I can hold onto it
-# write.csv(fC_Matrix_75_All, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_75-1_EMP_250210.csv")
-
-boxplot(fC_Matrix_75,  xlab = "Conditions", ylab = "Unfiltered Counts", ylim= c(-10, 100), main = "Boxplot of Raw Counts 75-1")
-
-hist(fC_Matrix_75,  xlab = "Unfiltered Counts", xlim = c(-1000,25000), ylim = c(-100, 20000), main = "Histogram of Raw Counts 75-1")
-
-
-```
-
-
-```{r Counts Matrix Individual 5 17-3, include=FALSE}
-
-fC_Matrix_17_All <-
-  data.frame(
-    Counts_17_DOX_24,
-    Counts_17_FLUO_24$MCW_EMP_JT_R64_R1.bam,
-    Counts_17_DMSO_24$MCW_EMP_JT_R65_R1.bam,
-    Counts_17_DOX_24rec$MCW_EMP_JT_R66_R1.bam,
-    Counts_17_FLUO_24rec$MCW_EMP_JT_R67_R1.bam,
-    Counts_17_DMSO_24rec$MCW_EMP_JT_R68_R1.bam,
-    Counts_17_DOX_144rec$MCW_EMP_JT_R69_R1.bam,
-    Counts_17_FLUO_144rec$MCW_EMP_JT_R70_R1.bam,
-    Counts_17_DMSO_144rec$MCW_EMP_JT_R71_R1.bam
-  )
-colnames(fC_Matrix_17_All) <- c("ensembl_gene_id", 
-                                "DOX_24_Ind5",
-                                "FLUO_24_Ind5",
-                                "DMSO_24_Ind5",
-                                "DOX_24rec_Ind5",
-                                "FLUO_24rec_Ind5",
-                                "DMSO_24rec_Ind5",
-                                "DOX_144rec_Ind5",
-                                "FLUO_144rec_Ind5",
-                                "DMSO_144rec_Ind5")
-
-fC_Matrix_17 <- fC_Matrix_17_All %>% remove_rownames %>% column_to_rownames(var = "ensembl_gene_id") %>% as.matrix()
-
-#write this one to a csv so I can hold onto it
-# write.csv(fC_Matrix_17_All, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_17-1_EMP_250210.csv")
-
-boxplot(fC_Matrix_17,  xlab = "Conditions", ylab = "Unfiltered Counts", ylim= c(-10, 100), main = "Boxplot of Raw Counts 17-3")
-
-hist(fC_Matrix_17,  xlab = "Unfiltered Counts", xlim = c(-1000,25000), ylim = c(-100, 20000), main = "Histogram of Raw Counts 17-3")
-
-
-```
-
-
-```{r Counts Matrix Individual 6 90-1, include=FALSE}
-
-fC_Matrix_90_All <-
-  data.frame(
-    Counts_90_DOX_24,
-    Counts_90_FLUO_24$MCW_EMP_JT_R73_R1.bam,
-    Counts_90_DMSO_24$MCW_EMP_JT_R74_R1.bam,
-    Counts_90_DOX_24rec$MCW_EMP_JT_R75_R1.bam,
-    Counts_90_FLUO_24rec$MCW_EMP_JT_R76_R1.bam,
-    Counts_90_DMSO_24rec$MCW_EMP_JT_R77_R1.bam,
-    Counts_90_DOX_144rec$MCW_EMP_JT_R78_R1.bam,
-    Counts_90_FLUO_144rec$MCW_EMP_JT_R79_R1.bam,
-    Counts_90_DMSO_144rec$MCW_EMP_JT_R80_R1.bam
-  )
-colnames(fC_Matrix_90_All) <- c("ensembl_gene_id", 
-                                "DOX_24_Ind6",
-                                "FLUO_24_Ind6",
-                                "DMSO_24_Ind6",
-                                "DOX_24rec_Ind6",
-                                "FLUO_24rec_Ind6",
-                                "DMSO_24rec_Ind6",
-                                "DOX_144rec_Ind6",
-                                "FLUO_144rec_Ind6",
-                                "DMSO_144rec_Ind6")
-
-fC_Matrix_90 <- fC_Matrix_90_All %>% remove_rownames %>% column_to_rownames(var = "ensembl_gene_id") %>% as.matrix()
-
-#write this one to a csv so I can hold onto it
-# write.csv(fC_Matrix_90_All, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_90-1_EMP_250210.csv")
-
-boxplot(fC_Matrix_90,  xlab = "Conditions", ylab = "Unfiltered Counts", ylim= c(-10, 100), main = "Boxplot of Raw Counts 90-1")
-
-hist(fC_Matrix_90,  xlab = "Unfiltered Counts", xlim = c(-1000,25000), ylim = c(-100, 20000), main = "Histogram of Raw Counts 90-1")
-
-
-```
-
-
-```{r Counts Matrix Individual 6 90-1REP, include=FALSE}
-
-fC_Matrix_90REP_All <-
-  data.frame(
-    Counts_90REP_DOX_24,
-    Counts_90REP_FLUO_24$MCW_EMP_JT_R82_R1.bam,
-    Counts_90REP_DMSO_24$MCW_EMP_JT_R83_R1.bam,
-    Counts_90REP_DOX_24rec$MCW_EMP_JT_R84_R1.bam,
-    Counts_90REP_FLUO_24rec$MCW_EMP_JT_R85_R1.bam,
-    Counts_90REP_DMSO_24rec$MCW_EMP_JT_R86_R1.bam,
-    Counts_90REP_DOX_144rec$MCW_EMP_JT_R87_R1.bam,
-    Counts_90REP_FLUO_144rec$MCW_EMP_JT_R88_R1.bam,
-    Counts_90REP_DMSO_144rec$MCW_EMP_JT_R89_R1.bam
-  )
-colnames(fC_Matrix_90REP_All) <- c("ensembl_gene_id", 
-                                "DOX_24_Ind6REP",
-                                "FLUO_24_Ind6REP",
-                                "DMSO_24_Ind6REP",
-                                "DOX_24rec_Ind6REP",
-                                "FLUO_24rec_Ind6REP",
-                                "DMSO_24rec_Ind6REP",
-                                "DOX_144rec_Ind6REP",
-                                "FLUO_144rec_Ind6REP",
-                                "DMSO_144rec_Ind6REP")
-
-fC_Matrix_90REP <- fC_Matrix_90REP_All %>% remove_rownames %>% column_to_rownames(var = "ensembl_gene_id") %>% as.matrix()
-
-#write this one to a csv so I can hold onto it
-# write.csv(fC_Matrix_90REP_All, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_90-1REP_EMP_250210.csv")
-
-boxplot(fC_Matrix_90REP,  xlab = "Conditions", ylab = "Unfiltered Counts", ylim= c(-10, 100), main = "Boxplot of Raw Counts 90-1 REP")
-
-hist(fC_Matrix_90REP,  xlab = "Unfiltered Counts", xlim = c(-1000,25000), ylim = c(-100, 20000), main = "Histogram of Raw Counts 90-1 REP")
-
-
-```
-
-
-Now that I've made individual matrices for each individual - I will combine them together into one large matrix
-
-```{r Counts Matrix All Individuals, results='hide', echo=FALSE}
-
-fC_Matrix_AllInd <-
-  data.frame(
-    Counts_84_DOX_24,
-    Counts_84_FLUO_24$MCW_EMP_JT_R28_R1.bam,
-    Counts_84_DMSO_24$MCW_EMP_JT_R29_R1.bam,
-    Counts_84_DOX_24rec$MCW_EMP_JT_R30_R1.bam,
-    Counts_84_FLUO_24rec$MCW_EMP_JT_R31_R1.bam,
-    Counts_84_DMSO_24rec$MCW_EMP_JT_R32_R1.bam,
-    Counts_84_DOX_144rec$MCW_EMP_JT_R33_R1.bam,
-    Counts_84_FLUO_144rec$MCW_EMP_JT_R34_R1.bam,
-    Counts_84_DMSO_144rec$MCW_EMP_JT_R35_R1.bam,
-    Counts_87_DOX_24$MCW_EMP_JT_R36_R1.bam,
-    Counts_87_FLUO_24$MCW_EMP_JT_R37_R1.bam,
-    Counts_87_DMSO_24$MCW_EMP_JT_R38_R1.bam,
-    Counts_87_DOX_24rec$MCW_EMP_JT_R39_R1.bam,
-    Counts_87_FLUO_24rec$MCW_EMP_JT_R40_R1.bam,
-    Counts_87_DMSO_24rec$MCW_EMP_JT_R41_R1.bam,
-    Counts_87_DOX_144rec$MCW_EMP_JT_R42_R1.bam,
-    Counts_87_FLUO_144rec$MCW_EMP_JT_R43_R1.bam,
-    Counts_87_DMSO_144rec$MCW_EMP_JT_R44_R1.bam,
-    Counts_78_DOX_24$MCW_EMP_JT_R45_R1.bam,
-    Counts_78_FLUO_24$MCW_EMP_JT_R46_R1.bam,
-    Counts_78_DMSO_24$MCW_EMP_JT_R47_R1.bam,
-    Counts_78_DOX_24rec$MCW_EMP_JT_R48_R1.bam,
-    Counts_78_FLUO_24rec$MCW_EMP_JT_R49_R1.bam,
-    Counts_78_DMSO_24rec$MCW_EMP_JT_R50_R1.bam,
-    Counts_78_DOX_144rec$MCW_EMP_JT_R51_R1.bam,
-    Counts_78_FLUO_144rec$MCW_EMP_JT_R52_R1.bam,
-    Counts_78_DMSO_144rec$MCW_EMP_JT_R53_R1.bam,
-    Counts_75_DOX_24$MCW_EMP_JT_R54_R1.bam,
-    Counts_75_FLUO_24$MCW_EMP_JT_R55_R1.bam,
-    Counts_75_DMSO_24$MCW_EMP_JT_R56_R1.bam,
-    Counts_75_DOX_24rec$MCW_EMP_JT_R57_R1.bam,
-    Counts_75_FLUO_24rec$MCW_EMP_JT_R58_R1.bam,
-    Counts_75_DMSO_24rec$MCW_EMP_JT_R59_R1.bam,
-    Counts_75_DOX_144rec$MCW_EMP_JT_R60_R1.bam,
-    Counts_75_FLUO_144rec$MCW_EMP_JT_R61_R1.bam,
-    Counts_75_DMSO_144rec$MCW_EMP_JT_R62_R1.bam,
-    Counts_17_DOX_24$MCW_EMP_JT_R63_R1.bam,
-    Counts_17_FLUO_24$MCW_EMP_JT_R64_R1.bam,
-    Counts_17_DMSO_24$MCW_EMP_JT_R65_R1.bam,
-    Counts_17_DOX_24rec$MCW_EMP_JT_R66_R1.bam,
-    Counts_17_FLUO_24rec$MCW_EMP_JT_R67_R1.bam,
-    Counts_17_DMSO_24rec$MCW_EMP_JT_R68_R1.bam,
-    Counts_17_DOX_144rec$MCW_EMP_JT_R69_R1.bam,
-    Counts_17_FLUO_144rec$MCW_EMP_JT_R70_R1.bam,
-    Counts_17_DMSO_144rec$MCW_EMP_JT_R71_R1.bam,
-    Counts_90_DOX_24$MCW_EMP_JT_R72_R1.bam,
-    Counts_90_FLUO_24$MCW_EMP_JT_R73_R1.bam,
-    Counts_90_DMSO_24$MCW_EMP_JT_R74_R1.bam,
-    Counts_90_DOX_24rec$MCW_EMP_JT_R75_R1.bam,
-    Counts_90_FLUO_24rec$MCW_EMP_JT_R76_R1.bam,
-    Counts_90_DMSO_24rec$MCW_EMP_JT_R77_R1.bam,
-    Counts_90_DOX_144rec$MCW_EMP_JT_R78_R1.bam,
-    Counts_90_FLUO_144rec$MCW_EMP_JT_R79_R1.bam,
-    Counts_90_DMSO_144rec$MCW_EMP_JT_R80_R1.bam,
-    Counts_90REP_DOX_24$MCW_EMP_JT_R81_R1.bam,
-    Counts_90REP_FLUO_24$MCW_EMP_JT_R82_R1.bam,
-    Counts_90REP_DMSO_24$MCW_EMP_JT_R83_R1.bam,
-    Counts_90REP_DOX_24rec$MCW_EMP_JT_R84_R1.bam,
-    Counts_90REP_FLUO_24rec$MCW_EMP_JT_R85_R1.bam,
-    Counts_90REP_DMSO_24rec$MCW_EMP_JT_R86_R1.bam,
-    Counts_90REP_DOX_144rec$MCW_EMP_JT_R87_R1.bam,
-    Counts_90REP_FLUO_144rec$MCW_EMP_JT_R88_R1.bam,
-    Counts_90REP_DMSO_144rec$MCW_EMP_JT_R89_R1.bam
-  )
-
-colnames(fC_Matrix_AllInd) <- c("ensembl_gene_id", 
-                                "DOX_24_Ind1",
-                                "FLUO_24_Ind1",
-                                "DMSO_24_Ind1",
-                                "DOX_24rec_Ind1",
-                                "FLUO_24rec_Ind1",
-                                "DMSO_24rec_Ind1",
-                                "DOX_144rec_Ind1",
-                                "FLUO_144rec_Ind1",
-                                "DMSO_144rec_Ind1",
-                                "DOX_24_Ind2",
-                                "FLUO_24_Ind2",
-                                "DMSO_24_Ind2",
-                                "DOX_24rec_Ind2",
-                                "FLUO_24rec_Ind2",
-                                "DMSO_24rec_Ind2",
-                                "DOX_144rec_Ind2",
-                                "FLUO_144rec_Ind2",
-                                "DMSO_144rec_Ind2",
-                                "DOX_24_Ind3",
-                                "FLUO_24_Ind3",
-                                "DMSO_24_Ind3",
-                                "DOX_24rec_Ind3",
-                                "FLUO_24rec_Ind3",
-                                "DMSO_24rec_Ind3",
-                                "DOX_144rec_Ind3",
-                                "FLUO_144rec_Ind3",
-                                "DMSO_144rec_Ind3",
-                                "DOX_24_Ind4",
-                                "FLUO_24_Ind4",
-                                "DMSO_24_Ind4",
-                                "DOX_24rec_Ind4",
-                                "FLUO_24rec_Ind4",
-                                "DMSO_24rec_Ind4",
-                                "DOX_144rec_Ind4",
-                                "FLUO_144rec_Ind4",
-                                "DMSO_144rec_Ind4",
-                                "DOX_24_Ind5",
-                                "FLUO_24_Ind5",
-                                "DMSO_24_Ind5",
-                                "DOX_24rec_Ind5",
-                                "FLUO_24rec_Ind5",
-                                "DMSO_24rec_Ind5",
-                                "DOX_144rec_Ind5",
-                                "FLUO_144rec_Ind5",
-                                "DMSO_144rec_Ind5",
-                                "DOX_24_Ind6",
-                                "FLUO_24_Ind6",
-                                "DMSO_24_Ind6",
-                                "DOX_24rec_Ind6",
-                                "FLUO_24rec_Ind6",
-                                "DMSO_24rec_Ind6",
-                                "DOX_144rec_Ind6",
-                                "FLUO_144rec_Ind6",
-                                "DMSO_144rec_Ind6",
-                                "DOX_24_Ind6REP",
-                                "FLUO_24_Ind6REP",
-                                "DMSO_24_Ind6REP",
-                                "DOX_24rec_Ind6REP",
-                                "FLUO_24rec_Ind6REP",
-                                "DMSO_24rec_Ind6REP",
-                                "DOX_144rec_Ind6REP",
-                                "FLUO_144rec_Ind6REP",
-                                "DMSO_144rec_Ind6REP")
-
-fC_Matrix_Full <- fC_Matrix_AllInd %>% remove_rownames %>% column_to_rownames(var = "ensembl_gene_id") %>% as.matrix()
-
-#write this one to a csv so I can hold onto it
-#write.csv(fC_Matrix_AllInd, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_EMP_250220.csv")
-
-boxplot(fC_Matrix_Full,  xlab = "Conditions", ylab = "Unfiltered Counts", ylim= c(-10, 1000), main = "Boxplot of Raw Counts All Individuals")
-
-hist(fC_Matrix_Full,  xlab = "Unfiltered Counts", xlim = c(-1000,125000), ylim = c(-100, 6000000), main = "Histogram of Raw Counts All Individuals")
-
-
-```
-
-
-```{r Data Handling, results='hide', echo=FALSE, collapse=TRUE}
-
-#Raw Counts
-fC_Matrix_Full
-
-Counts_Full_df <- data.frame(fC_Matrix_Full)
-
-#This code chunk in tandem with the one below to make sure my data's tucked away!
-
-
-#define colors
-ind_col <- c("#003F5C", "#45AE91",  "#58508D", "#BC4099", "#8B3E9B", "#FF6361", "#FF2362")
-
-tx_col <- c("#499FBD", "#DCACED","#63666D")
-
-time_col <- c("#fbb4b9", "#f768a1", "#ae017e")
-
-
-#factor my df to get all the factors
-annotate_Counts <- data.frame("samples" = colnames(Counts_Full_df)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
-#%>% unite(., col = "Treatment_Time", "Treatment", "Time", sep = "_", remove = FALSE)
-
-#now cbind these factors of my data to my raw counts file, transpose first
-
-annotate_Counts_full <- (t(Counts_Full_df)) %>%  cbind(., annotate_Counts)
- 
-#now I'll factor by sample to keep order
-
-#Counts_Full_df %>% dplyr::add_row()
-
-annot_Counts_full_df <- as.data.frame(t(annotate_Counts_full))
-
-#this is for the log2cpm transformation below
-#####log2cpm####
-fC_Matrix_Full_cpm <- cpm(fC_Matrix_Full, log = TRUE)
-
-
-
-```
-
-
-
-```{r QC checks Raw Counts, fig.height=10, fig.width=12, collapse=TRUE}
-#Now that I've put together my matrix - I will do some QC checks
-
-#now that I have all of my factors and my gene info, I will make some graphs to show the QC data
-
-reads_by_sample <- c(tx_col)
-fC_AllCounts %>% 
-  ggplot(., aes (x = Conditions, y = Total_Align, fill = Treatment, group_by = Line))+
-  geom_col()+
- geom_hline(aes(yintercept=20000000))+
- scale_fill_manual(values=reads_by_sample)+
-  ggtitle(expression("Total number of reads by sample"))+
-  xlab("")+
-  ylab(expression("RNA-sequencing reads"))+
-  theme_bw()+
-  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
-        axis.title = element_text(size = 15, color = "black"),
-        axis.ticks = element_line(linewidth = 1.5),
-        axis.line = element_line(linewidth = 1.5),
-        axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
-        axis.text.x = element_text(size =10, color = "black", angle = 90, hjust = 1, vjust = 0.2),
-        #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
-        strip.text.y = element_text(color = "white"))
-
-
-####Read Counts by Treatment####
-fC_AllCounts %>% 
-  ggplot(., aes (x =Treatment, y= Total_Align, fill = Treatment))+
-  geom_boxplot()+
- scale_fill_manual(values=reads_by_sample)+
-  ggtitle(expression("Total number of reads by treatment"))+
-  xlab("")+
-  ylab(expression("RNA-sequencing reads"))+
-  theme_bw()+
-  
-  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
-        axis.title = element_text(size = 15, color = "black"),
-        axis.ticks = element_line(linewidth = 1.5),
-        axis.line = element_line(linewidth = 1.5),
-        axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
-        axis.text.x = element_text(size =10, color = "black", angle = 90, hjust = 1, vjust = 0.2),
-        #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
-        strip.text.y = element_text(color = "white"))
-
-####Total Reads Per Individual####
-fC_AllCounts %>% 
-  ggplot(., aes (x =as.factor(Line), y=Total_Align))+
-  geom_boxplot(aes(fill=as.factor(Line)))+
- scale_fill_brewer(palette = "Dark2", name = "Individual")+
-  ggtitle(expression("Total number of reads by individual"))+
-  xlab("")+
-  ylab(expression("RNA-sequencing reads"))+
-  theme_bw()+
-
-  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
-        axis.title = element_text(size = 15, color = "black"),
-        axis.ticks = element_line(linewidth = 1.5),
-        axis.line = element_line(linewidth = 1.5),
-        axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
-        axis.text.x = element_text(size =10, color = "black", angle = 0, hjust = 1),
-        #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
-        strip.text.y = element_text(color = "white"))
-
-####Total Mapped Reads Per Drug####
-
-reads_by_sample <- c(tx_col)
-fC_AllCounts %>% 
-  ggplot(., aes (x = Conditions, y = Assigned_Align, fill = Treatment, group_by = Line))+
-  geom_col()+
- geom_hline(aes(yintercept=20000000))+
- scale_fill_manual(values=reads_by_sample)+
-  ggtitle(expression("Total number of mapped reads by sample"))+
-  xlab("")+
-  ylab(expression("RNA-sequencing reads"))+
-  theme_bw()+
-  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
-        axis.title = element_text(size = 15, color = "black"),
-        axis.ticks = element_line(linewidth = 1.5),
-        axis.line = element_line(linewidth = 1.5),
-        axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
-        axis.text.x = element_text(size =10, color = "black", angle = 90, hjust = 1, vjust = 0.2),
-        #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
-        strip.text.y = element_text(color = "white"))
-
-
-####Read Counts by Treatment####
-fC_AllCounts %>% 
-  ggplot(., aes (x =Treatment, y= Assigned_Align, fill = Treatment))+
-  geom_boxplot()+
- scale_fill_manual(values=reads_by_sample)+
-  ggtitle(expression("Total number of mapped reads by treatment"))+
-  xlab("")+
-  ylab(expression("RNA-sequencing reads"))+
-  theme_bw()+
-  
-  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
-        axis.title = element_text(size = 15, color = "black"),
-        axis.ticks = element_line(linewidth = 1.5),
-        axis.line = element_line(linewidth = 1.5),
-        axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
-        axis.text.x = element_text(size =10, color = "black", angle = 90, hjust = 1, vjust = 0.2),
-        #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
-        strip.text.y = element_text(color = "white"))
-
-####Total Reads Per Individual####
-fC_AllCounts %>% 
-  ggplot(., aes (x =as.factor(Line), y=Assigned_Align))+
-  geom_boxplot(aes(fill=as.factor(Line)))+
- scale_fill_brewer(palette = "Dark2", name = "Individual")+
-  ggtitle(expression("Total number of mapped reads by individual"))+
-  xlab("")+
-  ylab(expression("RNA-sequencing reads"))+
-  theme_bw()+
-
-  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
-        axis.title = element_text(size = 15, color = "black"),
-        axis.ticks = element_line(linewidth = 1.5),
-        axis.line = element_line(linewidth = 1.5),
-        axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
-        axis.text.x = element_text(size =10, color = "black", angle = 0, hjust = 1),
-        #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
-        strip.text.y = element_text(color = "white"))
-
-
-```
-
-Now that I've made the final full matrix of all samples -
-1. convert to log2cpm using cpm
-2. filter for lowly expressed reads (rowMeans > 0)
-
-```{r log2cpm Conversion Full Matrix}
-
-boxplot(fC_Matrix_Full_cpm, xlab = "Conditions", ylab = expression("log"[2]* "counts per million"), ylim= c(-10, 20))
-
-hist(fC_Matrix_Full_cpm, xlab = expression("log" [2]* "counts per million"))
-
-#write this to a csv just in case to save it
-#write.csv(fC_Matrix_Full_cpm, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_cpm_EMP_250210.csv")
-
-```
-
-```{r Filter Lowly Expressed Reads All Samples, collapse=TRUE}
-
-#first check the number of variables in the cpm file
-dim(fC_Matrix_Full_cpm)
-#[1] 28395    63
-
-#now use rowMeans to filter out values with mean < 0 (this means rowMeans > 0 is what I'm left with) for each row/gene in the original file
-rowMeans_All <- rowMeans(fC_Matrix_Full_cpm)
-fC_Matrix_Full_cpm_filter <- fC_Matrix_Full_cpm[rowMeans_All > 0,]
-dim(fC_Matrix_Full_cpm_filter)
-#[1] 14225    63
-
-#with this I've filtered out a significant number of rows when filtering after cpm conversion - does this make it more balanced?
-
-hist(fC_Matrix_Full_cpm_filter, 
-     main = "Recovery All Individuals log2cpm Filtered", 
-        xlab = expression("log"[2]*"counts per million"))
-boxplot(fC_Matrix_Full_cpm_filter, 
-        main = "Recovery All Individuals log2cpm Filtered", 
-        xlab = "Conditions", 
-        ylab = expression("log"[2]*"counts per million"),
-        ylim = c(-10,15))
-
-#write this to a csv to save
-#write.csv(fC_Matrix_Full_cpm_filter, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_cpm_filtered_EMP_250210.csv")
-
-```
-
-
-```{r QC Checks Unfiltered vs Filtered Reads}
-
-
-####histogram of total counts, unfiltered####
-hist(fC_Matrix_Full_cpm, main = "Recovery All Individuals log2cpm Unfiltered",
-     xlab = expression("log" [2]* "counts per million"))
-
-####histogram of total counts, filtered####
-hist(fC_Matrix_Full_cpm_filter, 
-     main = "Recovery All Individuals log2cpm Filtered rowMeans > 0", 
-        xlab = expression("log"[2]*"counts per million"))
-
-####boxplot log2cpm all samples####
-
-boxplot(fC_Matrix_Full_cpm, xlab = "Conditions", ylab = expression("log"[2]* "counts per million"), ylim= c(-10, 20), main = "Boxplots of log2cpm per sample")
-
-####boxplot log2cpm filtered all samples####
-
-boxplot(fC_Matrix_Full_cpm_filter, xlab = "Conditions", ylab = expression("log"[2]* "counts per million"), ylim= c(-10, 20), main = "Boxplots of log2cpm Filtered rowMeans > 0 per sample")
-
-
-```
-
-
-Now that I've filtered the samples after log2cpm conversion, I can start to make heatmaps and PCA plots to look at my data
-
-```{r PCA Plots All Data, include = FALSE}
-# #mutate the file so that the samples are rows and columns are genes
-# fC_Matrix_Full_cpm_filter_mutate <- data.frame(t(fC_Matrix_Full_cpm_filter))
-# 
-# #now let's separate out the factors we have in this experiment
-# #Factor 1 - Individual
-# Individual <- as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9)))
-# 
-# #Factor 2 - Treatment
-# tx_factor <- c("DOX", "FLUO", "DMSO")
-# Treatment <- as.factor(c(rep(tx_factor, 21)))
-# #view(Treatment)
-# 
-# #Factor 3 - Timepoint
-# time_factor <- c(rep("24hr", 3), rep("24hr Rec", 3), rep("6d Rec", 3))
-# Time <- as.factor(c(rep(time_factor, 7)))
-# #view(Time)
-# 
-# Full_filter_cpm_mutate_categories <- cbind(Individual, Treatment, Time, fC_Matrix_Full_cpm_filter_mutate)
-# 
-# pca_plot <- prcomp(fC_Matrix_Full_cpm_filter_mutate, scale. = TRUE)
-# 
-# # autoplot(pca_plot, data = Full_filter_cpm_mutate_categories, color = "Individual", shape = "Treatment", fill = "Time", size = 5, x=1, y=2)
-# 
-# 
-# #now I want to try ggplot as the previous plot isn't showing my timepoints filled
-# #can I pull PC1 and PC2 from my object (pca_plot[["rotation"]])?
-# 
-# #try and mutate it and see what happens with PC1 and PC2
-# PCAs <- (pca_plot$rotation)
-# #make this into a matrix
-# Full_filter_cpm_mutate_categories_mat <- as.matrix(Full_filter_cpm_mutate_categories)
-# 
-# ggplot(pca_plot, Full_filter_cpm_mutate_categories_mat, aes(x=1,y=2, color=Time, shape=Treatment, fill=Individual))+
-#   geom_point(size=3)+
-#   scale_shape_manual(values = c(21, 22, 23) )+
-#   scale_color_manual(values = c("white", "darkgray", "black") )+
-#   scale_fill_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"))+
-#   xlab("PC1")+
-#   ylab("PC2")+
-#   guides(fill=guide_legend(override.aes = list(shape=c(21,22, 23)), fill=c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"), color=c("white", "darkgray", "black")))
-#   
-#   
-# 
-# autoplot(pca_plot, data = Full_filter_cpm_mutate_categories, aes(x=1, y=2), color = Time, shape = Treatment, fill = Individual,
-#          scale_shape_manual(values = c(21, 22, 23) ),
-#          scale_color_manual(values = c("white", "darkgrey", "black") ),
-#          scale_fill_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600")),
-#          guides(fill=guide_legend(override.aes = list(shape=c(21,22,23), fill=c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"), color=c("white", "darkgray", "black")))))
-# 
-# 
-# autoplot(pca_plot, data = Full_filter_cpm_mutate_categories, color = Time, shape = Treatment, fill = Individual)+
-#   scale_color_manual(values = c("white", "darkgray", "black"), aesthetics = "color")+
-#   scale_fill_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"), aesthetics = "fill")+
-#   scale_shape_manual(values = c(25,22,23))
-
-```
-
-```{r PCA Plots ggplot2 SIMPLIFIED, fig.width=6, fig.height=6, include = FALSE}
-
-# PCA_data <- fC_Matrix_Full_cpm_filter %>% 
-#   prcomp(.) %>% 
-#   t()
-# 
-# PCA_data_test <- (prcomp(t(fC_Matrix_Full_cpm_filter), scale. = TRUE))
-# 
-# #make a function for pca - pulls stdv and makes a variance plot - look at the variance contributed by each PC
-# pca_var_plot <- function(pca) {
-#   pca.var <- pca$sdev ^ 2
-#   pca.prop <- pca.var / sum(pca.var)
-#   var.plot <- 
-#     qplot(PC, prop, data = data.frame(PC = 1:length(pca.prop),
-#                                       prop = pca.prop)) +
-#     labs(title="Variance contributed by each PC",
-#          x = "PC", y = "Proportion of Variance")
-#   plot(var.plot)
-# }
-# 
-# pca_var_plot(PCA_data_test)
-# 
-# 
-# #make a pca plot function
-# # pca_plot_fun <- function(df, 
-# #                          col_var = NULL,
-# #                          shape_var = NULL,
-# #                          title = "") {
-# #   ggplot(df) + geom_point(aes_string(
-# #     x = "PC1",
-# #     y = "PC2",
-# #     color = col_var,
-# #     shape = shape_var),
-# #     size = 5) +
-# #     labs(title = title, x = "PC 1", y = "PC 2") +
-# #     scale_color_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600")) +
-# #                        scale_shape_manual(values = c(0, 1, 2, 5, 6, 15, 16, 17, 18))
-# #   
-# # }
-# 
-# colorsInd <- c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600")
-# 
-# #now we can go into plotting!
-# ####make an annotation matrix####
-# annot <- data.frame("samples" = colnames(fC_Matrix_Full_cpm_filter)) %>% separate_wider_delim(., cols = samples, names = c("Tx", "Time", "Ind"), delim = "_", cols_remove = FALSE) %>% unite(., col = "Tx_Time", Tx, Time, sep = "_", remove = FALSE)
-# 
-# #combine the prcomp matrix and annotation
-# annot_PCA_matrix <- PCA_data_test$x %>% cbind(., annot)
-# 
-# #now you can go ahead and make PCA plots with this matrix! woohoo!
-# pca_plot_fun(annot_PCA_matrix, col_var = "Ind", shape_var = "Tx_Time")
-# 
-# annot_PCA_matrix %>% ggplot(., aes(x=PC1, y=PC2, size=6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#   # scale_color_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600")) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-#   
-# annot_PCA_matrix %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# annot_PCA_matrix %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# #Now that I've successfully generated ggplot PCA plots with Renee's code - now I can subset the data by time
-# 
-# time_24 <- annot_PCA_matrix %>% filter(Time=="24")
-# time_24rec <- annot_PCA_matrix %>% filter(Time=="24rec")
-# time_144rec <- annot_PCA_matrix %>% filter(Time=="144rec")
-# 
-# ####time 24hr####
-# time_24 %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# time_24 %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# time_24 %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# ####time 24rec####
-# time_24rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# time_24rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# time_24rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# ####time 144rec####
-# time_144rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# time_144rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# time_144rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# #####now that I've broken them up by time, try by treatment####
-# 
-# dox_rec <- annot_PCA_matrix %>% filter(Tx=="DOX")
-# fluo_rec <- annot_PCA_matrix %>% filter(Tx=="FLUO")
-# dmso_rec <- annot_PCA_matrix %>% filter(Tx=="DMSO")
-# 
-# ####DOX####
-# dox_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# dox_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# dox_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# ####5FU####
-# fluo_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# fluo_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# fluo_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# ####DMSO VEHICLE####
-# dmso_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# dmso_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# dmso_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# #####Now I want to combine them with vehicle to see any effect
-# dox_veh_rec <- annot_PCA_matrix %>% filter(Tx!="FLUO")
-# fluo_veh_rec <- annot_PCA_matrix %>% filter(Tx!="DOX")
-# 
-# ####DOX + DMSO VEHICLE####
-# dox_veh_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# dox_veh_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# dox_veh_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# 
-# ####5FU + DMSO VEHICLE####
-# fluo_veh_rec %>% ggplot(., aes(x=PC1, y=PC2, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# fluo_veh_rec %>% ggplot(., aes(x=PC2, y=PC3, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-# 
-# fluo_veh_rec %>% ggplot(., aes(x=PC3, y=PC4, size =6)) +
-#   geom_point(aes(color = Tx_Time, shape = Ind)) +
-#                        scale_shape_manual(values = c(15, 16, 17, 18, 19, 20, 21)) +
-#   scale_color_brewer(palette = "Paired")
-
-```
-
-
-After trying and failing to get all three factors on one PCA plot - I will make iterations of each of these with two factors each
-
-```{r PCA Individual Treatment_Time, include = FALSE}
-
-# #mutate the file so that the samples are rows and columns are genes
-# fC_Matrix_Full_cpm_filter_mutate_tx_time <- data.frame(t(fC_Matrix_Full_cpm_filter))
-# 
-# #now let's separate out the factors we have in this experiment
-# #Factor 1 - Individual
-# Individual <- as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9)))
-# 
-# #Factor 2 - Treatment_Time
-# tx_time_factor <- c("DOX_24", "FLUO_24", "DMSO_24", "DOX_24rec", "FLUO_24rec", "DMSO_24rec", "DOX_6drec", "FLUO_6drec", "DMSO_6drec")
-# Treatment_Time <- as.factor(c(rep(tx_time_factor, 7)))
-# #view(Treatment)
-# 
-# Full_filter_cpm_mutate_categories_txtime <- cbind(Individual, Treatment_Time, fC_Matrix_Full_cpm_filter_mutate_tx_time)
-# 
-# pca_plot_txtime <- prcomp(fC_Matrix_Full_cpm_filter_mutate_tx_time, scale. = TRUE)
-# 
-# autoplot(pca_plot_txtime, data = Full_filter_cpm_mutate_categories_txtime, color = "Treatment_Time", shape = "Individual", size = 5, x=1, y=2)
-# 
-# #when I try to use scale_shape_manual under ggplot - it gives the following error:
-# ##Error in scale != 0 : 
-#   ##comparison (!=) is possible only for atomic and list types
-# #maybe try converting to an atomic vector or list?
-# 
-# shapes <- c(0, 1, 2, 5, 6, 15, 16, 17, 18)
-
-#make a pca plot function
-# pca_plot_fun_fill <- function(df,
-#                          col_var = NULL,
-#                          shape_var = NULL, 
-#                          fill_var = NULL,
-#                          title = "") {
-#   ggplot(df) + geom_point(aes_string(
-#     x = "PC1",
-#     y = "PC2",
-#     color = col_var,
-#     shape = shape_var,
-#     fill = fill_var,
-#     size = 5)) +
-#     labs(title = title) +
-#     scale_color_manual(values = c("red", "blue", "darkgray")) +
-#                        scale_shape_manual(values = c(0, 1, 2, 5, 6, 15, 16, 17, 18)) +
-#     scale_fill_manual(values = c("#003f5c", "#374c80", "#7A5195", "#BC5090", "#EF5675", "#FF764A", "#FFA600"))
-#   
-# }
-
-
-####From the below
-#pca_plot_fun_fill(annot_PCA_matrix, col_var = "Tx", shape_var = "Time", fill_var = "Ind")
-
-####PC1/PC2####
-# annot_PCA_matrix %>% ggplot(., aes(x=PC1, y=PC2)) +
-#   geom_point(aes(color = Ind, shape = Time, fill = Tx, size = 10)) +
-#                        scale_shape_manual(values = c(21, 22, 24)) +
-#   scale_fill_manual(values =  tx_col)+
-#   scale_color_manual(values = fill_col_ind_dark)+
-#   guides(fill=guide_legend(override.aes=list(shape=25)))+
-#   guides(color=guide_legend(override.aes=list(shape=25)))+
-#   guides(fill=guide_legend(override.aes=list(shape=25,fill=tx_col,color=fill_col_ind_dark)))
-# 
-# #success! i finally got the legend to represent the colors and shapes
-# #now let's make two more for PC2/PC3 and PC3/PC4
-# 
-# ####PC2/PC3####
-# annot_PCA_matrix %>% ggplot(., aes(x=PC2, y=PC3)) +
-#   geom_point(aes(color = Tx, shape = Time, fill = Ind, size = 10)) +
-#                        scale_shape_manual(values = c(21, 22, 24)) +
-#   scale_fill_manual(values =  fill_col_names)+
-#   scale_color_manual(values = c("black", "red", "blue"))+
-#   guides(fill=guide_legend(override.aes=list(shape=21)))+
-#   guides(color=guide_legend(override.aes=list(shape=21)))+
-#   guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col,color=fill_col)))
-# 
-# ####PC3/PC4####
-# annot_PCA_matrix %>% ggplot(., aes(x=PC3, y=PC4)) +
-#   geom_point(aes(color = Tx, shape = Time, fill = Ind, size = 10)) +
-#                        scale_shape_manual(values = c(21, 22, 24)) +
-#   scale_fill_manual(values =  fill_col_names)+
-#   scale_color_manual(values = c("black", "red", "blue"))+
-#   guides(fill=guide_legend(override.aes=list(shape=21)))+
-#   guides(color=guide_legend(override.aes=list(shape=21)))+
-#   guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col,color=fill_col)))
-
-
-```
-
-
-Now, I want to update these PCA plots to have treatment and time as the primary variables
-Individual will be a fill? Or somehow get some numbers labelled on the points.
-```{r PCA Plots Updated, fig.width=8, fig.height=8, collapse=TRUE}
-PCA_data <- fC_Matrix_Full_cpm_filter %>% 
-  prcomp(.) %>% 
-  t()
-
-PCA_data_test <- (prcomp(t(fC_Matrix_Full_cpm_filter), scale. = TRUE))
-
-####now make an annotation for my PCA####
-annot <- data.frame("samples" = colnames(fC_Matrix_Full_cpm_filter)) %>% separate_wider_delim(., cols = samples, names = c("Tx", "Time", "Ind"), delim = "_", cols_remove = FALSE) %>% unite(., col = "Tx_Time", Tx, Time, sep = "_", remove = FALSE)
-
-#combine the prcomp matrix and annotation
-annot_PCA_matrix <- PCA_data_test$x %>% cbind(., annot)
-
-#now I can make a graph where I have filled values for individual! I have seven colors for seven individuals
-# I have three fill values for three timepoints
-
-#using annotation matrix above as well as annotated PCA matrix (annot_PCA_matrix)
-
-#extra info for colors in the graph (fill parameter)
-fill_col_ind <- c("#66C2A5", "#FC8D62", "#1F78B4", "#E78AC3", "#A6D854", "#FFD92A", "#8B3E9B")
-
-fill_col_ind_dark <- c("#003F5C", "#45AE91",  "#58508D", "#BC4099", "#8B3E9B", "#FF6361", "#FF2362")
-
-fill_col_tx <- c("#499FBD", "#DCACED", "#63666D")
-
-#Now I have to switch the fill and color parameters as it's doing the opposite of what I wanted: need individuals to be the outline color (color), and tx to be the inside color (fill)
-
-####PC1/PC2####
-annot_PCA_matrix %>% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
-  geom_point(aes(color = Ind, shape = Time, fill = Tx)) +
-                       scale_shape_manual(values = c(21, 22, 24)) +
-  scale_fill_manual(values =  fill_col_tx)+
-  scale_color_manual(values = c(fill_col_ind_dark))+
-  guides(fill=guide_legend(override.aes=list(shape=21)))+
-  guides(color=guide_legend(override.aes=list(shape=21)))+
-  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))
-
-####PC2/PC3####
-annot_PCA_matrix %>% ggplot(., aes(x=PC2, y=PC3)) +
-  geom_point(aes(color = Ind, shape = Time, fill = Tx, size = 10)) +
-                       scale_shape_manual(values = c(21, 22, 24)) +
-  scale_fill_manual(values =  fill_col_tx)+
-  scale_color_manual(values = c(fill_col_ind_dark))+
-  guides(fill=guide_legend(override.aes=list(shape=21)))+
-  guides(color=guide_legend(override.aes=list(shape=21)))+
-  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))
-
-####PC3/PC4####
-annot_PCA_matrix %>% ggplot(., aes(x=PC3, y=PC4)) +
-  geom_point(aes(color = Ind, shape = Time, fill = Tx, size = 10)) +
-                       scale_shape_manual(values = c(21, 22, 24)) +
-  scale_fill_manual(values =  fill_col_tx)+
-  scale_color_manual(values = c(fill_col_ind_dark))+
-  guides(fill=guide_legend(override.aes=list(shape=21)))+
-  guides(color=guide_legend(override.aes=list(shape=21)))+
-  guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))
-
-
-
-```
-
-
-```{r Correlation Heatmaps, fig.width=12, fig.height=16, collapse=TRUE}
-
-#correlation heatmap for all samples
-
-####PEARSON FILTERED####
-fC_Matrix_Full_cpm_filter_pearsoncor <-
-  cor(
-    fC_Matrix_Full_cpm_filter,
-    y = NULL,
-    use = "everything",
-    method = "pearson"
-  )
-
-####SPEARMAN FILTERED####
-fC_Matrix_Full_cpm_filter_spearmancor <-
-  cor(
-    fC_Matrix_Full_cpm_filter,
-    y = NULL,
-    use = "everything",
-    method = "spearman"
-  )
-
-
-
-#Now let's graph these correlations
-
-pheatmap(fC_Matrix_Full_cpm_filter_pearsoncor, border_color = "black", legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = "black", fontsize = 12, fontsize_number = 9)
-
-pheatmap(fC_Matrix_Full_cpm_filter_spearmancor, border_color = "black", legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = "black", fontsize = 12, fontsize_number = 9)
-
-
-
-#now annotate these heatmaps
-#Factor 1 - Individual
-Individual <- as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9)))
-
-#Factor 2 - Treatment
-tx_factor <- c("DOX", "FLUO", "DMSO")
-Tx <- as.factor(c(rep(tx_factor, 21)))
-#view(Treatment)
-
-#Factor 3 - Timepoint
-time_factor <- c(rep("24", 3), rep("24rec", 3), rep("144rec", 3))
-Time <- as.factor(c(rep(time_factor, 7)))
-
-####annotation for colors####
-annot_col_hm = list(Tx = c(DOX = "red", FLUO = "blue", DMSO = "black"),
-                             Ind = c(Ind1 = "#66C2A5", Ind2 = "#FC8D62", Ind3 = "#1F78B4", Ind4 = "#E78AC3", Ind5 = "#A6D854", Ind6 = "#FFD92A", Ind6REP = "#8B3E9B"),
-                             Time = c("24" = "#046A38", "24rec" = "#0050B5", "144rec" = "#B725AD"))
-
-####annotation for values####
-annot_list_hm <- data.frame(Individual = as.factor(c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9))),
-                                               Tx = as.factor(c(rep(tx_factor, 21))), 
-                                               Time = as.factor(c(rep(time_factor, 7))))
-
-  
-##add in the annotations from above into the dataframe
-row.names(annot_list_hm) <- colnames(fC_Matrix_Full_cpm_filter_pearsoncor)
-row.names(annot_list_hm) <- colnames(fC_Matrix_Full_cpm_filter_spearmancor)
-
-####ANNOTATED HEATMAPS####
-pheatmap(fC_Matrix_Full_cpm_filter_pearsoncor, border_color = "black", legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = "black", fontsize = 10, fontsize_number = 5, annotation_col = annot_list_hm, annotation_colors = annot_col_hm)
-
-pheatmap(fC_Matrix_Full_cpm_filter_spearmancor, border_color = "black", legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = "black", fontsize = 10, fontsize_number = 5, annotation_col = annot_list_hm, annotation_colors = annot_col_hm)
-
-
-```
-
- 
-```{r Data Frames for Counts DE, include=FALSE}
+```{r Data Frames for Counts DE}
 
 counts_DE_raw <- read_csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_EMP_250220.csv")
 #View(counts_DE)
 
-counts_DE <- as.data.frame(Counts_Full_df) 
-#%>% 
-        #dplyr::select(-"...1") %>% 
-        #dplyr::select(-(contains("Ind6REP")))
+fC_Matrix_Full <- readRDS("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/fC_Matrix_Full.RDS")
 
-#sometimes when loaded in this dataframe has the column ..1 - if needed uncomment that out
+Counts_Full_df <- data.frame(fC_Matrix_Full)
 
-#now I've removed that individual, so I'll filter all counts by rowmeans
-#first check the number of variables in the counts file
+#filter this dataframe by the filtered gene list I have
+filt_gene_list <- readRDS("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/filt_gene_list.RDS")
+counts_DE_df <- Counts_Full_df[! (rownames(Counts_Full_df) %in% filt_gene_list), ]
+
+#saveRDS(counts_DE_df, "data/counts_DE_df.RDS")
+
+counts_DE_norep <- as.data.frame(counts_DE_df) %>% 
+        dplyr::select(-(contains("Ind6REP")))
+
+#saveRDS(counts_DE_norep, "data/counts_DE_norep.RDS")
+
+#now I've removed Ind6 REP
 ##I should have 54 samples if not including Ind6REP
-dim(counts_DE)
-#[1] 78932    54 - original ensembl annotation
-#[1] 28395    54 - new inbuilt annotation
-
-
+dim(counts_DE_df)
+dim(counts_DE_norep)
 
 ```
 
+Now that I've put together my data, let's begin DE!
 
-```{r Attempted Plot, include=FALSE}
-# ####TOTAL NUMBER OF READS PER SAMPLE####
-# tx_col <- list(Treatment = c("DMSO" = "#63666D","5FU" = "#DCACED","DOX" = "#499FBD"))
-# counts_DE_raw %>% 
-#   ggplot(., aes (x =samplenames, y=count, fill = drug, group_by=indv))+
-#   geom_col()+
-#  geom_hline(aes(yintercept=20000000))+
-#  scale_fill_manual(values=drug_palc)+
-#   ggtitle(expression("Total number of reads by sample"))+
-#   xlab("")+
-#   ylab(expression("RNA -sequencing reads"))+
-#   theme_bw()+
-#   theme(plot.title = element_text(size = rel(2), hjust = 0.5),
-#         axis.title = element_text(size = 15, color = "black"),
-#         axis.ticks = element_line(linewidth = 1.5),
-#         axis.line = element_line(linewidth = 1.5),
-#         axis.text.y = element_text(size =10, color = "black", angle = 0, hjust = 0.8, vjust = 0.5),
-#         axis.text.x = element_text(size =10, color = "black", angle = 90, hjust = 1, vjust = 0.2),
-#         #strip.text.x = element_text(size = 15, color = "black", face = "bold"),
-#         strip.text.y = element_text(color = "white"))
-
-```
-
-Now that I've finalized my QC checks, I will go ahead and begin the differential expression analysis pipeline.
-
-```{r Differential Expression Analysis filtering rowMeans greater than 0, collapse=TRUE}
-
-# group <- c(rep(c(1, 2, 3, 4, 5, 6, 7, 8, 9), 6))
-# group <- factor(group, levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9"))
-
-
-####rowMeans > 0 Filtering####
-rowMeans_DE <- rowMeans(counts_DE)
-counts_DE_filter <- counts_DE[rowMeans_DE > 0,]
-dim(counts_DE_filter)
+```{r Differential Expression Analysis, collapse=TRUE}
 
 group_1 <- rep(c("DOX_24","FLUO_24",
                                 "DMSO_24",
@@ -1589,7 +110,7 @@ group_2 <- rep(c("DOX_24","FLUO_24",
                                 "FLUO_144rec",
                                 "DMSO_144rec"), 7)
 
-dge <- DGEList.data.frame(counts = counts_DE_filter, group = group_2, genes = row.names(counts_DE_filter))
+dge <- DGEList.data.frame(counts = counts_DE_df, group = group_2, genes = row.names(counts_DE_df))
 
 #check the inital file before norm factors are calculated
 #dge$samples
@@ -1659,107 +180,39 @@ voom_plot <- voom(dge_calc, mm_r, plot = TRUE)
 
 ```
 
-
-The voom plot for this with rowMeans > 0 has a dip in the front, meaning that there is likely some noise left over in my data.
-I am going to filter a bit stricter at rowMeans > 1 with the same process as above.
-
-```{r Differential Expression Analysis filtering rowMeans greater than 1, collapse=TRUE}
-
-####rowMeans >1####
-rowMeans_DE <- rowMeans(counts_DE)
-counts_DE_filter1 <- counts_DE[rowMeans_DE > 1,]
-dim(counts_DE_filter1)
-
-
-dge1 <- DGEList.data.frame(counts = counts_DE_filter1, group = group_2, genes = row.names(counts_DE_filter1))
-
-#check the inital file before norm factors are calculated
-#dge1$samples
-
-#calculate the normalization factors with method TMM
-dge1_calc <- calcNormFactors(dge1, method = "TMM")
-
-#check final file after norm calculation
-#dge1_calc$samples
-
-#View(dge1_calc)
-
-#Pull out factors
-snames1 <- data.frame("samples" = colnames(dge1_calc)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
-
-#snames_list <- as.list(snames)
-
-snames1_time <- snames1$Time
-snames1_tx <- snames1$Treatment
-snames1_ind <- snames1$Individual
-
-#Create my model matrix
-mm_r1 <- model.matrix(~0 + group_2)
-
-p1 <- voom(dge1_calc$counts, mm_r1, plot = TRUE)
-
-corfit1 <- duplicateCorrelation(p1, mm_r1, block = snames1_ind)
-
-v1 <- voom(dge1_calc$counts, mm_r1, block = snames1_ind, correlation = corfit1$consensus)
-
-fit1 <- lmFit(v1, mm_r1, block = snames1_ind, correlation = corfit1$consensus)
-
-#make sure to check which order the columns are in - otherwise they won't match right (it was moved into alphabetical and number order)
-colnames(mm_r1) <- c("DMSO_144rec","DMSO_24","DMSO_24rec","DOX_144rec","DOX_24","DOX_24rec","FLUO_144rec","FLUO_24","FLUO_24rec")
-
-cm_r1 <- makeContrasts(
-        V.D24 = DOX_24 - DMSO_24,
-        V.F24 = FLUO_24 - DMSO_24,
-        V.D24r = DOX_24rec - DMSO_24rec,
-        V.F24r = FLUO_24rec - DMSO_24rec,
-        V.D144r = DOX_144rec - DMSO_144rec,
-        V.F144r = FLUO_144rec - DMSO_144rec,
-        levels = mm_r1
-)
-
-vfit_r1 <- lmFit(p1, mm_r1)
-vfit_r1 <- contrasts.fit(vfit_r1, contrasts = cm_r1)
-
-efit4 <- eBayes(vfit_r1)
-
-results1 = decideTests(efit4)
-summary(results1)
-#inbuilt annotation results rowMeans >0
-#         V.D24 V.F24 V.D24r V.F24r V.D144r V.F144r
-# Down    4567     0   2083      0     288       0
-# NotSig 14521 26445  16339  26445   25296   26445
-# Up      7357     0   8023      0     861       0
-
-## have no DE genes detected for 5FU, only DOX
-
-
-####plot your voom####
-voom_plot1 <- voom(dge1_calc, mm_r1, plot = TRUE)
-```
-This looks much better! No more noise in the front. 
-I could potentially filter at rowMeans >0.5, but I will leave that for now.
-
 Now I can go ahead and make toptables for safekeeping and later analysis
 
 ```{r Make a TopTable with Your New Data, results='hide',collapse=TRUE}
 
-top.table_V.D24 <- topTable(fit = efit4, coef = "V.D24", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+top.table_V.D24 <- topTable(fit = efit2, coef = "V.D24", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
 head(top.table_V.D24)
 
-top.table_V.F24 <- topTable(fit = efit4, coef = "V.F24", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+#saveRDS(top.table_V.D24, "data/top.table_V.D24.RDS")
+
+top.table_V.F24 <- topTable(fit = efit2, coef = "V.F24", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
 head(top.table_V.F24)
 
-top.table_V.D24r <- topTable(fit = efit4, coef = "V.D24r", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+#saveRDS(top.table_V.F24, "data/top.table_V.F24.RDS")
+
+top.table_V.D24r <- topTable(fit = efit2, coef = "V.D24r", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
 head(top.table_V.D24r)
 
-top.table_V.F24r <- topTable(fit = efit4, coef = "V.F24r", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+#saveRDS(top.table_V.D24r, "data/top.table_V.D24r.RDS")
+
+top.table_V.F24r <- topTable(fit = efit2, coef = "V.F24r", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
 head(top.table_V.F24r)
 
-top.table_V.D144r <- topTable(fit = efit4, coef = "V.D144r", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+#saveRDS(top.table_V.F24r, "data/top.table_V.F24r.RDS")
+
+top.table_V.D144r <- topTable(fit = efit2, coef = "V.D144r", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
 head(top.table_V.D144r)
 
-top.table_V.F144r <- topTable(fit = efit4, coef = "V.F144r", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+#saveRDS(top.table_V.D144r, "data/top.table_V.D144r.RDS")
+
+top.table_V.F144r <- topTable(fit = efit2, coef = "V.F144r", number = nrow(dge_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
 head(top.table_V.F144r)
+
+#saveRDS(top.table_V.F144r, "data/top.table_V.F144r.RDS")
 
 ```
 
@@ -1805,13 +258,21 @@ for (plot_name in names(volcano_plots)) {
 
 ```
 
+Now that I've looked at these, I'd like to pull out some genes of interest from qPCR
 
 ```{r Pull Out Genes of Interest}
+fC_Matrix_Full_cpm_filter <- readRDS("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/fC_Matrix_Full_cpm_filter.RDS")
 fC_df_filter_cpm <- as.data.frame(fC_Matrix_Full_cpm_filter)
 my_data <- rownames_to_column(fC_df_filter_cpm, var = "entrezgene_id")
 col_tx_large <- rep(c("#499FBD" ,"#DCACED", "#63666D"), 21)
 col_tx_large_2 <- c(rep("#499FBD" , 3), rep("#DCACED", 3), rep("#63666D", 3), 21)
 
+
+ind_col <- c("#003F5C", "#45AE91",  "#58508D", "#BC4099", "#8B3E9B", "#FF6361", "#FF2362")
+
+tx_col <- c("#499FBD", "#DCACED","#63666D")
+
+time_col <- c("#fbb4b9", "#f768a1", "#ae017e")
 
 ##Add columns with more information to each gene I pull out##
 ind_names <- c(rep("Ind1", 9), rep("Ind2", 9), rep("Ind3", 9), rep("Ind4", 9), rep("Ind5", 9), rep("Ind6", 9), rep("Ind6REP", 9))
@@ -1968,7 +429,7 @@ genecardiccheck <- c("MYH7", "TNNT2","MYH6","ACTN2","BMP3","TNNI3","RYR2","CACNA
 
 # ensembl <- useMart("ensembl", dataset="hsapiens_gene_ensembl")
 # saveRDS(ensembl, "data/ensembl_backup.RDS")
-ensembl <- readRDS("data/ensembl_backup.RDS")
+ensembl <- readRDS("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/ensembl_backup.RDS")
 my_chr <- c(1:22, 'M', 'X', 'Y')  ## creates a filter for each database
 
 my_attributes <- c('entrezgene_id', 'ensembl_gene_id', 'hgnc_symbol')
@@ -2009,291 +470,23 @@ Now that I've gone through and figured out the basics of DE - let's remove unwan
 This uses my replicates to figure out covariates in the data and remove variation occurring due to batch effects or other effects
 We're seeing a batch effect from RNA extraction (all RNAseq library prep done in a single batch) occurring here in PCA and cor. heatmaps rather than individuals clustering together.
 
-```{r Remove Unwanted Variation - RUVs, include = FALSE}
-# 
-# #counts need to be integer values and in a numeric matrix for ruv
-# counts_DE_matrix <- as.matrix(counts_DE_filter1)
-# dim(counts_DE_matrix)
-# #[1] 20443    54 - new inbuilt
-# #this does NOT contain the replicate samples, save for later
-# 
-# ##this file contains the replicates that I can pull from
-# fC_Matrix_cpm_filter_ruv <- as.matrix (fC_Matrix_Full_cpm_filter)
-# 
-# #create a matrix specifying the replicates
-# reps <- as.data.frame(fC_Matrix_Full_cpm_filter) %>%
-#   dplyr::select(contains("Ind6"))
-# dim(reps)
-# #[1] 14225    18
-# reps_mat <- as.matrix(reps)
-# 
-# #using the documentation do this:
-# #controls: gene-by-sample numeric matrix containing counts
-# controls <- rownames(fC_Matrix_Full_cpm_filter)
-# 
-# #I have replicates for Individual 6, which I can compare using this method
-# #They are matched as following:
-# ##col46:55, 47:56, 48:57, 49:58, 50:59, 51:60, 52:61, 53:62, 54:63
-# ###this is the scIdx argument for reps, the cIdx argument is for genes
-# #differences <- matrix(data = c(1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
-# differences_full <- matrix(data = c(46, 55, 47, 56, 48 , 57, 49, 58, 50 , 59, 51, 60, 52, 61, 53, 62, 54, 63), byrow = TRUE, nrow = 9)
-# 
-# 
-# signature(x = "matrix", cIdx = "ANY", k = "numeric", scIdx = "matrix")
-# 
-# 
-# seqRUVs <- RUVs(rep, controls, k=3, differences_full, isLog = TRUE)
-# 
-# pData(counts_DE)
-# head(seqRUVs)
-# 
-# 
-# ###now try putting this in your matrix?
-# design <- model.matrix(~0 + group_1, seqRUVs)
-# 
-# 
-# 
-# 
-# ####try it exactly like the documentation and filter afterwards?####
-# genes <- rownames(fC_Matrix_Full)[grep("^"), rownames(fC_Matrix_Full)]
-# spikes <- rownames()
-# 
-# ####leaving off here EMP 25/02/26####
-
-
-```
-
-
-
-
-
-```{r Remove Unwanted Variation - RUVs New, include = FALSE}
-#omar stuff
-
-# vignette("RUVSeq")
-# library("EDASeq")
-# RUVSeq::makeGroups() %>% help()
-# comrade_groups <- makeGroups(annot$Tx_Time) 
-# comrade_groups <- comrade_groups %>% as.matrix()
-# 
-# gene_names_comrade <- counts_DE_filter1 %>% rownames() %>% as.double()
-# counts_DE_filter1_ES <- EDASeq::newSeqExpressionSet(counts = counts_DE_filter1)
-# 
-# counts_DE_filter1_ES
-# 
-# counts_DE_filter1_ES %>% assay() 
-# set3 <- RUVSeq::RUVs(x = counts_DE_filter1_ES, cIdx = gene_names_comrade, k=1, scIdx = comrade_groups, isLog = FALSE)
-# 
-# #counts need to be integer values and in a numeric matrix for ruv
-# counts_DE_matrix <- as.matrix(counts_DE_filter1)
-# dim(counts_DE_matrix)
-# counts_DE_matrix %>% head
-# counts_DE_matrix %>% rownames() %>% unique() %>% length()
-# 
-# #[1] 20443    54 - new inbuilt
-# #this does NOT contain the replicate samples, save for later
-# 
-# ##this file contains the replicates that I can pull from
-# fC_Matrix_cpm_filter_ruv <- as.matrix (fC_Matrix_Full_cpm_filter)
-# fC_Matrix_cpm_filter_ruv
-# 
-# #create a matrix specifying the replicates
-# reps <- as.data.frame(fC_Matrix_Full_cpm_filter) %>%
-#   dplyr::select(contains("Ind6"))
-# dim(reps)
-# #[1] 14225    18
-# reps_mat <- as.matrix(reps)
-# 
-# #using the documentation do this:
-# #controls: gene-by-sample numeric matrix containing counts
-# controls <- rownames(fC_Matrix_Full_cpm_filter)
-# 
-# #I have replicates for Individual 6, which I can compare using this method
-# #They are matched as following:
-# ##col46:55, 47:56, 48:57, 49:58, 50:59, 51:60, 52:61, 53:62, 54:63
-# ###this is the scIdx argument for reps, the cIdx argument is for genes
-# #differences <- matrix(data = c(1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
-# differences_full <- matrix(data = c(46, 55, 47, 56, 48 , 57, 49, 58, 50 , 59, 51, 60, 52, 61, 53, 62, 54, 63), byrow = TRUE, nrow = 9)
-# 
-# 
-# signature(x = "matrix", cIdx = "ANY", k = "numeric", scIdx = "matrix")
-# 
-# 
-# seqRUVs <- RUVs(rep, controls, k=3, differences_full, isLog = TRUE)
-# 
-# pData(counts_DE)
-# head(seqRUVs)
-# 
-# 
-# ###now try putting this in your matrix?
-# design <- model.matrix(~0 + group_1, seqRUVs)
-# 
-# 
-# 
-# 
-# ####try it exactly like the documentation and filter afterwards?####
-# genes <- rownames(fC_Matrix_Full)[grep("^"), rownames(fC_Matrix_Full)]
-# spikes <- rownames()
-# 
-# ####leaving off here EMP 25/02/27####
-# 
-
-```
-
-
-```{r Remove Unwanted Variation with RUVs, include = FALSE}
-# #OMAR NEW CODE - EMMA EDITS
-# fC_Matrix_Full_cpm_filter
-# dim(fC_Matrix_Full_cpm_filter)
-# 
-# #now I want to un-log transform this data - square it?
-# fC_Matrix_Full_new <- fC_Matrix_Full_cpm_filter^2
-# dim(fC_Matrix_Full_new)
-# 
-# 
-# #  counts need to be integer values and in a numeric matrix
-# # note: the log transformation needs to be accounted for in the isLog argument in RUVs function.
-# counts <- as.matrix(fC_Matrix_Full)
-# 
-# # Create a DataFrame for the phenoData
-# phenoData <- DataFrame(annot)
-# 
-# # Now create the RangedSummarizedExperiment necessary for RUVs input
-# # looks like it did need both the phenodata and the counts.
-# set <- SummarizedExperiment(assays =  counts, metadata = phenoData)
-# 
-# # Generate a background matrix
-# # The column "Cond" holds the comparisons that you actually want to make. DOX_24, DMSO_24,5FU_24, DOX_3,etc.
-# scIdx <-RUVSeq::makeGroups(phenoData$Tx_Time)
-# scIdx
-# # Apply RUVs function from RUVSeq
-# # note: for now just get code to work. "k" will be iteratively adjusted over time depending on your PCA.
-# set <- RUVSeq::RUVs(x = counts, k =1, scIdx = scIdx, isLog = FALSE)
-# 
-# #DO NOT USE THESE COUNTS FOR LINEAR MODELING EMMA
-# 
-# 
-# 
-# 
-# 
-# # get the ruv weights to put into the linear model. n weights = k.
-# RUV_df <- set$W %>% as.data.frame()
-# RUV_df$Names <- rownames(RUV_df)
-# 
-# # Make sure the data frame names match 
-# RUV_df_rm <- RUV_df[RUV_df$Names %in% annot_new$samples, ] 
-# RUV_1 <-  RUV_df_rm$W_1
-# 
-# 
-# # before ruv
-# prcomp_res <- prcomp(t(counts), scale. = TRUE, center = TRUE, )
-# ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", size =4)+
-#   theme_bw()+
-#   ggtitle("No RUV")
-# # after ruv
-# prcomp_res <- prcomp(t(set$normalizedCounts), scale. = TRUE, center = TRUE, )
-# ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", size =4)+
-#   theme_bw()+
-#   ggtitle("RUV Corrected")
-# 
-# 
-# #Now that I've calculated the weights for RUV correction, I want to put my raw counts data into my model
-# 
-# 
-# counts_DE %>% head()
-# counts_DE %>% dim()
-# 
-# raw_counts_mat <- counts_DE %>% dplyr::select(-(contains("Ind6REP"))) %>% as.matrix()
-# dim(raw_counts_mat)
-# 
-# #I want to make sure that I only have 54 observations in this dataset, removing the biological replicate samples (doesn't matter whether you remove Ind6 or Ind6REP, but I will choose Ind6REP)
-# 
-# dge1 <- DGEList.data.frame(counts = raw_counts_mat, group = group_2, genes = row.names(raw_counts_mat))
-# 
-# #check the initial file before norm factors are calculated
-# #dge1$samples
-# 
-# #calculate the normalization factors with method TMM
-# dge1_calc <- calcNormFactors(dge1, method = "TMM")
-# 
-# #check final file after norm calculation
-# #dge1_calc$samples
-# 
-# #View(dge1_calc)
-# 
-# #Pull out factors
-# snames1 <- data.frame("samples" = colnames(dge1_calc)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
-# 
-# #snames_list <- as.list(snames)
-# snames1_ind <- snames1$Individual
-# 
-# # Make sure the names match 
-# annot_new$samples == RUV_df_rm$Names
-# annot_new$RUV_1 <- RUV_df_rm$W_1
-# 
-# 
-# #Create my model matrix
-# mm_r1 <- model.matrix(~0 + group_1 + RUV_1, data = annot_new)
-# 
-# p1 <- voom(dge1_calc$counts, mm_r1, plot = TRUE)
-# 
-# corfit1 <- duplicateCorrelation(p1, mm_r1, block = snames1_ind)
-# 
-# v1 <- voom(dge1_calc$counts, mm_r1, block = snames1_ind, correlation = corfit1$consensus)
-# 
-# fit1 <- lmFit(v1, mm_r1, block = snames1_ind, correlation = corfit1$consensus)
-# 
-# 
-# #make sure to check which order the columns are in - otherwise they won't match right (it was moved into alphabetical and number order)
-# 
-# mm_r1_names <- str_replace(string = colnames(mm_r1), pattern = "group_1", replacement = "")
-# design <- model.matrix(~ group_1 + RUV_1 , annot_new)
-# colnames(mm_r1) <- mm_r1_names
-# 
-# cm_r1 <- makeContrasts(
-#         V.D24 = DOX_24 - DMSO_24,
-#         V.F24 = FLUO_24 - DMSO_24,
-#         V.D24r = DOX_24rec - DMSO_24rec,
-#         V.F24r = FLUO_24rec - DMSO_24rec,
-#         V.D144r = DOX_144rec - DMSO_144rec,
-#         V.F144r = FLUO_144rec - DMSO_144rec,
-#         RUV_1_24 = RUV_1 - DMSO_24,
-#         RUV_1_24r = RUV_1 - DMSO_24rec,
-#         RUV_1_144r = RUV_1 - DMSO_144rec,
-#         levels = mm_r1
-# )
-# 
-# vfit_r1 <- lmFit(p1, mm_r1)
-# vfit_r1 <- contrasts.fit(vfit_r1, contrasts = cm_r1)
-# 
-# efit4 <- eBayes(vfit_r1)
-# 
-# results1 = decideTests(efit4)
-# summary(results1)
-# 
-# toptable_Dupcor_DOX <- topTable(efit4, coef = "V.D24", number = nrow(dge1_calc$counts), p.value = 1)
-# toptable_Dupcor_DOXrec <- topTable(efit4, coef = "V.D24r", number = nrow(dge1_calc$counts), p.value = 1)
-# toptable_Dupcor_DOX144 <- topTable(efit4, coef = "V.D144r", number = nrow(dge1_calc$counts), p.value = 1)
-# 
-# toptable_Dupcor_DOX$logFC %>% hist(., main = "DOX vs VEH 24hr")
-# toptable_Dupcor_DOXrec$logFC %>% hist(., main = "DOX vs VEH 24hr Recovery")
-# toptable_Dupcor_DOX144$logFC %>% hist(., main = "DOX vs VEH 6d Recovery")
-```
-
-
 ```{r RUVs Correction}
-fC_Matrix_Full_cpm_filter
-dim(fC_Matrix_Full_cpm_filter)
 
-#now I want to un-log transform this data - square it?
-fC_Matrix_Full_new <- fC_Matrix_Full_cpm_filter^2
-dim(fC_Matrix_Full_new)
+filt_gene_list <- readRDS("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/filt_gene_list.RDS")
+
+RUV_filt_counts <- fC_Matrix_Full %>% 
+  as.data.frame() %>% 
+  dplyr::filter(., row.names(.)%in% filt_gene_list)
+
+#add in the annotation files
+ind_num <- readRDS("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/ind_num.RDS")
+annot <- readRDS("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/annot.RDS")
 
 
 #  counts need to be integer values and in a numeric matrix
 # note: the log transformation needs to be accounted for in the isLog argument in RUVs function.
 # however, I'll be using raw counts only for this instance
-counts <- as.matrix(fC_Matrix_Full)
+counts <- as.matrix(RUV_filt_counts)
 
 # Create a DataFrame for the phenoData
 phenoData <- DataFrame(annot)
@@ -2400,6 +593,11 @@ ggplot2::autoplot(prcomp_res, data = annot, colour = "Tx_Time", shape = "Ind", s
   theme_bw()+
   ggtitle("RUV Corrected k=5")
 
+fill_col_ind <- c("#66C2A5", "#FC8D62", "#1F78B4", "#E78AC3", "#A6D854", "#FFD92A", "#8B3E9B")
+
+fill_col_ind_dark <- c("#003F5C", "#45AE91",  "#58508D", "#BC4099", "#8B3E9B", "#FF6361", "#FF2362")
+
+fill_col_tx <- c("#63666D", "#499FBD", "#DCACED")
 
 ####new PCA plots no correction####
 prcomp_res <- prcomp(t(counts), scale. = FALSE, center = TRUE)
@@ -2729,6 +927,15 @@ summary(results4)
 results5 = decideTests(efit5)
 summary(results5)
 
+#noRUV
+top.table_V.D24
+top.table_V.D24r
+top.table_V.D144r
+
+top.table_V.F24
+top.table_V.F24r
+top.table_V.F144r
+
 #k=1
 toptable_Dupcor_DOX <- topTable(efit1, coef = "V.D24", number = nrow(dge1_calc$counts), p.value = 1)
 toptable_Dupcor_DOXrec <- topTable(efit1, coef = "V.D24r", number = nrow(dge1_calc$counts), p.value = 1)
@@ -2779,19 +986,860 @@ toptable5_Dupcor_DOX144$logFC %>% hist(, main = "RUVs k=5 DOX 144Rec Toptable")
 
 ```{r pvalue and adj pvalue plots of DE, include=FALSE}
 
-####DOX####
+####DOX 24####
+#no RUVs
+top.table_V.D24 %>% ggplot(aes(x=P.Value))+
+  geom_density()+
+  ggtitle("DOX24 noRUV P value dist")
+#k=1
+toptable_Dupcor_DOX %>% ggplot(aes(x=P.Value))+
+  geom_density()+
+  ggtitle("DOX24 RUVs k=1 P value dist")
+#k=2
+toptable2_Dupcor_DOX %>% ggplot(aes(x=P.Value))+
+  geom_density()+
+  ggtitle("DOX24 RUVs k=2 P value dist")
+#no RUV
+top.table_V.D24 %>% ggplot(aes(x=P.Value))+
+  geom_density()+
+  ggtitle("DOX24 noRUV adj. P value dist")
+#k=1
+toptable_Dupcor_DOX %>% ggplot(aes(x=adj.P.Val))+
+  geom_density()+
+  ggtitle("DOX24 RUVs k=1 adj. P value dist")
+#k=2
+toptable2_Dupcor_DOX %>% ggplot(aes(x=adj.P.Val))+
+  geom_density()+
+  ggtitle("DOX24 RUVs k=2 adj. P value dist")
 
+####DOX 24rec####
+#no RUV
+top.table_V.D24r %>% ggplot(aes(x=P.Value))+
+  geom_density()+
+  ggtitle("DOX24rec noRUV P value dist")
+#k=1
+toptable_Dupcor_DOXrec %>% ggplot(aes(x=P.Value))+
+  geom_density()+  
+  ggtitle("DOX24rec RUVs k=1 P value dist")
+#k=2
+toptable2_Dupcor_DOXrec %>% ggplot(aes(x=P.Value))+
+  geom_density()+
+  ggtitle("DOX24rec RUVs k=2 P value dist")
+#no RUV
+top.table_V.D24r %>% ggplot(aes(x=adj.P.Val))+
+  geom_density()+
+  ggtitle("DOX24rec noRUV adj. P value dist")
+#k=1
+toptable_Dupcor_DOXrec %>% ggplot(aes(x=adj.P.Val))+
+  geom_density()+
+    ggtitle("DOX24rec RUVs k=1 adj. P value dist")
+#k=2
+toptable2_Dupcor_DOXrec %>% ggplot(aes(x=adj.P.Val))+
+  geom_density()+
+  ggtitle("DOX24rec RUVs k=2 adj. P value dist")
 
+####DOX 144rec####
+#no RUV
+top.table_V.D144r %>% ggplot(aes(x=P.Value))+
+  geom_density()+
+  ggtitle("DOX144rec noRUV P value dist")
+#k=1
+toptable_Dupcor_DOX144 %>% ggplot(aes(x=P.Value))+
+  geom_density()+
+  ggtitle("DOX144rec RUVs k=1 P value dist")
+#k=2
+toptable2_Dupcor_DOX144 %>% ggplot(aes(x=P.Value))+
+  geom_density()+
+  ggtitle("DOX144rec RUVs k=2 P value dist")
+#no RUV
+top.table_V.D144r %>% ggplot(aes(x=adj.P.Val))+
+  geom_density()+
+  ggtitle("DOX144rec noRUV adj. P value dist")
+#k=1
+toptable_Dupcor_DOX144 %>% ggplot(aes(x=adj.P.Val))+
+  geom_density()+
+  ggtitle("DOX144rec RUVs k=1 adj. P value dist")
+#k=2
+toptable2_Dupcor_DOX144 %>% ggplot(aes(x=adj.P.Val))+
+  geom_density()+
+  ggtitle("DOX144rec RUVs k=2 adj. P value dist")
 
 ```
 
 
-
-
 Now I want to attempt to use Cormotif to look at motifs within my conditions
-```{r Cormotif, include=FALSE}
+```{r Cormotif, eval=FALSE, warning=FALSE, include=FALSE}
+
+limmafit_default <- function(exprs, groupid, compid) {
+  limmafits <- list()
+  compnum <- nrow(compid)
+  genenum <- nrow(exprs)
+  limmat <- matrix(0, genenum,compnum)
+  limmas2 <- rep(0, compnum)
+  limmadf <- rep(0, compnum)
+  limmav0    <- rep(0,compnum)
+  limmag1num <- rep(0,compnum)
+  limmag2num <- rep(0,compnum)
+
+  rownames(limmat)  <- rownames(exprs)
+  colnames(limmat)  <- rownames(compid)
+  names(limmas2)    <- rownames(compid)
+  names(limmadf)    <- rownames(compid)
+  names(limmav0)    <- rownames(compid)
+  names(limmag1num) <- rownames(compid)
+  names(limmag2num) <- rownames(compid)
+  
+  for(i in 1:compnum) {
+    selid1 <- which(groupid == compid[i,1])
+    selid2 <- which(groupid == compid[i,2])
+    eset   <- new("ExpressionSet", exprs=cbind(exprs[,selid1],exprs[,selid2]))
+    g1num  <- length(selid1)
+    g2num  <- length(selid2)
+    designmat <- cbind(base=rep(1,(g1num+g2num)), delta=c(rep(0,g1num),rep(1,g2num)))
+    fit <- lmFit(eset,designmat)
+    fit <- eBayes(fit)
+    limmat[,i] <- fit$t[,2]
+    limmas2[i] <- fit$s2.prior
+    limmadf[i] <- fit$df.prior
+    limmav0[i] <- fit$var.prior[2]
+    limmag1num[i] <- g1num
+    limmag2num[i] <- g2num
+    limmafits[[i]] <- fit
+  }
+  names(limmafits) <- rownames(compid)
+  limmacompnum<-nrow(compid)
+  result<-list(t       = limmat,
+               v0      = limmav0,
+               df0     = limmadf,
+               s20     = limmas2,
+               g1num   = limmag1num,
+               g2num   = limmag2num,
+               compnum = limmacompnum,
+               fits    = limmafits)
+}
+
+limmafit.counts <-
+  function (exprs, groupid, compid, norm.factor.method = "TMM", voom.normalize.method = "none")
+  {
+    limmafits  <- list()
+    compnum    <- nrow(compid)
+    genenum    <- nrow(exprs)
+    limmat     <- matrix(NA,genenum,compnum)
+    limmas2    <- rep(0,compnum)
+    limmadf    <- rep(0,compnum)
+    limmav0    <- rep(0,compnum)
+    limmag1num <- rep(0,compnum)
+    limmag2num <- rep(0,compnum)
+
+    rownames(limmat)  <- rownames(exprs)
+    colnames(limmat)  <- rownames(compid)
+    names(limmas2)    <- rownames(compid)
+    names(limmadf)    <- rownames(compid)
+    names(limmav0)    <- rownames(compid)
+    names(limmag1num) <- rownames(compid)
+    names(limmag2num) <- rownames(compid)
+
+    for (i in 1:compnum) {
+      message(paste("Running limma for comparision",i,"/",compnum))
+      selid1 <- which(groupid == compid[i, 1])
+      selid2 <- which(groupid == compid[i, 2])
+      # make a new count data frame
+      counts <- cbind(exprs[, selid1], exprs[, selid2])
+
+      # remove NAs
+      not.nas <- which(apply(counts, 1, function(x) !any(is.na(x))) == TRUE)
+
+      # runn voom/limma
+      d <- DGEList(counts[not.nas,])
+      d <- calcNormFactors(d, method = norm.factor.method)
+      g1num <- length(selid1)
+      g2num <- length(selid2)
+      designmat <- cbind(base = rep(1, (g1num + g2num)), delta = c(rep(0,
+                                                                       g1num), rep(1, g2num)))
+
+      y <- voom(d, designmat, normalize.method = voom.normalize.method)
+      fit <- lmFit(y, designmat)
+      fit <- eBayes(fit)
+
+      limmafits[[i]] <- fit
+      limmat[not.nas, i] <- fit$t[, 2]
+      limmas2[i] <- fit$s2.prior
+      limmadf[i] <- fit$df.prior
+      limmav0[i] <- fit$var.prior[2]
+      limmag1num[i] <- g1num
+      limmag2num[i] <- g2num
+    }
+    limmacompnum <- nrow(compid)
+    names(limmafits) <- rownames(compid)
+    result <- list(t       = limmat,
+                   v0      = limmav0,
+                   df0     = limmadf,
+                   s20     = limmas2,
+                   g1num   = limmag1num,
+                   g2num   = limmag2num,
+                   compnum = limmacompnum,
+                   fits    = limmafits)
+  }
 
 
+limmafit.list <-
+  function (fitlist, cmp.idx=2)
+  {
+    compnum    <- length(fitlist)
+
+    genes <- c()
+    for (i in 1:compnum) genes <- unique(c(genes, rownames(fitlist[[i]])))
+
+    genenum    <- length(genes)
+    limmat     <- matrix(NA,genenum,compnum)
+    limmas2    <- rep(0,compnum)
+    limmadf    <- rep(0,compnum)
+    limmav0    <- rep(0,compnum)
+    limmag1num <- rep(0,compnum)
+    limmag2num <- rep(0,compnum)
+
+    rownames(limmat)  <- genes
+    colnames(limmat)  <- names(fitlist)
+    names(limmas2)    <- names(fitlist)
+    names(limmadf)    <- names(fitlist)
+    names(limmav0)    <- names(fitlist)
+    names(limmag1num) <- names(fitlist)
+    names(limmag2num) <- names(fitlist)
+
+    for (i in 1:compnum) {
+      this.t <- fitlist[[i]]$t[,cmp.idx]
+      limmat[names(this.t),i] <- this.t
+
+      limmas2[i]    <- fitlist[[i]]$s2.prior
+      limmadf[i]    <- fitlist[[i]]$df.prior
+      limmav0[i]    <- fitlist[[i]]$var.prior[cmp.idx]
+      limmag1num[i] <- sum(fitlist[[i]]$design[,cmp.idx]==0)
+      limmag2num[i] <- sum(fitlist[[i]]$design[,cmp.idx]==1)
+    }
+
+    limmacompnum <- compnum
+    result <- list(t       = limmat,
+                   v0      = limmav0,
+                   df0     = limmadf,
+                   s20     = limmas2,
+                   g1num   = limmag1num,
+                   g2num   = limmag2num,
+                   compnum = limmacompnum,
+                   fits    = limmafits)
+
+  }
+
+
+generank<-function(x) {
+  xcol<-ncol(x)
+  xrow<-nrow(x)
+  result<-matrix(0,xrow,xcol)
+  z<-(1:1:xrow)
+  for(i in 1:xcol) {
+    y<-sort(x[,i],decreasing=TRUE,na.last=TRUE)
+    result[,i]<-match(x[,i],y)
+    result[,i]<-order(result[,i])
+  }
+  result
+}
+
+## Log-likelihood for moderated t under H0
+modt.f0.loglike<-function(x,df) {
+  a<-dt(x, df, log=TRUE)
+  result<-as.vector(a)
+  flag<-which(is.na(result)==TRUE)
+  result[flag]<-0
+  result
+}
+
+## Log-likelihood for moderated t under H1
+## param=c(df,g1num,g2num,v0)
+modt.f1.loglike<-function(x,param) {
+  df<-param[1]
+  g1num<-param[2]
+  g2num<-param[3]
+  v0<-param[4]
+  w<-sqrt(1+v0/(1/g1num+1/g2num))
+  dt(x/w, df, log=TRUE)-log(w)
+  a<-dt(x/w, df, log=TRUE)-log(w)
+  result<-as.vector(a)
+  flag<-which(is.na(result)==TRUE)
+  result[flag]<-0
+  result
+}
+
+## Correlation Motif Fit
+cmfit.X<-function(x, type, K=1, tol=1e-3, max.iter=100) {
+  ## initialize
+  xrow <- nrow(x)
+  xcol <- ncol(x)
+  loglike0 <- list()
+  loglike1 <- list()
+  p <- rep(1, K)/K
+  q <- matrix(runif(K * xcol), K, xcol)
+  q[1, ] <- rep(0.01, xcol)
+  for (i in 1:xcol) {
+    f0 <- type[[i]][[1]]
+    f0param <- type[[i]][[2]]
+    f1 <- type[[i]][[3]]
+    f1param <- type[[i]][[4]]
+    loglike0[[i]] <- f0(x[, i], f0param)
+    loglike1[[i]] <- f1(x[, i], f1param)
+  }
+  condlike <- list()
+  for (i in 1:xcol) {
+    condlike[[i]] <- matrix(0, xrow, K)
+  }
+  loglike.old <- -1e+10
+  for (i.iter in 1:max.iter) {
+    if ((i.iter%%50) == 0) {
+      print(paste("We have run the first ", i.iter, " iterations for K=",
+                  K, sep = ""))
+    }
+    err <- tol + 1
+    clustlike <- matrix(0, xrow, K)
+    #templike <- matrix(0, xrow, 2)
+    templike1 <- rep(0, xrow)
+    templike2 <- rep(0, xrow)
+    for (j in 1:K) {
+      for (i in 1:xcol) {
+        templike1 <- log(q[j, i]) + loglike1[[i]]
+        templike2 <- log(1 - q[j, i]) + loglike0[[i]]
+        tempmax <- Rfast::Pmax(templike1, templike2)
+
+        templike1 <- exp(templike1 - tempmax)
+        templike2 <- exp(templike2 - tempmax)
+
+        tempsum <- templike1 + templike2
+        clustlike[, j] <- clustlike[, j] + tempmax +
+          log(tempsum)
+        condlike[[i]][, j] <- templike1/tempsum
+      }
+      clustlike[, j] <- clustlike[, j] + log(p[j])
+    }
+    #tempmax <- apply(clustlike, 1, max)
+    tempmax <- Rfast::rowMaxs(clustlike, value=TRUE)
+    for (j in 1:K) {
+      clustlike[, j] <- exp(clustlike[, j] - tempmax)
+    }
+    #tempsum <- apply(clustlike, 1, sum)
+    tempsum <- Rfast::rowsums(clustlike)
+    for (j in 1:K) {
+      clustlike[, j] <- clustlike[, j]/tempsum
+    }
+    #p.new <- (apply(clustlike, 2, sum) + 1)/(xrow + K)
+    p.new <- (Rfast::colsums(clustlike) + 1)/(xrow + K)
+    q.new <- matrix(0, K, xcol)
+    for (j in 1:K) {
+      clustpsum <- sum(clustlike[, j])
+      for (i in 1:xcol) {
+        q.new[j, i] <- (sum(clustlike[, j] * condlike[[i]][,
+                                                           j]) + 1)/(clustpsum + 2)
+      }
+    }
+    err.p <- max(abs(p.new - p)/p)
+    err.q <- max(abs(q.new - q)/q)
+    err <- max(err.p, err.q)
+    loglike.new <- (sum(tempmax + log(tempsum)) + sum(log(p.new)) +
+                      sum(log(q.new) + log(1 - q.new)))/xrow
+    p <- p.new
+    q <- q.new
+    loglike.old <- loglike.new
+    if (err < tol) {
+      break
+    }
+  }
+  clustlike <- matrix(0, xrow, K)
+  for (j in 1:K) {
+    for (i in 1:xcol) {
+      templike1 <- log(q[j, i]) + loglike1[[i]]
+      templike2 <- log(1 - q[j, i]) + loglike0[[i]]
+      tempmax <- Rfast::Pmax(templike1, templike2)
+
+      templike1 <- exp(templike1 - tempmax)
+      templike2 <- exp(templike2 - tempmax)
+
+      tempsum <- templike1 + templike2
+      clustlike[, j] <- clustlike[, j] + tempmax + log(tempsum)
+      condlike[[i]][, j] <- templike1/tempsum
+    }
+    clustlike[, j] <- clustlike[, j] + log(p[j])
+  }
+  #tempmax <- apply(clustlike, 1, max)
+  tempmax <- Rfast::rowMaxs(clustlike, value=TRUE)
+  for (j in 1:K) {
+    clustlike[, j] <- exp(clustlike[, j] - tempmax)
+  }
+  #tempsum <- apply(clustlike, 1, sum)
+  tempsum <- Rfast::rowsums(clustlike)
+  for (j in 1:K) {
+    clustlike[, j] <- clustlike[, j]/tempsum
+  }
+  p.post <- matrix(0, xrow, xcol)
+  for (j in 1:K) {
+    for (i in 1:xcol) {
+      p.post[, i] <- p.post[, i] + clustlike[, j] * condlike[[i]][,
+                                                                  j]
+    }
+  }
+  loglike.old <- loglike.old - (sum(log(p)) + sum(log(q) +
+                                                    log(1 - q)))/xrow
+  loglike.old <- loglike.old * xrow
+  result <- list(p.post = p.post, motif.prior = p, motif.q = q,
+                 loglike = loglike.old, clustlike=clustlike, condlike=condlike)
+}
+
+## Fit using (0,0,...,0) and (1,1,...,1)
+cmfitall<-function(x, type, tol=1e-3, max.iter=100) {
+  ## initialize
+  xrow<-nrow(x)
+  xcol<-ncol(x)
+  loglike0<-list()
+  loglike1<-list()
+  p<-0.01
+
+  ## compute loglikelihood
+  L0<-matrix(0,xrow,1)
+  L1<-matrix(0,xrow,1)
+  for(i in 1:xcol) {
+    f0<-type[[i]][[1]]
+    f0param<-type[[i]][[2]]
+    f1<-type[[i]][[3]]
+    f1param<-type[[i]][[4]]
+    loglike0[[i]]<-f0(x[,i],f0param)
+    loglike1[[i]]<-f1(x[,i],f1param)
+    L0<-L0+loglike0[[i]]
+    L1<-L1+loglike1[[i]]
+  }
+
+
+  ## EM algorithm to get MLE of p and q
+  loglike.old <- -1e10
+  for(i.iter in 1:max.iter) {
+    if((i.iter%%50) == 0) {
+      print(paste("We have run the first ", i.iter, " iterations",sep=""))
+    }
+    err<-tol+1
+
+    ## compute posterior cluster membership
+    clustlike<-matrix(0,xrow,2)
+    clustlike[,1]<-log(1-p)+L0
+    clustlike[,2]<-log(p)+L1
+
+    tempmax<-apply(clustlike,1,max)
+    for(j in 1:2) {
+      clustlike[,j]<-exp(clustlike[,j]-tempmax)
+    }
+    tempsum<-apply(clustlike,1,sum)
+
+    ## update motif occurrence rate
+    for(j in 1:2) {
+      clustlike[,j]<-clustlike[,j]/tempsum
+    }
+
+    p.new<-(sum(clustlike[,2])+1)/(xrow+2)
+
+    ## evaluate convergence
+    err<-abs(p.new-p)/p
+
+    ## evaluate whether the log.likelihood increases
+    loglike.new<-(sum(tempmax+log(tempsum))+log(p.new)+log(1-p.new))/xrow
+
+    loglike.old<-loglike.new
+    p<-p.new
+
+    if(err<tol) {
+      break;
+    }
+  }
+
+  ## compute posterior p
+  clustlike<-matrix(0,xrow,2)
+  clustlike[,1]<-log(1-p)+L0
+  clustlike[,2]<-log(p)+L1
+
+  tempmax<-apply(clustlike,1,max)
+  for(j in 1:2) {
+    clustlike[,j]<-exp(clustlike[,j]-tempmax)
+  }
+  tempsum<-apply(clustlike,1,sum)
+
+  for(j in 1:2) {
+    clustlike[,j]<-clustlike[,j]/tempsum
+  }
+
+  p.post<-matrix(0,xrow,xcol)
+  for(i in 1:xcol) {
+    p.post[,i]<-clustlike[,2]
+  }
+
+  ## return
+
+  #calculate back loglikelihood
+  loglike.old<-loglike.old-(log(p)+log(1-p))/xrow
+  loglike.old<-loglike.old*xrow
+  result<-list(p.post=p.post, motif.prior=p, loglike=loglike.old)
+}
+
+## Fit each dataset separately
+cmfitsep<-function(x, type, tol=1e-3, max.iter=100) {
+  ## initialize
+  xrow<-nrow(x)
+  xcol<-ncol(x)
+  loglike0<-list()
+  loglike1<-list()
+  p<-0.01*rep(1,xcol)
+  loglike.final<-rep(0,xcol)
+
+  ## compute loglikelihood
+  for(i in 1:xcol) {
+    f0<-type[[i]][[1]]
+    f0param<-type[[i]][[2]]
+    f1<-type[[i]][[3]]
+    f1param<-type[[i]][[4]]
+    loglike0[[i]]<-f0(x[,i],f0param)
+    loglike1[[i]]<-f1(x[,i],f1param)
+  }
+
+  p.post<-matrix(0,xrow,xcol)
+
+  ## EM algorithm to get MLE of p
+  for(coli in 1:xcol) {
+    loglike.old <- -1e10
+    for(i.iter in 1:max.iter) {
+      if((i.iter%%50) == 0) {
+        print(paste("We have run the first ", i.iter, " iterations",sep=""))
+      }
+      err<-tol+1
+
+      ## compute posterior cluster membership
+      clustlike<-matrix(0,xrow,2)
+      clustlike[,1]<-log(1-p[coli])+loglike0[[coli]]
+      clustlike[,2]<-log(p[coli])+loglike1[[coli]]
+
+      tempmax<-apply(clustlike,1,max)
+      for(j in 1:2) {
+        clustlike[,j]<-exp(clustlike[,j]-tempmax)
+      }
+      tempsum<-apply(clustlike,1,sum)
+
+      ## evaluate whether the log.likelihood increases
+      loglike.new<-sum(tempmax+log(tempsum))/xrow
+
+      ## update motif occurrence rate
+      for(j in 1:2) {
+        clustlike[,j]<-clustlike[,j]/tempsum
+      }
+
+      p.new<-(sum(clustlike[,2]))/(xrow)
+
+      ## evaluate convergence
+      err<-abs(p.new-p[coli])/p[coli]
+      loglike.old<-loglike.new
+      p[coli]<-p.new
+
+      if(err<tol) {
+        break;
+      }
+    }
+
+    ## compute posterior p
+    clustlike<-matrix(0,xrow,2)
+    clustlike[,1]<-log(1-p[coli])+loglike0[[coli]]
+    clustlike[,2]<-log(p[coli])+loglike1[[coli]]
+
+    tempmax<-apply(clustlike,1,max)
+    for(j in 1:2) {
+      clustlike[,j]<-exp(clustlike[,j]-tempmax)
+    }
+    tempsum<-apply(clustlike,1,sum)
+
+    for(j in 1:2) {
+      clustlike[,j]<-clustlike[,j]/tempsum
+    }
+
+    p.post[,coli]<-clustlike[,2]
+    loglike.final[coli]<-loglike.old
+  }
+
+
+  ## return
+  loglike.final<-loglike.final*xrow
+  result<-list(p.post=p.post, motif.prior=p, loglike=loglike.final)
+}
+
+## Fit the full model
+cmfitfull<-function(x, type, tol=1e-3, max.iter=100) {
+  ## initialize
+  xrow<-nrow(x)
+  xcol<-ncol(x)
+  loglike0<-list()
+  loglike1<-list()
+  K<-2^xcol
+  p<-rep(1,K)/K
+  pattern<-rep(0,xcol)
+  patid<-matrix(0,K,xcol)
+
+  ## compute loglikelihood
+  for(i in 1:xcol) {
+    f0<-type[[i]][[1]]
+    f0param<-type[[i]][[2]]
+    f1<-type[[i]][[3]]
+    f1param<-type[[i]][[4]]
+    loglike0[[i]]<-f0(x[,i],f0param)
+    loglike1[[i]]<-f1(x[,i],f1param)
+  }
+  L<-matrix(0,xrow,K)
+  for(i in 1:K)
+  {
+    patid[i,]<-pattern
+    for(j in 1:xcol) {
+      if(pattern[j] < 0.5) {
+        L[,i]<-L[,i]+loglike0[[j]]
+      } else {
+        L[,i]<-L[,i]+loglike1[[j]]
+      }
+    }
+
+    if(i < K) {
+      pattern[xcol]<-pattern[xcol]+1
+      j<-xcol
+      while(pattern[j] > 1) {
+        pattern[j]<-0
+        j<-j-1
+        pattern[j]<-pattern[j]+1
+      }
+    }
+  }
+
+  ## EM algorithm to get MLE of p and q
+  loglike.old <- -1e10
+  for(i.iter in 1:max.iter) {
+    if((i.iter%%50) == 0) {
+      print(paste("We have run the first ", i.iter, " iterations",sep=""))
+    }
+    err<-tol+1
+
+    ## compute posterior cluster membership
+    clustlike<-matrix(0,xrow,K)
+    for(j in 1:K) {
+      clustlike[,j]<-log(p[j])+L[,j]
+    }
+
+    tempmax<-apply(clustlike,1,max)
+    for(j in 1:K) {
+      clustlike[,j]<-exp(clustlike[,j]-tempmax)
+    }
+    tempsum<-apply(clustlike,1,sum)
+
+    ## update motif occurrence rate
+    for(j in 1:K) {
+      clustlike[,j]<-clustlike[,j]/tempsum
+    }
+
+    p.new<-(apply(clustlike,2,sum)+1)/(xrow+K)
+
+    ## evaluate convergence
+    err<-max(abs(p.new-p)/p)
+
+    ## evaluate whether the log.likelihood increases
+    loglike.new<-(sum(tempmax+log(tempsum))+sum(log(p.new)))/xrow
+
+    loglike.old<-loglike.new
+    p<-p.new
+
+    if(err<tol) {
+      break;
+    }
+  }
+
+  ## compute posterior p
+  clustlike<-matrix(0,xrow,K)
+  for(j in 1:K) {
+    clustlike[,j]<-log(p[j])+L[,j]
+  }
+
+  tempmax<-apply(clustlike,1,max)
+  for(j in 1:K) {
+    clustlike[,j]<-exp(clustlike[,j]-tempmax)
+  }
+  tempsum<-apply(clustlike,1,sum)
+
+  for(j in 1:K) {
+    clustlike[,j]<-clustlike[,j]/tempsum
+  }
+
+  p.post<-matrix(0,xrow,xcol)
+  for(j in 1:K) {
+    for(i in 1:xcol) {
+      if(patid[j,i] > 0.5) {
+        p.post[,i]<-p.post[,i]+clustlike[,j]
+      }
+    }
+  }
+
+  ## return
+  #calculate back loglikelihood
+  loglike.old<-loglike.old-sum(log(p))/xrow
+  loglike.old<-loglike.old*xrow
+  result<-list(p.post=p.post, motif.prior=p, loglike=loglike.old)
+}
+
+generatetype<-function(limfitted)
+{
+  jtype<-list()
+  df<-limfitted$g1num+limfitted$g2num-2+limfitted$df0
+  for(j in 1:limfitted$compnum)
+  {
+    jtype[[j]]<-list(f0=modt.f0.loglike, f0.param=df[j], f1=modt.f1.loglike, f1.param=c(df[j],limfitted$g1num[j],limfitted$g2num[j],limfitted$v0[j]))
+  }
+  jtype
+}
+
+cormotiffit <- function(exprs, groupid=NULL, compid=NULL, K=1, tol=1e-3,
+                        max.iter=100, BIC=TRUE, norm.factor.method="TMM",
+                        voom.normalize.method = "none", runtype=c("logCPM","counts","limmafits"), each=3)
+{
+  #Input can be either a normalized matrix, a count matrix, or a list of limma fits. Dispatch the correct
+  # limmafit accordingly.
+  limfitted <- list()
+  if (runtype=="counts") {
+    limfitted <- limmafit.counts(exprs,groupid,compid, norm.factor.method, voom.normalize.method)
+  } else if (runtype=="logCPM") {
+    limfitted <- limmafit.default(exprs,groupid,compid)
+  } else if (runtype=="limmafits") {
+    limfitted <- limmafit.list(exprs)
+  } else {
+    stop("runtype must be one of 'logCPM', 'counts', or 'limmafits'")
+  }
+
+
+  jtype<-generatetype(limfitted)
+  fitresult<-list()
+  ks <- rep(K, each = each)
+  fitresult <- bplapply(1:length(ks), function(i, x, type, ks, tol, max.iter) {
+    cmfit.X(x, type, K = ks[i], tol = tol, max.iter = max.iter)
+  }, x=limfitted$t, type=jtype, ks=ks, tol=tol, max.iter=max.iter)
+
+  best.fitresults <- list()
+  for (i in 1:length(K)) {
+    w.k <- which(ks==K[i])
+    this.bic <- c()
+    for (j in w.k) this.bic[j] <- -2 * fitresult[[j]]$loglike + (K[i] - 1 + K[i] * limfitted$compnum) * log(dim(limfitted$t)[1])
+    w.min <- which(this.bic == min(this.bic, na.rm = TRUE))[1]
+    best.fitresults[[i]] <- fitresult[[w.min]]
+  }
+  fitresult <- best.fitresults
+
+  bic <- rep(0, length(K))
+  aic <- rep(0, length(K))
+  loglike <- rep(0, length(K))
+  for (i in 1:length(K)) loglike[i] <- fitresult[[i]]$loglike
+  for (i in 1:length(K)) bic[i] <- -2 * fitresult[[i]]$loglike + (K[i] - 1 + K[i] * limfitted$compnum) * log(dim(limfitted$t)[1])
+  for (i in 1:length(K)) aic[i] <- -2 * fitresult[[i]]$loglike + 2 * (K[i] - 1 + K[i] * limfitted$compnum)
+  if(BIC==TRUE) {
+    bestflag=which(bic==min(bic))
+  }
+  else {
+    bestflag=which(aic==min(aic))
+  }
+  result<-list(bestmotif=fitresult[[bestflag]],bic=cbind(K,bic),
+               aic=cbind(K,aic),loglike=cbind(K,loglike), allmotifs=fitresult)
+
+}
+
+cormotiffitall<-function(exprs,groupid,compid, tol=1e-3, max.iter=100)
+{
+  limfitted<-limmafit(exprs,groupid,compid)
+  jtype<-generatetype(limfitted)
+  fitresult<-cmfitall(limfitted$t,type=jtype,tol=1e-3,max.iter=max.iter)
+}
+
+cormotiffitsep<-function(exprs,groupid,compid, tol=1e-3, max.iter=100)
+{
+  limfitted<-limmafit(exprs,groupid,compid)
+  jtype<-generatetype(limfitted)
+  fitresult<-cmfitsep(limfitted$t,type=jtype,tol=1e-3,max.iter=max.iter)
+}
+
+cormotiffitfull<-function(exprs,groupid,compid, tol=1e-3, max.iter=100)
+{
+  limfitted<-limmafit(exprs,groupid,compid)
+  jtype<-generatetype(limfitted)
+  fitresult<-cmfitfull(limfitted$t,type=jtype,tol=1e-3,max.iter=max.iter)
+}
+
+plotIC<-function(fitted_cormotif)
+{
+  oldpar<-par(mfrow=c(1,2))
+  plot(fitted_cormotif$bic[,1], fitted_cormotif$bic[,2], type="b",xlab="Motif Number", ylab="BIC", main="BIC")
+  plot(fitted_cormotif$aic[,1], fitted_cormotif$aic[,2], type="b",xlab="Motif Number", ylab="AIC", main="AIC")
+}
+
+plotMotif<-function(fitted_cormotif,title="")
+{
+  layout(matrix(1:2,ncol=2))
+  u<-1:dim(fitted_cormotif$bestmotif$motif.q)[2]
+  v<-1:dim(fitted_cormotif$bestmotif$motif.q)[1]
+  image(u,v,t(fitted_cormotif$bestmotif$motif.q),
+        col=gray(seq(from=1,to=0,by=-0.1)),xlab="Study",yaxt = "n",
+        ylab="Corr. Motifs",main=paste(title,"pattern",sep=" "))
+  axis(2,at=1:length(v))
+  for(i in 1:(length(u)+1))
+  {
+    abline(v=(i-0.5))
+  }
+  for(i in 1:(length(v)+1))
+  {
+    abline(h=(i-0.5))
+  }
+  Ng=10000
+  if(is.null(fitted_cormotif$bestmotif$p.post)!=TRUE)
+    Ng=nrow(fitted_cormotif$bestmotif$p.post)
+  genecount=floor(fitted_cormotif$bestmotif$motif.p*Ng)
+  NK=nrow(fitted_cormotif$bestmotif$motif.q)
+  plot(0,0.7,pch=".",xlim=c(0,1.2),ylim=c(0.75,NK+0.25),
+       frame.plot=FALSE,axes=FALSE,xlab="No. of genes",ylab="", main=paste(title,"frequency",sep=" "))
+  segments(0,0.7,fitted_cormotif$bestmotif$motif.p[1],0.7)
+  rect(0,1:NK-0.3,fitted_cormotif$bestmotif$motif.p,1:NK+0.3,
+       col="dark grey")
+  mtext(1:NK,at=1:NK,side=2,cex=0.8)
+  text(fitted_cormotif$bestmotif$motif.p+0.15,1:NK,
+       labels=floor(fitted_cormotif$bestmotif$motif.p*Ng))
+}
+
+#####Add in the dataframe - gene expression matrix####
+
+annot_data <- annot %>% dplyr::select("Tx_Time", "Time", "Tx", "Ind", "samples")
+
+Cormotif <- my_data
+Cormotif_df <- data.frame(Cormotif)
+
+rownames(Cormotif_df) <- Cormotif_df$entrezgene_id
+exprs.cormotif <- as.matrix(Cormotif_df[,2:64])
+
+
+group <- group1
+group_id1 <- c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9)
+groupid <- cbind(group, group_id1)
+#now I need to sort this so it's in number order (ie 1 for all 7, 2 for all 7, etc)
+
+compid <- matrix(data = c(1, 10, 2, 11, 3, 12, 4, 13, 5, 14, 6, 15, 7, 16, 8, 17, 9, 18), byrow = TRUE, nrow = 9)
+
+compid <- data.frame(c1 = c(1, 2, 3, 4, 5, 6, 7, 8, 9), c2 = c(3, 6, 9, 3, 6, 9, 3, 6, 9))
+
+rep(c("DOX_24","FLUO_24",
+                                "DMSO_24",
+                                "DOX_24rec",
+                                "FLUO_24rec",
+                                "DMSO_24rec",
+                                "DOX_144rec",
+                                "FLUO_144rec",
+                                "DMSO_144rec"), 7)
+
+group1 <- c("DOX_24_1", "DOX_24_2","DOX_24_3", "DOX_24", "DOX_24", "DOX_24", "DOX_24", "DOX_24rec", "DOX_24rec", "DOX_24rec", "DOX_24rec", "DOX_24rec", "DOX_24rec", "DOX_24rec", "DOX_144rec", "DOX_144rec", "DOX_144rec", "DOX_144rec", "DOX_144rec", "DOX_144rec", "DOX_144rec", "FLUO_24", "FLUO_24", "FLUO_24", "FLUO_24", "FLUO_24", "FLUO_24", "FLUO_24", "FLUO_24rec", "FLUO_24rec", "FLUO_24rec", "FLUO_24rec", "FLUO_24rec", "FLUO_24rec", "FLUO_24rec", "FLUO_144rec", "FLUO_144rec", "FLUO_144rec", "FLUO_144rec", "FLUO_144rec", "FLUO_144rec", "FLUO_144rec", "DMSO_24", "DMSO_24", "DMSO_24", "DMSO_24", "DMSO_24", "DMSO_24", "DMSO_24", "DMSO_24rec", "DMSO_24rec", "DMSO_24rec", "DMSO_24rec", "DMSO_24rec", "DMSO_24rec", "DMSO_24rec", "DMSO_144rec", "DMSO_144rec", "DMSO_144rec", "DMSO_144rec", "DMSO_144rec", "DMSO_144rec" , "DMSO_144rec")
+
+group1 <- colnames(my_data) %>% filter( =!)
 
 ```
 
