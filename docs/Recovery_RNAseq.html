@@ -403,9 +403,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 2
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>Recovery_5FU/</code> <span
@@ -428,21 +428,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -567,15 +564,15 @@ data/annot.RDS
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttree63b7db9d66520701382ea092fa267c512748f721targetblank63b7db9a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttreea07d5bce7756b193773e16130f0c1f6fb0ebf612targetblanka07d5bca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/63b7db9d66520701382ea092fa267c512748f721" target="_blank">63b7db9</a>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/a07d5bce7756b193773e16130f0c1f6fb0ebf612" target="_blank">a07d5bc</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttree63b7db9d66520701382ea092fa267c512748f721targetblank63b7db9a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttreea07d5bce7756b193773e16130f0c1f6fb0ebf612targetblanka07d5bca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -585,7 +582,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/63b7db9d66520701382ea092fa267c512748f721" target="_blank">63b7db9</a>.
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/a07d5bce7756b193773e16130f0c1f6fb0ebf612" target="_blank">a07d5bc</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -604,27 +601,6 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    data/heartgenes.csv
 
-Untracked files:
-    Untracked:  analysis/Recovery_RNAseq.Rmd
-    Untracked:  data/annot.RDS
-    Untracked:  data/counts_DE_df.RDS
-    Untracked:  data/counts_DE_norep.RDS
-    Untracked:  data/fC_AllCounts
-    Untracked:  data/fC_Matrix_Full.RDS
-    Untracked:  data/fC_Matrix_Full_cpm_filter.RDS
-    Untracked:  data/filt_gene_list.RDS
-    Untracked:  data/ind_num.RDS
-    Untracked:  data/top.table_V.D144r.RDS
-    Untracked:  data/top.table_V.D24.RDS
-    Untracked:  data/top.table_V.D24r.RDS
-    Untracked:  data/top.table_V.F144r.RDS
-    Untracked:  data/top.table_V.F24.RDS
-    Untracked:  data/top.table_V.F24r.RDS
-
-Unstaged changes:
-    Modified:   analysis/Recovery_DE.Rmd
-    Modified:   analysis/_site.yml
-
 </code></pre>
 <p>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not
@@ -639,9 +615,72 @@ have uncommitted changes.
 </div>
 <div id="versions" class="tab-pane fade">
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/Recovery_RNAseq.Rmd</code>) and
+HTML (<code>docs/Recovery_RNAseq.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/analysis/Recovery_RNAseq.Rmd" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+<td>
+Updating website for readability
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/emmapfort/Recovery_5FU_Project/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/Recovery_RNAseq.html" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+<td>
+Updating website for readability
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -983,7 +1022,84 @@ matrix with all of the samples</p>
 together</p>
 <p>Now that I’ve made individual matrices for each individual - I will
 combine them together into one large matrix</p>
-<p><img src="figure/Recovery_RNAseq.Rmd/Counts%20Matrix%20All%20Individuals-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Recovery_RNAseq.Rmd/Counts%20Matrix%20All%20Individuals-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Recovery_RNAseq.Rmd/Counts%20Matrix%20All%20Individuals-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Counts-Matrix-All-Individuals-1">
+Past versions of "Counts Matrix All Individuals-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Counts-Matrix-All-Individuals-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/Counts Matrix All Individuals-1.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Recovery_RNAseq.Rmd/Counts%20Matrix%20All%20Individuals-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Counts-Matrix-All-Individuals-2">
+Past versions of "Counts Matrix All Individuals-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Counts-Matrix-All-Individuals-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/Counts Matrix All Individuals-2.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#Now that I&#39;ve put together my matrix - I will do some QC checks
 
 #now that I have all of my factors and my gene info, I will make some graphs to show the QC data
@@ -1007,6 +1123,43 @@ fC_AllCounts %&gt;%
         #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
         strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/QC%20checks%20Raw%20Counts-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-checks-Raw-Counts-1">
+Past versions of "QC checks Raw Counts-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-checks-Raw-Counts-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/QC checks Raw Counts-1.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 
 ####Read Counts by Treatment####
@@ -1028,6 +1181,43 @@ fC_AllCounts %&gt;%
         #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
         strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/QC%20checks%20Raw%20Counts-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-checks-Raw-Counts-2">
+Past versions of "QC checks Raw Counts-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-checks-Raw-Counts-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/QC checks Raw Counts-2.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 ####Total Reads Per Individual####
 fC_AllCounts %&gt;% 
@@ -1048,6 +1238,43 @@ fC_AllCounts %&gt;%
         #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
         strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/QC%20checks%20Raw%20Counts-3.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-checks-Raw-Counts-3">
+Past versions of "QC checks Raw Counts-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-checks-Raw-Counts-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/QC checks Raw Counts-3.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 ####Total Mapped Reads Per Drug####
 
@@ -1070,6 +1297,43 @@ fC_AllCounts %&gt;%
         #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
         strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/QC%20checks%20Raw%20Counts-4.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-checks-Raw-Counts-4">
+Past versions of "QC checks Raw Counts-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-checks-Raw-Counts-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/QC checks Raw Counts-4.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 
 ####Read Counts by Treatment####
@@ -1091,6 +1355,43 @@ fC_AllCounts %&gt;%
         #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
         strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/QC%20checks%20Raw%20Counts-5.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-checks-Raw-Counts-5">
+Past versions of "QC checks Raw Counts-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-checks-Raw-Counts-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/QC checks Raw Counts-5.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 ####Total Reads Per Individual####
 fC_AllCounts %&gt;% 
@@ -1111,6 +1412,43 @@ fC_AllCounts %&gt;%
         #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
         strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/QC%20checks%20Raw%20Counts-6.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-checks-Raw-Counts-6">
+Past versions of "QC checks Raw Counts-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-checks-Raw-Counts-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/QC checks Raw Counts-6.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now that I’ve made the final full matrix of all samples - 1. convert
 to log2cpm using cpm 2. filter for lowly expressed reads (rowMeans &gt;
 0)</p>
@@ -24940,8 +25278,84 @@ to log2cpm using cpm 2. filter for lowly expressed reads (rowMeans &gt;
 
 boxplot(fC_Matrix_Full_cpm, xlab = &quot;Conditions&quot;, ylab = expression(&quot;log&quot;[2]* &quot;counts per million&quot;), ylim= c(-10, 20))</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/log2cpm%20Conversion%20Full%20Matrix-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-log2cpm-Conversion-Full-Matrix-1">
+Past versions of "log2cpm Conversion Full Matrix-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-log2cpm-Conversion-Full-Matrix-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/log2cpm Conversion Full Matrix-1.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>hist(fC_Matrix_Full_cpm, xlab = expression(&quot;log&quot; [2]* &quot;counts per million&quot;))</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/log2cpm%20Conversion%20Full%20Matrix-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-log2cpm-Conversion-Full-Matrix-2">
+Past versions of "log2cpm Conversion Full Matrix-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-log2cpm-Conversion-Full-Matrix-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/log2cpm Conversion Full Matrix-2.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 #first check the number of variables in the cpm file
 dim(fC_Matrix_Full_cpm)
@@ -24962,12 +25376,88 @@ hist(fC_Matrix_Full_cpm_filter,
      main = &quot;Recovery All Individuals log2cpm Filtered&quot;, 
         xlab = expression(&quot;log&quot;[2]*&quot;counts per million&quot;))</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/Filter%20Lowly%20Expressed%20Reads%20All%20Samples-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Filter-Lowly-Expressed-Reads-All-Samples-1">
+Past versions of "Filter Lowly Expressed Reads All Samples-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Filter-Lowly-Expressed-Reads-All-Samples-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/Filter Lowly Expressed Reads All Samples-1.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>boxplot(fC_Matrix_Full_cpm_filter, 
         main = &quot;Recovery All Individuals log2cpm Filtered&quot;, 
         xlab = &quot;Conditions&quot;, 
         ylab = expression(&quot;log&quot;[2]*&quot;counts per million&quot;),
         ylim = c(-10,15))</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/Filter%20Lowly%20Expressed%20Reads%20All%20Samples-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Filter-Lowly-Expressed-Reads-All-Samples-2">
+Past versions of "Filter Lowly Expressed Reads All Samples-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Filter-Lowly-Expressed-Reads-All-Samples-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/Filter Lowly Expressed Reads All Samples-2.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 #save this to an R object
 #saveRDS(fC_Matrix_Full_cpm_filter, &quot;data/fC_Matrix_Full_cpm_filter.RDS&quot;)
@@ -24983,19 +25473,171 @@ filt_gene_list &lt;- row.names(fC_Matrix_Full_cpm_filter)
 hist(fC_Matrix_Full_cpm, main = &quot;Recovery All Individuals log2cpm Unfiltered&quot;,
      xlab = expression(&quot;log&quot; [2]* &quot;counts per million&quot;))</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/QC%20Checks%20Unfiltered%20vs%20Filtered%20Reads-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-1">
+Past versions of "QC Checks Unfiltered vs Filtered Reads-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/QC Checks Unfiltered vs Filtered Reads-1.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####histogram of total counts, filtered####
 hist(fC_Matrix_Full_cpm_filter, 
      main = &quot;Recovery All Individuals log2cpm Filtered rowMeans &gt; 0&quot;, 
         xlab = expression(&quot;log&quot;[2]*&quot;counts per million&quot;))</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/QC%20Checks%20Unfiltered%20vs%20Filtered%20Reads-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-2">
+Past versions of "QC Checks Unfiltered vs Filtered Reads-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-2"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/QC Checks Unfiltered vs Filtered Reads-2.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####boxplot log2cpm all samples####
 
 boxplot(fC_Matrix_Full_cpm, xlab = &quot;Conditions&quot;, ylab = expression(&quot;log&quot;[2]* &quot;counts per million&quot;), ylim= c(-10, 20), main = &quot;Boxplots of log2cpm per sample&quot;)</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/QC%20Checks%20Unfiltered%20vs%20Filtered%20Reads-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-3">
+Past versions of "QC Checks Unfiltered vs Filtered Reads-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-3"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/QC Checks Unfiltered vs Filtered Reads-3.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>####boxplot log2cpm filtered all samples####
 
 boxplot(fC_Matrix_Full_cpm_filter, xlab = &quot;Conditions&quot;, ylab = expression(&quot;log&quot;[2]* &quot;counts per million&quot;), ylim= c(-10, 20), main = &quot;Boxplots of log2cpm Filtered rowMeans &gt; 0 per sample&quot;)</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/QC%20Checks%20Unfiltered%20vs%20Filtered%20Reads-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-4">
+Past versions of "QC Checks Unfiltered vs Filtered Reads-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-QC-Checks-Unfiltered-vs-Filtered-Reads-4"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/QC Checks Unfiltered vs Filtered Reads-4.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now that I’ve filtered the samples after log2cpm conversion, I can
 start to make heatmaps and PCA plots to look at my data. I want these
 plots to have treatment and time as the primary variables.</p>
@@ -25048,6 +25690,43 @@ annot_PCA_matrix %&gt;% ggplot(., aes(x=PC1, y=PC2, size=10)) +
 Warning: ggrepel: 10 unlabeled data points (too many overlaps). Consider
 increasing max.overlaps</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/PCA%20Plots-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-PCA-Plots-1">
+Past versions of "PCA Plots-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-PCA-Plots-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/PCA Plots-1.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>  
 
 ####PC2/PC3####
@@ -25062,6 +25741,43 @@ annot_PCA_matrix %&gt;% ggplot(., aes(x=PC2, y=PC3, size=10)) +
 Warning: ggrepel: 7 unlabeled data points (too many overlaps). Consider
 increasing max.overlaps</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/PCA%20Plots-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-PCA-Plots-2">
+Past versions of "PCA Plots-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-PCA-Plots-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/PCA Plots-2.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 ####PC3/PC4####
 annot_PCA_matrix %&gt;% ggplot(., aes(x=PC3, y=PC4, size=10)) +
@@ -25075,6 +25791,43 @@ annot_PCA_matrix %&gt;% ggplot(., aes(x=PC3, y=PC4, size=10)) +
 Warning: ggrepel: 16 unlabeled data points (too many overlaps). Consider
 increasing max.overlaps</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/PCA%20Plots-3.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-PCA-Plots-3">
+Past versions of "PCA Plots-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-PCA-Plots-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/PCA Plots-3.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now, let’s make some correlation heatmaps These are pairwise across
 all genes by condition</p>
 <pre class="r"><code>
@@ -25104,9 +25857,83 @@ fC_Matrix_Full_cpm_filter_spearmancor &lt;-
 
 pheatmap(fC_Matrix_Full_cpm_filter_pearsoncor, border_color = &quot;black&quot;, legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = &quot;black&quot;, fontsize = 12, fontsize_number = 9)</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/Correlation%20Heatmaps-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Correlation-Heatmaps-1">
+Past versions of "Correlation Heatmaps-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Correlation-Heatmaps-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/Correlation Heatmaps-1.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 pheatmap(fC_Matrix_Full_cpm_filter_spearmancor, border_color = &quot;black&quot;, legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = &quot;black&quot;, fontsize = 12, fontsize_number = 9)</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/Correlation%20Heatmaps-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Correlation-Heatmaps-2">
+Past versions of "Correlation Heatmaps-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-Correlation-Heatmaps-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/Correlation Heatmaps-2.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 
 
@@ -25141,9 +25968,83 @@ row.names(annot_list_hm) &lt;- colnames(fC_Matrix_Full_cpm_filter_spearmancor)
 ####ANNOTATED HEATMAPS####
 pheatmap(fC_Matrix_Full_cpm_filter_pearsoncor, border_color = &quot;black&quot;, legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = &quot;black&quot;, fontsize = 10, fontsize_number = 5, annotation_col = annot_list_hm, annotation_colors = annot_col_hm)</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/Correlation%20Heatmaps-3.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Correlation-Heatmaps-3">
+Past versions of "Correlation Heatmaps-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-Correlation-Heatmaps-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/Correlation Heatmaps-3.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 pheatmap(fC_Matrix_Full_cpm_filter_spearmancor, border_color = &quot;black&quot;, legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = &quot;black&quot;, fontsize = 10, fontsize_number = 5, annotation_col = annot_list_hm, annotation_colors = annot_col_hm)</code></pre>
 <p><img src="figure/Recovery_RNAseq.Rmd/Correlation%20Heatmaps-4.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Correlation-Heatmaps-4">
+Past versions of "Correlation Heatmaps-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-Correlation-Heatmaps-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/a07d5bce7756b193773e16130f0c1f6fb0ebf612/docs/figure/Recovery_RNAseq.Rmd/Correlation Heatmaps-4.png" target="_blank">a07d5bc</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
