@@ -47,6 +47,7 @@ library(RColorBrewer)
 library(biomaRt)
 library(RUVSeq)
 library(Rfast)
+library(gprofiler2)
 ```
 
 To begin the differential expression (DE) pipeline, I will start by making the data frames I will use.
@@ -212,6 +213,9 @@ top.table_V.F144r <- topTable(fit = efit2, coef = "V.F144r", number = nrow(dge_c
 head(top.table_V.F144r)
 
 #saveRDS(top.table_V.F144r, "data/top.table_V.F144r.RDS")
+
+#plot the top 5 most DE genes for each condition
+top.table_V.D24 %>% dplyr::filter()
 
 ```
 
@@ -1552,7 +1556,7 @@ toptable10_Dupcor_DOX144$logFC %>% hist(, main = "RUVs k=10 DOX 144Rec Toptable"
 
 ```
 
-```{r pvalue and adj pvalue plots of DE, include=FALSE}
+```{r pvalue and adj pvalue plots of DE}
 
 ####DOX 24####
 #no RUVs
@@ -2395,15 +2399,17 @@ compid <- data.frame(c1 = c(1, 2, 4, 5, 7, 8), c2 = c(3, 3, 6, 6, 9, 9))
 ```{r Cormotif Next, include=FALSE}
 
 set.seed(12345)
-initial_cormotif <- cormotiffit(exprs = Cormotif,
-                                groupid = groupid,
-                                compid = compid,
-                                K=1:10  , max.iter = 500, runtype = "logCPM")
+#initial_cormotif <- cormotiffit(exprs = Cormotif,
+                                # groupid = groupid,
+                                # compid = compid,
+                                # K=1:10, max.iter = 500, runtype = "logCPM")
 
 #only need to run this once! 
 #save this to an object so I can retrieve it as needed
 
 #saveRDS(initial_cormotif, "data/initial_cormotif.RDS")
+
+initial_cormotif <- readRDS("data/initial_cormotif.RDS")
 
 ```
 
@@ -2444,6 +2450,9 @@ length(clust1)
 #12004
 #is this clust1 a non-response?
 
+#plot the top DE gene for this motif based on p-value
+
+
 clust2 <- motif_prob %>% 
   as.data.frame() %>% 
   filter(V2>0.5) %>% 
@@ -2481,6 +2490,275 @@ clusterdata %>% ggplot(aes(x = "", y = Value, fill = Category))+
   labs(title = "Distribution of Gene Clusters Identified By Cormotif", x = NULL, y = NULL)+
   theme_void()+
   scale_fill_manual(values = piecolors)
+
+```
+
+```{r No Response Motif Genes}
+
+motif_NR <- clust1
+
+# NRmotif_genes <- gost(query = motif_NR ,
+#                      organism = "hsapiens",
+#                        ordered_query = FALSE,
+#                        domain_scope = "custom",
+#                        measure_underrepresentation = FALSE,
+#                        evcodes = FALSE,
+#                        user_threshold = 0.05,
+#                        correction_method = c("fdr"),
+#                        custom_bg = backGL$ENTREZID,
+#                        sources=c("GO:BP", "KEGG"))
+
+NRmotif_genes <- gost(query = motif_NR,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+cormotifNFclust <- gostplot(NRmotif_genes, capped = FALSE, interactive = TRUE)
+cormotifNFclust
+
+tableNR <- NRmotif_genes$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+tableNR %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#write.csv(tableNR, "output/table_NRmotif.csv")
+
+#GO:BP
+tableNR_GOBP <- tableNR %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+#saveRDS(tableNR_GOBP, "data/tableNR_GOBP.RDS")
+
+tableNR_GOBP %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("No Response Enriched GO:BP Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+tableNR_KEGG <- tableNR %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+tableNR_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("No Response Enriched KEGG Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+
+
+```
+
+```{r Late DOX Response Motif Genes}
+
+motif_LD <- clust2
+
+# LateDOXmotif_genes <- gost(query = motif_LateDOX ,
+#                      organism = "hsapiens",
+#                        ordered_query = FALSE,
+#                        domain_scope = "custom",
+#                        measure_underrepresentation = FALSE,
+#                        evcodes = FALSE,
+#                        user_threshold = 0.05,
+#                        correction_method = c("fdr"),
+#                        custom_bg = backGL$ENTREZID,
+#                        sources=c("GO:BP", "KEGG"))
+
+LDmotif_genes <- gost(query = motif_LD,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+cormotifLDclust <- gostplot(LDmotif_genes, capped = FALSE, interactive = TRUE)
+cormotifLDclust
+
+tableLD <- LDmotif_genes$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+tableLD %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#write.csv(tableLD, "output/table_LateDOXmotif.csv")
+
+#GO:BP
+tableLD_GOBP <- tableLD %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+#saveRDS(tableLD_GOBP, "data/tableLD_GOBP.RDS")
+
+tableLD_GOBP %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("Late DOX Response Enriched GO:BP Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+tableLD_KEGG <- tableLD %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+tableLD_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("Late DOX Response Enriched KEGG Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+
+```
+
+```{r Early DOX Response Motif Genes}
+
+motif_ED <- clust3
+
+# LateDOXmotif_genes <- gost(query = motif_LateDOX ,
+#                      organism = "hsapiens",
+#                        ordered_query = FALSE,
+#                        domain_scope = "custom",
+#                        measure_underrepresentation = FALSE,
+#                        evcodes = FALSE,
+#                        user_threshold = 0.05,
+#                        correction_method = c("fdr"),
+#                        custom_bg = backGL$ENTREZID,
+#                        sources=c("GO:BP", "KEGG"))
+
+EDmotif_genes <- gost(query = motif_ED,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+cormotifEDclust <- gostplot(EDmotif_genes, capped = FALSE, interactive = TRUE)
+cormotifEDclust
+
+tableED <- EDmotif_genes$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+tableED %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#write.csv(tableED, "output/table_EarlyDOXmotif.csv")
+
+
+#GO:BP
+tableED_GOBP <- tableED %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+#saveRDS(tableED_GOBP, "data/tableED_GOBP.RDS")
+
+tableED_GOBP %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("Early DOX Response Enriched GO:BP Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+tableED_KEGG <- tableED %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+tableED_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("Early DOX Response Enriched KEGG Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+```
+
+```{r }
 
 ```
 
