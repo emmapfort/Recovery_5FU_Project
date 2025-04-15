@@ -677,7 +677,7 @@ for (plot_name in names(volcano_plots)) {
 
 ```
 
-```{r Volcano Plots Across Conditions}
+```{r Boxplots Across Conditions}
 #now like the hypoxia paper, I'd like to put together comparisons between samples and conditions to check if they are more similar than others
 
 
