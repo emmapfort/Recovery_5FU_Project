@@ -237,6 +237,153 @@ DOXgeneplots
 ```
 
 
+```{r Pull Out Some Cardiac Genes}
+genes_dox <- as.data.frame(fC_Matrix_Full_cpm_filter_dox)
+genes_dox_df <- rownames_to_column(fC_Matrix_Full_cpm_filter_dox, var = "entrezgene_id")
+###now let's pull some classic cardiac genes expressed in iPSC-CMs###
+genecardiccheck_dox <- c("MYH7", "TNNT2","MYH6","ACTN2","BMP3","TNNI3","RYR2","CACNA1C","KCNQ1", "HCN1", "ADRB1", "ADRB2")
+
+#ensembl_dox <- useMart("ensembl", dataset="hsapiens_gene_ensembl")
+#saveRDS(ensembl_dox, "data/ensembl_backup_dox.RDS")
+ensembl_dox <- readRDS("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/ensembl_backup_dox.RDS")
+my_chr_dox <- c(1:22, 'M', 'X', 'Y')  ## creates a filter for each database
+
+my_attributes_dox <- c('entrezgene_id', 'ensembl_gene_id', 'hgnc_symbol')
+
+heartgenes_dox <- getBM(attributes=my_attributes,filters ='hgnc_symbol',
+                values = genecardiccheck_dox, mart = ensembl_dox)
+write.csv(heartgenes_dox, "data/heartgenes_dox.csv")
+heartgenes_dox <-read.csv("data/heartgenes_dox.csv")
+
+fungraph_dox <- as.data.frame(fC_Matrix_Full_cpm_filter_dox[rownames(fC_Matrix_Full_cpm_filter_dox) %in% heartgenes_dox$entrezgene_id,])
+
+
+fungraph_dox %>% 
+  rownames_to_column("entrezgene_id") %>% 
+  pivot_longer(-entrezgene_id, names_to = "samples",values_to = "counts") %>% 
+  mutate(gene = case_match(entrezgene_id,"88"~"ACTN2","153"~"ADRB1",
+  "154"~"ADRB2","651"~"BMP3","775"~"CACNA1C", "100874369"~"CACNA1C","348980"~"HCN1",
+                           "3784"~"KCNQ1", "4624"~"MYH6","4625"~"MYH7","6262"~"RYR2",
+                           "7137"~"TNNI3","7139"~"TNNT2",.default = entrezgene_id)) %>% 
+  ggplot(., aes(x=reorder(gene,counts,decreasing=TRUE), y=counts))+
+  geom_boxplot()+
+  ggtitle(expression("Expression of typical cardiac tissue genes"))+
+  xlab("")+
+  ylim(c(0,20))+
+  ylab(expression("log"[2]~"cpm"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+
+#Now I want to plot these with DOX vs Veh to see if there are any changes
+
+#I'll choose a subset of these genes - TNN13, TNNT2, NPPB, MYH7, ACTN2
+
+fungraph_dox_only <- fungraph_dox %>% dplyr::select("DOX_24_Ind1", "DOX_24rec_Ind1", "DOX_144rec_Ind1", "DOX_24_Ind2", "DOX_24rec_Ind2", "DOX_144rec_Ind2", "DOX_24_Ind3", "DOX_24rec_Ind3", "DOX_144rec_Ind3", "DOX_24_Ind4", "DOX_24rec_Ind4", "DOX_144rec_Ind4", "DOX_24_Ind5", "DOX_24rec_Ind5", "DOX_144rec_Ind5", "DOX_24_Ind6", "DOX_24rec_Ind6", "DOX_144rec_Ind6", "DOX_24_Ind6REP", "DOX_24rec_Ind6REP", "DOX_144rec_Ind6REP")
+
+fungraph_dmso_only <- fungraph_dox %>% dplyr::select("DMSO_24_Ind1", "DMSO_24rec_Ind1", "DMSO_144rec_Ind1", "DMSO_24_Ind2", "DMSO_24rec_Ind2", "DMSO_144rec_Ind2", "DMSO_24_Ind3", "DMSO_24rec_Ind3", "DMSO_144rec_Ind3", "DMSO_24_Ind4", "DMSO_24rec_Ind4", "DMSO_144rec_Ind4", "DMSO_24_Ind5", "DMSO_24rec_Ind5", "DMSO_144rec_Ind5", "DMSO_24_Ind6", "DMSO_24rec_Ind6", "DMSO_144rec_Ind6", "DMSO_24_Ind6REP", "DMSO_24rec_Ind6REP", "DMSO_144rec_Ind6REP")
+
+fungraph_dox_only %>% 
+  rownames_to_column("entrezgene_id") %>% 
+  pivot_longer(-entrezgene_id, names_to = "samples",values_to = "counts") %>% 
+  mutate(gene = case_match(entrezgene_id,"88"~"ACTN2","153"~"ADRB1",
+  "154"~"ADRB2","651"~"BMP3","775"~"CACNA1C", "100874369"~"CACNA1C","348980"~"HCN1",
+                           "3784"~"KCNQ1", "4624"~"MYH6","4625"~"MYH7","6262"~"RYR2",
+                           "7137"~"TNNI3","7139"~"TNNT2",.default = entrezgene_id)) %>% 
+  ggplot(., aes(x=reorder(gene,counts,decreasing=TRUE), y=counts))+
+  geom_boxplot()+
+  ggtitle(expression("Expression Cardiac Genes DOX Only"))+
+  xlab("")+
+  ylim(c(0,20))+
+  ylab(expression("log"[2]~"cpm"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+fungraph_dmso_only %>% 
+  rownames_to_column("entrezgene_id") %>% 
+  pivot_longer(-entrezgene_id, names_to = "samples",values_to = "counts") %>% 
+  mutate(gene = case_match(entrezgene_id,"88"~"ACTN2","153"~"ADRB1",
+  "154"~"ADRB2","651"~"BMP3","775"~"CACNA1C", "100874369"~"CACNA1C","348980"~"HCN1",
+                           "3784"~"KCNQ1", "4624"~"MYH6","4625"~"MYH7","6262"~"RYR2",
+                           "7137"~"TNNI3","7139"~"TNNT2",.default = entrezgene_id)) %>% 
+  ggplot(., aes(x=reorder(gene,counts,decreasing=TRUE), y=counts))+
+  geom_boxplot()+
+  ggtitle(expression("Expression Cardiac Genes Vehicle Only"))+
+  xlab("")+
+  ylim(c(0,20))+
+  ylab(expression("log"[2]~"cpm"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+#I want to just plot TNNI3 now
+
+fungraph_dox_only_TNNI3 <- fungraph_dox_only %>% 
+  rownames_to_column("entrezgene_id") %>% 
+  pivot_longer(-entrezgene_id, names_to = "samples",values_to = "counts") %>% 
+  filter(entrezgene_id == "7137") %>% 
+  mutate(gene = case_match(entrezgene_id,"7137"~"TNNI3",.default = entrezgene_id)) %>% 
+  ggplot(., aes(x=reorder(gene,counts,decreasing=TRUE), y=counts))+
+  geom_boxplot()+
+  ggtitle(expression("TNNI3 DOX"))+
+  xlab("")+
+  ylim(c(0,10))+
+  ylab(expression("log"[2]~"cpm"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+#saveRDS(fungraph_dox_only_TNNI3, "data/DOX_TNN13_plot.RDS")
+
+fungraph_dmso_only_TNNI3 <- fungraph_dmso_only %>% 
+  rownames_to_column("entrezgene_id") %>% 
+  pivot_longer(-entrezgene_id, names_to = "samples",values_to = "counts") %>% 
+  filter(entrezgene_id == "7137") %>% 
+  mutate(gene = case_match(entrezgene_id,"7137"~"TNNI3",.default = entrezgene_id)) %>% 
+  ggplot(., aes(x=reorder(gene,counts,decreasing=TRUE), y=counts))+
+  geom_boxplot()+
+  ggtitle(expression("TNNI3 VEH"))+
+  xlab("")+
+  ylim(c(0,10))+
+  ylab(expression("log"[2]~"cpm"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+#saveRDS(fungraph_dmso_only_TNNI3, "data/DMSO_TNN13_plot.RDS")
+
+fungraph_dox_only_TNNI3
+fungraph_dmso_only_TNNI3
+
+plot_grid(fungraph_dox_only_TNNI3,
+                          fungraph_dmso_only_TNNI3, 
+                          nrow = 1, ncol = 2)
+
+
+```
+
 ```{r Spearman Heatmap}
 
 ####SPEARMAN FILTERED####
@@ -526,6 +673,14 @@ for (plot_name in names(volcano_plots)) {
 # 
 # Volcanoplots <- plot_grid(vol1,vol2,vol3, nrow = 1, ncol = 3)
 # Volcanoplots
+
+
+```
+
+```{r Volcano Plots Across Conditions}
+#now like the hypoxia paper, I'd like to put together comparisons between samples and conditions to check if they are more similar than others
+
+
 
 
 ```

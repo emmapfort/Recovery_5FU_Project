@@ -1,0 +1,223 @@
+"","source","term_id","term_name","intersection_size","term_size","p_value"
+"1","GO:BP","GO:0006811","monoatomic ion transport",60,1256,6.21200017117126e-11
+"2","GO:BP","GO:0034220","monoatomic ion transmembrane transport",52,1017,1.68109607223895e-10
+"3","GO:BP","GO:0055085","transmembrane transport",65,1538,4.11341000299914e-10
+"4","GO:BP","GO:0098660","inorganic ion transmembrane transport",45,903,1.16066348515847e-08
+"5","GO:BP","GO:0015698","inorganic anion transport",18,165,1.3750190408349e-07
+"6","GO:BP","GO:0006820","monoatomic anion transport",18,167,1.39968892157247e-07
+"7","GO:BP","GO:0048869","cellular developmental process",118,4382,2.84005897419409e-07
+"8","GO:BP","GO:0030154","cell differentiation",118,4381,2.84005897419409e-07
+"9","GO:BP","GO:0006810","transport",117,4341,2.97052678116335e-07
+"10","GO:BP","GO:0006821","chloride transport",15,122,4.42968894439286e-07
+"11","GO:BP","GO:0032501","multicellular organismal process",167,7234,1.04631655598166e-06
+"12","GO:BP","GO:0006812","monoatomic cation transport",43,1032,2.82284640308777e-06
+"13","GO:BP","GO:0098656","monoatomic anion transmembrane transport",15,142,2.84394181372339e-06
+"14","GO:BP","GO:0032502","developmental process",152,6478,3.01377440058311e-06
+"15","GO:BP","GO:0048468","cell development",83,2833,4.12361333247544e-06
+"16","GO:BP","GO:1902476","chloride transmembrane transport",13,107,4.23834066454476e-06
+"17","GO:BP","GO:0098655","monoatomic cation transmembrane transport",37,832,4.60626796146448e-06
+"18","GO:BP","GO:0050896","response to stimulus",193,8993,4.8654242712291e-06
+"19","GO:BP","GO:0030001","metal ion transport",38,875,4.88146832289636e-06
+"20","GO:BP","GO:0007193","adenylate cyclase-inhibiting G protein-coupled receptor signaling pathway",11,79,1.04736699456548e-05
+"21","GO:BP","GO:0007267","cell-cell signaling",48,1316,1.29838038658402e-05
+"22","GO:BP","GO:0051234","establishment of localization",120,4869,1.53322495751283e-05
+"23","GO:BP","GO:0065008","regulation of biological quality",81,2847,1.55173131174028e-05
+"24","GO:BP","GO:0065007","biological regulation",247,12671,1.61698849087156e-05
+"25","GO:BP","GO:0007188","adenylate cyclase-modulating G protein-coupled receptor signaling pathway",18,248,1.78069183155366e-05
+"26","GO:BP","GO:0098661","inorganic anion transmembrane transport",13,127,2.06008768953218e-05
+"27","GO:BP","GO:0098662","inorganic cation transmembrane transport",34,811,4.57097649662373e-05
+"28","GO:BP","GO:0048856","anatomical structure development",136,5924,7.41581660013348e-05
+"29","GO:BP","GO:0022414","reproductive process",51,1556,9.47085848117491e-05
+"30","GO:BP","GO:0051179","localization",127,5521,0.000204899130120744
+"31","GO:BP","GO:0006813","potassium ion transport",16,238,0.000204997370963157
+"32","GO:BP","GO:0015711","organic anion transport",22,442,0.00036271957626063
+"33","GO:BP","GO:0023052","signaling",142,6471,0.000450981102977407
+"34","GO:BP","GO:0051480","regulation of cytosolic calcium ion concentration",8,59,0.000528204721372022
+"35","GO:BP","GO:0007154","cell communication",142,6496,0.000534537709089607
+"36","GO:BP","GO:0048232","male gamete generation",27,654,0.000807485663014819
+"37","GO:BP","GO:0003006","developmental process involved in reproduction",36,1022,0.000834057904163298
+"38","GO:BP","GO:0010817","regulation of hormone levels",24,548,0.00095632389110146
+"39","GO:BP","GO:0071805","potassium ion transmembrane transport",14,213,0.00095938478598359
+"40","GO:BP","GO:0002521","leukocyte differentiation",26,632,0.00115016250068113
+"41","GO:BP","GO:0007186","G protein-coupled receptor signaling pathway",41,1275,0.00150356508972429
+"42","GO:BP","GO:0050789","regulation of biological process",232,12278,0.00175004168968359
+"43","GO:BP","GO:0035725","sodium ion transmembrane transport",12,169,0.00175004168968359
+"44","GO:BP","GO:0007275","multicellular organism development",107,4658,0.00175004168968359
+"45","GO:BP","GO:0099536","synaptic signaling",29,783,0.00226374329518246
+"46","GO:BP","GO:0007283","spermatogenesis",25,637,0.00320820611892334
+"47","GO:BP","GO:0030003","intracellular monoatomic cation homeostasis",22,521,0.00320820611892334
+"48","GO:BP","GO:0019953","sexual reproduction",36,1103,0.00328064766540342
+"49","GO:BP","GO:0055082","intracellular chemical homeostasis",27,723,0.00347727854750236
+"50","GO:BP","GO:0042592","homeostatic process",49,1711,0.00359289893121193
+"51","GO:BP","GO:0006873","intracellular monoatomic ion homeostasis",22,530,0.00374294331264277
+"52","GO:BP","GO:0048731","system development",93,3985,0.00374294331264277
+"53","GO:BP","GO:0098771","inorganic ion homeostasis",22,531,0.00377641298457181
+"54","GO:BP","GO:0050877","nervous system process",44,1489,0.00417309959848136
+"55","GO:BP","GO:0055074","calcium ion homeostasis",16,326,0.00581501411033047
+"56","GO:BP","GO:0140013","meiotic nuclear division",12,198,0.00643527304198723
+"57","GO:BP","GO:0021879","forebrain neuron differentiation",6,46,0.00649050102797764
+"58","GO:BP","GO:0099537","trans-synaptic signaling",27,759,0.00665493537542846
+"59","GO:BP","GO:0035270","endocrine system development",10,142,0.0069262114302457
+"60","GO:BP","GO:0055080","monoatomic cation homeostasis",23,598,0.0069262114302457
+"61","GO:BP","GO:0048609","multicellular organismal reproductive process",32,980,0.00704507210574647
+"62","GO:BP","GO:0007200","phospholipase C-activating G protein-coupled receptor signaling pathway",9,116,0.00704507210574647
+"63","GO:BP","GO:0048878","chemical homeostasis",33,1026,0.00707917706810095
+"64","GO:BP","GO:0006814","sodium ion transport",13,235,0.0072164378691678
+"65","GO:BP","GO:0006874","intracellular calcium ion homeostasis",15,302,0.0072164378691678
+"66","GO:BP","GO:0010951","negative regulation of endopeptidase activity",5,31,0.00790159046340392
+"67","GO:BP","GO:0050801","monoatomic ion homeostasis",23,608,0.00792380005667826
+"68","GO:BP","GO:0002429","immune response-activating cell surface receptor signaling pathway",15,306,0.00797588309875274
+"69","GO:BP","GO:0007276","gamete generation",28,822,0.00860831390325064
+"70","GO:BP","GO:0042445","hormone metabolic process",13,243,0.00926067598104348
+"71","GO:BP","GO:0001775","cell activation",34,1098,0.010121462996732
+"72","GO:BP","GO:0046903","secretion",31,968,0.0109094263983351
+"73","GO:BP","GO:0051716","cellular response to stimulus",148,7320,0.010991111097989
+"74","GO:BP","GO:0007268","chemical synaptic transmission",26,753,0.010991111097989
+"75","GO:BP","GO:0098916","anterograde trans-synaptic signaling",26,753,0.010991111097989
+"76","GO:BP","GO:0042221","response to chemical",88,3867,0.010991111097989
+"77","GO:BP","GO:0019722","calcium-mediated signaling",12,218,0.0115674630309968
+"78","GO:BP","GO:1901700","response to oxygen-containing compound",45,1632,0.0116108396261014
+"79","GO:BP","GO:0050957","equilibrioception",3,8,0.0116451719967066
+"80","GO:BP","GO:0060348","bone development",12,220,0.0119634642021644
+"81","GO:BP","GO:1903046","meiotic cell cycle process",12,220,0.0119634642021644
+"82","GO:BP","GO:0009410","response to xenobiotic stimulus",18,436,0.0123176864341289
+"83","GO:BP","GO:0007140","male meiotic nuclear division",6,55,0.0123176864341289
+"84","GO:BP","GO:0021630","olfactory nerve maturation",2,2,0.0126126218272717
+"85","GO:BP","GO:0042110","T cell activation",21,558,0.0126126218272717
+"86","GO:BP","GO:0021872","forebrain generation of neurons",6,56,0.0126126218272717
+"87","GO:BP","GO:0030098","lymphocyte differentiation",18,438,0.0126126218272717
+"88","GO:BP","GO:0036368","cone photoresponse recovery",2,2,0.0126126218272717
+"89","GO:BP","GO:0040020","regulation of meiotic nuclear division",5,36,0.0126126218272717
+"90","GO:BP","GO:0050851","antigen receptor-mediated signaling pathway",11,192,0.012848201231809
+"91","GO:BP","GO:0051321","meiotic cell cycle",14,294,0.0132980091675647
+"92","GO:BP","GO:0098609","cell-cell adhesion",30,948,0.0132980091675647
+"93","GO:BP","GO:0007155","cell adhesion",42,1511,0.0136330780480375
+"94","GO:BP","GO:0045321","leukocyte activation",30,951,0.0137246966245102
+"95","GO:BP","GO:0021536","diencephalon development",7,81,0.0140857055132312
+"96","GO:BP","GO:0007600","sensory perception",30,955,0.0141253641332952
+"97","GO:BP","GO:0002768","immune response-regulating cell surface receptor signaling pathway",15,334,0.0141253641332952
+"98","GO:BP","GO:0045055","regulated exocytosis",12,229,0.0141253641332952
+"99","GO:BP","GO:0030450","regulation of complement activation, classical pathway",3,9,0.0141253641332952
+"100","GO:BP","GO:1903131","mononuclear cell differentiation",20,529,0.014749723015566
+"101","GO:BP","GO:0019725","cellular homeostasis",27,826,0.0148685069489027
+"102","GO:BP","GO:0048485","sympathetic nervous system development",4,22,0.0156989340066441
+"103","GO:BP","GO:0046649","lymphocyte activation",26,787,0.0158199695038933
+"104","GO:BP","GO:0048732","gland development",18,454,0.0158199695038933
+"105","GO:BP","GO:0051932","synaptic transmission, GABAergic",6,60,0.0158199695038933
+"106","GO:BP","GO:0002366","leukocyte activation involved in immune response",14,305,0.0166589681880878
+"107","GO:BP","GO:0050794","regulation of cellular process",219,11876,0.0168908925764979
+"108","GO:BP","GO:0021953","central nervous system neuron differentiation",11,203,0.0172177162979274
+"109","GO:BP","GO:0046942","carboxylic acid transport",15,344,0.0174564629565668
+"110","GO:BP","GO:0015849","organic acid transport",15,345,0.0178292382289818
+"111","GO:BP","GO:0009581","detection of external stimulus",9,142,0.0179516161659864
+"112","GO:BP","GO:0002263","cell activation involved in immune response",14,309,0.0179516161659864
+"113","GO:BP","GO:0030217","T cell differentiation",14,312,0.0195804939208024
+"114","GO:BP","GO:1903306","negative regulation of regulated secretory pathway",4,24,0.0198995052447495
+"115","GO:BP","GO:0009582","detection of abiotic stimulus",9,145,0.020230019403341
+"116","GO:BP","GO:0003008","system process",56,2266,0.0206435823123226
+"117","GO:BP","GO:0009888","tissue development",51,2012,0.0211192553572307
+"118","GO:BP","GO:0006869","lipid transport",17,431,0.0215493538884615
+"119","GO:BP","GO:1903977","positive regulation of glial cell migration",3,11,0.0218009703179052
+"120","GO:BP","GO:0015747","urate transport",3,11,0.0218009703179052
+"121","GO:BP","GO:0003341","cilium movement",11,212,0.0219489450000559
+"122","GO:BP","GO:0042391","regulation of membrane potential",17,433,0.0219489450000559
+"123","GO:BP","GO:0046631","alpha-beta T cell activation",10,181,0.0235515355112162
+"124","GO:BP","GO:0050848","regulation of calcium-mediated signaling",7,93,0.0246257085595559
+"125","GO:BP","GO:0006311","meiotic gene conversion",2,3,0.0246257085595559
+"126","GO:BP","GO:0010466","negative regulation of peptidase activity",5,45,0.0246257085595559
+"127","GO:BP","GO:0010481","epidermal cell division",2,3,0.0246257085595559
+"128","GO:BP","GO:0010482","regulation of epidermal cell division",2,3,0.0246257085595559
+"129","GO:BP","GO:0071486","cellular response to high light intensity",2,3,0.0246257085595559
+"130","GO:BP","GO:0033563","dorsal/ventral axon guidance",2,3,0.0246257085595559
+"131","GO:BP","GO:0021605","cranial nerve maturation",2,3,0.0246257085595559
+"132","GO:BP","GO:0021895","cerebral cortex neuron differentiation",4,26,0.0246257085595559
+"133","GO:BP","GO:1902105","regulation of leukocyte differentiation",14,325,0.0246257085595559
+"134","GO:BP","GO:0002064","epithelial cell development",11,217,0.0246257085595559
+"135","GO:BP","GO:0051445","regulation of meiotic cell cycle",6,69,0.0258351490134604
+"136","GO:BP","GO:0048513","animal organ development",70,3047,0.0259696410907152
+"137","GO:BP","GO:0030097","hemopoiesis",29,971,0.0282746914747959
+"138","GO:BP","GO:1903708","positive regulation of hemopoiesis",10,189,0.0289947958665838
+"139","GO:BP","GO:1902107","positive regulation of leukocyte differentiation",10,189,0.0289947958665838
+"140","GO:BP","GO:0002065","columnar/cuboidal epithelial cell differentiation",8,126,0.0289947958665838
+"141","GO:BP","GO:0008283","cell population proliferation",50,2009,0.0292736649395416
+"142","GO:BP","GO:0051446","positive regulation of meiotic cell cycle",4,28,0.0292736649395416
+"143","GO:BP","GO:0006817","phosphate ion transport",4,28,0.0292736649395416
+"144","GO:BP","GO:0048806","genitalia development",5,48,0.0292736649395416
+"145","GO:BP","GO:0009653","anatomical structure morphogenesis",63,2692,0.0295204384138857
+"146","GO:BP","GO:1904888","cranial skeletal system development",6,72,0.0299222057246719
+"147","GO:BP","GO:0001501","skeletal system development",19,536,0.0301087273003612
+"148","GO:BP","GO:0043301","negative regulation of leukocyte degranulation",3,13,0.0301087273003612
+"149","GO:BP","GO:0042403","thyroid hormone metabolic process",4,29,0.0317557019056741
+"150","GO:BP","GO:0007214","gamma-aminobutyric acid signaling pathway",4,29,0.0317557019056741
+"151","GO:BP","GO:0060249","anatomical structure homeostasis",12,264,0.0320618129156818
+"152","GO:BP","GO:0001894","tissue homeostasis",12,264,0.0320618129156818
+"153","GO:BP","GO:0030900","forebrain development",16,417,0.0320618129156818
+"154","GO:BP","GO:0060429","epithelium development",34,1229,0.034549068655817
+"155","GO:BP","GO:0007127","meiosis I",8,132,0.0353851227267248
+"156","GO:BP","GO:0140352","export from cell",27,901,0.0354666849506982
+"157","GO:BP","GO:0035589","G protein-coupled purinergic nucleotide receptor signaling pathway",3,14,0.0354812747489055
+"158","GO:BP","GO:0048518","positive regulation of biological process",125,6235,0.0360404502974125
+"159","GO:BP","GO:0043410","positive regulation of MAPK cascade",17,465,0.0366943185856986
+"160","GO:BP","GO:0014070","response to organic cyclic compound",27,909,0.0379058974080328
+"161","GO:BP","GO:0006968","cellular defense response",5,52,0.0379058974080328
+"162","GO:BP","GO:0046352","disaccharide catabolic process",2,4,0.0379058974080328
+"163","GO:BP","GO:0010845","positive regulation of reciprocal meiotic recombination",2,4,0.0379058974080328
+"164","GO:BP","GO:0060294","cilium movement involved in cell motility",9,167,0.0379058974080328
+"165","GO:BP","GO:0021682","nerve maturation",2,4,0.0379058974080328
+"166","GO:BP","GO:0035822","gene conversion",2,4,0.0379058974080328
+"167","GO:BP","GO:0141006","transposable element silencing by piRNA-mediated heterochromatin formation",2,4,0.0379058974080328
+"168","GO:BP","GO:0140966","piRNA-mediated heterochromatin formation",2,4,0.0379058974080328
+"169","GO:BP","GO:0010520","regulation of reciprocal meiotic recombination",2,4,0.0379058974080328
+"170","GO:BP","GO:0045728","respiratory burst after phagocytosis",2,4,0.0379058974080328
+"171","GO:BP","GO:1990834","response to odorant",2,4,0.0379058974080328
+"172","GO:BP","GO:0009605","response to external stimulus",56,2367,0.0387979950807502
+"173","GO:BP","GO:0071695","anatomical structure maturation",12,274,0.038874257222153
+"174","GO:BP","GO:0006816","calcium ion transport",16,433,0.0413371564773216
+"175","GO:BP","GO:0007165","signal transduction",120,5979,0.0417990795276911
+"176","GO:BP","GO:0007399","nervous system development",59,2541,0.0434083813817603
+"177","GO:BP","GO:2000241","regulation of reproductive process",10,206,0.0434083813817603
+"178","GO:BP","GO:0060285","cilium-dependent cell motility",9,172,0.0434083813817603
+"179","GO:BP","GO:0001539","cilium or flagellum-dependent cell motility",9,172,0.0434083813817603
+"180","GO:BP","GO:0030855","epithelial cell differentiation",23,741,0.0444185487790208
+"181","GO:BP","GO:0032940","secretion by cell",25,832,0.0444185487790208
+"182","GO:BP","GO:0007218","neuropeptide signaling pathway",7,110,0.0445243411891475
+"183","GO:BP","GO:0006957","complement activation, alternative pathway",3,16,0.0445243411891475
+"184","GO:BP","GO:0007194","negative regulation of adenylate cyclase activity",3,16,0.0445243411891475
+"185","GO:BP","GO:0010876","lipid localization",17,480,0.0445243411891475
+"186","GO:BP","GO:0061982","meiosis I cell cycle process",8,141,0.0445243411891475
+"187","GO:BP","GO:0061101","neuroendocrine cell differentiation",3,16,0.0445243411891475
+"188","GO:BP","GO:0043374","CD8-positive, alpha-beta T cell differentiation",3,16,0.0445243411891475
+"189","GO:BP","GO:0048522","positive regulation of cellular process",118,5886,0.0448142877557908
+"190","GO:BP","GO:1903530","regulation of secretion by cell",19,567,0.0448142877557908
+"191","GO:BP","GO:0003382","epithelial cell morphogenesis",4,34,0.0448142877557908
+"192","GO:BP","GO:0043270","positive regulation of monoatomic ion transport",10,209,0.0448142877557908
+"193","GO:BP","GO:0010526","transposable element silencing",4,34,0.0448142877557908
+"194","GO:BP","GO:0015701","bicarbonate transport",4,34,0.0448142877557908
+"195","GO:BP","GO:0045745","positive regulation of G protein-coupled receptor signaling pathway",4,34,0.0448142877557908
+"196","GO:BP","GO:0050870","positive regulation of T cell activation",11,248,0.0482183668446198
+"197","GO:BP","GO:0009566","fertilization",10,212,0.0482964219201757
+"198","GO:BP","GO:0045577","regulation of B cell differentiation",4,35,0.0484792183218962
+"199","GO:BP","GO:0051050","positive regulation of transport",25,844,0.0484792183218962
+"200","GO:BP","GO:0043299","leukocyte degranulation",6,84,0.0484792183218962
+"201","GO:BP","GO:0043949","regulation of cAMP-mediated signaling",4,35,0.0484792183218962
+"202","GO:BP","GO:0002679","respiratory burst involved in defense response",3,17,0.0490019555914123
+"203","GO:BP","GO:0009642","response to light intensity",3,17,0.0490019555914123
+"204","GO:BP","GO:0009628","response to abiotic stimulus",31,1130,0.0490019555914123
+"205","GO:BP","GO:0031280","negative regulation of cyclase activity",3,17,0.0490019555914123
+"206","GO:BP","GO:0045917","positive regulation of complement activation",2,5,0.0492128692526416
+"207","GO:BP","GO:0045920","negative regulation of exocytosis",4,36,0.0492128692526416
+"208","GO:BP","GO:0070995","NADPH oxidation",2,5,0.0492128692526416
+"209","GO:BP","GO:2000611","positive regulation of thyroid hormone generation",2,5,0.0492128692526416
+"210","GO:BP","GO:0032197","retrotransposition",4,36,0.0492128692526416
+"211","GO:BP","GO:0007610","behavior",21,665,0.0492128692526416
+"212","GO:BP","GO:0009644","response to high light intensity",2,5,0.0492128692526416
+"213","GO:BP","GO:0009887","animal organ morphogenesis",29,1037,0.0492128692526416
+"214","GO:BP","GO:0030317","flagellated sperm motility",8,147,0.0492128692526416
+"215","GO:BP","GO:0009914","hormone transport",13,328,0.0492128692526416
+"216","GO:BP","GO:0097722","sperm motility",8,147,0.0492128692526416
+"217","GO:BP","GO:0023061","signal release",17,493,0.0492128692526416
+"218","GO:BP","GO:0071484","cellular response to light intensity",2,5,0.0492128692526416
+"219","GO:BP","GO:0042127","regulation of cell population proliferation",42,1682,0.0492128692526416
+"220","GO:BP","GO:0002434","immune complex clearance",2,5,0.0492128692526416
+"221","GO:BP","GO:0045216","cell-cell junction organization",10,216,0.0493095286299032
+"222","KEGG","KEGG:04080","Neuroactive ligand-receptor interaction",25,365,1.18802491258817e-05

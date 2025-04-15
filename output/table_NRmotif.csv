@@ -1,0 +1,554 @@
+"","source","term_id","term_name","intersection_size","term_size","p_value"
+"1","GO:BP","GO:0035195","miRNA-mediated post-transcriptional gene silencing",485,612,9.63923354214824e-204
+"2","GO:BP","GO:0050907","detection of chemical stimulus involved in sensory perception",395,443,1.64916453872983e-203
+"3","GO:BP","GO:0007606","sensory perception of chemical stimulus",422,497,1.68900013908326e-199
+"4","GO:BP","GO:0035194","regulatory ncRNA-mediated post-transcriptional gene silencing",486,624,1.15122701501857e-198
+"5","GO:BP","GO:0016441","post-transcriptional gene silencing",487,630,1.35852423781707e-196
+"6","GO:BP","GO:0050911","detection of chemical stimulus involved in sensory perception of smell",363,397,4.20517799301838e-196
+"7","GO:BP","GO:0009593","detection of chemical stimulus",406,480,1.10012620650347e-190
+"8","GO:BP","GO:0050906","detection of stimulus involved in sensory perception",424,515,3.41240434695859e-190
+"9","GO:BP","GO:0007608","sensory perception of smell",372,423,5.02498249456758e-187
+"10","GO:BP","GO:0031047","regulatory ncRNA-mediated gene silencing",494,686,1.62207299254852e-176
+"11","GO:BP","GO:0051606","detection of stimulus",468,643,5.46685981990857e-170
+"12","GO:BP","GO:0007186","G protein-coupled receptor signaling pathway",721,1275,3.09784373681856e-168
+"13","GO:BP","GO:0007600","sensory perception",577,955,7.57733506193186e-151
+"14","GO:BP","GO:0050877","nervous system process",680,1489,2.78892863385515e-97
+"15","GO:BP","GO:0010608","post-transcriptional regulation of gene expression",526,1087,5.9725191513191e-85
+"16","GO:BP","GO:0003008","system process",851,2266,4.8847461157855e-70
+"17","GO:BP","GO:0010629","negative regulation of gene expression",655,1640,7.07674639585202e-64
+"18","GO:BP","GO:0042221","response to chemical",1176,3867,1.67493658436713e-40
+"19","GO:BP","GO:0065007","biological regulation",3159,12671,1.40514904791702e-37
+"20","GO:BP","GO:0032501","multicellular organismal process",1959,7234,2.75351669193627e-36
+"21","GO:BP","GO:0050789","regulation of biological process",3056,12278,1.17219452768051e-33
+"22","GO:BP","GO:0006952","defense response",614,1809,1.37032020020194e-32
+"23","GO:BP","GO:0042742","defense response to bacterium",172,326,5.00424460431459e-32
+"24","GO:BP","GO:0006959","humoral immune response",143,254,1.91666645138236e-30
+"25","GO:BP","GO:0050794","regulation of cellular process",2951,11876,3.84256243655824e-30
+"26","GO:BP","GO:0010558","negative regulation of macromolecule biosynthetic process",842,2772,8.77963554398283e-27
+"27","GO:BP","GO:0009617","response to bacterium",288,721,2.62079668119379e-26
+"28","GO:BP","GO:0098542","defense response to other organism",433,1228,4.70106079643474e-26
+"29","GO:BP","GO:0009890","negative regulation of biosynthetic process",852,2838,2.37075560541621e-25
+"30","GO:BP","GO:0031424","keratinization",62,82,1.49291576489297e-22
+"31","GO:BP","GO:0019730","antimicrobial humoral response",83,131,5.25669231030947e-22
+"32","GO:BP","GO:0140546","defense response to symbiont",391,1125,5.41113567409215e-22
+"33","GO:BP","GO:0043207","response to external biotic stimulus",507,1558,9.84479965613897e-22
+"34","GO:BP","GO:0051707","response to other organism",505,1555,1.95915277830332e-21
+"35","GO:BP","GO:0009607","response to biotic stimulus",514,1593,3.52847672704113e-21
+"36","GO:BP","GO:0007165","signal transduction",1578,5979,1.60673559680016e-20
+"37","GO:BP","GO:0009605","response to external stimulus",710,2367,2.05864711336134e-20
+"38","GO:BP","GO:0007154","cell communication",1675,6496,2.66085627642861e-17
+"39","GO:BP","GO:0023052","signaling",1668,6471,3.91154542550027e-17
+"40","GO:BP","GO:0001906","cell killing",108,219,6.24562524297433e-17
+"41","GO:BP","GO:0006954","inflammatory response",296,847,1.03929386594503e-16
+"42","GO:BP","GO:0045087","innate immune response",331,977,1.70210754692268e-16
+"43","GO:BP","GO:0141060","disruption of anatomical structure in another organism",62,98,2.92334428885509e-16
+"44","GO:BP","GO:0010605","negative regulation of macromolecule metabolic process",891,3197,5.96701742877909e-16
+"45","GO:BP","GO:0061844","antimicrobial humoral immune response mediated by antimicrobial peptide",55,83,1.07599024222899e-15
+"46","GO:BP","GO:0044419","biological process involved in interspecies interaction between organisms",523,1724,1.82186191870722e-15
+"47","GO:BP","GO:0141061","disruption of cell in another organism",58,91,2.01264118651053e-15
+"48","GO:BP","GO:0031640","killing of cells of another organism",58,91,2.01264118651053e-15
+"49","GO:BP","GO:0006955","immune response",593,2008,4.32482395940404e-15
+"50","GO:BP","GO:0050896","response to stimulus",2216,8993,1.16486597158135e-14
+"51","GO:BP","GO:0009892","negative regulation of metabolic process",929,3418,1.42727420514075e-13
+"52","GO:BP","GO:0045109","intermediate filament organization",48,73,1.93722781645997e-13
+"53","GO:BP","GO:0050909","sensory perception of taste",45,67,4.4591712713515e-13
+"54","GO:BP","GO:0050830","defense response to Gram-positive bacterium",66,120,4.52180501064114e-13
+"55","GO:BP","GO:0030216","keratinocyte differentiation",85,176,1.37393075044878e-12
+"56","GO:BP","GO:0097530","granulocyte migration",78,156,1.56725421496409e-12
+"57","GO:BP","GO:0002252","immune effector process",240,703,3.79882719771301e-12
+"58","GO:BP","GO:0050829","defense response to Gram-negative bacterium",53,91,9.67708259403562e-12
+"59","GO:BP","GO:1990266","neutrophil migration",67,129,1.07251696458268e-11
+"60","GO:BP","GO:0002697","regulation of immune effector process",147,381,1.21435439418903e-11
+"61","GO:BP","GO:0030593","neutrophil chemotaxis",58,106,2.59821008822646e-11
+"62","GO:BP","GO:0071621","granulocyte chemotaxis",66,129,3.954276988202e-11
+"63","GO:BP","GO:0007586","digestion",68,136,7.08296899542238e-11
+"64","GO:BP","GO:0030595","leukocyte chemotaxis",101,237,8.75868911618806e-11
+"65","GO:BP","GO:0050913","sensory perception of bitter taste",31,42,1.52215309677688e-10
+"66","GO:BP","GO:0050900","leukocyte migration",148,396,1.7164172628977e-10
+"67","GO:BP","GO:0007218","neuropeptide signaling pathway",58,110,1.9393041641565e-10
+"68","GO:BP","GO:0009913","epidermal cell differentiation",104,250,2.27905944068611e-10
+"69","GO:BP","GO:0022414","reproductive process",454,1556,2.27905944068611e-10
+"70","GO:BP","GO:0051716","cellular response to stimulus",1802,7320,3.21197522406756e-10
+"71","GO:BP","GO:0050912","detection of chemical stimulus involved in sensory perception of taste",31,43,3.88779437468937e-10
+"72","GO:BP","GO:0046651","lymphocyte proliferation",121,308,3.88779437468937e-10
+"73","GO:BP","GO:0007283","spermatogenesis",214,637,4.56553935876368e-10
+"74","GO:BP","GO:0001580","detection of chemical stimulus involved in sensory perception of bitter taste",28,37,6.07174110220631e-10
+"75","GO:BP","GO:0002323","natural killer cell activation involved in immune response",27,35,6.59824256295281e-10
+"76","GO:BP","GO:0070661","leukocyte proliferation",133,351,6.67451086046834e-10
+"77","GO:BP","GO:0007338","single fertilization",77,169,7.4853985252462e-10
+"78","GO:BP","GO:0032943","mononuclear cell proliferation",122,315,9.01773670783805e-10
+"79","GO:BP","GO:0048232","male gamete generation",217,654,1.13469984903722e-09
+"80","GO:BP","GO:0002376","immune system process",752,2796,1.21909743407944e-09
+"81","GO:BP","GO:0097529","myeloid leukocyte migration",98,237,1.28295186716954e-09
+"82","GO:BP","GO:0009566","fertilization",90,212,1.55893082452024e-09
+"83","GO:BP","GO:0002237","response to molecule of bacterial origin",133,355,1.55893082452024e-09
+"84","GO:BP","GO:0048609","multicellular organismal reproductive process",301,980,3.39275208073486e-09
+"85","GO:BP","GO:0045104","intermediate filament cytoskeleton organization",50,94,3.46456392119731e-09
+"86","GO:BP","GO:0019731","antibacterial humoral response",40,68,5.06763184678328e-09
+"87","GO:BP","GO:0045103","intermediate filament-based process",50,95,5.63071083990446e-09
+"88","GO:BP","GO:0045321","leukocyte activation",291,951,1.09878022645896e-08
+"89","GO:BP","GO:0002682","regulation of immune system process",436,1526,1.30560827530484e-08
+"90","GO:BP","GO:0071219","cellular response to molecule of bacterial origin",91,224,1.89277542063251e-08
+"91","GO:BP","GO:0002526","acute inflammatory response",54,109,1.89277542063251e-08
+"92","GO:BP","GO:0019221","cytokine-mediated signaling pathway",171,503,1.9468234479746e-08
+"93","GO:BP","GO:0002684","positive regulation of immune system process",319,1066,2.13958912757907e-08
+"94","GO:BP","GO:0060326","cell chemotaxis",119,319,2.19207732882811e-08
+"95","GO:BP","GO:0001775","cell activation",327,1098,2.24858775687786e-08
+"96","GO:BP","GO:0070663","regulation of leukocyte proliferation",103,265,2.42800524600282e-08
+"97","GO:BP","GO:0032496","response to lipopolysaccharide",124,337,2.4766688475144e-08
+"98","GO:BP","GO:0070098","chemokine-mediated signaling pathway",47,90,2.66567738030296e-08
+"99","GO:BP","GO:0008544","epidermis development",139,394,5.75865291797368e-08
+"100","GO:BP","GO:0042100","B cell proliferation",52,106,5.77898425010589e-08
+"101","GO:BP","GO:0019953","sexual reproduction",326,1103,5.77898425010589e-08
+"102","GO:BP","GO:0033141","positive regulation of peptidyl-serine phosphorylation of STAT protein",18,21,7.98302414423542e-08
+"103","GO:BP","GO:0052695","cellular glucuronidation",18,21,7.98302414423542e-08
+"104","GO:BP","GO:0071715","icosanoid transport",37,65,8.13773649019119e-08
+"105","GO:BP","GO:0071222","cellular response to lipopolysaccharide",86,214,9.71618155793798e-08
+"106","GO:BP","GO:0002548","monocyte chemotaxis",38,68,9.78817907513019e-08
+"107","GO:BP","GO:0097722","sperm motility",65,147,1.0691495815603e-07
+"108","GO:BP","GO:0030317","flagellated sperm motility",65,147,1.0691495815603e-07
+"109","GO:BP","GO:0060294","cilium movement involved in cell motility",71,167,1.52039119622165e-07
+"110","GO:BP","GO:0050670","regulation of lymphocyte proliferation",92,236,1.5813251990338e-07
+"111","GO:BP","GO:0002699","positive regulation of immune effector process",97,253,1.61667864145601e-07
+"112","GO:BP","GO:0002703","regulation of leukocyte mediated immunity",94,243,1.6612264156446e-07
+"113","GO:BP","GO:0032944","regulation of mononuclear cell proliferation",93,240,1.80601421992884e-07
+"114","GO:BP","GO:0007342","fusion of sperm to egg plasma membrane involved in single fertilization",22,30,2.22539907383343e-07
+"115","GO:BP","GO:0050832","defense response to fungus",34,59,2.27215167315996e-07
+"116","GO:BP","GO:0002922","positive regulation of humoral immune response",18,22,3.09403303708684e-07
+"117","GO:BP","GO:0032649","regulation of type II interferon production",54,117,3.82487049590445e-07
+"118","GO:BP","GO:0050727","regulation of inflammatory response",132,381,4.75182518140954e-07
+"119","GO:BP","GO:0007188","adenylate cyclase-modulating G protein-coupled receptor signaling pathway",94,248,5.20196255398114e-07
+"120","GO:BP","GO:0007276","gamete generation",249,822,5.20196255398114e-07
+"121","GO:BP","GO:0032609","type II interferon production",54,118,5.37371804999721e-07
+"122","GO:BP","GO:0072677","eosinophil migration",22,31,5.63655675773095e-07
+"123","GO:BP","GO:0050776","regulation of immune response",268,897,5.63655675773095e-07
+"124","GO:BP","GO:0060285","cilium-dependent cell motility",71,172,5.99303213631722e-07
+"125","GO:BP","GO:0001539","cilium or flagellum-dependent cell motility",71,172,5.99303213631722e-07
+"126","GO:BP","GO:0002706","regulation of lymphocyte mediated immunity",74,182,6.33474490439863e-07
+"127","GO:BP","GO:0050953","sensory perception of light stimulus",86,222,6.47427511696956e-07
+"128","GO:BP","GO:0002366","leukocyte activation involved in immune response",110,305,6.8353896262263e-07
+"129","GO:BP","GO:0007601","visual perception",85,219,6.98833232240853e-07
+"130","GO:BP","GO:0002263","cell activation involved in immune response",111,309,7.42953377564526e-07
+"131","GO:BP","GO:0048245","eosinophil chemotaxis",20,27,7.85340001177305e-07
+"132","GO:BP","GO:0022412","cellular process involved in reproduction in multicellular organism",138,408,1.07866422678982e-06
+"133","GO:BP","GO:0022600","digestive system process",49,105,1.07866422678982e-06
+"134","GO:BP","GO:1990869","cellular response to chemokine",47,99,1.07866422678982e-06
+"135","GO:BP","GO:1990868","response to chemokine",47,99,1.07866422678982e-06
+"136","GO:BP","GO:0031341","regulation of cell killing",49,106,1.5699222086315e-06
+"137","GO:BP","GO:0048247","lymphocyte chemotaxis",34,63,1.86082868662357e-06
+"138","GO:BP","GO:0071216","cellular response to biotic stimulus",93,251,1.97224289345207e-06
+"139","GO:BP","GO:0042129","regulation of T cell proliferation",72,180,2.02829521490735e-06
+"140","GO:BP","GO:0033139","regulation of peptidyl-serine phosphorylation of STAT protein",18,24,2.95874283579167e-06
+"141","GO:BP","GO:0048240","sperm capacitation",22,33,2.95874283579167e-06
+"142","GO:BP","GO:0002274","myeloid leukocyte activation",89,240,3.60181668934598e-06
+"143","GO:BP","GO:0072676","lymphocyte migration",54,124,3.71194240169989e-06
+"144","GO:BP","GO:0043588","skin development",112,322,4.25101563181138e-06
+"145","GO:BP","GO:0042330","taxis",151,465,4.25569090126365e-06
+"146","GO:BP","GO:0007631","feeding behavior",48,106,4.51496869960342e-06
+"147","GO:BP","GO:0003006","developmental process involved in reproduction",294,1022,5.00648685666569e-06
+"148","GO:BP","GO:0006690","icosanoid metabolic process",53,122,5.22941300195543e-06
+"149","GO:BP","GO:0006953","acute-phase response",28,49,5.64016571432273e-06
+"150","GO:BP","GO:0001909","leukocyte mediated cytotoxicity",57,135,5.6845194869245e-06
+"151","GO:BP","GO:0045026","plasma membrane fusion",22,34,6.20368139419834e-06
+"152","GO:BP","GO:0050778","positive regulation of immune response",220,732,6.23004344779315e-06
+"153","GO:BP","GO:0007259","cell surface receptor signaling pathway via JAK-STAT",67,168,6.26820058389765e-06
+"154","GO:BP","GO:0002443","leukocyte mediated immunity",149,461,6.77148329124236e-06
+"155","GO:BP","GO:0042501","serine phosphorylation of STAT protein",18,25,7.61488114452037e-06
+"156","GO:BP","GO:0097696","cell surface receptor signaling pathway via STAT",69,176,8.74205220985071e-06
+"157","GO:BP","GO:0032689","negative regulation of type II interferon production",25,42,8.78227519430787e-06
+"158","GO:BP","GO:0006935","chemotaxis",149,463,8.88960765724747e-06
+"159","GO:BP","GO:0042102","positive regulation of T cell proliferation",46,102,8.96004459376205e-06
+"160","GO:BP","GO:0071674","mononuclear cell migration",86,235,1.04616792406515e-05
+"161","GO:BP","GO:0002920","regulation of humoral immune response",26,45,1.11212792994133e-05
+"162","GO:BP","GO:0009620","response to fungus",35,70,1.22036105088265e-05
+"163","GO:BP","GO:0002775","antimicrobial peptide production",10,10,1.45514889215285e-05
+"164","GO:BP","GO:0140975","disruption of cellular anatomical structure in another organism",10,10,1.45514889215285e-05
+"165","GO:BP","GO:0001819","positive regulation of cytokine production",154,486,1.5522737837693e-05
+"166","GO:BP","GO:0015718","monocarboxylic acid transport",69,179,1.74891196568606e-05
+"167","GO:BP","GO:0009583","detection of light stimulus",34,68,1.76008499629514e-05
+"168","GO:BP","GO:0006063","uronic acid metabolic process",18,26,1.80281479275485e-05
+"169","GO:BP","GO:0019585","glucuronate metabolic process",18,26,1.80281479275485e-05
+"170","GO:BP","GO:0030101","natural killer cell activation",43,95,1.85963253318179e-05
+"171","GO:BP","GO:0070665","positive regulation of leukocyte proliferation",64,163,2.0838966621974e-05
+"172","GO:BP","GO:0050865","regulation of cell activation",187,616,2.37548046229898e-05
+"173","GO:BP","GO:0042531","positive regulation of tyrosine phosphorylation of STAT protein",32,63,2.37757685519523e-05
+"174","GO:BP","GO:0050729","positive regulation of inflammatory response",59,147,2.41010934400166e-05
+"175","GO:BP","GO:0001817","regulation of cytokine production",225,765,2.44232377447761e-05
+"176","GO:BP","GO:0042363","fat-soluble vitamin catabolic process",11,12,2.84420664275286e-05
+"177","GO:BP","GO:0051873","killing by host of symbiont cells",19,29,3.017914293186e-05
+"178","GO:BP","GO:0046649","lymphocyte activation",230,787,3.05148936005977e-05
+"179","GO:BP","GO:0002694","regulation of leukocyte activation",172,561,3.28916273785762e-05
+"180","GO:BP","GO:0001816","cytokine production",226,772,3.29159402053786e-05
+"181","GO:BP","GO:0042110","T cell activation",171,558,3.62088423712797e-05
+"182","GO:BP","GO:0009584","detection of visible light",20,32,4.51595031344354e-05
+"183","GO:BP","GO:0010468","regulation of gene expression",1335,5515,4.62526173452902e-05
+"184","GO:BP","GO:0050671","positive regulation of lymphocyte proliferation",57,143,4.62526173452902e-05
+"185","GO:BP","GO:0019755","one-carbon compound transport",17,25,5.23950327856754e-05
+"186","GO:BP","GO:0001910","regulation of leukocyte mediated cytotoxicity",41,92,5.23950327856754e-05
+"187","GO:BP","GO:0032309","icosanoid secretion",26,48,5.33673841775784e-05
+"188","GO:BP","GO:0015908","fatty acid transport",49,118,6.36564599259957e-05
+"189","GO:BP","GO:0002251","organ or tissue specific immune response",24,43,6.65234390568578e-05
+"190","GO:BP","GO:0002286","T cell activation involved in immune response",51,125,7.27231286711964e-05
+"191","GO:BP","GO:0030855","epithelial cell differentiation",216,741,7.64452561624712e-05
+"192","GO:BP","GO:0007286","spermatid development",77,214,7.94152715643762e-05
+"193","GO:BP","GO:0002285","lymphocyte activation involved in immune response",77,214,7.94152715643762e-05
+"194","GO:BP","GO:0009581","detection of external stimulus",56,142,8.082151826374e-05
+"195","GO:BP","GO:0007204","positive regulation of cytosolic calcium ion concentration",64,169,8.082151826374e-05
+"196","GO:BP","GO:0007200","phospholipase C-activating G protein-coupled receptor signaling pathway",48,116,8.80223507310454e-05
+"197","GO:BP","GO:0032946","positive regulation of mononuclear cell proliferation",57,146,9.47266287464305e-05
+"198","GO:BP","GO:0003341","cilium movement",76,212,0.000105767136954142
+"199","GO:BP","GO:0060295","regulation of cilium movement involved in cell motility",19,31,0.000118676506186762
+"200","GO:BP","GO:1902019","regulation of cilium-dependent cell motility",19,31,0.000118676506186762
+"201","GO:BP","GO:0002705","positive regulation of leukocyte mediated immunity",57,147,0.000119569156170979
+"202","GO:BP","GO:0002673","regulation of acute inflammatory response",25,47,0.000123928272337637
+"203","GO:BP","GO:0007159","leukocyte cell-cell adhesion",128,404,0.000125560772204853
+"204","GO:BP","GO:0042098","T cell proliferation",76,213,0.000125728769172036
+"205","GO:BP","GO:0015670","carbon dioxide transport",12,15,0.000128877786445046
+"206","GO:BP","GO:0002385","mucosal immune response",22,39,0.000132583368344547
+"207","GO:BP","GO:0036230","granulocyte activation",26,50,0.000134214175064831
+"208","GO:BP","GO:0051249","regulation of lymphocyte activation",152,497,0.000145814742140166
+"209","GO:BP","GO:0001523","retinoid metabolic process",37,83,0.000153003098897555
+"210","GO:BP","GO:0042119","neutrophil activation",23,42,0.000154703997971031
+"211","GO:BP","GO:0032653","regulation of interleukin-10 production",29,59,0.000157592009804921
+"212","GO:BP","GO:0032613","interleukin-10 production",29,59,0.000157592009804921
+"213","GO:BP","GO:0015732","prostaglandin transport",18,29,0.000158248705048057
+"214","GO:BP","GO:0009582","detection of abiotic stimulus",56,145,0.000158248705048057
+"215","GO:BP","GO:0006805","xenobiotic metabolic process",50,125,0.00016014540971763
+"216","GO:BP","GO:0042509","regulation of tyrosine phosphorylation of STAT protein",34,74,0.00016014540971763
+"217","GO:BP","GO:0048515","spermatid differentiation",78,222,0.000171828082282467
+"218","GO:BP","GO:1901317","regulation of flagellated sperm motility",15,22,0.000188128004413566
+"219","GO:BP","GO:0007602","phototransduction",25,48,0.00018902442079721
+"220","GO:BP","GO:0032101","regulation of response to external stimulus",295,1071,0.000195316984140101
+"221","GO:BP","GO:0098586","cellular response to virus",35,78,0.000220045394163878
+"222","GO:BP","GO:0002760","positive regulation of antimicrobial humoral response",8,8,0.00022284655067116
+"223","GO:BP","GO:0002778","antibacterial peptide production",8,8,0.00022284655067116
+"224","GO:BP","GO:0002784","regulation of antimicrobial peptide production",8,8,0.00022284655067116
+"225","GO:BP","GO:0032652","regulation of interleukin-1 production",45,110,0.00022752809648666
+"226","GO:BP","GO:0032612","interleukin-1 production",45,110,0.00022752809648666
+"227","GO:BP","GO:0002698","negative regulation of immune effector process",48,120,0.00023532909857868
+"228","GO:BP","GO:0032103","positive regulation of response to external stimulus",182,619,0.00023708904157252
+"229","GO:BP","GO:0034341","response to type II interferon",56,147,0.000241037649889689
+"230","GO:BP","GO:0120254","olefinic compound metabolic process",60,161,0.000256852265231093
+"231","GO:BP","GO:0031347","regulation of defense response",223,783,0.000256969834357871
+"232","GO:BP","GO:0016101","diterpenoid metabolic process",38,88,0.000258972479581869
+"233","GO:BP","GO:0007189","adenylate cyclase-activating G protein-coupled receptor signaling pathway",59,158,0.000280659371922968
+"234","GO:BP","GO:0007260","tyrosine phosphorylation of STAT protein",34,76,0.000305929199905604
+"235","GO:BP","GO:1903037","regulation of leukocyte cell-cell adhesion",116,366,0.000306293266216388
+"236","GO:BP","GO:0071346","cellular response to type II interferon",49,125,0.000352270492851389
+"237","GO:BP","GO:0050863","regulation of T cell activation",118,375,0.000370502936515301
+"238","GO:BP","GO:0030277","maintenance of gastrointestinal epithelium",15,23,0.000394722605787002
+"239","GO:BP","GO:0009111","vitamin catabolic process",11,14,0.000406786650432294
+"240","GO:BP","GO:0002687","positive regulation of leukocyte migration",57,153,0.000419230723476247
+"241","GO:BP","GO:0035036","sperm-egg recognition",26,53,0.000459102721009083
+"242","GO:BP","GO:0007187","G protein-coupled receptor signaling pathway, coupled to cyclic nucleotide second messenger",27,56,0.000468951772620993
+"243","GO:BP","GO:0042445","hormone metabolic process",82,243,0.000507732145361737
+"244","GO:BP","GO:0002822","regulation of adaptive immune response based on somatic recombination of immune receptors built from immunoglobulin superfamily domains",67,189,0.000508098071258606
+"245","GO:BP","GO:0007281","germ cell development",116,370,0.000511570848470495
+"246","GO:BP","GO:0002819","regulation of adaptive immune response",71,204,0.000580084067778891
+"247","GO:BP","GO:0009988","cell-cell recognition",33,75,0.000602572523246937
+"248","GO:BP","GO:0002685","regulation of leukocyte migration",78,230,0.00065400043631036
+"249","GO:BP","GO:0002704","negative regulation of leukocyte mediated immunity",30,66,0.000660514853303179
+"250","GO:BP","GO:0032945","negative regulation of mononuclear cell proliferation",37,88,0.000660514853303179
+"251","GO:BP","GO:0051250","negative regulation of lymphocyte activation",58,159,0.000697696042318317
+"252","GO:BP","GO:0042113","B cell activation",92,282,0.000697696042318317
+"253","GO:BP","GO:0002709","regulation of T cell mediated immunity",39,95,0.000759985468685825
+"254","GO:BP","GO:0010556","regulation of macromolecule biosynthetic process",1343,5633,0.000831763552017018
+"255","GO:BP","GO:0008228","opsonization",12,17,0.000888437220523788
+"256","GO:BP","GO:0002225","positive regulation of antimicrobial peptide production",7,7,0.000888437220523788
+"257","GO:BP","GO:0006691","leukotriene metabolic process",18,32,0.000888437220523788
+"258","GO:BP","GO:0050482","arachidonate secretion",18,32,0.000888437220523788
+"259","GO:BP","GO:0052697","xenobiotic glucuronidation",7,7,0.000888437220523788
+"260","GO:BP","GO:0002695","negative regulation of leukocyte activation",65,185,0.000888437220523788
+"261","GO:BP","GO:1903963","arachidonate transport",18,32,0.000888437220523788
+"262","GO:BP","GO:0008037","cell recognition",57,157,0.000923678897657279
+"263","GO:BP","GO:0032637","interleukin-8 production",35,83,0.000965638805627333
+"264","GO:BP","GO:0032677","regulation of interleukin-8 production",35,83,0.000965638805627333
+"265","GO:BP","GO:0070664","negative regulation of leukocyte proliferation",39,96,0.000965859199590093
+"266","GO:BP","GO:0031349","positive regulation of defense response",144,484,0.000978178411692099
+"267","GO:BP","GO:0050672","negative regulation of lymphocyte proliferation",36,87,0.00120533725357005
+"268","GO:BP","GO:0048519","negative regulation of biological process",1392,5865,0.00128763148823807
+"269","GO:BP","GO:0002715","regulation of natural killer cell mediated immunity",24,50,0.00139792088492104
+"270","GO:BP","GO:0002759","regulation of antimicrobial humoral response",9,11,0.00143012420080171
+"271","GO:BP","GO:1903027","regulation of opsonization",9,11,0.00143012420080171
+"272","GO:BP","GO:0002544","chronic inflammatory response",13,20,0.00146233088949002
+"273","GO:BP","GO:0070374","positive regulation of ERK1 and ERK2 cascade",71,210,0.00154761013663212
+"274","GO:BP","GO:0050868","negative regulation of T cell activation",47,125,0.00160479686885764
+"275","GO:BP","GO:0032722","positive regulation of chemokine production",31,72,0.00162018949353551
+"276","GO:BP","GO:0002449","lymphocyte mediated immunity",111,361,0.00172445344657071
+"277","GO:BP","GO:0002227","innate immune response in mucosa",16,28,0.00182600523968762
+"278","GO:BP","GO:1903038","negative regulation of leukocyte cell-cell adhesion",50,136,0.00182600523968762
+"279","GO:BP","GO:0032757","positive regulation of interleukin-8 production",28,63,0.00184422335284346
+"280","GO:BP","GO:0046456","icosanoid biosynthetic process",26,57,0.00195836503406752
+"281","GO:BP","GO:0006721","terpenoid metabolic process",39,99,0.00204076126099726
+"282","GO:BP","GO:0046425","regulation of receptor signaling pathway via JAK-STAT",39,99,0.00204076126099726
+"283","GO:BP","GO:0015669","gas transport",14,23,0.00204076126099726
+"284","GO:BP","GO:0002228","natural killer cell mediated immunity",32,76,0.00204076126099726
+"285","GO:BP","GO:0031343","positive regulation of cell killing",31,73,0.00215152450987324
+"286","GO:BP","GO:1904892","regulation of receptor signaling pathway via STAT",41,106,0.00217682758996673
+"287","GO:BP","GO:0032602","chemokine production",38,96,0.00220036136746851
+"288","GO:BP","GO:0032642","regulation of chemokine production",38,96,0.00220036136746851
+"289","GO:BP","GO:0010817","regulation of hormone levels",158,548,0.00227998138450589
+"290","GO:BP","GO:0009889","regulation of biosynthetic process",1372,5795,0.0022832779755246
+"291","GO:BP","GO:0050867","positive regulation of cell activation",113,372,0.00246777632717078
+"292","GO:BP","GO:0001818","negative regulation of cytokine production",91,288,0.00253538283893899
+"293","GO:BP","GO:0060046","regulation of acrosome reaction",11,16,0.00254272814944763
+"294","GO:BP","GO:0034374","low-density lipoprotein particle remodeling",11,16,0.00254272814944763
+"295","GO:BP","GO:0060259","regulation of feeding behavior",15,26,0.00254272814944763
+"296","GO:BP","GO:0002456","T cell mediated immunity",46,124,0.00260331176582849
+"297","GO:BP","GO:0002707","negative regulation of lymphocyte mediated immunity",25,55,0.00273635073210306
+"298","GO:BP","GO:0032735","positive regulation of interleukin-12 production",21,43,0.00276514178297145
+"299","GO:BP","GO:0002444","myeloid leukocyte mediated immunity",43,114,0.00278278429178229
+"300","GO:BP","GO:0072678","T cell migration",31,74,0.00278553113747606
+"301","GO:BP","GO:0071345","cellular response to cytokine stimulus",230,843,0.00302685872902189
+"302","GO:BP","GO:0002708","positive regulation of lymphocyte mediated immunity",46,125,0.00318952450333527
+"303","GO:BP","GO:0032640","tumor necrosis factor production",57,164,0.00323278113998734
+"304","GO:BP","GO:0032680","regulation of tumor necrosis factor production",57,164,0.00323278113998734
+"305","GO:BP","GO:0070942","neutrophil mediated cytotoxicity",10,14,0.00323859508773929
+"306","GO:BP","GO:0051673","disruption of plasma membrane integrity in another organism",6,6,0.00335506381424598
+"307","GO:BP","GO:0051552","flavone metabolic process",6,6,0.00335506381424598
+"308","GO:BP","GO:0000270","peptidoglycan metabolic process",6,6,0.00335506381424598
+"309","GO:BP","GO:0009253","peptidoglycan catabolic process",6,6,0.00335506381424598
+"310","GO:BP","GO:0002825","regulation of T-helper 1 type immune response",17,32,0.00335506381424598
+"311","GO:BP","GO:0002786","regulation of antibacterial peptide production",6,6,0.00335506381424598
+"312","GO:BP","GO:0050795","regulation of behavior",31,75,0.00361588874115749
+"313","GO:BP","GO:0071466","cellular response to xenobiotic stimulus",65,194,0.00373399712881458
+"314","GO:BP","GO:0042572","retinol metabolic process",24,53,0.0038364483099898
+"315","GO:BP","GO:0032733","positive regulation of interleukin-10 production",20,41,0.0039178603899392
+"316","GO:BP","GO:0070943","neutrophil-mediated killing of symbiont cell",9,12,0.00393938107421749
+"317","GO:BP","GO:0002701","negative regulation of production of molecular mediator of immune response",21,44,0.00393938107421749
+"318","GO:BP","GO:0002768","immune response-regulating cell surface receptor signaling pathway",102,334,0.00393938107421749
+"319","GO:BP","GO:1903555","regulation of tumor necrosis factor superfamily cytokine production",58,169,0.00397871015132316
+"320","GO:BP","GO:0071706","tumor necrosis factor superfamily cytokine production",58,169,0.00397871015132316
+"321","GO:BP","GO:0050766","positive regulation of phagocytosis",29,69,0.00405300433384272
+"322","GO:BP","GO:0002688","regulation of leukocyte chemotaxis",45,123,0.00414075506887757
+"323","GO:BP","GO:0002675","positive regulation of acute inflammatory response",15,27,0.004155533688695
+"324","GO:BP","GO:0042832","defense response to protozoan",15,27,0.004155533688695
+"325","GO:BP","GO:0008343","adult feeding behavior",8,10,0.00448914905944533
+"326","GO:BP","GO:0002700","regulation of production of molecular mediator of immune response",63,188,0.00449188311719399
+"327","GO:BP","GO:0002696","positive regulation of leukocyte activation",107,355,0.00467764767425731
+"328","GO:BP","GO:0050866","negative regulation of cell activation",68,207,0.00490693860850002
+"329","GO:BP","GO:0030431","sleep",13,22,0.00495549580401825
+"330","GO:BP","GO:0019369","arachidonate metabolic process",25,57,0.00498887565346126
+"331","GO:BP","GO:0032651","regulation of interleukin-1 beta production",36,93,0.0049916386036622
+"332","GO:BP","GO:0032611","interleukin-1 beta production",36,93,0.0049916386036622
+"333","GO:BP","GO:0042573","retinoic acid metabolic process",17,33,0.00505713379168715
+"334","GO:BP","GO:0010669","epithelial structure maintenance",17,33,0.00505713379168715
+"335","GO:BP","GO:0006775","fat-soluble vitamin metabolic process",22,48,0.00548052848410124
+"336","GO:BP","GO:0007267","cell-cell signaling",341,1316,0.00561424057464245
+"337","GO:BP","GO:0044706","multi-multicellular organism process",69,212,0.00584760104831218
+"338","GO:BP","GO:0002820","negative regulation of adaptive immune response",26,61,0.00639942966426827
+"339","GO:BP","GO:0002710","negative regulation of T cell mediated immunity",15,28,0.00682653954489307
+"340","GO:BP","GO:0032732","positive regulation of interleukin-1 production",29,71,0.00693864615748339
+"341","GO:BP","GO:0006968","cellular defense response",23,52,0.00745905223461831
+"342","GO:BP","GO:0022407","regulation of cell-cell adhesion",137,478,0.00748259356625292
+"343","GO:BP","GO:0002690","positive regulation of leukocyte chemotaxis",36,95,0.00789808641354749
+"344","GO:BP","GO:0044703","multi-organism reproductive process",66,203,0.00802979776924115
+"345","GO:BP","GO:0032760","positive regulation of tumor necrosis factor production",38,102,0.00808239350884754
+"346","GO:BP","GO:0030183","B cell differentiation",54,159,0.00827244246371637
+"347","GO:BP","GO:0032655","regulation of interleukin-12 production",26,62,0.00849410574635949
+"348","GO:BP","GO:0032615","interleukin-12 production",26,62,0.00849410574635949
+"349","GO:BP","GO:0098664","G protein-coupled serotonin receptor signaling pathway",13,23,0.00859265723019171
+"350","GO:BP","GO:0019233","sensory perception of pain",32,82,0.00893134216718417
+"351","GO:BP","GO:1903557","positive regulation of tumor necrosis factor superfamily cytokine production",39,106,0.00895802590072008
+"352","GO:BP","GO:0002823","negative regulation of adaptive immune response based on somatic recombination of immune receptors built from immunoglobulin superfamily domains",24,56,0.00957302385859672
+"353","GO:BP","GO:0098581","detection of external biotic stimulus",14,26,0.00985337077151915
+"354","GO:BP","GO:0019373","epoxygenase P450 pathway",11,18,0.00989889848208366
+"355","GO:BP","GO:0001912","positive regulation of leukocyte mediated cytotoxicity",27,66,0.0104043814907162
+"356","GO:BP","GO:0032729","positive regulation of type II interferon production",30,76,0.0105719853032306
+"357","GO:BP","GO:0034097","response to cytokine",248,937,0.010578800493753
+"358","GO:BP","GO:0015721","bile acid and bile salt transport",15,29,0.0106595855769482
+"359","GO:BP","GO:0006910","phagocytosis, recognition",15,29,0.0106595855769482
+"360","GO:BP","GO:0002275","myeloid cell activation involved in immune response",37,100,0.0107973899798658
+"361","GO:BP","GO:0042267","natural killer cell mediated cytotoxicity",29,73,0.011412899873133
+"362","GO:BP","GO:0009072","aromatic amino acid metabolic process",19,41,0.0114952784142856
+"363","GO:BP","GO:0042755","eating behavior",18,38,0.0115773247752191
+"364","GO:BP","GO:0070944","neutrophil-mediated killing of bacterium",8,11,0.0118573247437536
+"365","GO:BP","GO:0048523","negative regulation of cellular process",1325,5646,0.0123853108291409
+"366","GO:BP","GO:0052696","flavonoid glucuronidation",5,5,0.0129953505212174
+"367","GO:BP","GO:0002803","positive regulation of antibacterial peptide production",5,5,0.0129953505212174
+"368","GO:BP","GO:0015671","oxygen transport",10,16,0.0138531560827173
+"369","GO:BP","GO:1901652","response to peptide",250,950,0.0139293400040595
+"370","GO:BP","GO:0051607","defense response to virus",93,311,0.0142416640845809
+"371","GO:BP","GO:1903028","positive regulation of opsonization",7,9,0.0144946412950979
+"372","GO:BP","GO:0030098","lymphocyte differentiation",125,438,0.014910311853762
+"373","GO:BP","GO:0043032","positive regulation of macrophage activation",14,27,0.0154800940423652
+"374","GO:BP","GO:0007198","adenylate cyclase-inhibiting serotonin receptor signaling pathway",6,7,0.015867714893089
+"375","GO:BP","GO:0046006","regulation of activated T cell proliferation",19,42,0.0161361591681946
+"376","GO:BP","GO:0001562","response to protozoan",15,30,0.0162553554299425
+"377","GO:BP","GO:0002719","negative regulation of cytokine production involved in immune response",16,33,0.016477299651305
+"378","GO:BP","GO:0034368","protein-lipid complex remodeling",16,33,0.016477299651305
+"379","GO:BP","GO:0044058","regulation of digestive system process",18,39,0.016477299651305
+"380","GO:BP","GO:0034369","plasma lipoprotein particle remodeling",16,33,0.016477299651305
+"381","GO:BP","GO:0050891","multicellular organismal-level water homeostasis",16,33,0.016477299651305
+"382","GO:BP","GO:0002440","production of molecular mediator of immune response",69,220,0.0166853610331426
+"383","GO:BP","GO:0019370","leukotriene biosynthetic process",11,19,0.0172536740989027
+"384","GO:BP","GO:0071347","cellular response to interleukin-1",38,106,0.0172536740989027
+"385","GO:BP","GO:0035743","CD4-positive, alpha-beta T cell cytokine production",11,19,0.0172536740989027
+"386","GO:BP","GO:0002827","positive regulation of T-helper 1 type immune response",11,19,0.0172536740989027
+"387","GO:BP","GO:0098543","detection of other organism",11,19,0.0172536740989027
+"388","GO:BP","GO:0061900","glial cell activation",23,55,0.0173987085503285
+"389","GO:BP","GO:0010273","detoxification of copper ion",9,14,0.0187543877462663
+"390","GO:BP","GO:1990169","stress response to copper ion",9,14,0.0187543877462663
+"391","GO:BP","GO:1903039","positive regulation of leukocyte cell-cell adhesion",82,271,0.0187543877462663
+"392","GO:BP","GO:0002430","complement receptor mediated signaling pathway",9,14,0.0187543877462663
+"393","GO:BP","GO:0042130","negative regulation of T cell proliferation",28,72,0.0194840731851123
+"394","GO:BP","GO:0002683","negative regulation of immune system process",140,502,0.0196410996856425
+"395","GO:BP","GO:0070555","response to interleukin-1",45,132,0.0201358119009169
+"396","GO:BP","GO:0042269","regulation of natural killer cell mediated cytotoxicity",20,46,0.020655973805022
+"397","GO:BP","GO:0042116","macrophage activation",38,107,0.020655973805022
+"398","GO:BP","GO:0003352","regulation of cilium movement",19,43,0.021697388933106
+"399","GO:BP","GO:0048520","positive regulation of behavior",13,25,0.0218773022739868
+"400","GO:BP","GO:0006869","lipid transport",122,431,0.0223659915635494
+"401","GO:BP","GO:0008210","estrogen metabolic process",18,40,0.0224745257960284
+"402","GO:BP","GO:0046631","alpha-beta T cell activation",58,181,0.0229130353595178
+"403","GO:BP","GO:1902221","erythrose 4-phosphate/phosphoenolpyruvate family amino acid metabolic process",14,28,0.0229130353595178
+"404","GO:BP","GO:0002446","neutrophil mediated immunity",17,37,0.0230225679821453
+"405","GO:BP","GO:0046634","regulation of alpha-beta T cell activation",40,115,0.0239408097575568
+"406","GO:BP","GO:0048663","neuron fate commitment",28,73,0.0242811704263851
+"407","GO:BP","GO:0022408","negative regulation of cell-cell adhesion",60,189,0.024291913915776
+"408","GO:BP","GO:0048469","cell maturation",65,208,0.0243481018650405
+"409","GO:BP","GO:0032621","interleukin-18 production",8,12,0.0253756040096021
+"410","GO:BP","GO:0032661","regulation of interleukin-18 production",8,12,0.0253756040096021
+"411","GO:BP","GO:0016056","G protein-coupled opsin signaling pathway",8,12,0.0253756040096021
+"412","GO:BP","GO:0009812","flavonoid metabolic process",8,12,0.0253756040096021
+"413","GO:BP","GO:0032675","regulation of interleukin-6 production",50,152,0.0254800036582558
+"414","GO:BP","GO:0032635","interleukin-6 production",50,152,0.0254800036582558
+"415","GO:BP","GO:0002269","leukocyte activation involved in inflammatory response",21,50,0.0255572042944447
+"416","GO:BP","GO:0032731","positive regulation of interleukin-1 beta production",24,60,0.0267234186682126
+"417","GO:BP","GO:0055078","sodium ion homeostasis",20,47,0.0271277148918929
+"418","GO:BP","GO:0150076","neuroinflammatory response",29,77,0.0271277148918929
+"419","GO:BP","GO:0001774","microglial cell activation",20,47,0.0271277148918929
+"420","GO:BP","GO:0043299","leukocyte degranulation",31,84,0.0275375482178748
+"421","GO:BP","GO:0008202","steroid metabolic process",95,326,0.0276983993926081
+"422","GO:BP","GO:0090026","positive regulation of monocyte chemotaxis",11,20,0.0281586125838741
+"423","GO:BP","GO:0032098","regulation of appetite",11,20,0.0281586125838741
+"424","GO:BP","GO:0050870","positive regulation of T cell activation",75,248,0.0286598083995646
+"425","GO:BP","GO:0071677","positive regulation of mononuclear cell migration",34,95,0.030144219929375
+"426","GO:BP","GO:0022409","positive regulation of cell-cell adhesion",93,319,0.030144219929375
+"427","GO:BP","GO:0032753","positive regulation of interleukin-4 production",13,26,0.0327396893027991
+"428","GO:BP","GO:0018149","peptide cross-linking",14,29,0.0333659761895549
+"429","GO:BP","GO:0035747","natural killer cell chemotaxis",7,10,0.0334019040018735
+"430","GO:BP","GO:0046942","carboxylic acid transport",99,344,0.0334019040018735
+"431","GO:BP","GO:0002765","immune response-inhibiting signal transduction",7,10,0.0334019040018735
+"432","GO:BP","GO:0002361","CD4-positive, CD25-positive, alpha-beta regulatory T cell differentiation",7,10,0.0334019040018735
+"433","GO:BP","GO:0071947","protein deubiquitination involved in ubiquitin-dependent protein catabolic process",7,10,0.0334019040018735
+"434","GO:BP","GO:0043330","response to exogenous dsRNA",21,51,0.0334019040018735
+"435","GO:BP","GO:0002676","regulation of chronic inflammatory response",7,10,0.0334019040018735
+"436","GO:BP","GO:0032720","negative regulation of tumor necrosis factor production",24,61,0.0334173600554101
+"437","GO:BP","GO:0141005","transposable element silencing by heterochromatin formation",9,15,0.033890414836255
+"438","GO:BP","GO:0015849","organic acid transport",99,345,0.0366732986703476
+"439","GO:BP","GO:0002821","positive regulation of adaptive immune response",43,129,0.0385279208134288
+"440","GO:BP","GO:0002429","immune response-activating cell surface receptor signaling pathway",89,306,0.0393646191110806
+"441","GO:BP","GO:0009268","response to pH",18,42,0.0405373161978229
+"442","GO:BP","GO:0007603","phototransduction, visible light",10,18,0.0406636911636897
+"443","GO:BP","GO:0002923","regulation of humoral immune response mediated by circulating immunoglobulin",10,18,0.0406636911636897
+"444","GO:BP","GO:0002764","immune response-regulating signaling pathway",138,504,0.0408846662538878
+"445","GO:BP","GO:1903131","mononuclear cell differentiation",144,529,0.0422237002871563
+"446","GO:BP","GO:0002534","cytokine production involved in inflammatory response",24,62,0.0422865121156018
+"447","GO:BP","GO:1900015","regulation of cytokine production involved in inflammatory response",24,62,0.0422865121156018
+"448","GO:BP","GO:0032814","regulation of natural killer cell activation",17,39,0.0423152927127617
+"449","GO:BP","GO:0007340","acrosome reaction",17,39,0.0423152927127617
+"450","GO:BP","GO:0032741","positive regulation of interleukin-18 production",6,8,0.0426237912583341
+"451","GO:BP","GO:2000501","regulation of natural killer cell chemotaxis",6,8,0.0426237912583341
+"452","GO:BP","GO:0032714","negative regulation of interleukin-5 production",6,8,0.0426237912583341
+"453","GO:BP","GO:0070268","cornification",6,8,0.0426237912583341
+"454","GO:BP","GO:0002833","positive regulation of response to biotic stimulus",107,379,0.0427345855318996
+"455","GO:BP","GO:0050878","regulation of body fluid levels",105,371,0.0427959061963183
+"456","GO:BP","GO:0002718","regulation of cytokine production involved in immune response",40,119,0.0435857794673071
+"457","GO:BP","GO:0042745","circadian sleep/wake cycle",11,21,0.0435857794673071
+"458","GO:BP","GO:0034367","protein-containing complex remodeling",16,36,0.0435857794673071
+"459","GO:BP","GO:0002367","cytokine production involved in immune response",40,119,0.0435857794673071
+"460","GO:BP","GO:0002523","leukocyte migration involved in inflammatory response",11,21,0.0435857794673071
+"461","GO:BP","GO:0043950","positive regulation of cAMP-mediated signaling",11,21,0.0435857794673071
+"462","GO:BP","GO:0002577","regulation of antigen processing and presentation",11,21,0.0435857794673071
+"463","GO:BP","GO:2000851","positive regulation of glucocorticoid secretion",4,4,0.0446450622261263
+"464","GO:BP","GO:0014061","regulation of norepinephrine secretion",8,13,0.0446450622261263
+"465","GO:BP","GO:0002325","natural killer cell differentiation involved in immune response",4,4,0.0446450622261263
+"466","GO:BP","GO:0042320","regulation of circadian sleep/wake cycle, REM sleep",4,4,0.0446450622261263
+"467","GO:BP","GO:0003353","positive regulation of cilium movement",8,13,0.0446450622261263
+"468","GO:BP","GO:0009074","aromatic amino acid family catabolic process",12,24,0.0446450622261263
+"469","GO:BP","GO:0042369","vitamin D catabolic process",4,4,0.0446450622261263
+"470","GO:BP","GO:0042374","phylloquinone metabolic process",4,4,0.0446450622261263
+"471","GO:BP","GO:0002438","acute inflammatory response to antigenic stimulus",13,27,0.0446450622261263
+"472","GO:BP","GO:0046541","saliva secretion",8,13,0.0446450622261263
+"473","GO:BP","GO:0042376","phylloquinone catabolic process",4,4,0.0446450622261263
+"474","GO:BP","GO:0010818","T cell chemotaxis",13,27,0.0446450622261263
+"475","GO:BP","GO:0036101","leukotriene B4 catabolic process",4,4,0.0446450622261263
+"476","GO:BP","GO:0002824","positive regulation of adaptive immune response based on somatic recombination of immune receptors built from immunoglobulin superfamily domains",41,123,0.0446450622261263
+"477","GO:BP","GO:0042377","vitamin K catabolic process",4,4,0.0446450622261263
+"478","GO:BP","GO:0042747","circadian sleep/wake cycle, REM sleep",4,4,0.0446450622261263
+"479","GO:BP","GO:0032673","regulation of interleukin-4 production",15,33,0.0446450622261263
+"480","GO:BP","GO:0032633","interleukin-4 production",15,33,0.0446450622261263
+"481","GO:BP","GO:0051251","positive regulation of lymphocyte activation",93,324,0.0446450622261263
+"482","GO:BP","GO:0002717","positive regulation of natural killer cell mediated immunity",15,33,0.0446450622261263
+"483","GO:BP","GO:0051464","positive regulation of cortisol secretion",4,4,0.0446450622261263
+"484","GO:BP","GO:0045938","positive regulation of circadian sleep/wake cycle, sleep",4,4,0.0446450622261263
+"485","GO:BP","GO:0044278","disruption of cell wall in another organism",4,4,0.0446450622261263
+"486","GO:BP","GO:0060456","positive regulation of digestive system process",8,13,0.0446450622261263
+"487","GO:BP","GO:0032826","regulation of natural killer cell differentiation involved in immune response",4,4,0.0446450622261263
+"488","GO:BP","GO:0034308","primary alcohol metabolic process",35,101,0.0446450622261263
+"489","GO:BP","GO:0060480","lung goblet cell differentiation",4,4,0.0446450622261263
+"490","GO:BP","GO:0035745","T-helper 2 cell cytokine production",8,13,0.0446450622261263
+"491","GO:BP","GO:0030888","regulation of B cell proliferation",25,66,0.0446450622261263
+"492","GO:BP","GO:2000551","regulation of T-helper 2 cell cytokine production",8,13,0.0446450622261263
+"493","GO:BP","GO:0050798","activated T cell proliferation",19,46,0.046020072097997
+"494","GO:BP","GO:0097272","ammonium homeostasis",5,6,0.0467038674981399
+"495","GO:BP","GO:0038170","somatostatin signaling pathway",5,6,0.0467038674981399
+"496","GO:BP","GO:0038169","somatostatin receptor signaling pathway",5,6,0.0467038674981399
+"497","GO:BP","GO:0036100","leukotriene catabolic process",5,6,0.0467038674981399
+"498","GO:BP","GO:0034382","chylomicron remnant clearance",5,6,0.0467038674981399
+"499","GO:BP","GO:2000503","positive regulation of natural killer cell chemotaxis",5,6,0.0467038674981399
+"500","GO:BP","GO:0010901","regulation of very-low-density lipoprotein particle remodeling",5,6,0.0467038674981399
+"501","GO:BP","GO:0032755","positive regulation of interleukin-6 production",34,98,0.0467038674981399
+"502","GO:BP","GO:1903556","negative regulation of tumor necrosis factor superfamily cytokine production",24,63,0.0483753527565498
+"503","GO:BP","GO:0046427","positive regulation of receptor signaling pathway via JAK-STAT",18,43,0.0487689091644172
+"504","GO:BP","GO:0002437","inflammatory response to antigenic stimulus",28,77,0.0496504483256705
+"505","KEGG","KEGG:04740","Olfactory transduction",372,428,1.1005255368149e-174
+"506","KEGG","KEGG:04080","Neuroactive ligand-receptor interaction",192,365,5.80050919562536e-31
+"507","KEGG","KEGG:04060","Cytokine-cytokine receptor interaction",158,291,2.28422403768945e-27
+"508","KEGG","KEGG:05206","MicroRNAs in cancer",153,310,7.38649429774918e-21
+"509","KEGG","KEGG:05150","Staphylococcus aureus infection",60,86,2.35365808805832e-17
+"510","KEGG","KEGG:04061","Viral protein interaction with cytokine and cytokine receptor",64,98,2.55965746987802e-16
+"511","KEGG","KEGG:04742","Taste transduction",53,85,2.90796291166533e-12
+"512","KEGG","KEGG:00830","Retinol metabolism",44,68,5.40118587473369e-11
+"513","KEGG","KEGG:05320","Autoimmune thyroid disease",32,49,4.09878498814029e-08
+"514","KEGG","KEGG:04672","Intestinal immune network for IgA production",29,44,1.64053384920606e-07
+"515","KEGG","KEGG:05310","Asthma",21,27,1.92879198566727e-07
+"516","KEGG","KEGG:05204","Chemical carcinogenesis - DNA adducts",38,67,2.85913598276782e-07
+"517","KEGG","KEGG:04640","Hematopoietic cell lineage",47,92,4.66248713823365e-07
+"518","KEGG","KEGG:00980","Metabolism of xenobiotics by cytochrome P450",40,74,6.43901017103482e-07
+"519","KEGG","KEGG:00140","Steroid hormone biosynthesis",35,62,1.03008113536448e-06
+"520","KEGG","KEGG:05322","Systemic lupus erythematosus",59,132,3.17337286567488e-06
+"521","KEGG","KEGG:00982","Drug metabolism - cytochrome P450",36,68,5.26464584500289e-06
+"522","KEGG","KEGG:00590","Arachidonic acid metabolism",32,61,2.98802084855903e-05
+"523","KEGG","KEGG:04630","JAK-STAT signaling pathway",65,162,6.99267176833863e-05
+"524","KEGG","KEGG:00053","Ascorbate and aldarate metabolism",19,30,9.07818280532672e-05
+"525","KEGG","KEGG:00591","Linoleic acid metabolism",19,30,9.07818280532672e-05
+"526","KEGG","KEGG:05321","Inflammatory bowel disease",31,62,0.000130967152082421
+"527","KEGG","KEGG:05323","Rheumatoid arthritis",40,88,0.000133072374615353
+"528","KEGG","KEGG:04976","Bile secretion",40,89,0.000178306708757342
+"529","KEGG","KEGG:05332","Graft-versus-host disease",21,37,0.000280796900224421
+"530","KEGG","KEGG:05144","Malaria",24,49,0.00173495663486967
+"531","KEGG","KEGG:00040","Pentose and glucuronate interconversions",19,36,0.00240332046256745
+"532","KEGG","KEGG:04610","Complement and coagulation cascades",36,86,0.00246182081087501
+"533","KEGG","KEGG:00592","alpha-Linolenic acid metabolism",15,26,0.00286272272167092
+"534","KEGG","KEGG:05152","Tuberculosis",63,175,0.00286272272167092
+"535","KEGG","KEGG:05330","Allograft rejection",18,34,0.00292995578453211
+"536","KEGG","KEGG:05340","Primary immunodeficiency",19,37,0.00323261504041963
+"537","KEGG","KEGG:04514","Cell adhesion molecules",55,153,0.0065130030366895
+"538","KEGG","KEGG:04650","Natural killer cell mediated cytotoxicity",46,124,0.00792621839901937
+"539","KEGG","KEGG:04950","Maturity onset diabetes of the young",14,26,0.00978700790016392
+"540","KEGG","KEGG:04940","Type I diabetes mellitus",19,40,0.00978700790016392
+"541","KEGG","KEGG:04975","Fat digestion and absorption",20,43,0.00978700790016392
+"542","KEGG","KEGG:00860","Porphyrin metabolism",20,43,0.00978700790016392
+"543","KEGG","KEGG:05164","Influenza A",58,167,0.0105191612197729
+"544","KEGG","KEGG:04613","Neutrophil extracellular trap formation",64,188,0.0105848875819306
+"545","KEGG","KEGG:00983","Drug metabolism - other enzymes",31,79,0.0160520203631753
+"546","KEGG","KEGG:05143","African trypanosomiasis",17,36,0.0160520203631753
+"547","KEGG","KEGG:05133","Pertussis",30,76,0.0160520203631753
+"548","KEGG","KEGG:00350","Tyrosine metabolism",17,36,0.0160520203631753
+"549","KEGG","KEGG:04620","Toll-like receptor signaling pathway",39,106,0.0172335339334975
+"550","KEGG","KEGG:04744","Phototransduction",14,29,0.0285376585178901
+"551","KEGG","KEGG:00232","Caffeine metabolism",5,6,0.0285376585178901
+"552","KEGG","KEGG:04913","Ovarian steroidogenesis",21,51,0.0367505953707193
+"553","KEGG","KEGG:04972","Pancreatic secretion",36,102,0.049555923307363

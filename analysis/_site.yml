@@ -13,6 +13,8 @@ navbar:
     href: Recovery_RNAseq.html
   - text: Differential Expression
     href: Recovery_DE.html
+  - text: DOX only DE Set
+    href: Recovery_DOX.html
   right:
   - icon: fab fa-github
     text: Source code
