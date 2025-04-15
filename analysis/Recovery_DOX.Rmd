@@ -250,7 +250,7 @@ my_chr_dox <- c(1:22, 'M', 'X', 'Y')  ## creates a filter for each database
 
 my_attributes_dox <- c('entrezgene_id', 'ensembl_gene_id', 'hgnc_symbol')
 
-heartgenes_dox <- getBM(attributes=my_attributes,filters ='hgnc_symbol',
+heartgenes_dox <- getBM(attributes=my_attributes_dox,filters ='hgnc_symbol',
                 values = genecardiccheck_dox, mart = ensembl_dox)
 write.csv(heartgenes_dox, "data/heartgenes_dox.csv")
 heartgenes_dox <-read.csv("data/heartgenes_dox.csv")
