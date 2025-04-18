@@ -97,6 +97,8 @@ txtime_names2 <- c(rep(txtime_names2, 7))
 
 genematrix_dox <- fC_Matrix_Full_cpm_filter_dox %>% rownames_to_column(var = "entrezgene_id")
 
+#saveRDS(genematrix_dox, "data/genematrix_dox.RDS")
+
 ###CDKN1A - 1026###
 CDKN1A_d <- genematrix_dox %>% filter(entrezgene_id=="1026")
 CDKN1A_new_d <- as.data.frame(CDKN1A_d) %>% dplyr::select("entrezgene_id", "DOX_24_Ind1", "DOX_24rec_Ind1", "DOX_144rec_Ind1", "DMSO_24_Ind1", "DMSO_24rec_Ind1", "DMSO_144rec_Ind1","DOX_24_Ind2", "DOX_24rec_Ind2", "DOX_144rec_Ind2", "DMSO_24_Ind2", "DMSO_24rec_Ind2", "DMSO_144rec_Ind2", "DOX_24_Ind3", "DOX_24rec_Ind3", "DOX_144rec_Ind3",  "DMSO_24_Ind3", "DMSO_24rec_Ind3", "DMSO_144rec_Ind3", "DOX_24_Ind4", "DOX_24rec_Ind4", "DOX_144rec_Ind4", "DMSO_24_Ind4", "DMSO_24rec_Ind4", "DMSO_144rec_Ind4", "DOX_24_Ind5", "DOX_24rec_Ind5", "DOX_144rec_Ind5", "DMSO_24_Ind5", "DMSO_24rec_Ind5", "DMSO_144rec_Ind5", "DOX_24_Ind6", "DOX_24rec_Ind6", "DOX_144rec_Ind6", "DMSO_24_Ind6", "DMSO_24rec_Ind6", "DMSO_144rec_Ind6", "DOX_24_Ind6REP", "DOX_24rec_Ind6REP", "DOX_144rec_Ind6REP", "DMSO_24_Ind6REP", "DMSO_24rec_Ind6REP", "DMSO_144rec_Ind6REP")
@@ -499,7 +501,7 @@ voom_plot_d <- voom(dged_calc, mm_r_d, plot = TRUE)
 
 ```
 
-```{r Make a TopTable, results='hide',collapse=TRUE}
+```{r Make Toptables Of Each Condition}
 
 top.table_V.D24_dox <- topTable(fit = efit2_d, coef = "V.D24", number = nrow(dged_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
 head(top.table_V.D24_dox)
@@ -962,7 +964,7 @@ compid_d <- data.frame(c1 = c(1, 3, 5), c2 = c(2, 4, 6))
 
 ```{r Cormotif Run}
 
-set.seed(12345)
+#set.seed(12345)
 # initial_cormotif_dox <- cormotiffit(exprs = Cormotif_d,
 #                                  groupid = groupid_d,
 #                                  compid = compid_d,
@@ -1005,54 +1007,201 @@ motif_prob_d <- initial_cormotif_dox$bestmotif$clustlike
 rownames(motif_prob_d) <- rownames(topgenelist_d)
 #saveRDS(motif_prob_d, "data/Cormotif_prob_gene_list_doxonly.RDS")
 
-#Define the gene probability groups - I have 3
+
+#Define the gene probability groups - I have 4
 clust1_d <- motif_prob_d %>% 
   as.data.frame() %>% 
-  filter(V1>0.5) %>% 
+  filter(V1>0.57) %>% 
   rownames
 
+#using a filter of >0.57 I get 11130 genes compared to 11156 above
+
 length(clust1_d)
-#11482
+#11482 > 0.5
+#11130 > 0.57
 #is this clust1 a non-response?
+
+clust1_d_df <- as.data.frame(clust1_d)
+
+#example gene - UID 4681 - NBL1
+NBL1_motif1 <- Cormotif_df_d %>% 
+  rownames_to_column(var = "entrezgene_id") %>% 
+  dplyr::filter(entrezgene_id == "4681")
+
+NBL1_motif1_long <- melt(NBL1_motif1,
+                         id.vars = c("entrezgene_id"),
+                         variable.name = "Sample",
+                         value.name = "log2cpm")
+
+#now add in my factors like time, tx, tx_time, and ind by breaking up the Sample column
+NBL1_motif1_long_df <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                                  ind = factor(ind_names, levels = unique(ind_names)),
+                                  txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                                  time = factor(time_names2, levels = unique(time_names2)))
+
+NBL1_motif1_long_factors <- cbind(NBL1_motif1_long_df, NBL1_motif1_long)
+
+NBL1_motif1_long_factors %>% ggplot(aes(x = txtime, y = log2cpm))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "NBL1")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(0,10)+
+  theme(plot.title = element_text(face = "italic"))
+
+#saveRDS(CDKN1A_geneplot_Dox, "data/CDKN1A_geneplot_Dox.RDS")
 
 clust2_d <- motif_prob_d %>% 
   as.data.frame() %>% 
-  filter(V2>0.5) %>% 
+  filter(V2>0.132) %>% 
   rownames
 
+#using a filter of >0.132 I get the closest - 326 original vs 327 genes here
+
 length(clust2_d)
-#0
+#0 > 0.5
+#326 > 0.132
 #is clust2 a dox early response?
+
+clust2_d_df <- as.data.frame(clust2_d)
+
+#example gene - 597 - BCL2A1
+BCL2A1_motif1 <- Cormotif_df_d %>% 
+  rownames_to_column(var = "entrezgene_id") %>% 
+  dplyr::filter(entrezgene_id == "597")
+
+BCL2A1_motif1_long <- melt(BCL2A1_motif1,
+                         id.vars = c("entrezgene_id"),
+                         variable.name = "Sample",
+                         value.name = "log2cpm")
+
+#now add in my factors like time, tx, tx_time, and ind by breaking up the Sample column
+BCL2A1_motif1_long_df <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                                  ind = factor(ind_names, levels = unique(ind_names)),
+                                  txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                                  time = factor(time_names2, levels = unique(time_names2)))
+
+BCL2A1_motif1_long_factors <- cbind(BCL2A1_motif1_long_df, BCL2A1_motif1_long)
+
+BCL2A1_motif1_long_factors %>% ggplot(aes(x = txtime, y = log2cpm))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "BCL2A1")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(0,10)+
+  theme(plot.title = element_text(face = "italic"))
+
 
 clust3_d <- motif_prob_d %>% 
   as.data.frame() %>% 
-  filter(V3>0.5) %>% 
+  filter(V3>0.3) %>% 
   rownames
+
+#using a filter of >0.3 I get 740 genes vs original 739 genes
 
 length(clust3_d)
-#538
-#this one is not showing any genes
+#538 > 0.5
+#740 > 0.3
+#is clust 3 a late response?
 
+clust3_d_df <- as.data.frame(clust3_d)
+
+#example gene - 8856 - NR1I2
+NR1I2_motif1 <- Cormotif_df_d %>% 
+  rownames_to_column(var = "entrezgene_id") %>% 
+  dplyr::filter(entrezgene_id == "8856")
+
+NR1I2_motif1_long <- melt(NR1I2_motif1,
+                         id.vars = c("entrezgene_id"),
+                         variable.name = "Sample",
+                         value.name = "log2cpm")
+
+#now add in my factors like time, tx, tx_time, and ind by breaking up the Sample column
+NR1I2_motif1_long_df <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                                  ind = factor(ind_names, levels = unique(ind_names)),
+                                  txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                                  time = factor(time_names2, levels = unique(time_names2)))
+
+NR1I2_motif1_long_factors <- cbind(NR1I2_motif1_long_df, NR1I2_motif1_long)
+
+NR1I2_motif1_long_factors %>% ggplot(aes(x = txtime, y = log2cpm))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "NR1I2")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(0,10)+
+  theme(plot.title = element_text(face = "italic"))
+
+#cluster 4
 clust4_d <- motif_prob_d %>% 
   as.data.frame() %>% 
-  filter(V4>0.5) %>% 
+  filter(V4>0.4) %>% 
   rownames
 
+#using >0.4 as my cutoff, I get 1938 genes as compared to original 1948 genes
+
 length(clust4_d)
-#1576
+#1576 > 0.5
+#1938 > 0.4
 #is clust4 a DOX late response?
 
-clusterdata_d <- data.frame(
-  Category = c("No Response", "Late Response", "Early Sustained Response"), 
-  Value = c(11482, 538, 1576)
+clust4_d_df <- as.data.frame(clust4_d)
+
+#example gene - 6725 - SRMS 
+SRMS_motif1 <- Cormotif_df_d %>% 
+  rownames_to_column(var = "entrezgene_id") %>% 
+  dplyr::filter(entrezgene_id == "6725")
+
+SRMS_motif1_long <- melt(SRMS_motif1,
+                         id.vars = c("entrezgene_id"),
+                         variable.name = "Sample",
+                         value.name = "log2cpm")
+
+#now add in my factors like time, tx, tx_time, and ind by breaking up the Sample column
+SRMS_motif1_long_df <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                                  ind = factor(ind_names, levels = unique(ind_names)),
+                                  txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                                  time = factor(time_names2, levels = unique(time_names2)))
+
+SRMS_motif1_long_factors <- cbind(SRMS_motif1_long_df, SRMS_motif1_long)
+
+SRMS_motif1_long_factors %>% ggplot(aes(x = txtime, y = log2cpm))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "SRMS")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(0,10)+
+  theme(plot.title = element_text(face = "italic"))
+
+#now let's make a pie chart with the above number of genes for each motif
+clusterdata_d_adj <- data.frame(
+  Category = c("No Response","Acute Response", "Late Response", "Early Sustained Response"), 
+  Value = c(11130, 327, 740, 1938)
 )
 
 piecolors <- c("No Response" = "#007896", 
+               "Acute Response" = "#079255",
                "Late Response" = "#58508D", 
                "Early Sustained Response" = "#BC5090")
 
 #make a piechart of these distributions
-clusterdata_d %>% ggplot(aes(x = "", y = Value, fill = Category))+
+clusterdata_d_adj %>% ggplot(aes(x = "", y = Value, fill = Category))+
   geom_bar(width = 1, stat = "identity")+
   coord_polar("y", start = 0)+
   geom_text(aes(label = Value),
@@ -1071,25 +1220,37 @@ clusterdata_d %>% ggplot(aes(x = "", y = Value, fill = Category))+
 #changing the cutoffs based on the look of each motif - if it's very dark = > 0.5
 #if white < 0.5 
 #if grey try a less stringent cutoff > 0.1
+#ideally each of these are similar to the number of genes in the above plot
 
 #gene_postprob_motif <- initial_cormotif_dox$bestmotif$p.post
 #rownames(gene_postprob_motif) <- rownames(Cormotif_df_d)
 
 #saveRDS(gene_postprob_motif, "data/gene_postprob_motif.RDS")
 
+
 gene_postprob_motif <- readRDS("data/gene_postprob_motif.RDS")
 
 gene_postprob_motif_df <- as.data.frame(gene_postprob_motif)
 
-#motif 1 no response
-prob_motif_1 <- rownames(gene_postprob_motif_df[(gene_postprob_motif_df[,1] < 0.5 
-                                              & gene_postprob_motif_df[,2] < 0.5 
-                                              & gene_postprob_motif_df[,3] < 0.5),])
+
+#motif 1 no response p.prob
+prob_motif_1 <- rownames(gene_postprob_motif_df[(gene_postprob_motif_df[,1] < 0.62 
+                                              & gene_postprob_motif_df[,2] < 0.62 
+                                              & gene_postprob_motif_df[,3] < 0.62),])
 length(prob_motif_1)
 #10903 genes post prob
 
+#gene example:  943 - TNFRSF8
+TNFRF8_gene <- 
+
+#10903 genes post prob - close to value of 11156 on cormotif pattern graph
+
+#gene example:  11009 - IL24
+IL24_gene_motif1 <- 
+
+
 #motif 2 acute response
-prob_motif_2 <- rownames(gene_postprob_motif_df[(gene_postprob_motif_df[,1] > 0.1 
+prob_motif_2 <- rownames(gene_postprob_motif_df[(gene_postprob_motif_df[,1] > 0.99 
                                               & gene_postprob_motif_df[,2] < 0.5 
                                               & gene_postprob_motif_df[,3] < 0.5),])
 length(prob_motif_2)
@@ -1295,79 +1456,84 @@ tableNR_KEGG_pp %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), 
 The Acute Response had no genes pop up for clustlike at the cutoff of > 0.5
 However, when we changed the cutoff and used post prob we got some genes, so let's use them for GO analysis
 This is from motif 2, where there is a light gray box in the first study (DOX 24hr)
-```{r Acute Response GO Analysis KEGG terms}
+This one doesn't seem to work, most likely since it's not really picking up a motif
+```{r Acute Response GO Analysis KEGG terms, include=FALSE}
 motif_AR_pp <- prob_motif_2
 
-ARmotif_genes_pp <- gost(query = motif_AR_pp,
-                      organism = "hsapiens",
-                      ordered_query = FALSE,
-                      measure_underrepresentation = FALSE,
-                      evcodes = FALSE,
-                      user_threshold = 0.05,
-                      correction_method = c("fdr"),
-                      sources = c("GO:BP", "KEGG"))
+# ARmotif_genes_pp <- gost(query = motif_AR_pp,
+#                       organism = "hsapiens",
+#                       ordered_query = FALSE,
+#                       measure_underrepresentation = FALSE,
+#                       evcodes = FALSE,
+#                       user_threshold = 0.05,
+#                       correction_method = c("fdr"),
+#                       sources = c("GO:BP", "KEGG"))
 
-cormotifARclust_pp <- gostplot(ARmotif_genes_pp, capped = FALSE, interactive = TRUE)
-cormotifARclust_pp
+#cormotifARclust_pp <- gostplot(ARmotif_genes_pp, capped = FALSE, interactive = TRUE)
+#cormotifARclust_pp
 
-tableAR_pp <- ARmotif_genes_pp$result %>% 
-  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+#saveRDS(cormotifARclust_pp, "data/cormotifARclust_pp.RDS")
 
-tableAR_pp %>% 
-  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
-  kableExtra::kable(.,) %>% 
-  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
-  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
-  kableExtra::scroll_box(width = "100%", height = "400px")
+# cormotifARclust_pp <- readRDS("data/cormotifARclust_pp.RDS")
+
+# tableAR_pp <- ARmotif_genes_pp$result %>% 
+#   dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+# tableAR_pp %>% 
+#   mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+#   kableExtra::kable(.,) %>% 
+#   kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+#   kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+#   kableExtra::scroll_box(width = "100%", height = "400px")
 
 #write.csv(tableNR, "output/table_NRmotif.csv")
 
 #GO:BP
-tableNR_GOBP_pp <- tableNR_pp %>% 
-  dplyr::filter(source=="GO:BP") %>% 
-  dplyr::select(p_value, term_name, intersection_size) %>% 
-  dplyr::slice_min(., n=10, order_by=p_value) %>% 
-  mutate(log_val = -log10(p_value))
+# tableNR_GOBP_pp <- tableNR_pp %>% 
+#   dplyr::filter(source=="GO:BP") %>% 
+#   dplyr::select(p_value, term_name, intersection_size) %>% 
+#   dplyr::slice_min(., n=10, order_by=p_value) %>% 
+#   mutate(log_val = -log10(p_value))
 
 #saveRDS(tableNR_GOBP_pp, "data/tableNR_GOBP_postprob.RDS")
 
-tableNR_GOBP_pp %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
-  geom_point(aes(size = intersection_size)) +
-  ggtitle("No Response Enriched GO:BP Terms")+
-  xlab(expression("-log"[10]~"p-value"))+
-  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
-  ylab("GO:BP term")+
-  scale_y_discrete(labels = scales::label_wrap(30))+
-  theme_bw()+
-  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
-        axis.title = element_text(size = 15, colour = "black"),
-        axis.ticks = element_line(linewidth = 1.5),
-        axis.line = element_line(linewidth = 1.5),
-        axis.text = element_text(size = 10, colour = "black", angle = 0),
-        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+# tableNR_GOBP_pp %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+#   geom_point(aes(size = intersection_size)) +
+#   ggtitle("No Response Enriched GO:BP Terms")+
+#   xlab(expression("-log"[10]~"p-value"))+
+#   guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+#   ylab("GO:BP term")+
+#   scale_y_discrete(labels = scales::label_wrap(30))+
+#   theme_bw()+
+#   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#         axis.title = element_text(size = 15, colour = "black"),
+#         axis.ticks = element_line(linewidth = 1.5),
+#         axis.line = element_line(linewidth = 1.5),
+#         axis.text = element_text(size = 10, colour = "black", angle = 0),
+#         strip.text = element_text(size = 15, colour = "black", face = "bold"))
 
 #KEGG
-tableNR_KEGG_pp <- tableNR_pp %>% 
-  dplyr::filter(source=="KEGG") %>% 
-  dplyr::select(p_value, term_name, intersection_size) %>% 
-  dplyr::slice_min(., n=10, order_by=p_value) %>% 
-  mutate(log_val = -log10(p_value))
+# tableNR_KEGG_pp <- tableNR_pp %>% 
+#   dplyr::filter(source=="KEGG") %>% 
+#   dplyr::select(p_value, term_name, intersection_size) %>% 
+#   dplyr::slice_min(., n=10, order_by=p_value) %>% 
+#   mutate(log_val = -log10(p_value))
 
-tableNR_KEGG_pp %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
-  geom_point(aes(size = intersection_size)) +
-  ggtitle("No Response Enriched KEGG Terms")+
-  xlab(expression("-log"[10]~"p-value"))+
-  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
-  ylab("KEGG term")+
-  scale_y_discrete(labels = scales::label_wrap(30))+
-  theme_bw()+
-  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
-        axis.title = element_text(size = 15, colour = "black"),
-        axis.ticks = element_line(linewidth = 1.5),
-        axis.line = element_line(linewidth = 1.5),
-        axis.text = element_text(size = 10, colour = "black", angle = 0),
-        strip.text = element_text(size = 15, colour = "black", face = "bold"))
-
+# tableNR_KEGG_pp %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+#   geom_point(aes(size = intersection_size)) +
+#   ggtitle("No Response Enriched KEGG Terms")+
+#   xlab(expression("-log"[10]~"p-value"))+
+#   guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+#   ylab("KEGG term")+
+#   scale_y_discrete(labels = scales::label_wrap(30))+
+#   theme_bw()+
+#   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#         axis.title = element_text(size = 15, colour = "black"),
+#         axis.ticks = element_line(linewidth = 1.5),
+#         axis.line = element_line(linewidth = 1.5),
+#         axis.text = element_text(size = 10, colour = "black", angle = 0),
+#         strip.text = element_text(size = 15, colour = "black", face = "bold"))
+# 
 
 
 
