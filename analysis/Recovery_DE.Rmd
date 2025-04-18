@@ -227,6 +227,7 @@ Let's use our toptables to find the top 5 DE genes in each condition
 ```{r Top 5 DE Genes, include = FALSE}
 #plot the top 5 most DE genes for each condition
 #i sorted the toptable by the top 5 most DE genes for each + found the corresponding gene name
+<<<<<<< HEAD
 # readRDS("data/fC_Matrix_Full_cpm_filter.RDS")
 # fC_df_filter_cpm <- as.data.frame(fC_Matrix_Full_cpm_filter)
 # 
@@ -265,6 +266,46 @@ Let's use our toptables to find the top 5 DE genes in each condition
 #   cbind(Gene_Name_d24_p)
 
 
+=======
+readRDS("data/fC_Matrix_Full_cpm_filter.RDS")
+fC_df_filter_cpm <- as.data.frame(fC_Matrix_Full_cpm_filter)
+
+#####24hr Tx DOX pval####
+#slice the top 5 rows with the highest P value in my toptable of the given condition
+top5DE_d24_p <- top.table_V.D24 %>% 
+  dplyr::slice_min(., n=5, order_by=P.Value) %>% 
+  rownames_to_column(var = "GeneID")
+
+#make a list of the gene IDs of the top 5 DE genes
+
+GeneID_top5_d24_p <- c("100996301", "100507533", "116369", "101929523", "148753")
+
+#make a df of the samples (columns) that you want to look at
+#d24 set
+d24_gene_df <- fC_df_filter_cpm %>% 
+  dplyr::select(matches("DOX_24")) %>% 
+  dplyr::select(-(contains("rec")))
+
+
+#now pull those rows out of my new dataframe 
+
+top5DE_d24_log2cpm_p <- d24_gene_df %>% 
+  rownames_to_column(var = "entrezgene_id") %>% 
+  dplyr::filter(entrezgene_id == c("100996301", "100507533", "116369", "101929523", "148753"))
+
+#I'll pull each of htese genes out one by one and cbind
+top5DE_d24_log2cpm_p_1 <- d24_gene_df %>% 
+  rownames_to_column(var = "entrezgene_id") %>% 
+  dplyr::filter(entrezgene_id == "100996301")
+  
+
+Gene_Name_d24_p <- c("FOXD3-AS1", "SOX2-AS1", "SLC26A8", "THBS2-AS1","FAM163A")
+
+top5DE_d24_p %>% mutate(GeneID = factor(GeneID, levels = c("100996301", "100507533", "116369", "101929523", "148753"))) %>% 
+  cbind(Gene_Name_d24_p)
+
+
+>>>>>>> cee6b3d03a02b635036cd142ee8b8df81e05013b
   
 
 #####24hr Tx DOX adj pval####
@@ -329,6 +370,7 @@ Let's use our toptables to find the top 5 DE genes in each condition
 #   cbind(Gene_Name_d24R_a)
 
 #top 5 DE genes based on p-value
+<<<<<<< HEAD
 # ggplot(top5DE_d24_p, aes(x=reorder(Gene_Name_d24R_p, P.Value), y=logFC))+
 #   geom_boxplot(aes(colour = P.Value))+
 #   ggtitle(expression("Top 5 DEG DOX 24R p value"))+
@@ -572,6 +614,251 @@ Let's use our toptables to find the top 5 DE genes in each condition
 #         axis.line = element_line(linewidth = 1.5),
 #         axis.text = element_text(size =10, color = "black", angle = 0),
 #         strip.text.y = element_text(color = "white"))
+=======
+ggplot(top5DE_d24_p, aes(x=reorder(Gene_Name_d24R_p, P.Value), y=logFC))+
+  geom_boxplot(aes(colour = P.Value))+
+  ggtitle(expression("Top 5 DEG DOX 24R p value"))+
+  xlab("")+
+  ylim(c(-10, 10))+
+  ylab(expression("logFC"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5)),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+
+#top 5 DE genes based on adj p value 
+ggplot(top5DE_d24_a, aes(x=reorder(Gene_Name_d24R_a, adj.P.Val), y=logFC))+
+  geom_boxplot(aes(colour = adj.P.Val))+
+  ggtitle(expression("Top 5 DEG DOX 24R adj. p value"))+
+  xlab("")+
+  ylim(c(-10, 10))+
+  ylab(expression("logFC"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5)),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+####144R DOX DE####
+top5DE_d144R_p <- top.table_V.D144r %>% 
+  dplyr::slice_min(., n=5, order_by=P.Value) %>% 
+  rownames_to_column(var = "GeneID")
+
+Gene_Name_d144R_p <- c("LINC03025", "SLC4A10", "VIT", "PSMA8", "ADGB")
+
+top5DE_d144R_p %>% mutate(GeneID = factor(GeneID, levels = c("440896", "57282", "5212", "143471", "79747"))) %>% 
+  cbind(Gene_Name_d144R_p)
+
+top5DE_d144R_a <- top.table_V.D144r %>% 
+  dplyr::slice_min(., n=5, order_by=adj.P.Val) %>% 
+  rownames_to_column(var = "GeneID")
+
+Gene_Name_d144R_a <- c("LINC03025", "SLC4A10", "VIT", "PSMA8", "ADGB")
+
+top5DE_d144R_a %>% mutate(GeneID = factor(GeneID, levels = c("440896", "57282", "5212", "143471", "79747"))) %>% 
+  cbind(Gene_Name_d144R_a)
+  
+#top 5 DE genes based on p-value
+ggplot(top5DE_d144R_p, aes(x=reorder(Gene_Name_d144R_p, P.Value), y=logFC))+
+  geom_boxplot(aes(colour = P.Value))+
+  ggtitle(expression("Top 5 DEG DOX 144R p value"))+
+  xlab("")+
+  ylim(c(-10, 10))+
+  ylab(expression("logFC"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5)),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+
+#top 5 DE genes based on adj p value 
+ggplot(top5DE_d24_a, aes(x=reorder(Gene_Name_d144R_a, adj.P.Val), y=logFC))+
+  geom_boxplot(aes(colour = adj.P.Val))+
+  ggtitle(expression("Top 5 DEG DOX 144R adj. p value"))+
+  xlab("")+
+  ylim(c(-10, 10))+
+  ylab(expression("logFC"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5)),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+#5FU 24hr DE genes
+#####24hr Tx DOX pval####
+top5DE_f24_p <- top.table_V.F24 %>% 
+  dplyr::slice_min(., n=5, order_by=P.Value) %>% 
+  rownames_to_column(var = "GeneID")
+
+Gene_Name_f24_p <- c("MIR135B", "BIVM-ERCC5", "CABP4", "MIR6756", "RNA5S1")
+
+top5DE_f24_p %>% mutate(GeneID = factor(GeneID, levels = c("442891", "100533467", "57010", "102465453", "100169751"))) %>% 
+  cbind(Gene_Name_d24_p)
+  
+
+#####24hr Tx 5FU adj pval####
+# top5DE_f24_a <- top.table_V.F24 %>% 
+#   dplyr::slice_min(., n=5, order_by=adj.P.Val) %>% 
+#   rownames_to_column(var = "GeneID")
+
+# Gene_Name_f24_a <- c("MIR135B", "BIVM-ERCC5", "CABP4", "MIR6756", "RNA5S1")
+# 
+# top5DE_f24_a %>% mutate(GeneID = factor(GeneID, levels = c("442891", "100533467", "57010", "102465453", "100169751"))) %>% 
+#   cbind(Gene_Name_f24_a)
+
+#top 5 DE genes based on p-value
+ggplot(top5DE_f24_p, aes(x=reorder(Gene_Name_f24_p, P.Value), y=logFC))+
+  geom_boxplot(aes(colour = P.Value))+
+  ggtitle(expression("Top 5 DEG 5FU 24 p value"))+
+  xlab("")+
+  ylim(c(-10, 10))+
+  ylab(expression("logFC"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5)),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+
+#top 5 DE genes based on adj p value 
+ggplot(top5DE_f24_p, aes(x=reorder(Gene_Name_f24_p, adj.P.Val), y=logFC))+
+  geom_boxplot(aes(colour = adj.P.Val))+
+  ggtitle(expression("Top 5 DEG 5FU 24 adj. p value"))+
+  xlab("")+
+  ylim(c(-10, 10))+
+  ylab(expression("logFC"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5)),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+#for this one they all have an identical adj p value
+
+#5FU 24R DE genes
+#####24hr Tx DOX pval####
+top5DE_f24R_p <- top.table_V.F24r %>% 
+  dplyr::slice_min(., n=5, order_by=P.Value) %>% 
+  rownames_to_column(var = "GeneID")
+
+Gene_Name_f24R_p <- c("PIF1", "PKMYT1", "IQGAP3", "ESPL1","SHCBP1")
+
+top5DE_d24_p %>% mutate(GeneID = factor(GeneID, levels = c("80119", "9088", "128239", "9700", "79801"))) %>% 
+  cbind(Gene_Name_f24R_p)
+  
+
+#####24hr Tx DOX adj pval####
+# top5DE_f24_a <- top.table_V.F24r %>% 
+#   dplyr::slice_min(., n=5, order_by=adj.P.Val) %>% 
+#   rownames_to_column(var = "GeneID")
+
+# Gene_Name_d24_a <- c("PIF1", "PKMYT1", "IQGAP3", "ESPL1","SHCBP1")
+# 
+# top5DE_d24_a %>% mutate(GeneID = factor(GeneID, levels = c("80119", "9088", "128239", "9700", "79801"))) %>% 
+#   cbind(Gene_Name_d24_a)
+
+#top 5 DE genes based on p-value
+ggplot(top5DE_f24R_p, aes(x=reorder(Gene_Name_f24R_p, P.Value), y=logFC))+
+  geom_boxplot(aes(colour = P.Value))+
+  ggtitle(expression("Top 5 DEG 5FU 24R p value"))+
+  xlab("")+
+  ylim(c(-10, 10))+
+  ylab(expression("logFC"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5)),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+
+#top 5 DE genes based on adj p value 
+ggplot(top5DE_f24_p, aes(x=reorder(Gene_Name_f24_p, adj.P.Val), y=logFC))+
+  geom_boxplot(aes(colour = adj.P.Val))+
+  ggtitle(expression("Top 5 DEG 5FU 24R adj. p value"))+
+  xlab("")+
+  ylim(c(-10, 10))+
+  ylab(expression("logFC"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5)),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+#5FU 144R top5DE genes
+
+#####144hr Tx 5FU pval####
+top5DE_f144R_p <- top.table_V.F144r %>% 
+  dplyr::slice_min(., n=5, order_by=P.Value) %>% 
+  rownames_to_column(var = "GeneID")
+
+Gene_Name_f144R_p <- c("MIR3941", "MIR6796", "SNORD115-48", "TRQ-CTG7-1","SYCE1")
+
+top5DE_f144R_p %>% mutate(GeneID = factor(GeneID, levels = c("100500866", "102465477", "100033822", "100188998", "93426"))) %>% 
+  cbind(Gene_Name_f144R_p)
+  
+
+#####144hr Tx 5fU adj pval####
+# top5DE_f144R_a <- top.table_V.F144r %>% 
+#   dplyr::slice_min(., n=5, order_by=adj.P.Val) %>% 
+#   rownames_to_column(var = "GeneID")
+
+#all have the same adj p value
+# 
+# Gene_Name_f144R_a <- c("MIR3941", "MIR6796", "SNORD115-48", "TRQ-CTG7-1","SYCE1")
+# 
+# top5DE_f144R_a %>% mutate(GeneID = factor(GeneID, levels = c("100500866", "102465477", "100033822", "100188998", "93426"))) %>% 
+#   cbind(Gene_Name_f144R_a)
+
+#top 5 DE genes based on p-value
+ggplot(top5DE_f144R_p, aes(x=reorder(Gene_Name_f144R_p, P.Value), y=logFC))+
+  geom_boxplot(aes(colour = P.Value))+
+  ggtitle(expression("Top 5 DEG 5FU 144R p value"))+
+  xlab("")+
+  ylim(c(-10, 10))+
+  ylab(expression("logFC"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5)),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+
+#top 5 DE genes based on adj p value 
+ggplot(top5DE_f144R_p, aes(x=reorder(Gene_Name_f144R_p, adj.P.Val), y=logFC))+
+  geom_boxplot(aes(colour = adj.P.Val))+
+  ggtitle(expression("Top 5 DEG 5FU 144R adj. p value"))+
+  xlab("")+
+  ylim(c(-10, 10))+
+  ylab(expression("logFC"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5)),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+>>>>>>> cee6b3d03a02b635036cd142ee8b8df81e05013b
 ```
 
 
