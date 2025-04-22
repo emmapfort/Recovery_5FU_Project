@@ -428,6 +428,21 @@ row.names(annot_list_hm) <- colnames(fC_Matrix_Full_cpm_filter_spearmancor_dox)
 pheatmap(fC_Matrix_Full_cpm_filter_spearmancor_dox, border_color = "black", legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = "black", fontsize = 10, fontsize_number = 5, annotation_col = annot_list_hm, annotation_colors = annot_col_hm)
 
 
+#look at the correlation between samples with boxplots using my Spearman dataset
+#set1 - all samples
+All_Spearman <- as.data.frame(fC_Matrix_Full_cpm_filter_spearmancor_dox) %>% 
+  rownames_to_column(var = "Sample")
+  
+
+#set2 - exact matches with Ind 6 + Ind 6 REP DOX24
+Ind6_Spearman <- as.data.frame(fC_Matrix_Full_cpm_filter_spearmancor_dox) %>% 
+  dplyr::select(contains("Ind6")) %>% 
+  rownames_to_column(var = "Sample")
+  
+
+#set 3 - all samples from rep ind
+
+
 
 ```
 
@@ -1011,7 +1026,7 @@ rownames(motif_prob_d) <- rownames(topgenelist_d)
 #Define the gene probability groups - I have 4
 clust1_d <- motif_prob_d %>% 
   as.data.frame() %>% 
-  filter(V1>0.57) %>% 
+  filter(V1>0.5) %>% 
   rownames
 
 #using a filter of >0.57 I get 11130 genes compared to 11156 above
@@ -1057,7 +1072,7 @@ NBL1_motif1_long_factors %>% ggplot(aes(x = txtime, y = log2cpm))+
 
 clust2_d <- motif_prob_d %>% 
   as.data.frame() %>% 
-  filter(V2>0.132) %>% 
+  filter(V2>0.5) %>% 
   rownames
 
 #using a filter of >0.132 I get the closest - 326 original vs 327 genes here
@@ -1102,7 +1117,7 @@ BCL2A1_motif1_long_factors %>% ggplot(aes(x = txtime, y = log2cpm))+
 
 clust3_d <- motif_prob_d %>% 
   as.data.frame() %>% 
-  filter(V3>0.3) %>% 
+  filter(V3>0.5) %>% 
   rownames
 
 #using a filter of >0.3 I get 740 genes vs original 739 genes
@@ -1147,7 +1162,7 @@ NR1I2_motif1_long_factors %>% ggplot(aes(x = txtime, y = log2cpm))+
 #cluster 4
 clust4_d <- motif_prob_d %>% 
   as.data.frame() %>% 
-  filter(V4>0.4) %>% 
+  filter(V4>0.5) %>% 
   rownames
 
 #using >0.4 as my cutoff, I get 1938 genes as compared to original 1948 genes
@@ -1271,6 +1286,226 @@ length(prob_motif_4)
 #2600 genes post prob
 
 #this totals 16540
+
+```
+
+```{r LogFC of All Genes Per Motif}
+#Extract the gene IDs from each motif
+
+##motif 1
+motif1_genes <- clust1_d_df
+
+##motif 2 
+motif2_genes <- clust2_d_df
+
+##motif 3
+motif3_genes <- clust3_d_df
+
+##motif 4
+motif4_genes <- clust4_d_df
+
+#Combine the toptables I have from pairwise analysis into a single dataframe
+d24_toptable <- top.table_V.D24_dox %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Drug = "DOX", Time = "24")
+
+d24r_toptable <- top.table_V.D24r_dox %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Drug = "DOX", Time = "24R")
+
+d144r_toptable <- top.table_V.D144r_dox %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Drug = "DOX", Time = "144R")
+
+combined_toptables_dox <- bind_rows(
+  d24_toptable,
+  d24r_toptable,
+  d144r_toptable)
+
+#Filter the data based on each motif
+filt_toptable <- combined_toptables_dox %>% 
+  dplyr::filter(entrezgene_ID  %in% clust1_d) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  facet_wrap(~Drug)+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for all genes in Motif 1")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_2 <- combined_toptables_dox %>% 
+  dplyr::filter(entrezgene_ID  %in% clust2_d) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  facet_wrap(~Drug)+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for all genes in Motif 2")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+
+#motif 3
+filt_toptable_3 <- combined_toptables_dox %>% 
+  dplyr::filter(entrezgene_ID  %in% clust3_d) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  facet_wrap(~Drug)+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for all genes in Motif 3")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+
+#motif 4
+filt_toptable_4 <- combined_toptables_dox %>% 
+  dplyr::filter(entrezgene_ID  %in% clust4_d) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  facet_wrap(~Drug)+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for all genes in Motif 4")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#plots
+filt_toptable
+#filt_toptable_2
+filt_toptable_3
+filt_toptable_4
+
+#now plot the abs logFC for each of these too
+filt_toptable_abs <- combined_toptables_dox %>% 
+  dplyr::filter(entrezgene_ID  %in% clust1_d) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  facet_wrap(~Drug)+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC for all genes in Motif 1")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_2_abs <- combined_toptables_dox %>% 
+  dplyr::filter(entrezgene_ID  %in% clust2_d) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  facet_wrap(~Drug)+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC for all genes in Motif 2")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+
+#motif 3
+filt_toptable_3_abs <- combined_toptables_dox %>% 
+  dplyr::filter(entrezgene_ID  %in% clust3_d) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  facet_wrap(~Drug)+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC for all genes in Motif 3")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+
+#motif 4
+filt_toptable_4_abs <- combined_toptables_dox %>% 
+  dplyr::filter(entrezgene_ID  %in% clust4_d) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  facet_wrap(~Drug)+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC for all genes in Motif 4")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+
+#plots
+filt_toptable_abs
+#filt_toptable_2_abs
+filt_toptable_3_abs
+filt_toptable_4_abs
 
 ```
 
