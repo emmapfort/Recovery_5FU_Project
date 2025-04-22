@@ -10,7 +10,7 @@ output:
     toc_float: true
     theme: journal
 editor_options: 
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 
 Welcome to my research website.
@@ -227,48 +227,112 @@ Let's use our toptables to find the top 5 DE genes in each condition
 ```{r Top 5 DE Genes, include = FALSE}
 #plot the top 5 most DE genes for each condition
 #i sorted the toptable by the top 5 most DE genes for each + found the corresponding gene name
-<<<<<<< HEAD
-# readRDS("data/fC_Matrix_Full_cpm_filter.RDS")
-# fC_df_filter_cpm <- as.data.frame(fC_Matrix_Full_cpm_filter)
-# 
-# #####24hr Tx DOX pval####
-# #slice the top 5 rows with the highest P value in my toptable of the given condition
-# top5DE_d24_p <- top.table_V.D24 %>% 
-#   dplyr::slice_min(., n=5, order_by=P.Value) %>% 
-#   rownames_to_column(var = "GeneID")
-# 
-# #make a list of the gene IDs of the top 5 DE genes
-# 
-# GeneID_top5_d24_p <- c("100996301", "100507533", "116369", "101929523", "148753")
-# 
-# #make a df of the samples (columns) that you want to look at
-# #d24 set
-# d24_gene_df <- fC_df_filter_cpm %>% 
-#   dplyr::select(matches("DOX_24")) %>% 
-#   dplyr::select(-(contains("rec")))
-# 
+
+#readRDS("data/fC_Matrix_Full_cpm_filter.RDS")
+#fC_df_filter_cpm <- as.data.frame(fC_Matrix_Full_cpm_filter)
+
+log2cpm_DE_df <- counts_DE_df %>% 
+  cpm(., log = TRUE) %>% 
+  as.data.frame()
+
+
+#####24hr Tx DOX pval####
+#slice the top 5 rows with the highest P value in my toptable of the given condition
+top5DE_d24_p <- top.table_V.D24 %>% 
+   dplyr::slice_min(., n=5, order_by=P.Value) %>% 
+   rownames_to_column(var = "GeneID")
+ 
+#make a list of the gene IDs of the top 5 DE genes
+ 
+GeneID_top5_d24_p <- c("100996301", "100507533", "116369", "101929523", "148753")
+ 
+#make a df of the samples (columns) that you want to look at
+#d24 set
+d24_gene_df <- log2cpm_DE_df %>% 
+  dplyr::select(matches("_24")) %>% 
+  dplyr::select(-(contains("rec"))) %>% 
+  dplyr::select(-(contains("FLUO"))) %>% 
+  rownames_to_column(var = "entrezgene_id")
 
 #now pull those rows out of my new dataframe 
 
-# top5DE_d24_log2cpm_p <- d24_gene_df %>% 
-#   rownames_to_column(var = "entrezgene_id") %>% 
-#   dplyr::filter(entrezgene_id == c("100996301", "100507533", "116369", "101929523", "148753"))
+#top5DE_d24_log2cpm_p <- d24_gene_df %>% 
+  #dplyr::filter(entrezgene_id == c("100996301", "100507533", "116369", "101929523", "148753"))
 
-#I'll pull each of htese genes out one by one and cbind
-# top5DE_d24_log2cpm_p_1 <- d24_gene_df %>% 
-#   rownames_to_column(var = "entrezgene_id") %>% 
-#   dplyr::filter(entrezgene_id == "100996301")
+#I'll pull each of these genes out one by one and rbind
+top5DE_d24_log2cpm_p_1 <- d24_gene_df %>% 
+  dplyr::filter(entrezgene_id == "100996301")
+
+top5DE_d24_log2cpm_p_2 <- d24_gene_df %>% 
+  dplyr::filter(entrezgene_id == "100507533")
+
+top5DE_d24_log2cpm_p_3 <- d24_gene_df %>% 
+  dplyr::filter(entrezgene_id == "116369")
+
+top5DE_d24_log2cpm_p_4 <- d24_gene_df %>% 
+  dplyr::filter(entrezgene_id == "101929523")
+
+top5DE_d24_log2cpm_p_5 <- d24_gene_df %>% 
+  dplyr::filter(entrezgene_id == "148753")
+
+top5DE_d24_log2cpm_p <- rbind(top5DE_d24_log2cpm_p_1, 
+                              top5DE_d24_log2cpm_p_2, 
+                              top5DE_d24_log2cpm_p_3,
+                              top5DE_d24_log2cpm_p_4,
+                              top5DE_d24_log2cpm_p_5)
+
+Gene_Name_d24_p <- c("FOXD3-AS1", "SOX2-AS1", "SLC26A8", "THBS2-AS1","FAM163A")
+
+top5DE_d24_p <- top5DE_d24_log2cpm_p %>% cbind(., Gene_Name_d24_p)
+
+#now that I have a full dataset with these genes, I can plot them in log2cpm
+
+top5DE_d24_p_melt <- melt(top5DE_d24_log2cpm_p, id.vars = "entrezgene_id")
+
+#now add in the factors
+ind_names_d24 <- c(rep("Ind1", 10), rep("Ind2", 10), rep("Ind3", 10), rep("Ind4", 10), rep("Ind5", 10), rep("Ind6", 10), rep("Ind6REP", 10))
+time_names_d24 <- c("24")
+#time_names_d24_1 <- c(rep(time_names_d24, 7))
+tx_names_d24_1 <- c(rep("DOX", 5), rep("DMSO", 5))
+tx_names_d24 <- c(rep(tx_names_d24_1, 7))
+txtime_names2_d24_1 <- c(rep("DOX_24", 5), rep("DMSO_24", 5))
+txtime_names2_d24 <- c(rep(txtime_names2_d24_1, 7))
 
 
-# Gene_Name_d24_p <- c("FOXD3-AS1", "SOX2-AS1", "SLC26A8", "THBS2-AS1","FAM163A")
+top5DE_d24_p_melt_df <- data.frame(tx = factor(tx_names_d24, levels = unique(tx_names_d24)),
+                               ind = factor(ind_names_d24, levels = unique(ind_names_d24)),
+                               txtime = factor(txtime_names2_d24, levels = unique(txtime_names2_d24)),
+                               time = factor(time_names_d24, levels = unique(time_names_d24)))
+top5DE_d24_melt_df_all <- cbind(top5DE_d24_p_melt, top5DE_d24_p_melt_df)
 
-# top5DE_d24_p %>% mutate(GeneID = factor(GeneID, levels = c("100996301", "100507533", "116369", "101929523", "148753"))) %>% 
-#   cbind(Gene_Name_d24_p)
+top5DE_d24_melt_df_all %>% ggplot(aes(x = entrezgene_id, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "Top 5 DE Genes d24")+
+  theme_bw(base_size = 16)+
+  #scale_fill_manual(values = c(tx_col))+
+  #scale_color_manual(values = c(ind_col))+
+  xlab("Genes")+
+  ylab("log2cpm")+
+  ylim(0,12)
 
 
-=======
-readRDS("data/fC_Matrix_Full_cpm_filter.RDS")
-fC_df_filter_cpm <- as.data.frame(fC_Matrix_Full_cpm_filter)
+#top 5 DE genes based on p-value
+ggplot(top5DE_d24_p, aes(x=reorder(Gene_Name_d24_p, P.Value), y=))+
+  geom_boxplot(aes(colour = P.Value))+
+  ggtitle(expression("Top 5 DEG DOX 24 p value"))+
+  xlab("")+
+  ylim(c(-10, 10))+
+  ylab(expression("logFC"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5)),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+
 
 #####24hr Tx DOX pval####
 #slice the top 5 rows with the highest P value in my toptable of the given condition
@@ -305,34 +369,13 @@ top5DE_d24_p %>% mutate(GeneID = factor(GeneID, levels = c("100996301", "1005075
   cbind(Gene_Name_d24_p)
 
 
->>>>>>> cee6b3d03a02b635036cd142ee8b8df81e05013b
-  
-
 #####24hr Tx DOX adj pval####
-# top5DE_d24_a <- top.table_V.D24 %>% 
-#   dplyr::slice_min(., n=5, order_by=adj.P.Val) %>% 
-#   rownames_to_column(var = "GeneID")
+top5DE_d24_a <- top.table_V.D24 %>% 
+  dplyr::slice_min(., n=5, order_by=adj.P.Val) %>% 
+  rownames_to_column(var = "GeneID")
 
-# Gene_Name_d24_a <- c("FOXD3-AS1", "SOX2-AS1", "SLC26A8", "FAM163A","THBS2-AS1")
-# 
-# top5DE_d24_a %>% mutate(GeneID = factor(GeneID, levels = c("100996301", "100507533", "116369", "148753", "101929523"))) %>% 
-#   cbind(Gene_Name_d24_a)
-
-#top 5 DE genes based on p-value
-# ggplot(top5DE_d24_p, aes(x=reorder(Gene_Name_d24_p, P.Value), y=logFC))+
-#   geom_boxplot(aes(colour = P.Value))+
-#   ggtitle(expression("Top 5 DEG DOX 24 p value"))+
-#   xlab("")+
-#   ylim(c(-10, 10))+
-#   ylab(expression("logFC"))+
-#   theme_bw()+
-#   theme(plot.title = element_text(size = rel(1.5)),
-#         axis.title = element_text(size = 15, color = "black"),
-#         axis.ticks = element_line(linewidth = 1.5),
-#         axis.line = element_line(linewidth = 1.5),
-#         axis.text = element_text(size =10, color = "black", angle = 0),
-#         strip.text.y = element_text(color = "white"))
-# 
+Gene_Name_d24_a <- c("FOXD3-AS1", "SOX2-AS1", "SLC26A8", "FAM163A","THBS2-AS1")
+ 
 
 #top 5 DE genes based on adj p value 
 # ggplot(top5DE_d24_a, aes(x=reorder(Gene_Name_d24_a, adj.P.Val), y=logFC))+
@@ -370,7 +413,7 @@ top5DE_d24_p %>% mutate(GeneID = factor(GeneID, levels = c("100996301", "1005075
 #   cbind(Gene_Name_d24R_a)
 
 #top 5 DE genes based on p-value
-<<<<<<< HEAD
+
 # ggplot(top5DE_d24_p, aes(x=reorder(Gene_Name_d24R_p, P.Value), y=logFC))+
 #   geom_boxplot(aes(colour = P.Value))+
 #   ggtitle(expression("Top 5 DEG DOX 24R p value"))+
@@ -614,7 +657,7 @@ top5DE_d24_p %>% mutate(GeneID = factor(GeneID, levels = c("100996301", "1005075
 #         axis.line = element_line(linewidth = 1.5),
 #         axis.text = element_text(size =10, color = "black", angle = 0),
 #         strip.text.y = element_text(color = "white"))
-=======
+
 ggplot(top5DE_d24_p, aes(x=reorder(Gene_Name_d24R_p, P.Value), y=logFC))+
   geom_boxplot(aes(colour = P.Value))+
   ggtitle(expression("Top 5 DEG DOX 24R p value"))+
@@ -962,6 +1005,7 @@ ggplot(MDM2_melt, aes(x=value, y=sample, fill = sample))+
   scale_fill_manual(values = col_tx_large)+
     xlab("log2cpm")+
   ylab("Conditions")
+
 ###FLUO ONLY####
 MDM2_fluo <- my_data_Fluo %>% filter(entrezgene_id=="4193")
 MDM2_melt_fluo <- melt(MDM2_fluo, variable.name = "sample")
@@ -3290,6 +3334,8 @@ tableNR_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col
         axis.line = element_line(linewidth = 1.5),
         axis.text = element_text(size = 10, colour = "black", angle = 0),
         strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#plot the logFC of all the genes in this motif
 
 
 
