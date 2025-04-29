@@ -1,0 +1,1657 @@
+---
+title: "Recovery New Set DOX Data"
+author: "Emma M Pfortmiller"
+date: "2025-04-25"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    theme: journal
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r Libraries}
+library(ggplot2)
+library(ggrepel)
+library(reshape2)
+library(hrbrthemes)
+library(tibble)
+library(tidyverse)
+library(edgebundleR)
+library(readxl)
+library(readr)
+library(edgeR)
+library(pheatmap)
+library(ggfortify)
+library(PCAtools)
+library(RColorBrewer)
+library(biomaRt)
+library(RUVSeq)
+library(Rfast)
+library(cowplot)
+library(gprofiler2)
+```
+
+
+```{r Dataframes}
+
+counts_raw <- read.csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_EMP_250220.csv", row.names = 1) %>% 
+  column_to_rownames(., "ensembl_gene_id") %>% 
+  dplyr::select(-(contains("FLUO")))
+#View(counts_raw)
+
+#now I want to filter my raw counts matrix with only the DOX + DMSO samples
+
+counts_raw_filt <- counts_raw[rowMeans(cpm(counts_raw, log = TRUE))> 0, ]
+
+#Now let's turn this into log2cpm values
+
+counts_cpm_filt_dox <- cpm(counts_raw_filt, log = TRUE)
+
+#saveRDS(counts_cpm_filt_dox, "data/final_data/counts_cpm_filt_dox.RDS")
+
+#I saved two separate files - one was filtered based on all 63 samples, the second was filtered based on 42 samples without FLUO included
+
+```
+
+```{r Colors + Factors}
+
+col_tx_large <- rep(c("#499FBD" , "#63666D"), 21)
+col_tx_large_2 <- c(rep("#499FBD" , 3), rep("#63666D", 3), 21)
+
+
+ind_col <- c("#003F5C", "#45AE91",  "#58508D", "#8B3E9B", "#FF6361", "#BC4169", "#FF2362")
+
+tx_col <- c("#499FBD","#63666D")
+
+time_col <- c("#fbb4b9", "#f768a1", "#ae017e")
+
+ind_names <- c(rep("Ind1", 6), rep("Ind2", 6), rep("Ind3", 6), rep("Ind4", 6), rep("Ind5", 6), rep("Ind6", 6), rep("Ind6REP", 6))
+time_names <- c(rep("24", 2), rep("24rec", 2), rep("144rec", 2))
+time_names2 <- c("24", "24rec", "144rec")
+time_names <- c(rep(time_names, 7))
+time_names2 <- c(rep(time_names2, 7))
+tx_names <- c("DOX", "DMSO")
+tx_names <- c(rep(tx_names, 21))
+tx_names2 <- c(rep("DOX", 3), rep("DMSO", 3))
+tx_names2 <- c(rep(tx_names2, 21))
+txtime_names <- c("DOX_24", "DMSO_24", "DOX_24rec", "DMSO_24rec", "DOX_144rec", "DMSO_144rec")
+txtime_names <- c(rep(txtime_names, 7))
+txtime_names2 <- c("DOX_24", "DOX_24rec", "DOX_144rec", "DMSO_24", "DMSO_24rec", "DMSO_144rec")
+txtime_names2 <- c(rep(txtime_names2, 7))
+
+
+```
+
+
+```{r Differential Expression Updated}
+
+group_d <- rep(c("DOX_24",
+                  "DMSO_24",
+                  "DOX_24rec",
+                  "DMSO_24rec",
+                  "DOX_144rec",
+                  "DMSO_144rec"), 7)
+
+dge_d <- DGEList.data.frame(counts = counts_raw_filt, group = group_d, genes = row.names(counts_raw_filt))
+
+
+#calculate the normalization factors with method TMM
+dged_calc <- calcNormFactors(dge_d, method = "TMM")
+
+
+#Pull out factors
+snames_d <- data.frame("samples" = colnames(dged_calc)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
+
+snames_time_d <- snames_d$Time
+snames_tx_d <- snames_d$Treatment
+snames_ind_d <- snames_d$Individual
+
+#Create my model matrix
+mm_r_d <- model.matrix(~0 + group_d)
+
+p_d <- voom(dged_calc$counts, mm_r_d, plot = TRUE)
+
+corfit_d <- duplicateCorrelation(p_d, mm_r_d, block = snames_ind_d)
+
+v_d <- voom(dged_calc$counts, mm_r_d, block = snames_ind_d, correlation = corfit_d$consensus)
+
+fit_d <- lmFit(v_d, mm_r_d, block = snames_ind_d, correlation = corfit_d$consensus)
+
+#make sure to check which order the columns are in - otherwise they won't match right (it was moved into alphabetical and number order)
+colnames(mm_r_d) <- c("DMSO_144rec","DMSO_24","DMSO_24rec","DOX_144rec","DOX_24","DOX_24rec")
+
+cm_r_d <- makeContrasts(
+        V.D24 = DOX_24 - DMSO_24,
+        V.D24r = DOX_24rec - DMSO_24rec,
+        V.D144r = DOX_144rec - DMSO_144rec,
+        levels = mm_r_d
+)
+
+vfit_r_d <- lmFit(p_d, mm_r_d)
+vfit_r_d <- contrasts.fit(vfit_r_d, contrasts = cm_r_d)
+
+efit_d <- eBayes(vfit_r_d)
+
+results_d = decideTests(efit_d)
+summary(results_d)
+#        V.D24 V.D24r V.D144r
+# Down    4305   2024     261
+# NotSig  5985   7564   14016
+# Up      4029   4731      42
+
+####plot your voom####
+voom_plot_d <- voom(dged_calc, mm_r_d, plot = TRUE)
+
+```
+
+```{r Toptables DE Updated}
+# top.table_V.D24_d <- topTable(fit = efit_d, coef = "V.D24", number = nrow(dged_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+# head(top.table_V.D24_d)
+
+#saveRDS(top.table_V.D24_d, "data/final_data/top.table_V.D24_d.RDS")
+top.table_V.D24_d <- readRDS("data/final_data/top.table_V.D24_d.RDS")
+
+# top.table_V.D24r_d <- topTable(fit = efit_d, coef = "V.D24r", number = nrow(dged_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+# head(top.table_V.D24r_d)
+
+#saveRDS(top.table_V.D24r_d, "data/final_data/top.table_V.D24r_d.RDS")
+top.table_V.D24r_d <- readRDS("data/final_data/top.table_V.D24r_d.RDS")
+
+# top.table_V.D144r_d <- topTable(fit = efit_d, coef = "V.D144r", number = nrow(dged_calc), adjust.method = "BH", p.value = 1, sort.by = "none")
+# head(top.table_V.D144r_d)
+
+#saveRDS(top.table_V.D144r_d, "data/final_data/top.table_V.D144r_d.RDS")
+top.table_V.D144r_d <- readRDS("data/final_data/top.table_V.D144r_d.RDS")
+
+#plot the top 5 most DE genes for each condition
+#i sorted the toptable by the top 5 most DE genes for each + found the corresponding gene name
+#####24hr Tx####
+topDEG_d24 <- top.table_V.D24_d %>% 
+  dplyr::slice_min(., n=5, order_by=adj.P.Val) %>% 
+  rownames_to_column(var = "GeneID")
+
+topDEG_d24_genes <- c("6421", "1901", "8880", "80775", "284309")
+
+topDEG_d24_genenames <- c("SFPQ","S1PR1","FUBP1","TMEM177","ZNF776")
+
+topDEG_d24_list <-
+  topDEG_d24 %>%
+  mutate(GeneID = factor(GeneID, levels = c("6421", "1901", "8880", "80775", "284309"))) %>%
+  cbind(topDEG_d24_genenames)
+
+#pull out each gene for both treatment conditions and all timepoints to check that DE is working
+#do this one by one and then plot together
+
+genematrix_dox <- counts_cpm_filt_dox %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var = "entrezgene_id")
+
+
+###SFPQ - 6421###
+SFPQ_gene1_d <- genematrix_dox %>% filter(entrezgene_id=="6421")
+SFPQ_gene1_new_d <- as.data.frame(SFPQ_gene1_d)
+
+SFPQ_gene1_melt_d <- melt(SFPQ_gene1_d, variable.name = "sample")
+SFPQ_gene1_melt_new_d <- melt(SFPQ_gene1_d, variable.name = "sample")
+
+SFPQ_gene1_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+SFPQ_gene1_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+SFPQ_gene1_melt_df_all_d <- cbind(SFPQ_gene1_melt_d, SFPQ_gene1_melt_df_d)
+SFPQ_gene1_melt_df_all2_d <- cbind(SFPQ_gene1_melt_new_d, SFPQ_gene1_melt_df2_d)
+
+
+####SFPQ Gene 1 d24####
+SFPQ_gene1_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "SFPQ")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+
+  
+###S1PR1 - 1901###
+S1PR1_gene2_d <- genematrix_dox %>% filter(entrezgene_id=="1901")
+S1PR1_gene2_new_d <- as.data.frame(S1PR1_gene2_d)
+
+S1PR1_gene2_melt_d <- melt(S1PR1_gene2_d, variable.name = "sample")
+S1PR1_gene2_melt_new_d <- melt(S1PR1_gene2_d, variable.name = "sample")
+
+S1PR1_gene2_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+S1PR1_gene2_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+S1PR1_gene2_melt_df_all_d <- cbind(S1PR1_gene2_melt_d, S1PR1_gene2_melt_df_d)
+S1PR1_gene2_melt_df_all2_d <- cbind(S1PR1_gene2_melt_new_d, S1PR1_gene2_melt_df2_d)
+  
+####S1PR1 Gene2 d24####
+S1PR1_gene2_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "S1PR1")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+
+#####FUBP1 8880####
+FUBP1_gene3_d <- genematrix_dox %>% filter(entrezgene_id=="8880")
+FUBP1_gene3_new_d <- as.data.frame(FUBP1_gene3_d)
+
+FUBP1_gene3_melt_d <- melt(FUBP1_gene3_d, variable.name = "sample")
+FUBP1_gene3_melt_new_d <- melt(FUBP1_gene3_d, variable.name = "sample")
+
+FUBP1_gene3_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+FUBP1_gene3_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+FUBP1_gene3_melt_df_all_d <- cbind(FUBP1_gene3_melt_d, FUBP1_gene3_melt_df_d)
+FUBP1_gene3_melt_df_all2_d <- cbind(FUBP1_gene3_melt_new_d, FUBP1_gene3_melt_df2_d)
+  
+####FUBP1 Gene2 d24####
+FUBP1_gene3_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "FUBP1")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+  
+#####TMEM177 - 80775####
+TMEM177_gene4_d <- genematrix_dox %>% filter(entrezgene_id=="80775")
+TMEM177_gene4_new_d <- as.data.frame(TMEM177_gene4_d)
+
+TMEM177_gene4_melt_d <- melt(TMEM177_gene4_d, variable.name = "sample")
+TMEM177_gene4_melt_new_d <- melt(TMEM177_gene4_d, variable.name = "sample")
+
+TMEM177_gene4_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+TMEM177_gene4_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+TMEM177_gene4_melt_df_all_d <- cbind(TMEM177_gene4_melt_d, TMEM177_gene4_melt_df_d)
+TMEM177_gene4_melt_df_all2_d <- cbind(TMEM177_gene4_melt_new_d, TMEM177_gene4_melt_df2_d)
+  
+####TMEM177 Gene 4 d24####
+TMEM177_gene4_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "TMEM177")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+
+  
+#####ZNF776 - 284309####
+ZNF776_gene5_d <- genematrix_dox %>% filter(entrezgene_id=="284309")
+ZNF776_gene5_new_d <- as.data.frame(ZNF776_gene5_d)
+
+ZNF776_gene5_melt_d <- melt(ZNF776_gene5_d, variable.name = "sample")
+ZNF776_gene5_melt_new_d <- melt(ZNF776_gene5_d, variable.name = "sample")
+
+ZNF776_gene5_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+ZNF776_gene5_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+ZNF776_gene5_melt_df_all_d <- cbind(ZNF776_gene5_melt_d, ZNF776_gene5_melt_df_d)
+ZNF776_gene5_melt_df_all2_d <- cbind(ZNF776_gene5_melt_new_d, ZNF776_gene5_melt_df2_d)
+  
+####TMEM177 Gene 5 d24####
+ZNF776_gene5_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "ZNF776")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+  
+  
+####24hr Recovery####
+topDEG_d24R <- top.table_V.D24r_d %>% 
+  dplyr::slice_min(., n=5, order_by=adj.P.Val) %>% 
+  rownames_to_column(var = "GeneID")
+
+topDEF_d24r_genes <- c("3006", "283463", "3012", "2651", "79048")
+
+topDEG_d24r_genenames <- c("H1-2", "MUC19", "H2AC8", "GCNT2", "SECISBP2")
+
+# topDEG_dox24R %>% mutate(GeneID = factor(GeneID, levels = c("54207", "1475", "353132", "23440", "337882"))) %>% 
+  # cbind(Gene_Name1)
+
+###H1-2 - 3006###
+H1_2_gene1_d <- genematrix_dox %>% filter(entrezgene_id=="3006")
+H1_2_gene1_new_d <- as.data.frame(H1_2_gene1_d)
+
+H1_2_gene1_melt_d <- melt(H1_2_gene1_d, variable.name = "sample")
+H1_2_gene1_melt_new_d <- melt(H1_2_gene1_d, variable.name = "sample")
+
+H1_2_gene1_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+H1_2_gene1_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+H1_2_gene1_melt_df_all_d <- cbind(H1_2_gene1_melt_d, H1_2_gene1_melt_df_d)
+H1_2_gene1_melt_df_all2_d <- cbind(H1_2_gene1_melt_new_d, H1_2_gene1_melt_df2_d)
+
+
+####SFPQ Gene 1 d24####
+H1_2_gene1_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "H1-2")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+
+  
+###MUC19 - 1901###
+MUC19_gene2_d <- genematrix_dox %>% filter(entrezgene_id=="283463")
+MUC19_gene2_new_d <- as.data.frame(MUC19_gene2_d)
+
+MUC19_gene2_melt_d <- melt(MUC19_gene2_d, variable.name = "sample")
+MUC19_gene2_melt_new_d <- melt(MUC19_gene2_d, variable.name = "sample")
+
+MUC19_gene2_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+MUC19_gene2_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+MUC19_gene2_melt_df_all_d <- cbind(MUC19_gene2_melt_d, MUC19_gene2_melt_df_d)
+MUC19_gene2_melt_df_all2_d <- cbind(MUC19_gene2_melt_new_d, MUC19_gene2_melt_df2_d)
+  
+####MUC19 Gene2 d24####
+MUC19_gene2_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "MUC19")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+
+#####H2AC8 3012####
+H2AC8_gene3_d <- genematrix_dox %>% filter(entrezgene_id=="3012")
+H2AC8_gene3_new_d <- as.data.frame(H2AC8_gene3_d)
+
+H2AC8_gene3_melt_d <- melt(H2AC8_gene3_d, variable.name = "sample")
+H2AC8_gene3_melt_new_d <- melt(H2AC8_gene3_d, variable.name = "sample")
+
+H2AC8_gene3_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+H2AC8_gene3_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+H2AC8_gene3_melt_df_all_d <- cbind(H2AC8_gene3_melt_d, H2AC8_gene3_melt_df_d)
+H2AC8_gene3_melt_df_all2_d <- cbind(H2AC8_gene3_melt_new_d, H2AC8_gene3_melt_df2_d)
+  
+####H2AC8 Gene2 d24####
+H2AC8_gene3_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "H2AC8")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+  
+#####GCNT2 - 2651####
+GCNT2_gene4_d <- genematrix_dox %>% filter(entrezgene_id=="2651")
+GCNT2_gene4_new_d <- as.data.frame(GCNT2_gene4_d)
+
+GCNT2_gene4_melt_d <- melt(GCNT2_gene4_d, variable.name = "sample")
+GCNT2_gene4_melt_new_d <- melt(GCNT2_gene4_d, variable.name = "sample")
+
+GCNT2_gene4_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+GCNT2_gene4_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+GCNT2_gene4_melt_df_all_d <- cbind(GCNT2_gene4_melt_d, GCNT2_gene4_melt_df_d)
+GCNT2_gene4_melt_df_all2_d <- cbind(GCNT2_gene4_melt_new_d, GCNT2_gene4_melt_df2_d)
+  
+####GCNT2 Gene 4 d24####
+GCNT2_gene4_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "GCNT2")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+
+  
+#####SECISBP2 - 79048####
+SECISBP2_gene5_d <- genematrix_dox %>% filter(entrezgene_id=="79048")
+SECISBP2_gene5_new_d <- as.data.frame(SECISBP2_gene5_d)
+
+SECISBP2_gene5_melt_d <- melt(SECISBP2_gene5_d, variable.name = "sample")
+SECISBP2_gene5_melt_new_d <- melt(SECISBP2_gene5_d, variable.name = "sample")
+
+SECISBP2_gene5_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+SECISBP2_gene5_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+SECISBP2_gene5_melt_df_all_d <- cbind(SECISBP2_gene5_melt_d, SECISBP2_gene5_melt_df_d)
+SECISBP2_gene5_melt_df_all2_d <- cbind(SECISBP2_gene5_melt_new_d, SECISBP2_gene5_melt_df2_d)
+  
+####SECISBP2 Gene 5 d24####
+SECISBP2_gene5_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "SECISBP2")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+  
+  
+####144R####
+topDEG_d144R <- top.table_V.D144r_d %>% 
+  dplyr::slice_min(., n=5, order_by=adj.P.Val) %>% 
+  rownames_to_column(var = "GeneID")
+
+topDEF_d144r_genes <- c("57405", "24137", "10024", "10721", "9787")
+
+topDEG_d144r_genenames <- c("SPC25", "KIF4A", "TROAP", "POLQ", "DLGAP5")
+
+###SPC25- 57405###
+SPC25_gene1_d <- genematrix_dox %>% filter(entrezgene_id=="57405")
+SPC25_gene1_new_d <- as.data.frame(SPC25_gene1_d)
+
+SPC25_gene1_melt_d <- melt(SPC25_gene1_d, variable.name = "sample")
+SPC25_gene1_melt_new_d <- melt(SPC25_gene1_d, variable.name = "sample")
+
+SPC25_gene1_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+SPC25_gene1_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+SPC25_gene1_melt_df_all_d <- cbind(SPC25_gene1_melt_d, SPC25_gene1_melt_df_d)
+SPC25_gene1_melt_df_all2_d <- cbind(SPC25_gene1_melt_new_d, SPC25_gene1_melt_df2_d)
+
+
+####SPC25 Gene 1 d24####
+SPC25_gene1_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "SPC25")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+
+  
+###KIF4A - 24137###
+KIF4A_gene2_d <- genematrix_dox %>% filter(entrezgene_id=="24137")
+KIF4A_gene2_new_d <- as.data.frame(KIF4A_gene2_d)
+
+KIF4A_gene2_melt_d <- melt(KIF4A_gene2_d, variable.name = "sample")
+KIF4A_gene2_melt_new_d <- melt(KIF4A_gene2_d, variable.name = "sample")
+
+KIF4A_gene2_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+KIF4A_gene2_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+KIF4A_gene2_melt_df_all_d <- cbind(KIF4A_gene2_melt_d, KIF4A_gene2_melt_df_d)
+KIF4A_gene2_melt_df_all2_d <- cbind(KIF4A_gene2_melt_new_d, KIF4A_gene2_melt_df2_d)
+  
+####KIF4A Gene2 d24####
+KIF4A_gene2_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "KIF4A")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+
+#####TROAP 10024####
+TROAP_gene3_d <- genematrix_dox %>% filter(entrezgene_id=="10024")
+TROAP_gene3_new_d <- as.data.frame(TROAP_gene3_d)
+
+TROAP_gene3_melt_d <- melt(TROAP_gene3_d, variable.name = "sample")
+TROAP_gene3_melt_new_d <- melt(TROAP_gene3_d, variable.name = "sample")
+
+TROAP_gene3_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+TROAP_gene3_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+TROAP_gene3_melt_df_all_d <- cbind(TROAP_gene3_melt_d, TROAP_gene3_melt_df_d)
+TROAP_gene3_melt_df_all2_d <- cbind(TROAP_gene3_melt_new_d, TROAP_gene3_melt_df2_d)
+  
+####TROAPGene2 d24####
+TROAP_gene3_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "TROAP")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+  
+#####POLQ - 10721####
+POLQ_gene4_d <- genematrix_dox %>% filter(entrezgene_id=="10721")
+POLQ_gene4_new_d <- as.data.frame(GCNT2_gene4_d)
+
+POLQ_gene4_melt_d <- melt(POLQ_gene4_d, variable.name = "sample")
+POLQ_gene4_melt_new_d <- melt(POLQ_gene4_d, variable.name = "sample")
+
+POLQ_gene4_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+POLQ_gene4_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+POLQ_gene4_melt_df_all_d <- cbind(POLQ_gene4_melt_d, POLQ_gene4_melt_df_d)
+POLQ_gene4_melt_df_all2_d <- cbind(POLQ_gene4_melt_new_d, POLQ_gene4_melt_df2_d)
+  
+####POLQ Gene 4 d24####
+POLQ_gene4_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "POLQ")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+
+  
+#####DLGAP5 - 9787####
+DLGAP5_gene5_d <- genematrix_dox %>% filter(entrezgene_id=="9787")
+DLGAP5_gene5_new_d <- as.data.frame(DLGAP5_gene5_d)
+
+DLGAP5_gene5_melt_d <- melt(DLGAP5_gene5_d, variable.name = "sample")
+DLGAP5_gene5_melt_new_d <- melt(DLGAP5_gene5_d, variable.name = "sample")
+
+DLGAP5_gene5_melt_df_d <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+DLGAP5_gene5_melt_df2_d <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+DLGAP5_gene5_melt_df_all_d <- cbind(DLGAP5_gene5_melt_d, DLGAP5_gene5_melt_df_d)
+DLGAP5_gene5_melt_df_all2_d <- cbind(DLGAP5_gene5_melt_new_d, DLGAP5_gene5_melt_df2_d)
+  
+####DLGAP5 Gene 5 d24####
+DLGAP5_gene5_melt_df_all2_d %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "DLGAP5")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-5, 10)
+  theme(plot.title = element_text(face = "italic"))
+ 
+
+
+```
+
+```{r Top 5 DE Genes Plots}
+
+#####DOX 24hr top5DEG#####
+
+genes_dox <- as.data.frame(counts_cpm_filt_dox)
+genes_dox_df <- rownames_to_column(genes_dox, var = "entrezgene_id")
+
+d24_genes_dox_list <- c("SFPQ","S1PR1","FUBP1","TMEM177","ZNF776")
+
+#ensembl_dox <- useMart("ensembl", dataset="hsapiens_gene_ensembl")
+#saveRDS(ensembl_dox, "data/ensembl_backup_dox.RDS")
+ensembl_dox <- readRDS("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/ensembl_backup_dox.RDS")
+# my_chr_dox <- c(1:22, 'M', 'X', 'Y')  ## creates a filter for each database
+# 
+# my_attributes_dox <- c('entrezgene_id', 'ensembl_gene_id', 'hgnc_symbol')
+
+#d24_topDEG_dox <- getBM(attributes=my_attributes_dox,filters ='hgnc_symbol',
+                #values = d24_genes_dox_list, mart = ensembl_dox)
+#write.csv(d24_topDEG_dox, "data/final_data/d24_top5DEG_dox.csv")
+d24_topDEG_dox <-read.csv("data/final_data/d24_top5DEG_dox.csv")
+
+d24_fungraph_dox <- as.data.frame(counts_cpm_filt_dox[rownames(counts_cpm_filt_dox) %in% d24_topDEG_dox$entrezgene_id, ])
+
+
+d24_fungraph_dox %>% 
+  rownames_to_column("entrezgene_id") %>% 
+  pivot_longer(-entrezgene_id, names_to = "samples",values_to = "log2cpm") %>% 
+  mutate(gene = case_match(entrezgene_id,"6421"~"SFPQ","1901"~"S1PR1",
+  "8880"~"FUBP1","80775"~"TMEM177","284309"~"ZNF776",.default = entrezgene_id)) %>% 
+  ggplot(., aes(x=reorder(gene,log2cpm,decreasing=TRUE), y=log2cpm))+
+  geom_boxplot()+
+  geom_point()+
+  scale_color_manual(values = "ind_col")+
+  ggtitle(expression("Top 5 DE Genes DOX24"))+
+  xlab("")+
+  ylim(-5,10)+
+  ylab(expression("log"[2]~"cpm"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+
+
+
+#####DOX 24R top5DEG#####
+
+d24r_genes_dox_list <- c("H1-2", "MUC19", "H2AC8", "GCNT2", "SECISBP2")
+
+topDEF_d24r_genes <- c("3006", "283463", "3012", "2651", "79048")
+
+# d24r_topDEG_dox <- getBM(attributes=my_attributes_dox,filters ='hgnc_symbol',
+#                 values = d24r_genes_dox_list, mart = ensembl_dox)
+#write.csv(d24r_topDEG_dox, "data/final_data/d24rec_top5DEG_dox.csv")
+d24r_topDEG_dox <-read.csv("data/final_data/d24rec_top5DEG_dox.csv")
+
+d24r_fungraph_dox <- as.data.frame(counts_cpm_filt_dox[rownames(counts_cpm_filt_dox) %in% d24r_topDEG_dox$entrezgene_id, ])
+  
+
+d24r_fungraph_dox %>% 
+  rownames_to_column("entrezgene_id") %>% 
+  pivot_longer(-entrezgene_id, names_to = "samples",values_to = "log2cpm") %>% 
+  mutate(gene = case_match(entrezgene_id,"3006"~"H1-2","283463"~"MUC19",
+  "3012"~"H2AC8","2651"~"GCNT2","79048"~"SECISBP2",.default = entrezgene_id)) %>% 
+  ggplot(., aes(x=reorder(gene,log2cpm,decreasing=TRUE), y=log2cpm))+
+  geom_boxplot()+
+  geom_point()+
+  scale_color_manual(values = "ind_col")+
+  ggtitle(expression("Top 5 DE Genes DOX24Rec"))+
+  xlab("")+
+  ylim(-5,10)+
+  ylab(expression("log"[2]~"cpm"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+#####DOX 144R top5DEG#####
+
+d144r_genes_dox_list <- c("SPC25", "KIF4A", "TROAP", "POLQ", "DLGAP5")
+
+topDEF_d144r_genes <- c("57405", "24137", "10024", "10721", "9787")
+
+# d144r_topDEG_dox <- getBM(attributes=my_attributes_dox,filters ='hgnc_symbol',
+#                 values = d144r_genes_dox_list, mart = ensembl_dox)
+#write.csv(d144r_topDEG_dox, "data/final_data/d144rec_top5DEG_dox.csv")
+d144r_topDEG_dox <-read.csv("data/final_data/d144rec_top5DEG_dox.csv")
+
+d144r_fungraph_dox <- as.data.frame(counts_cpm_filt_dox[rownames(counts_cpm_filt_dox) %in% d144r_topDEG_dox$entrezgene_id, ])
+  
+
+d144r_fungraph_dox %>% 
+  rownames_to_column("entrezgene_id") %>% 
+  pivot_longer(-entrezgene_id, names_to = "samples",values_to = "log2cpm") %>% 
+  mutate(gene = case_match(entrezgene_id,"57405"~"SPC25","24137"~"KIF4A",
+  "10024"~"TROAP","10721"~"POLQ","9787"~"DLGAP5",.default = entrezgene_id)) %>% 
+  ggplot(., aes(x=reorder(gene,log2cpm,decreasing=TRUE), y=log2cpm))+
+  geom_boxplot()+
+  geom_point()+
+  scale_color_manual(values = "ind_col")+
+  ggtitle(expression("Top 5 DE Genes DOX144Rec"))+
+  xlab("")+
+  ylim(-5,10)+
+  ylab(expression("log"[2]~"cpm"))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size =10, color = "black", angle = 0),
+        strip.text.y = element_text(color = "white"))
+
+
+```
+
+
+
+```{r Cormotif Attempt New Matrix}
+
+annot_d <- data.frame("samples" = colnames(counts_cpm_filt_dox)) %>% separate_wider_delim(., cols = samples, names = c("Tx", "Time", "Ind"), delim = "_", cols_remove = FALSE) %>% unite(., col = "Tx_Time", Tx, Time, sep = "_", remove = FALSE) 
+
+Cormotif_d <- counts_cpm_filt_dox
+
+Cormotif_df_d <- as.data.frame(Cormotif_d)
+
+#make the groupid based on your experiment - 6 different treatments 7 individuals
+
+groupid_d <- rep(c(1, 2, 3, 4, 5, 6), 7)
+
+#make the compid based on your experiment - comparing DOX to DMSO across all samples
+
+compid_d <- data.frame(c1 = c(1, 3, 5), c2 = c(2, 4, 6))
+
+```
+
+```{r Cormotif Run}
+
+set.seed(12345)
+# Cormotif_dox <- cormotiffit(exprs = Cormotif_d,
+#                                 groupid = groupid_d,
+#                                 compid = compid_d,
+#                                 K=1:6, 
+#                                 max.iter = 500, 
+#                                 BIC = TRUE,
+#                                 runtype = "logCPM")
+
+#only need to run this once! 
+#save this to an object so I can retrieve it as needed
+
+#saveRDS(Cormotif_dox, "data/final_data/Cormotif_dox.RDS")
+
+Cormotif_dox <- readRDS("data/final_data/Cormotif_dox.RDS")
+
+```
+
+```{r Cormotif AIC + BIC Plot}
+
+plotIC(Cormotif_dox)
+
+```
+
+```{r Cormotif Plot Motifs}
+
+plotMotif(Cormotif_dox)
+
+myColors <-  rev(c("#FFFFFF", "#E6E6E6" ,"#CCCCCC", "#B3B3B3", "#999999", "#808080", "#666666","#4C4C4C", "#333333", "#191919","#000000"))
+
+plot.new()
+legend('bottomleft',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4",  "0.5", "0.6", "0.7", "0.8","0.9", "1")), box.col="white",title = "Probability\nlegend", horiz=FALSE,title.cex=.8)
+
+
+```
+
+```{r Cormotif Probabilities}
+
+topgenelist_d <- generank(Cormotif_dox$bestmotif$p.post)
+rownames(topgenelist_d) <- rownames(Cormotif_df_d)
+
+
+motif_prob_d <- Cormotif_dox$bestmotif$clustlike 
+rownames(motif_prob_d) <- rownames(topgenelist_d)
+#saveRDS(motif_prob_d, "data/final_data/Cormotif_prob_gene_list_dox.RDS")
+
+
+#Define the gene probability groups - I have 2
+clust1_d <- motif_prob_d %>% 
+  as.data.frame() %>% 
+  filter(V1>0.5 & V2<0.5) %>% 
+  rownames()
+
+length(clust1_d)
+#7502 genes
+
+clust2_d <- motif_prob_d %>% 
+  as.data.frame() %>% 
+  filter(V1<0.5 & V2>0.5) %>%
+  rownames
+
+length(clust2_d)
+#6817 genes
+
+clust1_d_df <- as.data.frame(clust1_d)
+
+#example gene - TXLNGY - 246126 - 
+exgene_motif1 <- Cormotif_df_d %>% 
+  rownames_to_column(var = "entrezgene_id") %>% 
+  dplyr::filter(entrezgene_id == "246126")
+
+exgene_motif1_long <- melt(exgene_motif1,
+                         id.vars = c("entrezgene_id"),
+                         variable.name = "Sample",
+                         value.name = "log2cpm")
+
+#now add in my factors like time, tx, tx_time, and ind by breaking up the Sample column
+exgene_motif1_long_df <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                                  ind = factor(ind_names, levels = unique(ind_names)),
+                                  txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                                  time = factor(time_names2, levels = unique(time_names2)))
+
+exgene_motif1_long_factors <- cbind(exgene_motif1_long_df, exgene_motif1_long)
+
+exgene_motif1_long_factors %>% ggplot(aes(x = txtime, y = log2cpm))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "TXLNGY")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-10,10)+
+  theme(plot.title = element_text(face = "italic"))
+
+#saveRDS(CDKN1A_geneplot_Dox, "data/CDKN1A_geneplot_Dox.RDS")
+
+####clust2####
+clust2_d_df <- as.data.frame(clust2_d)
+
+#example gene - BUB1B - 701 - 
+exgene_motif2 <- Cormotif_df_d %>% 
+  rownames_to_column(var = "entrezgene_id") %>% 
+  dplyr::filter(entrezgene_id == "701")
+
+exgene_motif2_long <- melt(exgene_motif2,
+                         id.vars = c("entrezgene_id"),
+                         variable.name = "Sample",
+                         value.name = "log2cpm")
+
+#now add in my factors like time, tx, tx_time, and ind by breaking up the Sample column
+exgene_motif2_long_df <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                                  ind = factor(ind_names, levels = unique(ind_names)),
+                                  txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                                  time = factor(time_names2, levels = unique(time_names2)))
+
+exgene_motif2_long_factors <- cbind(exgene_motif2_long_df, exgene_motif2_long)
+
+exgene_motif2_long_factors %>% ggplot(aes(x = txtime, y = log2cpm))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "BUB1B")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")+
+  ylim(-10,10)+
+  theme(plot.title = element_text(face = "italic"))
+
+```
+
+```{r Cormotif logFC Plots}
+
+#Extract the gene IDs from each motif
+
+##motif 1
+motif1_genes <- clust1_d_df
+
+##motif 2 
+motif2_genes <- clust2_d_df
+
+
+#Combine the toptables I have from pairwise analysis into a single dataframe
+d24_toptable <- top.table_V.D24_d %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Time = "24")
+
+d24r_toptable <- top.table_V.D24r_d %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Time = "24R")
+
+d144r_toptable <- top.table_V.D144r_d %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Time = "144R")
+
+combined_toptables_dox <- bind_rows(
+  d24_toptable,
+  d24r_toptable,
+  d144r_toptable)
+
+#Filter the data based on each motif
+filt_toptable <- combined_toptables_dox %>% 
+  dplyr::filter(entrezgene_ID  %in% clust1_d) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for all genes in Motif 1")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_2 <- combined_toptables_dox %>% 
+  dplyr::filter(entrezgene_ID  %in% clust2_d) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for all genes in Motif 2")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#plots
+filt_toptable
+filt_toptable_2
+
+
+#now plot the abs logFC for each of these too
+filt_toptable_abs <- combined_toptables_dox %>% 
+  dplyr::filter(entrezgene_ID  %in% clust1_d) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC for all genes in Motif 1")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_2_abs <- combined_toptables_dox %>% 
+  dplyr::filter(entrezgene_ID  %in% clust2_d) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC for all genes in Motif 2")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+
+#plots
+filt_toptable_abs
+filt_toptable_2_abs
+
+```
+
+```{r GO KEGG Analysis Updated Cormotif}
+
+motif_1_d <- clust1_d
+
+motif1_genes_d <- gost(query = motif_1_d,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+cormotif1clust_d <- gostplot(motif1_genes_d, capped = FALSE, interactive = TRUE)
+cormotif1clust_d
+
+table_motif1_d <- motif1_genes_d$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_motif1_d %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#write.csv(table_motif1_d, "output/table_motif1.csv")
+
+#GO:BP
+table_motif1_GOBP_d <- table_motif1_d %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+#saveRDS(table_motif1_GOBP_d, "data/table_motif1_GOBP_d.RDS")
+
+table_motif1_GOBP_d %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("Motif 1 Enriched GO:BP Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_motif1_KEGG_d <- table_motif1_d %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_motif1_KEGG_d %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("Motif 1 Enriched KEGG Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#####motif 2 GO KEGG#####
+motif_2_d <- clust2_d
+
+motif2_genes_d <- gost(query = motif_2_d,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+cormotif2clust_d <- gostplot(motif2_genes_d, capped = FALSE, interactive = TRUE)
+cormotif2clust_d
+
+table_motif2_d <- motif2_genes_d$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_motif2_d %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+write.csv(table_motif2_d, "output/table_motif2.csv")
+
+#GO:BP
+table_motif2_GOBP_d <- table_motif2_d %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+saveRDS(table_motif2_GOBP_d, "data/table_motif2_GOBP_d.RDS")
+
+table_motif2_GOBP_d %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("Motif 2 Enriched GO:BP Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_motif2_KEGG_d <- table_motif2_d %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_motif2_KEGG_d %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("Motif 2 Enriched KEGG Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+```
+
+
+```{r Venn Diagram DE Genes Overlap}
+
+#put all of the genes per condition into each category
+DOX_24_top <- top.table_V.D24_d %>% 
+  rownames_to_column(., var = "entrezgene_ID")
+DOX_24r_top <- top.table_V.D24r_d %>% 
+  rownames_to_column(., var = "entrezgene_ID")
+DOX_144r_top <- top.table_V.D144r_d %>% 
+  rownames_to_column(., var = "entrezgene_ID")
+
+DEG_1 <- DOX_24_top$entrezgene_ID[DOX_24_top$adj.P.Val < 0.05]
+DEG_2 <- DOX_24r_top$entrezgene_ID[DOX_24r_top$adj.P.Val < 0.05]
+DEG_3 <- DOX_144r_top$entrezgene_ID[DOX_144r_top$adj.P.Val < 0.05]
+
+#now that I've made the DEG files with an adj. p. value cutoff of 0.05, I can look for overlap
+
+library(ggVennDiagram)
+
+venn_DEGs <- list(DEG_1, DEG_2, DEG_3)
+
+ggVennDiagram(
+  venn_DEGs, 
+  category.names = c("DOX_24", "DOX24R", "DOX144R"),
+  fill = c("red", "blue", "green")
+) +
+  ggtitle("DOX vs VEH Over Time")+
+  theme(
+    plot.title = element_text(size = 16),
+    text = element_text(size = 16)
+  )
+
+
+```
+
+```{r Spearman Correlation Conditions Boxplots}
+
+####SPEARMAN FILTERED####
+counts_cpm_filt_spearmancor_dox <-
+  cor(
+    counts_cpm_filt_dox,
+    y = NULL,
+    use = "everything",
+    method = "spearman"
+  )
+
+
+Individual <- as.factor(c(rep("Ind1", 6), rep("Ind2", 6), rep("Ind3", 6), rep("Ind4", 6), rep("Ind5", 6), rep("Ind6", 6), rep("Ind6REP", 6)))
+
+#Factor 2 - Treatment
+tx_factor <- c("DOX", "DMSO")
+Tx <- as.factor(c(rep(tx_factor, 21)))
+#view(Treatment)
+
+#Factor 3 - Timepoint
+time_factor <- c(rep("24", 2), rep("24rec", 2), rep("144rec", 2))
+Time <- as.factor(c(rep(time_factor, 7)))
+
+####annotation for colors####
+annot_col_hm = list(Tx = c(DOX = "blue", DMSO = "black"),
+                             Ind = c(Ind1 = "#66E2A5", Ind2 = "#FC8D62", Ind3 = "#1F78B4", Ind4 = "#EFEDA3", Ind5 = "#A6D854", Ind6 = "#FFD92A", Ind6REP = "#8B3E9B"),
+                             Time = c("24" = "#096F38", "24rec" = "#0050B5", "144rec" = "#B725AD"))
+
+####annotation for values####
+annot_list_hm <- data.frame(Individual = as.factor(c(rep("Ind1", 6), rep("Ind2", 6), rep("Ind3", 6), rep("Ind4", 6), rep("Ind5", 6), rep("Ind6", 6), rep("Ind6REP", 6))),
+                                               Tx = as.factor(c(rep(tx_factor, 21))), 
+                                               Time = as.factor(c(rep(time_factor, 7))))
+
+  
+##add in the annotations from above into the dataframe
+row.names(annot_list_hm) <- colnames(counts_cpm_filt_spearmancor_dox)
+
+####ANNOTATED HEATMAPS####
+
+pheatmap(counts_cpm_filt_spearmancor_dox, border_color = "black", legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = "black", fontsize = 10, fontsize_number = 5, annotation_col = annot_list_hm, annotation_colors = annot_col_hm)
+
+
+#look at the correlation between samples with boxplots using my Spearman dataset
+#set1 - all samples
+All_Spearman <- as.data.frame(counts_cpm_filt_spearmancor_dox) %>% 
+  rownames_to_column(var = "Sample")
+
+All_Spearman_melt <- melt(All_Spearman) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(All=paste("All")) %>% 
+  mutate(Treatment=factor(Treatment, levels = c("DOX", "DMSO")))
+
+#All_Spearman_plot <- 
+  All_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = All), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = All, y = value, colour = TxTime))+
+  theme_bw()+
+  ggtitle("All Samples")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+  
+#saveRDS(All_Spearman_plot, "data/All_Spearman_plot.RDS")
+
+
+####set2 - exact matches with Ind 6 + Ind 6REP####
+#this contains both Ind6 and Ind6REP data
+Ind6_Spearman <- as.data.frame(counts_cpm_filt_spearmancor_dox) %>% 
+  dplyr::select(contains("Ind6")) %>% 
+  rownames_to_column(var = "Sample")
+
+# Ind6_Spearman_set <- Ind6_Spearman[31:42,]
+
+Ind6_Spearman_melt <- melt(Ind6_Spearman_set) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(TxTime = factor(TxTime, levels = c("DOX_24", 
+                                            "DOX_24rec", 
+                                            "DOX_144rec",
+                                            "DMSO_24",
+                                            "DMSO_24rec",
+                                            "DMSO_144rec"))) %>% 
+  mutate(Ind=paste("Ind6"))
+
+
+# Ind6_Spearman_plot <- 
+  Ind6_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = Ind), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = Ind, y = value, colour = Individual))+
+  theme_bw()+
+  ggtitle("Ind6 + REP")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+  
+#saveRDS(Ind6_Spearman_plot, "data/Ind6_Spearman_plot.RDS")
+
+
+####set 3 - all samples from only rep ind####
+Ind6REP_Spearman <- as.data.frame(counts_cpm_filt_spearmancor_dox) %>% 
+  dplyr::select(contains("Ind6REP")) %>% 
+  rownames_to_column(var = "Sample")
+
+# Ind6REP_Spearman_set <- Ind6REP_Spearman[37:42,]
+
+Ind6REP_Spearman_melt <- melt(Ind6REP_Spearman_set) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(TxTime = factor(TxTime, levels = c("DOX_24", 
+                                            "DOX_24rec", 
+                                            "DOX_144rec",
+                                            "DMSO_24",
+                                            "DMSO_24rec",
+                                            "DMSO_144rec")))
+
+
+# Ind6REP_Spearman_plot <- 
+  Ind6REP_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = Individual), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = Individual, y = value, colour = TxTime))+
+  theme_bw()+
+  ggtitle("All Ind6REP")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+  
+#saveRDS(Ind6REP_Spearman_plot, "data/Ind6REP_Spearman_plot.RDS")
+
+#set 4 - within condition DOX24
+
+d24_Spearman <- as.data.frame(counts_cpm_filt_spearmancor_dox) %>% 
+  dplyr::select("DOX_24_Ind1", 
+                "DOX_24_Ind2", 
+                "DOX_24_Ind3", 
+                "DOX_24_Ind4", 
+                "DOX_24_Ind5", 
+                "DOX_24_Ind6",
+                "DOX_24_Ind6REP") %>% 
+  rownames_to_column(var = "Sample")
+
+# d24_Spearman_set <- d24_Spearman[c(1, 7, 13, 19, 25, 31, 37), ]
+
+d24_Spearman_melt <- melt(d24_Spearman_set) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
+
+
+# d24_Spearman_plot <- 
+  d24_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = Treatment))+
+  geom_boxplot()+
+  geom_point(aes(x = Treatment, y = value, colour = Individual))+
+  theme_bw()+
+  ggtitle("All DOX24")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+  
+
+#saveRDS(d24_Spearman_plot, "data/d24_Spearman_plot.RDS")
+  
+#set5 - within individual and condition
+
+Ind6_24_DOX_Spearman <- as.data.frame(counts_cpm_filt_spearmancor_dox) %>% 
+  dplyr::select(contains("DOX_24_")) %>% 
+  dplyr::select(contains("Ind6")) %>% 
+  rownames_to_column(var = "Sample")
+
+# Ind6_24_DOX_Spearman_set <- Ind6_24_DOX_Spearman[c(31, 37),]
+
+Ind6_24_DOX_Spearman_melt <- melt(Ind6_24_DOX_Spearman_set) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(Time = factor(Time, levels = c("24"))) %>% 
+  mutate(plot = "DOX24")
+
+
+Ind6_24_DOX_Spearman_plot <- 
+  Ind6_24_DOX_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = plot), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value, colour = Time))+
+  theme_bw()+
+  ggtitle("DOX Ind6 & Ind6")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+  
+#saveRDS(Ind1_DOX_Spearman_plot, "data/Ind1_DOX_Spearman_plot.RDS")
+
+#Combine all of these plots together into one plot
+readRDS("data/All_Spearman_plot.RDS")
+readRDS("data/Ind6_Spearman_plot.RDS")
+readRDS("data/Ind6REP_Spearman_plot.RDS")
+readRDS("data/d24_Spearman_plot.RDS")
+readRDS("data/Ind1_DOX_Spearman_plot.RDS")
+ 
+
+#to put all of these plots togther - mutate them so that the desired variable is under the same column for all - "plot"
+
+All_Spearman_melt %>% 
+  dplyr::rename("plot"="All") %>% 
+  rbind(Ind6_Spearman_melt %>% 
+          dplyr::rename("plot"="Ind")) %>% 
+  rbind(Ind6REP_Spearman_melt%>% 
+          mutate(plot="Ind6REP"))%>% 
+  rbind(d24_Spearman_melt %>% 
+          mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+          mutate(plot="DOX_24")) %>% 
+  ggplot(., aes(x = plot, y = value))+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value, color = TxTime))+
+  theme_bw()+
+  xlab(" ")
+  
+
+#Now I'm going to plot this together as it is shown in prev literature
+#1 - all 
+#2 - within condition (DOX24)
+#3 - within individual (Ind6REP)
+#4 - within condition & individual (Ind1_DOX)
+
+All_Spearman_melt %>% 
+  rbind(Ind6_Spearman_melt%>% 
+          mutate(plot="Ind6"))%>% 
+  rbind(d24_Spearman_melt %>% 
+          mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+          mutate(plot="DOX24 All Ind")) %>% 
+  rbind(Ind6REP_DOX_Spearman_melt %>% 
+          mutate(plot="Ind6REP DOX")) %>% 
+  ggplot(., aes(x = plot, y = value))+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value))+
+  theme_bw()+
+  xlab(" ")
+  
+
+
+```
+
+```{r Updated Spearman Boxplots}
+
+####All Samples####
+
+All_Spearman <- as.data.frame(counts_cpm_filt_spearmancor_dox) %>% 
+  rownames_to_column(var = "Sample")
+
+All_Spearman_melt <- melt(All_Spearman) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(plot=paste("All")) %>% 
+  mutate(Treatment=factor(Treatment, levels = c("DOX", "DMSO")))
+
+All_Spearman_plot_d <- 
+  All_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = plot), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value))+
+  theme_bw()+
+  ggtitle("All Samples")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+
+  
+####All Ind1 to All Samples####
+All_Ind1 <- as.data.frame(counts_cpm_filt_spearmancor_dox) %>% 
+  dplyr::select(contains("Ind1")) %>% 
+  rownames_to_column(var = "Sample")
+
+#All_Ind1_set <- All_Ind1[1:6,]
+
+All_Ind1_Spearman_melt <- melt(All_Ind1_set) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(plot=paste("Ind1")) %>% 
+  mutate(Treatment=factor(Treatment, levels = c("DOX", "DMSO")))
+
+All_Ind1_plot_d <- 
+  All_Ind1_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = plot), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value))+
+  theme_bw()+
+  ggtitle("Within Individual")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+  
+  
+#####DOX vs All Samples#####
+All_DOX24 <- as.data.frame(counts_cpm_filt_spearmancor_dox) %>% 
+  dplyr::select(contains("DOX")) %>% 
+  rownames_to_column(var = "Sample")
+
+All_DOX24_set <- All_DOX[c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41),]
+
+All_DOX24_Spearman_melt <- melt(All_DOX24_set) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(plot=paste("DOX")) %>% 
+  mutate(Treatment=factor(Treatment, levels = c("DOX", "DMSO")))
+
+All_DOX24_Spearman_plot_d <- 
+  All_DOX24_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = plot), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value))+
+  theme_bw()+
+  ggtitle("Within Condition")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+  
+#####DOX Ind 1 vs All Samples#####
+  All_DOX_Ind1 <- as.data.frame(counts_cpm_filt_spearmancor_dox) %>% 
+  dplyr::select(contains("DOX")) %>% 
+  dplyr::select(contains("Ind1")) %>% 
+  rownames_to_column(var = "Sample")
+
+#All_DOX_Ind1_set <- All_DOX_Ind1[c(1, 3, 5),]
+
+All_DOX_Ind1_Spearman_melt <- melt(All_DOX_Ind1_set) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(plot=paste("DOX_Ind1")) %>% 
+  mutate(Treatment=factor(Treatment, levels = c("DOX", "DMSO")))
+
+All_DOX_Ind1_Spearman_plot_d <- 
+  All_DOX_Ind1_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = plot), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value))+
+  theme_bw()+
+  ggtitle("Within Individual and Condition")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+
+  
+#####Plot All Together#####
+#1 - all 
+#2 - within condition (DOX24)
+#3 - within individual (Ind1)
+#4 - within condition & individual (Ind1 DOX 24)
+
+Spearman_boxplots <- All_Spearman_melt %>% 
+  rbind(All_Ind1_Spearman_melt) %>% 
+  rbind(All_DOX24_Spearman_melt) %>% 
+  rbind(All_DOX24_Ind1_Spearman_melt)
+
+Spearman_boxplots %>% 
+  ggplot(., aes(x = plot, y = value))+
+  geom_boxplot(aes(x = factor(Spearman_boxplots$plot, levels = c("All", "DOX24", "Ind1", "DOX24_Ind1"))), show.legend = FALSE)+
+  geom_point(aes(x = plot, y = value))+
+  theme_bw()+
+  xlab("Conditions")+
+  ggtitle("Spearman Correlation Boxplots")+
+  ylab("Spearman Correlation")+
+  ylim(0.5, 1)
+
+
+
+```
+

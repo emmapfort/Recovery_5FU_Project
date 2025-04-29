@@ -254,7 +254,7 @@ my_attributes_dox <- c('entrezgene_id', 'ensembl_gene_id', 'hgnc_symbol')
 
 heartgenes_dox <- getBM(attributes=my_attributes_dox,filters ='hgnc_symbol',
                 values = genecardiccheck_dox, mart = ensembl_dox)
-write.csv(heartgenes_dox, "data/heartgenes_dox.csv")
+#write.csv(heartgenes_dox, "data/heartgenes_dox.csv")
 heartgenes_dox <-read.csv("data/heartgenes_dox.csv")
 
 fungraph_dox <- as.data.frame(fC_Matrix_Full_cpm_filter_dox[rownames(fC_Matrix_Full_cpm_filter_dox) %in% heartgenes_dox$entrezgene_id,])
@@ -432,19 +432,396 @@ pheatmap(fC_Matrix_Full_cpm_filter_spearmancor_dox, border_color = "black", lege
 #set1 - all samples
 All_Spearman <- as.data.frame(fC_Matrix_Full_cpm_filter_spearmancor_dox) %>% 
   rownames_to_column(var = "Sample")
-  
 
-#set2 - exact matches with Ind 6 + Ind 6 REP DOX24
+All_Spearman_melt <- melt(All_Spearman) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(All=paste("All")) %>% 
+  mutate(Treatment=factor(Treatment, levels = c("DOX", "DMSO")))
+
+#All_Spearman_plot <- 
+  All_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = All), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = All, y = value, colour = TxTime))+
+  theme_bw()+
+  ggtitle("All Samples")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+  
+#saveRDS(All_Spearman_plot, "data/All_Spearman_plot.RDS")
+
+
+####set2 - exact matches with Ind 6 + Ind 6REP####
 Ind6_Spearman <- as.data.frame(fC_Matrix_Full_cpm_filter_spearmancor_dox) %>% 
   dplyr::select(contains("Ind6")) %>% 
   rownames_to_column(var = "Sample")
+
+Ind6_Spearman_set <- Ind6_Spearman[31:42,]
+
+Ind6_Spearman_melt <- melt(Ind6_Spearman_set) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(TxTime = factor(TxTime, levels = c("DOX_24", 
+                                            "DOX_24rec", 
+                                            "DOX_144rec",
+                                            "DMSO_24",
+                                            "DMSO_24rec",
+                                            "DMSO_144rec"))) %>% 
+  mutate(Ind=paste("Ind6"))
+
+
+# Ind6_Spearman_plot <- 
+  Ind6_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = Ind), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = Ind, y = value, colour = Individual))+
+  theme_bw()+
+  ggtitle("Ind6 + REP")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+  
+#saveRDS(Ind6_Spearman_plot, "data/Ind6_Spearman_plot.RDS")
+
+
+####set 3 - all samples from only rep ind####
+Ind6REP_Spearman <- as.data.frame(fC_Matrix_Full_cpm_filter_spearmancor_dox) %>% 
+  dplyr::select(contains("Ind6REP")) %>% 
+  rownames_to_column(var = "Sample")
+
+Ind6REP_Spearman_set <- Ind6REP_Spearman[37:42,]
+
+Ind6REP_Spearman_melt <- melt(Ind6REP_Spearman_set) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(TxTime = factor(TxTime, levels = c("DOX_24", 
+                                            "DOX_24rec", 
+                                            "DOX_144rec",
+                                            "DMSO_24",
+                                            "DMSO_24rec",
+                                            "DMSO_144rec")))
+
+
+# Ind6REP_Spearman_plot <- 
+  Ind6REP_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = Individual), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = Individual, y = value, colour = TxTime))+
+  theme_bw()+
+  ggtitle("All Ind6REP")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+  
+#saveRDS(Ind6REP_Spearman_plot, "data/Ind6REP_Spearman_plot.RDS")
+
+#set 4 - within condition DOX24
+
+d24_Spearman <- as.data.frame(fC_Matrix_Full_cpm_filter_spearmancor_dox) %>% 
+  dplyr::select("DOX_24_Ind1", 
+                "DOX_24_Ind2", 
+                "DOX_24_Ind3", 
+                "DOX_24_Ind4", 
+                "DOX_24_Ind5", 
+                "DOX_24_Ind6",
+                "DOX_24_Ind6REP") %>% 
+  rownames_to_column(var = "Sample")
+
+d24_Spearman_set <- d24_Spearman[c(1, 7, 13, 19, 25, 31, 37), ]
+
+d24_Spearman_melt <- melt(d24_Spearman_set) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
+
+
+# d24_Spearman_plot <- 
+  d24_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = Treatment))+
+  geom_boxplot()+
+  geom_point(aes(x = Treatment, y = value, colour = Individual))+
+  theme_bw()+
+  ggtitle("All DOX24")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
   
 
-#set 3 - all samples from rep ind
+#saveRDS(d24_Spearman_plot, "data/d24_Spearman_plot.RDS")
+  
+#set5 - within individual and condition
+
+Ind6_24_DOX_Spearman <- as.data.frame(fC_Matrix_Full_cpm_filter_spearmancor_dox) %>% 
+  dplyr::select(contains("DOX_24_")) %>% 
+  dplyr::select(contains("Ind6")) %>% 
+  rownames_to_column(var = "Sample")
+
+Ind6_24_DOX_Spearman_set <- Ind6_24_DOX_Spearman[c(31, 37),]
+
+Ind6_24_DOX_Spearman_melt <- melt(Ind6_24_DOX_Spearman_set) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(Time = factor(Time, levels = c("24"))) %>% 
+  mutate(plot = "DOX24")
 
 
+Ind6_24_DOX_Spearman_plot <- 
+  Ind6_24_DOX_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = plot), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value, colour = Time))+
+  theme_bw()+
+  ggtitle("DOX Ind6 & Ind6")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+  
+#saveRDS(Ind1_DOX_Spearman_plot, "data/Ind1_DOX_Spearman_plot.RDS")
+
+#Combine all of these plots together into one plot
+readRDS("data/All_Spearman_plot.RDS")
+readRDS("data/Ind6_Spearman_plot.RDS")
+readRDS("data/Ind6REP_Spearman_plot.RDS")
+readRDS("data/d24_Spearman_plot.RDS")
+readRDS("data/Ind1_DOX_Spearman_plot.RDS")
+ 
+
+#to put all of these plots togther - mutate them so that the desired variable is under the same column for all - "plot"
+
+All_Spearman_melt %>% 
+  dplyr::rename("plot"="All") %>% 
+  rbind(Ind6_Spearman_melt %>% 
+          dplyr::rename("plot"="Ind")) %>% 
+  rbind(Ind6REP_Spearman_melt%>% 
+          mutate(plot="Ind6REP"))%>% 
+  rbind(d24_Spearman_melt %>% 
+          mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+          mutate(plot="DOX_24")) %>% 
+  ggplot(., aes(x = plot, y = value))+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value, color = TxTime))+
+  theme_bw()+
+  xlab(" ")
+  
+
+#Now I'm going to plot this together as it is shown in prev literature
+#1 - all 
+#2 - within condition (DOX24)
+#3 - within individual (Ind6REP)
+#4 - within condition & individual (Ind1_DOX)
+
+All_Spearman_melt %>% 
+  rbind(Ind6_Spearman_melt%>% 
+          mutate(plot="Ind6"))%>% 
+  rbind(d24_Spearman_melt %>% 
+          mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+          mutate(plot="DOX24 All Ind")) %>% 
+  rbind(Ind6REP_DOX_Spearman_melt %>% 
+          mutate(plot="Ind6REP DOX")) %>% 
+  ggplot(., aes(x = plot, y = value))+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value))+
+  theme_bw()+
+  xlab(" ")
+  
 
 ```
+
+```{r Spearman Correlations Boxplots}
+#I want to make boxplots comparing the spearman correlation of different groupings of samples
+
+####set1 - all samples####
+All_Spearman <- as.data.frame(fC_Matrix_Full_cpm_filter_spearmancor_dox) %>% 
+  rownames_to_column(var = "Sample")
+
+All_Spearman_melt <- melt(All_Spearman) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(plot=paste("All")) %>% 
+  mutate(Treatment=factor(Treatment, levels = c("DOX", "DMSO")))
+
+All_Spearman_plot <- 
+  All_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = plot), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value))+
+  theme_bw()+
+  ggtitle("All Samples")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+  
+####set2 - all DOX samples####
+All_DOX24_Spearman <- as.data.frame(fC_Matrix_Full_cpm_filter_spearmancor_dox) %>% 
+    dplyr::select(contains("DOX")) %>% 
+    rownames_to_column(var = "Sample")
+
+All_DOX_Spearman_melt <- melt(All_DOX24_Spearman) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(plot=paste("AllDOX")) %>% 
+  mutate(Time=factor(Time, levels = c("24", "24rec", "144rec")))
+
+All_DOX_Spearman_plot <- 
+  All_DOX_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = plot), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value))+
+  theme_bw()+
+  ggtitle("All Samples")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+
+####set3 - all Ind 6REP####
+Ind6REP_Spearman <- as.data.frame(fC_Matrix_Full_cpm_filter_spearmancor_dox) %>% 
+    dplyr::select(contains("Ind6REP")) %>% 
+    rownames_to_column(var = "Sample")
+
+Ind6REP_Spearman_melt <- melt(Ind6REP_Spearman) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(plot=paste("Ind6REP")) %>% 
+  mutate(TxTime=factor(TxTime, levels = c("DOX_24", "DOX_24rec", "DOX_144rec", "DMSO_24", "DMSO_24rec", "DMSO_144rec")))
+
+Ind6REP_Spearman_plot <- 
+  Ind6REP_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = plot), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value))+
+  theme_bw()+
+  ggtitle("All Ind6REP")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+
+####set 4 - all ind6REP DOX####
+Ind6REP_DOX_Spearman <- as.data.frame(fC_Matrix_Full_cpm_filter_spearmancor_dox) %>% 
+    dplyr::select(contains("Ind6REP")) %>% 
+    dplyr::select(contains("DOX")) %>% 
+    rownames_to_column(var = "Sample")
+
+Ind6REP_DOX_Spearman_melt <- melt(Ind6REP_DOX_Spearman) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(plot=paste("Ind6REP_DOX")) %>% 
+  mutate(TxTime=factor(TxTime, levels = c("DOX_24", "DOX_24rec", "DOX_144rec")))
+
+Ind6REP_DOX_Spearman_plot <- 
+  Ind6REP_DOX_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = plot), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value))+
+  theme_bw()+
+  ggtitle("Ind6REP DOX")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+
+
+####set 5 - compare between ind6 and ind6rep####
+Ind6_Spearman <- as.data.frame(fC_Matrix_Full_cpm_filter_spearmancor_dox) %>% 
+  dplyr::select(contains("Ind6")) %>% 
+  rownames_to_column(var = "Sample")
+
+Ind6_Spearman_set <- Ind6_Spearman[31:42,]
+
+Ind6_Spearman_melt <- melt(Ind6_Spearman_set) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+  mutate(TxTime = factor(TxTime, levels = c("DOX_24", 
+                                            "DOX_24rec", 
+                                            "DOX_144rec",
+                                            "DMSO_24",
+                                            "DMSO_24rec",
+                                            "DMSO_144rec"))) %>% 
+  mutate(plot=paste("Ind6 & Ind6REP"))
+
+
+Ind6_Spearman_plot <- 
+  Ind6_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = plot), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value, colour = Individual))+
+  theme_bw()+
+  ggtitle("Ind6 + REP")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+
+
+####now let's look at only DOX between Ind6 and Ind6 REP for fun####
+Ind6_DOX_Spearman <- as.data.frame(fC_Matrix_Full_cpm_filter_spearmancor_dox) %>% 
+  dplyr::select(contains("Ind6")) %>% 
+  dplyr::select(contains("DOX")) %>% 
+  rownames_to_column(var = "Sample")
+
+Ind6_DOX_Spearman_set <- Ind6_DOX_Spearman[c(31, 33, 35, 37, 39, 41),]
+
+Ind6_DOX_Spearman_melt <- melt(Ind6_DOX_Spearman_set) %>% 
+  separate_wider_delim(., cols = Sample, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE) %>% 
+  mutate(TxTime = paste(Treatment, Time, sep = "_")) %>% 
+  mutate(TxTime = factor(TxTime, levels = c("DOX_24", 
+                                            "DOX_24rec", 
+                                            "DOX_144rec"))) %>% 
+  mutate(plot = paste("Ind6&Ind6REP DOX"))
+
+
+Ind6_DOX_Spearman_plot <- 
+  Ind6_DOX_Spearman_melt %>% 
+  ggplot(., aes(y = value, x = plot), show.legend = FALSE)+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value))+
+  theme_bw()+
+  ggtitle("Ind6 + REP DOX")+
+  xlab(" ")+
+  ylab("Spearman Correlation")+
+  ylim(0.5,1)
+
+
+####now plot everything together into one plot####
+#1 All
+
+All_Spearman_melt %>%  
+  rbind(All_DOX_Spearman_melt) %>% 
+  rbind(Ind6_Spearman_melt) %>% 
+  rbind(Ind6REP_Spearman_melt) %>% 
+  rbind(Ind6_DOX_Spearman_melt) %>% 
+  rbind(Ind6REP_DOX_Spearman_melt) %>% 
+  ggplot(., aes(x = plot, y = value))+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("Spearman Correlation")
+
+
+####bring down the plots that I have above and combine####
+All_Spearman_Plots <- All_Spearman_melt %>% 
+  rbind(Ind6_Spearman_melt%>% 
+          mutate(plot="Ind6&Ind6REP"))%>% 
+  rbind(All_DOX_Spearman_melt) %>% 
+  rbind(Ind6REP_Spearman_melt) %>% 
+  rbind(d24_Spearman_melt %>% 
+          mutate(TxTime=paste(Treatment, Time, sep = "_")) %>% 
+          mutate(plot="DOX24 All Ind")) %>% 
+  rbind(Ind6_24_DOX_Spearman_melt %>% 
+          mutate(plot="Ind6&Ind6REP DOX24")) %>% 
+  rbind(Ind6REP_DOX_Spearman_melt %>% 
+          mutate(plot="Ind6REP DOX"))
+
+
+All_Spearman_Plots %>%  ggplot(., aes(x = plot, y = value))+
+  geom_boxplot()+
+  geom_point(aes(x = plot, y = value))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("Spearman Correlation")
+  
+  
+```
+
+
 
 Now that I've put together my data, let's begin DE!
 
@@ -694,8 +1071,8 @@ for (plot_name in names(volcano_plots)) {
 
 ```
 
-```{r Boxplots Across Conditions}
-#now like the hypoxia paper, I'd like to put together comparisons between samples and conditions to check if they are more similar than others
+```{r Venn Diagram DEG Across Conditions}
+#Generate a venn diagram of the DE genes across conditions
 
 
 
@@ -967,10 +1344,23 @@ toptable_Dupcor_DOX144_d$logFC %>% hist(, main = "RUVs k=1 DOX 144Rec Toptable")
 #function is on the previous
 annot_data_d <- annot_d %>% dplyr::select("Tx_Time", "Time", "Tx", "Ind", "samples")
 
-Cormotif_d <- counts_DE_df_dox %>% cpm(., log = TRUE)
+#Cormotif_d <- counts_DE_df_dox %>% cpm(., log = TRUE)
+
+#####EMP Note 04/24/25 - change this above matrix to my already made log2cpm matrix and convert to a df if needed####
+Cormotif_d <- fC_Matrix_Full_cpm_filter_dox #%>% 
+  #rownames_to_column(var = "GeneID")
+
 Cormotif_df_d <- as.data.frame(Cormotif_d)
 
-groupid_d <- rep(c(1, 2, 3, 4, 5, 6), 7)
+# exprs.Cormotif_d <- as.matrix(Cormotif_d[,2:43])
+
+exprs.Cormotif_d <- as.matrix(Cormotif_d)
+
+Cormotif_df_d_cols <- colnames(Cormotif_df_d) 
+Cormotif_df_d_cols_1<- Cormotif_df_d_cols[2:43]
+groupid1 <- rep(c(1, 2, 3, 4, 5, 6), 7)
+groupid_d <- rbind(Cormotif_df_d_cols_1, groupid1)
+
 
 compid_d <- data.frame(c1 = c(1, 3, 5), c2 = c(2, 4, 6))
 
@@ -979,11 +1369,14 @@ compid_d <- data.frame(c1 = c(1, 3, 5), c2 = c(2, 4, 6))
 
 ```{r Cormotif Run}
 
-#set.seed(12345)
-# initial_cormotif_dox <- cormotiffit(exprs = Cormotif_d,
-#                                  groupid = groupid_d,
-#                                  compid = compid_d,
-#                                  K=1:8  , max.iter = 500, runtype = "logCPM")
+set.seed(12345)
+new_cormotif_dox <- cormotiffit(exprs = exprs.Cormotif_d,
+                                groupid = groupid1,
+                                compid = compid_d,
+                                K=1:6, 
+                                max.iter = 500, 
+                                BIC = TRUE,
+                                runtype = "logCPM")
 
 #only need to run this once! 
 #save this to an object so I can retrieve it as needed
@@ -992,6 +1385,9 @@ compid_d <- data.frame(c1 = c(1, 3, 5), c2 = c(2, 4, 6))
 
 initial_cormotif_dox <- readRDS("data/initial_cormotif_dox.RDS")
 
+#saveRDS(new_cormotif_dox, "data/new_cormotif_dox.RDS")
+
+new_cormotif_dox <- readRDS("data/new_cormotif_dox.RDS")
 
 ```
 
@@ -999,11 +1395,15 @@ initial_cormotif_dox <- readRDS("data/initial_cormotif_dox.RDS")
 
 plotIC(initial_cormotif_dox)
 
+plotIC(new_cormotif_dox)
+
 ```
 
 ```{r Plot Motifs DOX Only}
 
 plotMotif(initial_cormotif_dox)
+
+plotMotif(new_cormotif_dox)
 
 myColors <-  rev(c("#FFFFFF", "#E6E6E6" ,"#CCCCCC", "#B3B3B3", "#999999", "#808080", "#666666","#4C4C4C", "#333333", "#191919","#000000"))
 
@@ -1026,7 +1426,7 @@ rownames(motif_prob_d) <- rownames(topgenelist_d)
 #Define the gene probability groups - I have 4
 clust1_d <- motif_prob_d %>% 
   as.data.frame() %>% 
-  filter(V1>0.5) %>% 
+  filter(V1>0.5 & V2 <0.5) %>% 
   rownames
 
 #using a filter of >0.57 I get 11130 genes compared to 11156 above
@@ -1129,28 +1529,34 @@ length(clust3_d)
 
 clust3_d_df <- as.data.frame(clust3_d)
 
+#example gene - 1st gene 765 - CA6
+motif3gene <- Cormotif_df_d %>% 
+  rownames_to_column(var = "entrezgene_id") %>% 
+  dplyr::filter(entrezgene_id == "765")
+
+
 #example gene - 8856 - NR1I2
 NR1I2_motif1 <- Cormotif_df_d %>% 
   rownames_to_column(var = "entrezgene_id") %>% 
   dplyr::filter(entrezgene_id == "8856")
 
-NR1I2_motif1_long <- melt(NR1I2_motif1,
+motif3_long <- melt(motif3gene,
                          id.vars = c("entrezgene_id"),
                          variable.name = "Sample",
                          value.name = "log2cpm")
 
 #now add in my factors like time, tx, tx_time, and ind by breaking up the Sample column
-NR1I2_motif1_long_df <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+motif3_long_df <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
                                   ind = factor(ind_names, levels = unique(ind_names)),
                                   txtime = factor(txtime_names2, levels = unique(txtime_names2)),
                                   time = factor(time_names2, levels = unique(time_names2)))
 
-NR1I2_motif1_long_factors <- cbind(NR1I2_motif1_long_df, NR1I2_motif1_long)
+motif3_long_factors <- cbind(motif3_long_df, motif3_long)
 
-NR1I2_motif1_long_factors %>% ggplot(aes(x = txtime, y = log2cpm))+
+motif3_long_factors %>% ggplot(aes(x = txtime, y = log2cpm))+
   geom_boxplot(aes(fill = tx))+
   geom_point(aes(color = ind)) +
-  labs(title = "NR1I2")+
+  labs(title = "CA6")+
   theme_bw(base_size = 16)+
   scale_fill_manual(values = c(tx_col))+
   scale_color_manual(values = c(ind_col))+
@@ -1174,6 +1580,18 @@ length(clust4_d)
 
 clust4_d_df <- as.data.frame(clust4_d)
 
+#first pull out the top gene from this df
+#gene - LOC100288069 - 100288069
+motif4gene <- Cormotif_df_d %>% 
+  rownames_to_column(var = "entrezgene_id") %>% 
+  dplyr::filter(entrezgene_id == "100288069")
+
+motif4gene_long <- melt(motif4gene,
+                         id.vars = c("entrezgene_id"),
+                         variable.name = "Sample",
+                         value.name = "log2cpm")
+
+
 #example gene - 6725 - SRMS 
 SRMS_motif1 <- Cormotif_df_d %>% 
   rownames_to_column(var = "entrezgene_id") %>% 
@@ -1185,17 +1603,17 @@ SRMS_motif1_long <- melt(SRMS_motif1,
                          value.name = "log2cpm")
 
 #now add in my factors like time, tx, tx_time, and ind by breaking up the Sample column
-SRMS_motif1_long_df <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+motif4_long_df <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
                                   ind = factor(ind_names, levels = unique(ind_names)),
                                   txtime = factor(txtime_names2, levels = unique(txtime_names2)),
                                   time = factor(time_names2, levels = unique(time_names2)))
 
-SRMS_motif1_long_factors <- cbind(SRMS_motif1_long_df, SRMS_motif1_long)
+motif4_long_factors <- cbind(motif4_long_df, motif4gene_long)
 
-SRMS_motif1_long_factors %>% ggplot(aes(x = txtime, y = log2cpm))+
+motif4_long_factors %>% ggplot(aes(x = txtime, y = log2cpm))+
   geom_boxplot(aes(fill = tx))+
   geom_point(aes(color = ind)) +
-  labs(title = "SRMS")+
+  labs(title = "LOC100288069")+
   theme_bw(base_size = 16)+
   scale_fill_manual(values = c(tx_col))+
   scale_color_manual(values = c(ind_col))+

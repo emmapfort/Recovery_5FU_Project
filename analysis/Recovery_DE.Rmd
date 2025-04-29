@@ -63,18 +63,36 @@ I made a filtered gene object based on these parameters, and will filter the cou
 
 ```{r Data Frames for Counts DE}
 
-counts_DE_raw <- read_csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_EMP_250220.csv")
-#View(counts_DE)
+counts_raw <- read_csv("C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_RNAseq/featureCounts_Concat_Matrix_AllSamples_EMP_250220.csv")
+#View(counts_raw)
+
+counts_DE <- counts_raw %>% 
+  dplyr::select(-(...1)) %>% 
+  dplyr::rename(., "entrezgene_id" = "ensembl_gene_id") %>% 
+  column_to_rownames(., var = "entrezgene_id")
+
+#saveRDS(counts_DE, "data/counts_DE_raw_data.RDS")
 
 fC_Matrix_Full <- readRDS("data/fC_Matrix_Full.RDS")
 
 Counts_Full_df <- data.frame(fC_Matrix_Full)
 
-#filter this dataframe by the filtered gene list I have
-filt_gene_list <- readRDS("data/filt_gene_list.RDS")
-counts_DE_df <- Counts_Full_df[! (rownames(Counts_Full_df) %in% filt_gene_list), ]
+fC_Matrix_Full_cpm_filter <- readRDS("data/fC_Matrix_Full_cpm_filter.RDS")
+#this matrix has been filtered and converted to log2cpm - this is the filtered gene list I want to make
+dim(fC_Matrix_Full_cpm_filter)
+#14225 genes
+
+filtered_genes_list <- rownames(fC_Matrix_Full_cpm_filter)
+
+length(filtered_genes_list)
+#14225 genes
+
+#filter this dataframe by the filtered gene list
+counts_DE_df_1 <- counts_DE[!(rownames(counts_DE) %in% rownames(fC_Matrix_Full_cpm_filter)), ]
+#14170 genes
 
 #saveRDS(counts_DE_df, "data/counts_DE_df.RDS")
+counts_DE_df <- readRDS("data/counts_DE_df.RDS")
 
 counts_DE_norep <- as.data.frame(counts_DE_df) %>% 
         dplyr::select(-(contains("Ind6REP")))
@@ -83,8 +101,8 @@ counts_DE_norep <- as.data.frame(counts_DE_df) %>%
 
 #now I've removed Ind6 REP
 ##I should have 54 samples if not including Ind6REP
-dim(counts_DE_df)
-dim(counts_DE_norep)
+# dim(counts_DE_df)
+# dim(counts_DE_norep)
 
 ```
 
@@ -110,16 +128,16 @@ group_2 <- rep(c("DOX_24","FLUO_24",
                                 "FLUO_144rec",
                                 "DMSO_144rec"), 7)
 
-dge <- DGEList.data.frame(counts = counts_DE_df, group = group_2, genes = row.names(counts_DE_df))
+dge <- DGEList.data.frame(counts = counts_DE_df_1, group = group_2, genes = row.names(counts_DE_df_1))
 
 #check the inital file before norm factors are calculated
-#dge$samples
+dge$samples
 
 #calculate the normalization factors with method TMM
 dge_calc <- calcNormFactors(dge, method = "TMM")
 
 #check final file after norm calculation
-#dge_calc$samples
+dge_calc$samples
 
 #after calculating norm factors, that column was changed.
 
@@ -171,7 +189,6 @@ summary(results)
 # NotSig 14521 26445  16339  26445   25296   26445
 # Up      7357     0   8023      0     861       0
 
-## have no DE genes detected for 5FU, only DOX
 
 
 ####plot your voom####
@@ -229,11 +246,12 @@ Let's use our toptables to find the top 5 DE genes in each condition
 #i sorted the toptable by the top 5 most DE genes for each + found the corresponding gene name
 
 #readRDS("data/fC_Matrix_Full_cpm_filter.RDS")
-#fC_df_filter_cpm <- as.data.frame(fC_Matrix_Full_cpm_filter)
+# fC_df_filter_cpm <- as.data.frame(fC_Matrix_Full_cpm_filter)
+# dim(fC_df_filter_cpm)
 
-log2cpm_DE_df <- counts_DE_df %>% 
-  cpm(., log = TRUE) %>% 
-  as.data.frame()
+log2cpm_DE_df <- cpm(dge_calc, log = TRUE)
+
+dim(fC_Matrix_Full_cpm_filter)
 
 
 #####24hr Tx DOX pval####
@@ -261,7 +279,67 @@ d24_gene_df <- log2cpm_DE_df %>%
 
 #I'll pull each of these genes out one by one and rbind
 top5DE_d24_log2cpm_p_1 <- d24_gene_df %>% 
-  dplyr::filter(entrezgene_id == "100996301")
+  dplyr::filter(entrezgene_id == "100996301") %>% 
+  as.data.frame()
+
+top5DE_d24_log2cpm_p_1_melt <- top5DE_d24_log2cpm_p_1 %>% 
+  melt(id.vars = "entrezgene_id") %>% 
+  separate_wider_delim(., cols = variable, 
+                       names = c("Treatment", "Time", "Individual"), 
+                       delim = "_", 
+                       cols_remove = FALSE)
+
+#####100996301####
+FOXD3 <- d24_gene_df %>% filter(entrezgene_id=="100996301")
+FOXD3_new <- as.data.frame(FOXD3) %>% dplyr::select("entrezgene_id", "DOX_24_Ind1", "DMSO_24_Ind1", "DOX_24_Ind2","DMSO_24_Ind2", "DOX_24_Ind3", "DMSO_24_Ind3", "DOX_24_Ind4", "DMSO_24_Ind4", "DOX_24_Ind5", "DMSO_24_Ind5", "DOX_24_Ind6", "DMSO_24_Ind6", "DOX_24_Ind6REP", "DMSO_24_Ind6REP")
+FOXD3_melt <- melt(FOXD3, variable.name = "sample")
+FOXD3_melt_new <- melt(FOXD3_new, variable.name = "sample")
+
+FOXD3_melt_df <- data.frame(tx = factor(tx_names, levels = unique(tx_names)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names, levels = unique(txtime_names)),
+                               time = factor(time_names, levels = unique(time_names)))
+FOXD3_melt_df2 <- data.frame(tx = factor(tx_names2, levels = unique(tx_names2)),
+                               ind = factor(ind_names, levels = unique(ind_names)),
+                               txtime = factor(txtime_names2, levels = unique(txtime_names2)),
+                               time = factor(time_names2, levels = unique(time_names2)))
+FOXD3_melt_df_all <- cbind(FOXD3_melt, FOXD3_melt_df)
+FOXD3_melt_df_all2 <- cbind(FOXD3_melt_new, FOXD3_melt_df2)
+
+FOXD3_melt <- melt(FOXD3, variable.name = "sample")
+ggplot(FOXD3_melt, aes(x=value, y=sample, fill = sample))+
+  ggtitle("FOXD3-AS1, top5DE DOX24 1")+
+    geom_bar(stat = "identity", width = 0.8)+
+  theme(legend.position = "none")+
+  scale_fill_manual(values = col_tx_large)+
+    xlab("log2cpm")+
+  ylab("Conditions")
+
+FOXD3_melt_df_all2 %>% ggplot(aes(x = txtime, y = value))+
+  geom_boxplot(aes(fill = tx))+
+  geom_point(aes(color = ind)) +
+  labs(title = "FOXD3")+
+  theme_bw(base_size = 16)+
+  scale_fill_manual(values = c(tx_col))+
+  scale_color_manual(values = c(ind_col))+
+  xlab("Conditions")+
+  ylab("log2cpm")
+
+
+# ggplot(top5DE_d24_log2cpm_p_1_melt, aes(x = entrezgene_id))+
+#   geom_boxplot(aes(colour = Treatment))+
+#   geom_point(aes(x = value, y = variable))+
+#   ggtitle(expression("Top 5 DEG DOX 24hr - 1"))+
+#   xlab("")+
+#   ylim(c(-10, 10))+
+#   ylab(expression("log2cpm"))
+#   theme_bw()+
+#   theme(plot.title = element_text(size = rel(1.5)),
+#         axis.title = element_text(size = 15, color = "black"),
+#         axis.ticks = element_line(linewidth = 1.5),
+#         axis.line = element_line(linewidth = 1.5),
+#         axis.text = element_text(size =10, color = "black", angle = 0),
+#         strip.text.y = element_text(color = "white"))
 
 top5DE_d24_log2cpm_p_2 <- d24_gene_df %>% 
   dplyr::filter(entrezgene_id == "100507533")
@@ -901,7 +979,6 @@ ggplot(top5DE_f144R_p, aes(x=reorder(Gene_Name_f144R_p, adj.P.Val), y=logFC))+
         axis.line = element_line(linewidth = 1.5),
         axis.text = element_text(size =10, color = "black", angle = 0),
         strip.text.y = element_text(color = "white"))
->>>>>>> cee6b3d03a02b635036cd142ee8b8df81e05013b
 ```
 
 
@@ -959,6 +1036,8 @@ col_tx_large_2 <- c(rep("#499FBD" , 3), rep("#DCACED", 3), rep("#63666D", 3), 21
 ind_col <- c("#003F5C", "#45AE91",  "#58508D", "#BC4099", "#8B3E9B", "#FF6361", "#FF2362")
 
 tx_col <- c("#499FBD", "#DCACED","#63666D")
+
+tx_col_d <- c("#499FBD", "#63666D")
 
 time_col <- c("#fbb4b9", "#f768a1", "#ae017e")
 
