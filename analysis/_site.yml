@@ -17,6 +17,8 @@ navbar:
     href: Recovery_DE.html
   - text: DOX Only DE
     href: Recovery_DOX.html
+  - text: DOX New Set DE
+    href: Recovery_Set.html
   right:
   - icon: fab fa-github
     text: Source code
