@@ -56,7 +56,8 @@ View(fC_AllCounts)
 dim(fC_AllCounts)
 #[1] 63  6
 
-#saveRDS(fC_AllCounts, "data/fC_AllCounts")
+#saveRDS(fC_AllCounts, "data/fC_AllCounts.RDS")
+
 ```
 
 These samples (63 in total) have been aligned to the Ensembl 113 release of GRCh38 via subread, and counts have been generated using featureCounts with inbuilt hg38 genome
@@ -74,19 +75,25 @@ Individual 1 - 84-1 (9 samples)
   Counts_84_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R27_R1.counts.txt")  
   #View(Counts_84_DOX_24)
 
+#saveRDS(Counts_84_DOX_24, "data/counts/Counts_84_DOX_24.RDS")
 
 
 #84-1 FLUO_24 -> R28
   Counts_84_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R28_R1.counts.txt")
   #View(Counts_84_FLUO_24)
   
+  
 #84-1 DMSO_24 -> R29
   Counts_84_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R29_R1.counts.txt")
   #View(Counts_84_DMSO_24)
   
+#saveRDS(Counts_84_DMSO_24, "data/counts/Counts_84_DMSO_24.RDS")
+  
 #84-1 DOX_24+24-> R30
   Counts_84_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R30_R1.counts.txt")
   #View(Counts_84_DOX_24rec)
+  
+#saveRDS(Counts_84_DOX_24rec, "data/counts/Counts_84_DOX_24rec.RDS")
   
 #84-1 FLUO_24+24-> R31
   Counts_84_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R31_R1.counts.txt")
@@ -96,10 +103,14 @@ Individual 1 - 84-1 (9 samples)
   Counts_84_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R32_R1.counts.txt")
   #View(Counts_84_DMSO_24rec)
   
+#saveRDS(Counts_84_DMSO_24rec, "data/counts/Counts_84_DMSO_24rec.RDS")
+  
 #84-1 DOX_24+144 -> R33
   Counts_84_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R33_R1.counts.txt")
   #View(Counts_84_DOX_144rec)
 
+#saveRDS(Counts_84_DOX_144rec, "data/counts/Counts_84_DOX_144rec.RDS")
+  
 #84-1 FLUO_24+144 -> R34
    Counts_84_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R34_R1.counts.txt")
   #View(Counts_84_FLUO_144rec)
@@ -107,6 +118,8 @@ Individual 1 - 84-1 (9 samples)
 #84-1 DMSO_24+144 -> R35
    Counts_84_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R35_R1.counts.txt")
   #View(Counts_84_DMSO_144rec)
+   
+#saveRDS(Counts_84_DMSO_144rec, "data/counts/Counts_84_DMSO_144rec.RDS")
   
 ```
 
@@ -119,6 +132,8 @@ Individual 2 - 87-1 (9 samples)
   Counts_87_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R36_R1.counts.txt")  
   #View(Counts_87_DOX_24)
 
+#saveRDS(Counts_87_DOX_24, "data/counts/Counts_87_DOX_24.RDS")
+
 #87-1 FLUO_24 -> R37
   Counts_87_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R37_R1.counts.txt")
   #View(Counts_87_FLUO_24)
@@ -127,9 +142,13 @@ Individual 2 - 87-1 (9 samples)
   Counts_87_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R38_R1.counts.txt")
   #View(Counts_87_DMSO_24)
   
+#saveRDS(Counts_87_DMSO_24, "data/counts/Counts_87_DMSO_24.RDS")
+  
 #87-1 DOX_24+24-> R39
   Counts_87_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R39_R1.counts.txt")
   #View(Counts_87_DOX_24rec)
+  
+#saveRDS(Counts_87_DOX_24rec, "data/counts/Counts_87_DOX_24rec.RDS")
   
 #87-1 FLUO_24+24-> R40
   Counts_87_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R40_R1.counts.txt")
@@ -139,9 +158,13 @@ Individual 2 - 87-1 (9 samples)
   Counts_87_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R41_R1.counts.txt")
   #View(Counts_87_DMSO_24rec)
   
+#saveRDS(Counts_87_DMSO_24rec, "data/counts/Counts_87_DMSO_24rec.RDS")
+  
 #87-1 DOX_24+144 -> R42
   Counts_87_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R42_R1.counts.txt")
   #View(Counts_87_DOX_144rec)
+  
+#saveRDS(Counts_87_DOX_144rec, "data/counts/Counts_87_DOX_144rec.RDS")
 
 #87-1 FLUO_24+144 -> R43
    Counts_87_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R43_R1.counts.txt")
@@ -150,6 +173,8 @@ Individual 2 - 87-1 (9 samples)
 #87-1 DMSO_24+144 -> R44
    Counts_87_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R44_R1.counts.txt")
   #View(Counts_87_DMSO_144rec)
+   
+#saveRDS(Counts_87_DMSO_144rec, "data/counts/Counts_87_DMSO_144rec.RDS")
   
 ```
 
@@ -162,6 +187,8 @@ Individual 3 - 75-1 (9 samples)
   Counts_78_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R45_R1.counts.txt")  
   #View(Counts_78_DOX_24)
 
+#saveRDS(Counts_78_DOX_24, "data/counts/Counts_78_DOX_24.RDS")
+
 #78-1 FLUO_24 -> R46
   Counts_78_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R46_R1.counts.txt")
   #View(Counts_78_FLUO_24)
@@ -170,9 +197,13 @@ Individual 3 - 75-1 (9 samples)
   Counts_78_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R47_R1.counts.txt")
   #View(Counts_78_DMSO_24)
   
+#saveRDS(Counts_78_DMSO_24, "data/counts/Counts_78_DMSO_24.RDS")
+  
 #78-1 DOX_24+24-> R48
   Counts_78_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R48_R1.counts.txt")
   #View(Counts_78_DOX_24rec)
+  
+#saveRDS(Counts_78_DOX_24rec, "data/counts/Counts_78_DOX_24rec.RDS")
   
 #78-1 FLUO_24+24-> R49
   Counts_78_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R49_R1.counts.txt")
@@ -182,9 +213,13 @@ Individual 3 - 75-1 (9 samples)
   Counts_78_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R50_R1.counts.txt")
   #View(Counts_78_DMSO_24rec)
   
+#saveRDS(Counts_78_DMSO_24rec, "data/counts/Counts_78_DMSO_24rec.RDS")
+  
 #78-1 DOX_24+144 -> R51
   Counts_78_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R51_R1.counts.txt")
   #View(Counts_78_DOX_144rec)
+  
+#saveRDS(Counts_78_DOX_144rec, "data/counts/Counts_78_DOX_144rec.RDS")
 
 #78-1 FLUO_24+144 -> R52
    Counts_78_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R52_R1.counts.txt")
@@ -193,6 +228,8 @@ Individual 3 - 75-1 (9 samples)
 #78-1 DMSO_24+144 -> R53
    Counts_78_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R53_R1.counts.txt")
   #View(Counts_78_DMSO_144rec)
+   
+#saveRDS(Counts_78_DMSO_144rec, "data/counts/Counts_78_DMSO_144rec.RDS")
    
 ```
 
@@ -205,6 +242,8 @@ Individual 4 - 75-1 (9 samples)
   Counts_75_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R54_R1.counts.txt")  
   #View(Counts_75_DOX_24)
 
+#saveRDS(Counts_75_DOX_24, "data/counts/Counts_75_DOX_24.RDS")
+
 #75-1 FLUO_24 -> R55
   Counts_75_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R55_R1.counts.txt")
   #View(Counts_75_FLUO_24)
@@ -213,10 +252,14 @@ Individual 4 - 75-1 (9 samples)
   Counts_75_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R56_R1.counts.txt")
   #View(Counts_75_DMSO_24)
   
+#saveRDS(Counts_75_DMSO_24, "data/counts/Counts_75_DMSO_24.RDS")
+  
 #75-1 DOX_24+24-> R57
   Counts_75_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R57_R1.counts.txt")
   #View(Counts_75_DOX_24rec)
-  
+
+#saveRDS(Counts_75_DOX_24rec, "data/counts/Counts_75_DOX_24rec.RDS")  
+
 #75-1 FLUO_24+24-> R58
   Counts_75_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R58_R1.counts.txt")
   #View(Counts_75_FLUO_24rec)
@@ -225,9 +268,13 @@ Individual 4 - 75-1 (9 samples)
   Counts_75_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R59_R1.counts.txt")
   #View(Counts_75_DMSO_24rec)
   
+#saveRDS(Counts_75_DMSO_24rec, "data/counts/Counts_75_DMSO_24rec.RDS")
+  
 #75-1 DOX_24+144 -> R60
   Counts_75_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R60_R1.counts.txt")
   #View(Counts_75_DOX_144rec)
+  
+#saveRDS(Counts_75_DOX_144rec, "data/counts/Counts_75_DOX_144rec.RDS")
 
 #75-1 FLUO_24+144 -> R61
    Counts_75_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R61_R1.counts.txt")
@@ -236,6 +283,8 @@ Individual 4 - 75-1 (9 samples)
 #75-1 DMSO_24+144 -> R62
    Counts_75_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R62_R1.counts.txt")
   #View(Counts_75_DMSO_144rec)
+   
+#saveRDS(Counts_75_DMSO_144rec, "data/counts/Counts_75_DMSO_144rec.RDS")
    
 ```
 
@@ -249,6 +298,8 @@ Individual 5 - 17-3 (9 samples)
   Counts_17_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R63_R1.counts.txt")  
   #View(Counts_17_DOX_24)
 
+#saveRDS(Counts_17_DOX_24, "data/counts/Counts_17_DOX_24.RDS")
+
 #17-3 FLUO_24 -> R64
   Counts_17_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R64_R1.counts.txt")
   #View(Counts_17_FLUO_24)
@@ -257,9 +308,13 @@ Individual 5 - 17-3 (9 samples)
   Counts_17_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R65_R1.counts.txt")
   #View(Counts_17_DMSO_24)
   
+#saveRDS(Counts_17_DMSO_24, "data/counts/Counts_17_DMSO_24.RDS")
+  
 #17-3 DOX_24+24-> R66
   Counts_17_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R66_R1.counts.txt")
   #View(Counts_17_DOX_24rec)
+  
+#saveRDS(Counts_17_DOX_24rec, "data/counts/Counts_17_DOX_24rec.RDS")
   
 #17-3 FLUO_24+24-> R67
   Counts_17_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R67_R1.counts.txt")
@@ -269,9 +324,13 @@ Individual 5 - 17-3 (9 samples)
   Counts_17_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R68_R1.counts.txt")
   #View(Counts_17_DMSO_24rec)
   
+#saveRDS(Counts_17_DMSO_24rec, "data/counts/Counts_17_DMSO_24rec.RDS")
+  
 #17-3 DOX_24+144 -> R69
   Counts_17_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R69_R1.counts.txt")
   #View(Counts_17_DOX_144rec)
+  
+#saveRDS(Counts_17_DOX_144rec, "data/counts/Counts_17_DOX_144rec.RDS")
 
 #17-3 FLUO_24+144 -> R70
    Counts_17_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R70_R1.counts.txt")
@@ -280,6 +339,8 @@ Individual 5 - 17-3 (9 samples)
 #17-3 DMSO_24+144 -> R71
    Counts_17_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R71_R1.counts.txt")
   #View(Counts_17_DMSO_144rec)
+   
+#saveRDS(Counts_17_DMSO_144rec, "data/counts/Counts_17_DMSO_144rec.RDS")
    
 ```
 
@@ -293,6 +354,8 @@ Individual 6 - 90-1 (9 samples)
   Counts_90_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R72_R1.counts.txt")  
   #View(Counts_90_DOX_24)
 
+#saveRDS(Counts_90_DOX_24, "data/counts/Counts_90_DOX_24.RDS")
+
 #90-1 FLUO_24 -> R73
   Counts_90_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R73_R1.counts.txt")
   #View(Counts_90_FLUO_24)
@@ -301,9 +364,13 @@ Individual 6 - 90-1 (9 samples)
   Counts_90_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R74_R1.counts.txt")
   #View(Counts_90_DMSO_24)
   
+#saveRDS(Counts_90_DMSO_24, "data/counts/Counts_90_DMSO_24.RDS")
+  
 #90-1 DOX_24+24-> R75
   Counts_90_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R75_R1.counts.txt")
   #View(Counts_90_DOX_24rec)
+  
+#saveRDS(Counts_90_DOX_24rec, "data/counts/Counts_90_DOX_24rec.RDS")
   
 #90-1 FLUO_24+24-> R76
   Counts_90_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R76_R1.counts.txt")
@@ -313,10 +380,14 @@ Individual 6 - 90-1 (9 samples)
   Counts_90_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R77_R1.counts.txt")
   #View(Counts_90_DMSO_24rec)
   
+#saveRDS(Counts_90_DMSO_24rec, "data/counts/Counts_90_DMSO_24rec.RDS")
+  
 #90-1 DOX_24+144 -> R78
   Counts_90_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R78_R1.counts.txt")
   #View(Counts_90_DOX_144rec)
 
+#saveRDS(Counts_90_DOX_144rec, "data/counts/Counts_90_DOX_144rec.RDS")
+  
 #90-1 FLUO_24+144 -> R79
    Counts_90_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R79_R1.counts.txt")
   #View(Counts_90_FLUO_144rec)
@@ -324,6 +395,8 @@ Individual 6 - 90-1 (9 samples)
 #90-1 DMSO_24+144 -> R80
    Counts_90_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R80_R1.counts.txt")
   #View(Counts_90_DMSO_144rec)
+   
+#saveRDS(Counts_90_DMSO_144rec, "data/counts/Counts_90_DMSO_144rec.RDS")
    
 ```
 
@@ -335,39 +408,51 @@ Individual 7 - 90-1 REP (9 samples)
 
 #90-1 REP DOX_24-> R81
   Counts_90REP_DOX_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R81_R1.counts.txt")  
-  #View(Counts_90_DOX_24)
+  #View(Counts_90REP_DOX_24)
+
+#saveRDS(Counts_90REP_DOX_24, "data/counts/Counts_90REP_DOX_24.RDS")
 
 #90-1 REP FLUO_24 -> R82
   Counts_90REP_FLUO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R82_R1.counts.txt")
-  #View(Counts_90_FLUO_24)
+  #View(Counts_90REP_FLUO_24)
   
 #90-1 REP DMSO_24 -> R83
   Counts_90REP_DMSO_24 <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R83_R1.counts.txt")
-  #View(Counts_90_DMSO_24)
+  #View(Counts_90REP_DMSO_24)
+  
+#saveRDS(Counts_90REP_DMSO_24, "data/counts/Counts_90REP_DMSO_24.RDS")
   
 #90-1 REP DOX_24+24-> R84
   Counts_90REP_DOX_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R84_R1.counts.txt")
-  #View(Counts_90_DOX_24rec)
+  #View(Counts_90REP_DOX_24rec)
+  
+#saveRDS(Counts_90REP_DOX_24rec, "data/counts/Counts_90REP_DOX_24rec.RDS")
   
 #90-1 REP FLUO_24+24-> R85
   Counts_90REP_FLUO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R85_R1.counts.txt")
-  #View(Counts_90_FLUO_24rec)
+  #View(Counts_90REP_FLUO_24rec)
   
 #90-1 REP DMSO_24+24-> R86
   Counts_90REP_DMSO_24rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R86_R1.counts.txt")
-  #View(Counts_90_DMSO_24rec)
+  #View(Counts_90REP_DMSO_24rec)
+  
+#saveRDS(Counts_90REP_DMSO_24rec, "data/counts/Counts_90REP_DMSO_24rec.RDS")
   
 #90-1 REP DOX_24+144 -> R87
   Counts_90REP_DOX_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R87_R1.counts.txt")
-  #View(Counts_90_DOX_144rec)
+  #View(Counts_90REP_DOX_144rec)
+  
+#saveRDS(Counts_90REP_DOX_144rec, "data/counts/Counts_90REP_DOX_144rec.RDS")
 
 #90-1 REP FLUO_24+144 -> R88
    Counts_90REP_FLUO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R88_R1.counts.txt")
-  #View(Counts_90_FLUO_144rec)
+  #View(Counts_90REP_FLUO_144rec)
   
 #90-1 REP DMSO_24+144 -> R89
    Counts_90REP_DMSO_144rec <- read.delim("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/RNAseq/new counts/MCW_EMP_JT_R89_R1.counts.txt")
   #View(Counts_90_DMSO_144rec)
+   
+#saveRDS(Counts_90REP_DMSO_144rec, "data/counts/Counts_90REP_DMSO_144rec.RDS")
    
 ```
 Now that I have imported all of these counts files, I will make a matrix with all of the samples

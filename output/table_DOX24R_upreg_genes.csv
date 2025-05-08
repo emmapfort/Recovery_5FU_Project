@@ -1,0 +1,1034 @@
+"","source","term_id","term_name","intersection_size","term_size","p_value"
+"1","GO:BP","GO:0080090","regulation of primary metabolic process",1490,5486,2.1477855204676e-69
+"2","GO:BP","GO:0019538","protein metabolic process",1279,4813,3.78428665046774e-50
+"3","GO:BP","GO:0019222","regulation of metabolic process",1728,7076,1.16382584392655e-46
+"4","GO:BP","GO:0048518","positive regulation of biological process",1546,6235,1.12808320851844e-43
+"5","GO:BP","GO:0048522","positive regulation of cellular process",1474,5886,1.59445706759873e-43
+"6","GO:BP","GO:0019219","regulation of nucleobase-containing compound metabolic process",1077,4002,4.91605235484057e-43
+"7","GO:BP","GO:0051252","regulation of RNA metabolic process",1006,3709,4.12080487131347e-41
+"8","GO:BP","GO:0009893","positive regulation of metabolic process",987,3648,1.14635611373372e-39
+"9","GO:BP","GO:0006351","DNA-templated transcription",966,3559,2.72045621399781e-39
+"10","GO:BP","GO:0009057","macromolecule catabolic process",455,1348,2.75994736890975e-39
+"11","GO:BP","GO:0060255","regulation of macromolecule metabolic process",1582,6535,1.33088895930091e-38
+"12","GO:BP","GO:0046907","intracellular transport",458,1371,2.46805989216248e-38
+"13","GO:BP","GO:0051641","cellular localization",972,3625,2.59764788056503e-37
+"14","GO:BP","GO:0043412","macromolecule modification",857,3129,1.28752859791711e-35
+"15","GO:BP","GO:0010604","positive regulation of macromolecule metabolic process",902,3349,7.74145299668899e-35
+"16","GO:BP","GO:0051649","establishment of localization in cell",591,1976,3.33956653637518e-34
+"17","GO:BP","GO:0006996","organelle organization",947,3570,3.56698182235151e-34
+"18","GO:BP","GO:0006355","regulation of DNA-templated transcription",915,3435,1.64776334914472e-33
+"19","GO:BP","GO:2001141","regulation of RNA biosynthetic process",918,3454,2.9135921503549e-33
+"20","GO:BP","GO:0009056","catabolic process",721,2562,3.90692132519904e-33
+"21","GO:BP","GO:0065007","biological regulation",2710,12671,1.18045079494942e-32
+"22","GO:BP","GO:0050794","regulation of cellular process",2565,11876,2.68071393674096e-32
+"23","GO:BP","GO:0042254","ribosome biogenesis",155,316,4.04542301267347e-32
+"24","GO:BP","GO:0033554","cellular response to stress",539,1786,4.21244483925352e-32
+"25","GO:BP","GO:0050789","regulation of biological process",2635,12278,7.74182045821107e-32
+"26","GO:BP","GO:0033036","macromolecule localization",858,3211,1.27314948508262e-31
+"27","GO:BP","GO:0019941","modification-dependent protein catabolic process",239,613,4.43285750104917e-30
+"28","GO:BP","GO:0043632","modification-dependent macromolecule catabolic process",240,617,4.79217677990894e-30
+"29","GO:BP","GO:0016072","rRNA metabolic process",134,263,7.73798174254728e-30
+"30","GO:BP","GO:0070727","cellular macromolecule localization",749,2749,9.19351681943306e-30
+"31","GO:BP","GO:0006511","ubiquitin-dependent protein catabolic process",235,603,1.42963449682273e-29
+"32","GO:BP","GO:0036211","protein modification process",791,2947,2.01791170445476e-29
+"33","GO:BP","GO:0051246","regulation of protein metabolic process",573,1975,2.552477202411e-29
+"34","GO:BP","GO:0008104","protein localization",744,2738,3.54943402642103e-29
+"35","GO:BP","GO:0006366","transcription by RNA polymerase II",733,2698,1.19388745351169e-28
+"36","GO:BP","GO:0030163","protein catabolic process",330,973,1.58242982262629e-28
+"37","GO:BP","GO:0006364","rRNA processing",119,225,2.00274618844918e-28
+"38","GO:BP","GO:0045935","positive regulation of nucleobase-containing compound metabolic process",583,2038,3.75507969968346e-28
+"39","GO:BP","GO:0051179","localization",1324,5521,4.13413583127106e-28
+"40","GO:BP","GO:0015031","protein transport",439,1428,1.22070296575265e-27
+"41","GO:BP","GO:0051603","proteolysis involved in protein catabolic process",265,732,1.47071285913582e-27
+"42","GO:BP","GO:0009889","regulation of biosynthetic process",1370,5795,2.20087493839675e-26
+"43","GO:BP","GO:0051254","positive regulation of RNA metabolic process",530,1844,7.52825155285324e-26
+"44","GO:BP","GO:0010556","regulation of macromolecule biosynthetic process",1334,5633,8.94866164889005e-26
+"45","GO:BP","GO:0071705","nitrogen compound transport",543,1909,2.28700733701271e-25
+"46","GO:BP","GO:0044238","primary metabolic process",2624,12419,2.29989986716766e-25
+"47","GO:BP","GO:0009894","regulation of catabolic process",335,1030,2.52305668464529e-25
+"48","GO:BP","GO:0016192","vesicle-mediated transport",459,1547,2.84049745656593e-25
+"49","GO:BP","GO:0016236","macroautophagy",149,338,7.71298765700993e-25
+"50","GO:BP","GO:0010468","regulation of gene expression",1299,5515,8.64025798217019e-24
+"51","GO:BP","GO:0006357","regulation of transcription by RNA polymerase II",683,2572,1.72683693948933e-23
+"52","GO:BP","GO:0010498","proteasomal protein catabolic process",193,502,2.29549477710659e-23
+"53","GO:BP","GO:0009891","positive regulation of biosynthetic process",710,2707,5.82542574185965e-23
+"54","GO:BP","GO:0061919","process utilizing autophagic mechanism",211,574,9.9480870450351e-23
+"55","GO:BP","GO:0006914","autophagy",211,574,9.9480870450351e-23
+"56","GO:BP","GO:0043161","proteasome-mediated ubiquitin-dependent protein catabolic process",163,400,9.9480870450351e-23
+"57","GO:BP","GO:0010557","positive regulation of macromolecule biosynthetic process",686,2604,1.23775655547448e-22
+"58","GO:BP","GO:0045893","positive regulation of DNA-templated transcription",485,1710,3.8573576182367e-22
+"59","GO:BP","GO:0048583","regulation of response to stimulus",971,3958,4.17515165183965e-22
+"60","GO:BP","GO:0045184","establishment of protein localization",533,1925,5.53761200969249e-22
+"61","GO:BP","GO:1902680","positive regulation of RNA biosynthetic process",485,1713,5.53761200969249e-22
+"62","GO:BP","GO:0007049","cell cycle",507,1824,3.51950848016159e-21
+"63","GO:BP","GO:0070647","protein modification by small protein conjugation or removal",303,962,2.24838411539548e-20
+"64","GO:BP","GO:0006508","proteolysis",420,1457,2.4252862047881e-20
+"65","GO:BP","GO:0006810","transport",1037,4341,9.34640808626589e-20
+"66","GO:BP","GO:0048523","negative regulation of cellular process",1299,5646,1.89966293979632e-19
+"67","GO:BP","GO:0006974","DNA damage response",285,901,2.08178823402774e-19
+"68","GO:BP","GO:0035556","intracellular signal transduction",744,2946,2.08178823402774e-19
+"69","GO:BP","GO:0048519","negative regulation of biological process",1342,5865,2.30032143896304e-19
+"70","GO:BP","GO:0043687","post-translational protein modification",311,1013,4.56664772054102e-19
+"71","GO:BP","GO:0016050","vesicle organization",145,365,5.76655092197082e-19
+"72","GO:BP","GO:0009966","regulation of signal transduction",757,3020,6.73592004315537e-19
+"73","GO:BP","GO:0006950","response to stress",935,3876,1.063947867691e-18
+"74","GO:BP","GO:0051253","negative regulation of RNA metabolic process",413,1457,1.46790778079666e-18
+"75","GO:BP","GO:0045934","negative regulation of nucleobase-containing compound metabolic process",440,1579,2.28102209081368e-18
+"76","GO:BP","GO:0023051","regulation of signaling",843,3446,3.06972860479079e-18
+"77","GO:BP","GO:0010646","regulation of cell communication",842,3453,8.48079098789428e-18
+"78","GO:BP","GO:0051234","establishment of localization",1131,4869,1.3651470923943e-17
+"79","GO:BP","GO:0051640","organelle localization",210,624,2.01961893793769e-17
+"80","GO:BP","GO:0051726","regulation of cell cycle",325,1104,6.43362416770083e-17
+"81","GO:BP","GO:0032446","protein modification by small protein conjugation",263,846,9.21215488054464e-17
+"82","GO:BP","GO:0006886","intracellular protein transport",223,685,1.27980468942085e-16
+"83","GO:BP","GO:0008152","metabolic process",2882,14188,3.64892279291409e-16
+"84","GO:BP","GO:0016197","endosomal transport",115,286,2.07316892420176e-15
+"85","GO:BP","GO:0007033","vacuole organization",99,232,3.15781512088919e-15
+"86","GO:BP","GO:0045892","negative regulation of DNA-templated transcription",372,1337,3.37712838421633e-15
+"87","GO:BP","GO:1902679","negative regulation of RNA biosynthetic process",375,1352,4.18300870664186e-15
+"88","GO:BP","GO:0045944","positive regulation of transcription by RNA polymerase II",352,1261,1.53145283662357e-14
+"89","GO:BP","GO:0008219","cell death",512,1984,1.84931931110543e-14
+"90","GO:BP","GO:0012501","programmed cell death",511,1980,1.94450001054985e-14
+"91","GO:BP","GO:1902531","regulation of intracellular signal transduction",501,1935,2.12973218746504e-14
+"92","GO:BP","GO:0010648","negative regulation of cell communication",384,1407,2.55214285033682e-14
+"93","GO:BP","GO:0009968","negative regulation of signal transduction",359,1300,4.06674464161923e-14
+"94","GO:BP","GO:0006915","apoptotic process",496,1919,4.20694866094562e-14
+"95","GO:BP","GO:0048585","negative regulation of response to stimulus",439,1663,6.65656240588856e-14
+"96","GO:BP","GO:0023057","negative regulation of signaling",382,1407,7.08485179702616e-14
+"97","GO:BP","GO:0042274","ribosomal small subunit biogenesis",55,101,1.00710061686893e-13
+"98","GO:BP","GO:0009896","positive regulation of catabolic process",177,537,1.20074268504028e-13
+"99","GO:BP","GO:0080135","regulation of cellular response to stress",169,512,4.60322202247762e-13
+"100","GO:BP","GO:0016567","protein ubiquitination",229,762,9.90224071384127e-13
+"101","GO:BP","GO:0043170","macromolecule metabolic process",2476,12088,1.02167907655391e-12
+"102","GO:BP","GO:0006259","DNA metabolic process",282,993,1.87311323056751e-12
+"103","GO:BP","GO:0016241","regulation of macroautophagy",76,173,1.98711642863638e-12
+"104","GO:BP","GO:0061024","membrane organization",242,822,2.0707831331269e-12
+"105","GO:BP","GO:0016310","phosphorylation",411,1575,3.96120731663453e-12
+"106","GO:BP","GO:0051128","regulation of cellular component organization",587,2398,5.34633347433088e-12
+"107","GO:BP","GO:0051648","vesicle localization",90,224,5.4059384244052e-12
+"108","GO:BP","GO:0051247","positive regulation of protein metabolic process",316,1152,6.252482477824e-12
+"109","GO:BP","GO:0080134","regulation of response to stress",361,1354,6.97857816135663e-12
+"110","GO:BP","GO:0006412","translation",216,721,7.57021342314288e-12
+"111","GO:BP","GO:0043067","regulation of programmed cell death",392,1497,9.14902776303603e-12
+"112","GO:BP","GO:0050790","regulation of catalytic activity",284,1015,9.76661968304107e-12
+"113","GO:BP","GO:0065009","regulation of molecular function",416,1611,1.40408753864585e-11
+"114","GO:BP","GO:0031399","regulation of protein modification process",317,1166,1.85593281340106e-11
+"115","GO:BP","GO:0010256","endomembrane system organization",187,607,2.21287733049432e-11
+"116","GO:BP","GO:0006368","transcription elongation by RNA polymerase II",57,118,2.40689062001161e-11
+"117","GO:BP","GO:0006325","chromatin organization",242,843,3.72965474778357e-11
+"118","GO:BP","GO:0010506","regulation of autophagy",124,358,4.1981474764111e-11
+"119","GO:BP","GO:0042981","regulation of apoptotic process",380,1458,4.3378414565435e-11
+"120","GO:BP","GO:0033365","protein localization to organelle",320,1189,5.37113364472850e-11
+"121","GO:BP","GO:0031647","regulation of protein stability",115,325,5.73945977138146e-11
+"122","GO:BP","GO:0051656","establishment of organelle localization",156,490,1.18063399609327e-10
+"123","GO:BP","GO:0071840","cellular component organization or biogenesis",1752,8323,1.3822953405029e-10
+"124","GO:BP","GO:0042176","regulation of protein catabolic process",126,372,1.55456754990529e-10
+"125","GO:BP","GO:0051248","negative regulation of protein metabolic process",208,708,1.55456754990529e-10
+"126","GO:BP","GO:0043414","macromolecule methylation",59,129,1.63752787867815e-10
+"127","GO:BP","GO:0009892","negative regulation of metabolic process",788,3418,1.74248146006818e-10
+"128","GO:BP","GO:0051169","nuclear transport",115,331,2.14179146944513e-10
+"129","GO:BP","GO:0006913","nucleocytoplasmic transport",115,331,2.14179146944513e-10
+"130","GO:BP","GO:0051650","establishment of vesicle localization",81,205,2.26133659499614e-10
+"131","GO:BP","GO:0048193","Golgi vesicle transport",107,301,2.4035662050879e-10
+"132","GO:BP","GO:0006352","DNA-templated transcription initiation",79,199,3.1051298981753e-10
+"133","GO:BP","GO:0072331","signal transduction by p53 class mediator",74,182,3.68936828553699e-10
+"134","GO:BP","GO:0006796","phosphate-containing compound metabolic process",607,2550,3.68936828553699e-10
+"135","GO:BP","GO:0006793","phosphorus metabolic process",607,2553,4.57618713808106e-10
+"136","GO:BP","GO:1902532","negative regulation of intracellular signal transduction",190,640,4.87399777283045e-10
+"137","GO:BP","GO:0007032","endosome organization",48,97,5.03701271288669e-10
+"138","GO:BP","GO:2000142","regulation of DNA-templated transcription initiation",43,82,5.16724222540941e-10
+"139","GO:BP","GO:2000144","positive regulation of DNA-templated transcription initiation",38,68,6.59425776030339e-10
+"140","GO:BP","GO:0006468","protein phosphorylation",348,1341,7.05311801280453e-10
+"141","GO:BP","GO:0006354","DNA-templated transcription elongation",59,133,7.11594815557213e-10
+"142","GO:BP","GO:1903432","regulation of TORC1 signaling",46,92,8.35803386566864e-10
+"143","GO:BP","GO:0000122","negative regulation of transcription by RNA polymerase II",270,992,8.90825802947521e-10
+"144","GO:BP","GO:0006417","regulation of translation",125,378,1.03678113749833e-09
+"145","GO:BP","GO:0030490","maturation of SSU-rRNA",32,53,1.66732612125955e-09
+"146","GO:BP","GO:0070925","organelle assembly",270,998,1.75375686559853e-09
+"147","GO:BP","GO:0000045","autophagosome assembly",52,113,2.12419447544119e-09
+"148","GO:BP","GO:0060341","regulation of cellular localization",269,997,2.57153264820257e-09
+"149","GO:BP","GO:0006338","chromatin remodeling",197,682,2.6377046976165e-09
+"150","GO:BP","GO:0031669","cellular response to nutrient levels",89,246,4.80850429260869e-09
+"151","GO:BP","GO:0010605","negative regulation of macromolecule metabolic process",732,3197,4.81170556030385e-09
+"152","GO:BP","GO:1905037","autophagosome organization",53,120,9.00155807432213e-09
+"153","GO:BP","GO:0000462","maturation of SSU-rRNA from tricistronic rRNA transcript (SSU-rRNA, 5.8S rRNA, LSU-rRNA)",24,35,1.06861173229649e-08
+"154","GO:BP","GO:1901873","regulation of post-translational protein modification",88,246,1.17441399622249e-08
+"155","GO:BP","GO:0038202","TORC1 signaling",46,98,1.19703839736356e-08
+"156","GO:BP","GO:0032502","developmental process",1378,6478,1.28186986147206e-08
+"157","GO:BP","GO:0001701","in utero embryonic development",130,412,1.31360875430867e-08
+"158","GO:BP","GO:0060261","positive regulation of transcription initiation by RNA polymerase II",34,62,1.44072858411274e-08
+"159","GO:BP","GO:0000278","mitotic cell cycle",243,897,1.45891633901266e-08
+"160","GO:BP","GO:0060260","regulation of transcription initiation by RNA polymerase II",38,74,1.6540288469856e-08
+"161","GO:BP","GO:0051338","regulation of transferase activity",160,539,1.96067180014081e-08
+"162","GO:BP","GO:1903320","regulation of protein modification by small protein conjugation or removal",86,241,2.05698328229763e-08
+"163","GO:BP","GO:0007034","vacuolar transport",67,171,2.05698328229763e-08
+"164","GO:BP","GO:0034243","regulation of transcription elongation by RNA polymerase II",42,87,2.31716413926059e-08
+"165","GO:BP","GO:1901796","regulation of signal transduction by p53 class mediator",49,110,2.84482371023356e-08
+"166","GO:BP","GO:0072655","establishment of protein localization to mitochondrion",52,120,2.85328670496845e-08
+"167","GO:BP","GO:0033043","regulation of organelle organization",295,1139,3.17919894478611e-08
+"168","GO:BP","GO:0009267","cellular response to starvation",68,177,3.99827672599464e-08
+"169","GO:BP","GO:0070585","protein localization to mitochondrion",54,128,4.34215278434978e-08
+"170","GO:BP","GO:0051168","nuclear export",65,167,4.98313669828611e-08
+"171","GO:BP","GO:0051716","cellular response to stimulus",1534,7320,5.23028801203505e-08
+"172","GO:BP","GO:0043065","positive regulation of apoptotic process",153,517,5.69879264961073e-08
+"173","GO:BP","GO:1904029","regulation of cyclin-dependent protein kinase activity",41,86,5.74316066430824e-08
+"174","GO:BP","GO:0006401","RNA catabolic process",102,308,5.79719757344852e-08
+"175","GO:BP","GO:0001510","RNA methylation",40,83,6.04912746131162e-08
+"176","GO:BP","GO:0006403","RNA localization",73,197,6.07187861142475e-08
+"177","GO:BP","GO:0050821","protein stabilization",78,216,6.62058148172774e-08
+"178","GO:BP","GO:0070848","response to growth factor",198,713,7.47745821861149e-08
+"179","GO:BP","GO:0061136","regulation of proteasomal protein catabolic process",73,198,7.74038353512297e-08
+"180","GO:BP","GO:0043068","positive regulation of programmed cell death",156,533,8.79871010544633e-08
+"181","GO:BP","GO:0141124","intracellular signaling cassette",454,1895,8.79871010544633e-08
+"182","GO:BP","GO:0007041","lysosomal transport",55,134,9.51385725940278e-08
+"183","GO:BP","GO:0045732","positive regulation of protein catabolic process",77,214,9.86153155308635e-08
+"184","GO:BP","GO:0141188","nucleic acid catabolic process",108,335,9.97173244751826e-08
+"185","GO:BP","GO:0048584","positive regulation of response to stimulus",536,2293,1.14631606017608e-07
+"186","GO:BP","GO:0034504","protein localization to nucleus",103,316,1.19819017073462e-07
+"187","GO:BP","GO:0032259","methylation",82,234,1.23115144888057e-07
+"188","GO:BP","GO:0031400","negative regulation of protein modification process",117,373,1.29248546748646e-07
+"189","GO:BP","GO:0000209","protein polyubiquitination",90,266,1.54521305085844e-07
+"190","GO:BP","GO:0006626","protein targeting to mitochondrion",46,105,1.61584709932079e-07
+"191","GO:BP","GO:0016311","dephosphorylation",80,228,1.75784791398479e-07
+"192","GO:BP","GO:0051123","RNA polymerase II preinitiation complex assembly",35,70,1.75784791398479e-07
+"193","GO:BP","GO:0051052","regulation of DNA metabolic process",145,492,1.88527350416695e-07
+"194","GO:BP","GO:0071363","cellular response to growth factor stimulus",189,682,1.95034990698022e-07
+"195","GO:BP","GO:0032880","regulation of protein localization",236,891,1.98075040202755e-07
+"196","GO:BP","GO:0050793","regulation of developmental process",567,2453,2.03310874733296e-07
+"197","GO:BP","GO:0070897","transcription preinitiation complex assembly",39,83,2.16952017286741e-07
+"198","GO:BP","GO:0009719","response to endogenous stimulus",363,1478,2.34419339136017e-07
+"199","GO:BP","GO:0043484","regulation of RNA splicing",69,188,2.42503297119652e-07
+"200","GO:BP","GO:0006281","DNA repair",172,610,2.47012942128029e-07
+"201","GO:BP","GO:0007275","multicellular organism development",1009,4658,2.47012942128029e-07
+"202","GO:BP","GO:1904263","positive regulation of TORC1 signaling",29,53,2.55706843258702e-07
+"203","GO:BP","GO:1903050","regulation of proteolysis involved in protein catabolic process",82,238,2.79357680341596e-07
+"204","GO:BP","GO:0032879","regulation of localization",473,2005,3.07356936499969e-07
+"205","GO:BP","GO:0006367","transcription initiation at RNA polymerase II promoter",61,160,3.44093942231224e-07
+"206","GO:BP","GO:0009790","embryo development",287,1130,3.6700596692749e-07
+"207","GO:BP","GO:0032784","regulation of DNA-templated transcription elongation",44,101,4.00929784504386e-07
+"208","GO:BP","GO:0009451","RNA modification",64,172,4.46396017773953e-07
+"209","GO:BP","GO:0006903","vesicle targeting",33,66,4.52350608769335e-07
+"210","GO:BP","GO:0044088","regulation of vacuole organization",30,57,4.53350900329903e-07
+"211","GO:BP","GO:0043549","regulation of kinase activity",138,469,4.5857186458006e-07
+"212","GO:BP","GO:0016032","viral process",128,427,4.64554978714363e-07
+"213","GO:BP","GO:0032006","regulation of TOR signaling",57,147,5.01567794244845e-07
+"214","GO:BP","GO:0000079","regulation of cyclin-dependent protein serine/threonine kinase activity",38,82,5.08481863677622e-07
+"215","GO:BP","GO:0045859","regulation of protein kinase activity",130,438,6.81643649443258e-07
+"216","GO:BP","GO:0048856","anatomical structure development",1251,5924,8.38860243547119e-07
+"217","GO:BP","GO:0022402","cell cycle process",317,1280,9.04901199119777e-07
+"218","GO:BP","GO:0022406","membrane docking",40,90,9.04901199119777e-07
+"219","GO:BP","GO:0007040","lysosome organization",46,111,1.15919515470454e-06
+"220","GO:BP","GO:0080171","lytic vacuole organization",46,111,1.15919515470454e-06
+"221","GO:BP","GO:0042594","response to starvation",75,218,1.21482238509258e-06
+"222","GO:BP","GO:0035891","exit from host cell",20,31,1.25543163835625e-06
+"223","GO:BP","GO:0019076","viral release from host cell",20,31,1.25543163835625e-06
+"224","GO:BP","GO:0009792","embryo development ending in birth or egg hatching",187,690,1.25543163835625e-06
+"225","GO:BP","GO:0071495","cellular response to endogenous stimulus",302,1215,1.33395716261109e-06
+"226","GO:BP","GO:0098876","vesicle-mediated transport to the plasma membrane",57,151,1.45206146844304e-06
+"227","GO:BP","GO:0007005","mitochondrion organization",126,427,1.55549146971651e-06
+"228","GO:BP","GO:0006900","vesicle budding from membrane",37,82,1.79193828426184e-06
+"229","GO:BP","GO:1901800","positive regulation of proteasomal protein catabolic process",47,116,1.82733052670739e-06
+"230","GO:BP","GO:0008033","tRNA processing",53,138,2.1957796561277e-06
+"231","GO:BP","GO:0032456","endocytic recycling",38,86,2.32694712188672e-06
+"232","GO:BP","GO:0030488","tRNA methylation",23,40,2.4986635905386e-06
+"233","GO:BP","GO:0006400","tRNA modification",40,93,2.58670235316767e-06
+"234","GO:BP","GO:0030162","regulation of proteolysis",127,435,2.61555603003969e-06
+"235","GO:BP","GO:1903311","regulation of mRNA metabolic process",95,303,3.2944079619518e-06
+"236","GO:BP","GO:0006399","tRNA metabolic process",71,208,3.77793418242385e-06
+"237","GO:BP","GO:0006406","mRNA export from nucleus",33,71,3.85442096150597e-06
+"238","GO:BP","GO:1903047","mitotic cell cycle process",197,747,4.57452045479757e-06
+"239","GO:BP","GO:0009987","cellular process",3836,20203,4.71745664084992e-06
+"240","GO:BP","GO:0006383","transcription by RNA polymerase III",30,62,4.76034667820184e-06
+"241","GO:BP","GO:0031929","TOR signaling",60,167,4.76645918363672e-06
+"242","GO:BP","GO:0042325","regulation of phosphorylation",242,954,5.48454140619822e-06
+"243","GO:BP","GO:0097190","apoptotic signaling pathway",165,606,5.48454140619822e-06
+"244","GO:BP","GO:1903052","positive regulation of proteolysis involved in protein catabolic process",52,138,5.67955495526297e-06
+"245","GO:BP","GO:0030330","DNA damage response, signal transduction by p53 class mediator",35,79,6.74321307375101e-06
+"246","GO:BP","GO:0042273","ribosomal large subunit biogenesis",31,66,6.74473407733822e-06
+"247","GO:BP","GO:0006906","vesicle fusion",46,117,6.8403230257858e-06
+"248","GO:BP","GO:2000058","regulation of ubiquitin-dependent protein catabolic process",62,177,8.19281958299123e-06
+"249","GO:BP","GO:0045595","regulation of cell differentiation",373,1577,9.2206990564962e-06
+"250","GO:BP","GO:0043009","chordate embryonic development",178,669,9.50307972491035e-06
+"251","GO:BP","GO:0140056","organelle localization by membrane tethering",35,80,9.60390168738717e-06
+"252","GO:BP","GO:0070646","protein modification by small protein removal",53,144,1.01395074808169e-05
+"253","GO:BP","GO:0000910","cytokinesis",65,190,1.10950440969054e-05
+"254","GO:BP","GO:0090174","organelle membrane fusion",46,119,1.19443565478477e-05
+"255","GO:BP","GO:0008654","phospholipid biosynthetic process",81,254,1.23633912972767e-05
+"256","GO:BP","GO:0007167","enzyme-linked receptor protein signaling pathway",241,959,1.23823617651527e-05
+"257","GO:BP","GO:0065004","protein-DNA complex assembly",77,238,1.24844097739144e-05
+"258","GO:BP","GO:0008333","endosome to lysosome transport",32,71,1.33393177524415e-05
+"259","GO:BP","GO:0044090","positive regulation of vacuole organization",16,24,1.42161511479024e-05
+"260","GO:BP","GO:0001932","regulation of protein phosphorylation",228,901,1.45744932205962e-05
+"261","GO:BP","GO:0006282","regulation of DNA repair",71,215,1.4647629097107e-05
+"262","GO:BP","GO:0036258","multivesicular body assembly",19,32,1.59629434717214e-05
+"263","GO:BP","GO:0099022","vesicle tethering",19,32,1.59629434717214e-05
+"264","GO:BP","GO:0009628","response to abiotic stimulus",277,1130,1.59629434717214e-05
+"265","GO:BP","GO:0051130","positive regulation of cellular component organization",269,1093,1.64662180777605e-05
+"266","GO:BP","GO:0042770","signal transduction in response to DNA damage",66,196,1.65387347254528e-05
+"267","GO:BP","GO:0030154","cell differentiation",935,4381,1.67164877922575e-05
+"268","GO:BP","GO:0048869","cellular developmental process",935,4382,1.73800108748807e-05
+"269","GO:BP","GO:0044093","positive regulation of molecular function",240,959,1.76612439917049e-05
+"270","GO:BP","GO:0009411","response to UV",55,154,1.76612439917049e-05
+"271","GO:BP","GO:0048284","organelle fusion",56,158,1.84327952154407e-05
+"272","GO:BP","GO:0032786","positive regulation of DNA-templated transcription, elongation",28,59,1.84327952154407e-05
+"273","GO:BP","GO:0032200","telomere organization",65,193,1.95201417230792e-05
+"274","GO:BP","GO:0009967","positive regulation of signal transduction",368,1566,2.03921969166022e-05
+"275","GO:BP","GO:0032968","positive regulation of transcription elongation by RNA polymerase II",25,50,2.14821354868962e-05
+"276","GO:BP","GO:0023056","positive regulation of signaling",413,1784,2.15880599263955e-05
+"277","GO:BP","GO:0001933","negative regulation of protein phosphorylation",84,270,2.22642248386289e-05
+"278","GO:BP","GO:0071897","DNA biosynthetic process",62,182,2.22642248386289e-05
+"279","GO:BP","GO:0032386","regulation of intracellular transport",83,266,2.24925761987427e-05
+"280","GO:BP","GO:0006661","phosphatidylinositol biosynthetic process",48,129,2.28221596509682e-05
+"281","GO:BP","GO:0031396","regulation of protein ubiquitination",66,198,2.36892845534588e-05
+"282","GO:BP","GO:0010563","negative regulation of phosphorus metabolic process",98,329,2.5174524839868e-05
+"283","GO:BP","GO:0045936","negative regulation of phosphate metabolic process",98,329,2.5174524839868e-05
+"284","GO:BP","GO:0007346","regulation of mitotic cell cycle",137,497,2.58567262424842e-05
+"285","GO:BP","GO:0006413","translational initiation",47,126,2.68124604153258e-05
+"286","GO:BP","GO:0044770","cell cycle phase transition",146,537,2.68124604153258e-05
+"287","GO:BP","GO:0071824","protein-DNA complex organization",81,259,2.68177684252857e-05
+"288","GO:BP","GO:0097352","autophagosome maturation",28,60,2.68193880644528e-05
+"289","GO:BP","GO:0044087","regulation of cellular component biogenesis",240,965,2.76070227486977e-05
+"290","GO:BP","GO:0036257","multivesicular body organization",19,33,2.82305883052249e-05
+"291","GO:BP","GO:0006360","transcription by RNA polymerase I",31,70,2.89250569162929e-05
+"292","GO:BP","GO:0009890","negative regulation of biosynthetic process",626,2838,2.9240407305418e-05
+"293","GO:BP","GO:1900180","regulation of protein localization to nucleus",53,149,3.01595588816648e-05
+"294","GO:BP","GO:0000956","nuclear-transcribed mRNA catabolic process",46,123,3.12878073362441e-05
+"295","GO:BP","GO:0051348","negative regulation of transferase activity",61,180,3.14876199215228e-05
+"296","GO:BP","GO:0006901","vesicle coating",21,39,3.31447110858603e-05
+"297","GO:BP","GO:0090148","membrane fission",23,45,3.40760553200442e-05
+"298","GO:BP","GO:0006405","RNA export from nucleus",37,91,3.40760553200442e-05
+"299","GO:BP","GO:0051301","cell division",172,656,3.47531170920365e-05
+"300","GO:BP","GO:0019220","regulation of phosphate metabolic process",262,1071,3.47531170920365e-05
+"301","GO:BP","GO:0051174","regulation of phosphorus metabolic process",262,1072,3.75054019574514e-05
+"302","GO:BP","GO:0050684","regulation of mRNA processing",49,135,3.80494688137946e-05
+"303","GO:BP","GO:0031667","response to nutrient levels",137,501,3.91442693171941e-05
+"304","GO:BP","GO:0050657","nucleic acid transport",55,158,3.98532103108368e-05
+"305","GO:BP","GO:0050658","RNA transport",55,158,3.98532103108368e-05
+"306","GO:BP","GO:0050896","response to stimulus",1816,8993,4.18063225814861e-05
+"307","GO:BP","GO:0051028","mRNA transport",47,128,4.21265992293815e-05
+"308","GO:BP","GO:2001233","regulation of apoptotic signaling pathway",109,380,4.28644649099623e-05
+"309","GO:BP","GO:1902774","late endosome to lysosome transport",15,23,4.28644649099623e-05
+"310","GO:BP","GO:0043085","positive regulation of catalytic activity",163,618,4.36840518148614e-05
+"311","GO:BP","GO:0010647","positive regulation of cell communication",410,1783,4.44503445345781e-05
+"312","GO:BP","GO:0045862","positive regulation of proteolysis",74,234,4.58475587897248e-05
+"313","GO:BP","GO:0010638","positive regulation of organelle organization",132,481,4.81643084531248e-05
+"314","GO:BP","GO:1901797","negative regulation of signal transduction by p53 class mediator",19,34,4.87137278617069e-05
+"315","GO:BP","GO:0042326","negative regulation of phosphorylation",87,288,4.94270064950007e-05
+"316","GO:BP","GO:2000785","regulation of autophagosome assembly",23,46,5.28381234926033e-05
+"317","GO:BP","GO:0010558","negative regulation of macromolecule biosynthetic process",610,2772,5.32283332166857e-05
+"318","GO:BP","GO:0009895","negative regulation of catabolic process",102,352,5.45763920216013e-05
+"319","GO:BP","GO:0009314","response to radiation",120,430,5.7088687636386e-05
+"320","GO:BP","GO:0016239","positive regulation of macroautophagy",33,79,5.89686523085342e-05
+"321","GO:BP","GO:1902533","positive regulation of intracellular signal transduction",268,1108,6.427780892035e-05
+"322","GO:BP","GO:0032543","mitochondrial translation",47,130,6.65426772464934e-05
+"323","GO:BP","GO:0006469","negative regulation of protein kinase activity",52,149,6.66850076257699e-05
+"324","GO:BP","GO:1903829","positive regulation of protein localization",134,493,6.74874490148448e-05
+"325","GO:BP","GO:0006414","translational elongation",32,76,6.74874490148448e-05
+"326","GO:BP","GO:0010508","positive regulation of autophagy",53,153,6.84721170038392e-05
+"327","GO:BP","GO:0034644","cellular response to UV",36,90,6.86290086019078e-05
+"328","GO:BP","GO:0044772","mitotic cell cycle phase transition",120,432,7.13331601979752e-05
+"329","GO:BP","GO:0051236","establishment of RNA localization",55,161,7.19632327878247e-05
+"330","GO:BP","GO:1904896","ESCRT complex disassembly",9,10,7.41998601297555e-05
+"331","GO:BP","GO:1904903","ESCRT III complex disassembly",9,10,7.41998601297555e-05
+"332","GO:BP","GO:0071985","multivesicular body sorting pathway",24,50,7.60911105641785e-05
+"333","GO:BP","GO:0032008","positive regulation of TOR signaling",31,73,7.60911105641785e-05
+"334","GO:BP","GO:0061025","membrane fusion",61,185,7.79716800972121e-05
+"335","GO:BP","GO:1903747","regulation of establishment of protein localization to mitochondrion",23,47,8.03452599152477e-05
+"336","GO:BP","GO:0006402","mRNA catabolic process",77,250,8.12298514948225e-05
+"337","GO:BP","GO:0030030","cell projection organization",373,1615,8.31590379066939e-05
+"338","GO:BP","GO:0051604","protein maturation",151,571,8.31865572426622e-05
+"339","GO:BP","GO:0032509","endosome transport via multivesicular body sorting pathway",21,41,8.44397463782743e-05
+"340","GO:BP","GO:0033673","negative regulation of kinase activity",54,158,8.44397463782743e-05
+"341","GO:BP","GO:0051239","regulation of multicellular organismal process",639,2928,8.44397463782743e-05
+"342","GO:BP","GO:0032434","regulation of proteasomal ubiquitin-dependent protein catabolic process",48,135,8.44397463782743e-05
+"343","GO:BP","GO:0000723","telomere maintenance",55,162,8.56538622393935e-05
+"344","GO:BP","GO:0051054","positive regulation of DNA metabolic process",85,284,8.96066813266241e-05
+"345","GO:BP","GO:2000786","positive regulation of autophagosome assembly",13,19,9.04758452527501e-05
+"346","GO:BP","GO:0006887","exocytosis",100,348,9.38508727146715e-05
+"347","GO:BP","GO:0016043","cellular component organization",1643,8108,9.38508727146715e-05
+"348","GO:BP","GO:0016073","snRNA metabolic process",26,57,9.38508727146715e-05
+"349","GO:BP","GO:0043069","negative regulation of programmed cell death",222,898,9.38508727146715e-05
+"350","GO:BP","GO:0062197","cellular response to chemical stress",92,314,9.49488372804645e-05
+"351","GO:BP","GO:0040007","growth",231,941,0.000100796142750038
+"352","GO:BP","GO:0048468","cell development",619,2833,0.000103877377120621
+"353","GO:BP","GO:0044092","negative regulation of molecular function",155,592,0.000108825472814275
+"354","GO:BP","GO:2000060","positive regulation of ubiquitin-dependent protein catabolic process",41,110,0.000110266709747927
+"355","GO:BP","GO:0120036","plasma membrane bounded cell projection organization",363,1572,0.000110558445057181
+"356","GO:BP","GO:0070201","regulation of establishment of protein localization",143,539,0.000119474553635317
+"357","GO:BP","GO:0019080","viral gene expression",39,103,0.000119974040400283
+"358","GO:BP","GO:1902115","regulation of organelle assembly",70,224,0.00012149802360589
+"359","GO:BP","GO:0140053","mitochondrial gene expression",55,164,0.000124846399386331
+"360","GO:BP","GO:0006979","response to oxidative stress",111,398,0.000125675175918565
+"361","GO:BP","GO:0045017","glycerolipid biosynthetic process",76,249,0.000126941247546932
+"362","GO:BP","GO:0007264","small GTPase-mediated signal transduction",135,504,0.000127519167573744
+"363","GO:BP","GO:0000479","endonucleolytic cleavage of tricistronic rRNA transcript (SSU-rRNA, 5.8S rRNA, LSU-rRNA)",12,17,0.000127719254461631
+"364","GO:BP","GO:0006897","endocytosis",179,704,0.000137903428753701
+"365","GO:BP","GO:0045444","fat cell differentiation",73,238,0.000158335128855524
+"366","GO:BP","GO:0016482","cytosolic transport",48,138,0.000158721298956592
+"367","GO:BP","GO:0000281","mitotic cytokinesis",35,90,0.000178767091066207
+"368","GO:BP","GO:0060627","regulation of vesicle-mediated transport",138,521,0.000185296027916619
+"369","GO:BP","GO:0097193","intrinsic apoptotic signaling pathway",91,315,0.00019098688414684
+"370","GO:BP","GO:0000184","nuclear-transcribed mRNA catabolic process, nonsense-mediated decay",22,46,0.000193180260271257
+"371","GO:BP","GO:2000026","regulation of multicellular organismal development",328,1413,0.000200401116100104
+"372","GO:BP","GO:0071214","cellular response to abiotic stimulus",95,333,0.000212380438310466
+"373","GO:BP","GO:0104004","cellular response to environmental stimulus",95,333,0.000212380438310466
+"374","GO:BP","GO:0000302","response to reactive oxygen species",63,199,0.00021637599381291
+"375","GO:BP","GO:1903749","positive regulation of establishment of protein localization to mitochondrion",18,34,0.00021637599381291
+"376","GO:BP","GO:0045324","late endosome to vacuole transport",19,37,0.000217132647190604
+"377","GO:BP","GO:0019083","viral transcription",24,53,0.000239626116626328
+"378","GO:BP","GO:0070914","UV-damage excision repair",10,13,0.000239626116626328
+"379","GO:BP","GO:0046474","glycerophospholipid biosynthetic process",65,208,0.000248555996281402
+"380","GO:BP","GO:0006470","protein dephosphorylation",50,148,0.000249817817189313
+"381","GO:BP","GO:0032007","negative regulation of TOR signaling",29,70,0.000249817817189313
+"382","GO:BP","GO:0072384","organelle transport along microtubule",34,88,0.000273529529458203
+"383","GO:BP","GO:0006888","endoplasmic reticulum to Golgi vesicle-mediated transport",46,133,0.000278944486099571
+"384","GO:BP","GO:0031344","regulation of cell projection organization",170,671,0.000280425689680583
+"385","GO:BP","GO:1900076","regulation of cellular response to insulin stimulus",28,67,0.000288020031365096
+"386","GO:BP","GO:0090304","nucleic acid metabolic process",1512,7460,0.000309526316190175
+"387","GO:BP","GO:0046488","phosphatidylinositol metabolic process",52,157,0.000310380701554015
+"388","GO:BP","GO:0043066","negative regulation of apoptotic process",213,872,0.000310380701554015
+"389","GO:BP","GO:0043086","negative regulation of catalytic activity",91,319,0.000314243614937354
+"390","GO:BP","GO:0032204","regulation of telomere maintenance",39,107,0.00031595425279031
+"391","GO:BP","GO:0043516","regulation of DNA damage response, signal transduction by p53 class mediator",20,41,0.000328486974100906
+"392","GO:BP","GO:0120035","regulation of plasma membrane bounded cell projection organization",166,655,0.000339220621524089
+"393","GO:BP","GO:1901875","positive regulation of post-translational protein modification",46,134,0.000339220621524089
+"394","GO:BP","GO:0071900","regulation of protein serine/threonine kinase activity",77,260,0.000339220621524089
+"395","GO:BP","GO:1900077","negative regulation of cellular response to insulin stimulus",19,38,0.000339220621524089
+"396","GO:BP","GO:0070306","lens fiber cell differentiation",19,38,0.000339220621524089
+"397","GO:BP","GO:1990928","response to amino acid starvation",24,54,0.000339220621524089
+"398","GO:BP","GO:0032869","cellular response to insulin stimulus",63,202,0.000345783797323434
+"399","GO:BP","GO:0002682","regulation of immune system process",349,1526,0.000370807602161477
+"400","GO:BP","GO:0034198","cellular response to amino acid starvation",23,51,0.000377499239478566
+"401","GO:BP","GO:0006644","phospholipid metabolic process",105,382,0.00039942808383741
+"402","GO:BP","GO:2000232","regulation of rRNA processing",11,16,0.000439157863380161
+"403","GO:BP","GO:0009615","response to virus",110,405,0.000445639828254124
+"404","GO:BP","GO:0061640","cytoskeleton-dependent cytokinesis",42,120,0.000453815857547535
+"405","GO:BP","GO:0018193","peptidyl-amino acid modification",184,742,0.00046070491826126
+"406","GO:BP","GO:0097191","extrinsic apoptotic signaling pathway",69,229,0.000488177127848522
+"407","GO:BP","GO:0045727","positive regulation of translation",46,136,0.000505873677645942
+"408","GO:BP","GO:0048278","vesicle docking",26,62,0.000517032263741362
+"409","GO:BP","GO:0042147","retrograde transport, endosome to Golgi",36,98,0.000528022373212324
+"410","GO:BP","GO:0001959","regulation of cytokine-mediated signaling pathway",52,160,0.000531457344873792
+"411","GO:BP","GO:0070536","protein K63-linked deubiquitination",15,27,0.000531892334297873
+"412","GO:BP","GO:0071108","protein K48-linked deubiquitination",15,27,0.000531892334297873
+"413","GO:BP","GO:1903955","positive regulation of protein targeting to mitochondrion",17,33,0.000561512116767599
+"414","GO:BP","GO:0071559","response to transforming growth factor beta",78,268,0.000561512116767599
+"415","GO:BP","GO:0048199","vesicle targeting, to, from or within Golgi",17,33,0.000561512116767599
+"416","GO:BP","GO:0016579","protein deubiquitination",43,125,0.000571848725619726
+"417","GO:BP","GO:0071375","cellular response to peptide hormone stimulus",87,307,0.000591516123506514
+"418","GO:BP","GO:1903322","positive regulation of protein modification by small protein conjugation or removal",45,133,0.00059757516612006
+"419","GO:BP","GO:1903008","organelle disassembly",27,66,0.000601973801099299
+"420","GO:BP","GO:0044804","nucleophagy",12,19,0.000617506422437327
+"421","GO:BP","GO:0072332","intrinsic apoptotic signaling pathway by p53 class mediator",32,84,0.000625732741828264
+"422","GO:BP","GO:0031401","positive regulation of protein modification process",185,751,0.000633681499978972
+"423","GO:BP","GO:0007179","transforming growth factor beta receptor signaling pathway",63,206,0.000640255979683334
+"424","GO:BP","GO:0001825","blastocyst formation",21,46,0.000664234257589138
+"425","GO:BP","GO:0099003","vesicle-mediated transport in synapse",67,223,0.000675808513436282
+"426","GO:BP","GO:0072665","protein localization to vacuole",33,88,0.000677080029527136
+"427","GO:BP","GO:0008286","insulin receptor signaling pathway",42,122,0.000677080029527136
+"428","GO:BP","GO:0090114","COPII-coated vesicle budding",20,43,0.000728245182996155
+"429","GO:BP","GO:0007169","cell surface receptor protein tyrosine kinase signaling pathway",156,619,0.000769437457289463
+"430","GO:BP","GO:0042058","regulation of epidermal growth factor receptor signaling pathway",25,60,0.000803098141557748
+"431","GO:BP","GO:1905898","positive regulation of response to endoplasmic reticulum stress",18,37,0.000846628710470282
+"432","GO:BP","GO:0046627","negative regulation of insulin receptor signaling pathway",18,37,0.000846628710470282
+"433","GO:BP","GO:0032984","protein-containing complex disassembly",73,250,0.000859861459845589
+"434","GO:BP","GO:0097576","vacuole fusion",9,12,0.000862552466458295
+"435","GO:BP","GO:0060759","regulation of response to cytokine stimulus",54,171,0.000866011423463104
+"436","GO:BP","GO:0043434","response to peptide hormone",115,434,0.000871928619504094
+"437","GO:BP","GO:0022411","cellular component disassembly",115,434,0.000871928619504094
+"438","GO:BP","GO:0010212","response to ionizing radiation",46,139,0.000875238524638125
+"439","GO:BP","GO:0034655","nucleobase-containing compound catabolic process",136,529,0.000875238524638125
+"440","GO:BP","GO:0006997","nucleus organization",48,147,0.000882133774949283
+"441","GO:BP","GO:0000470","maturation of LSU-rRNA",15,28,0.000885062244169891
+"442","GO:BP","GO:0040008","regulation of growth",156,621,0.000892091714968091
+"443","GO:BP","GO:0032206","positive regulation of telomere maintenance",28,71,0.000902202622314416
+"444","GO:BP","GO:0065008","regulation of biological quality",611,2847,0.000908689749758727
+"445","GO:BP","GO:0010628","positive regulation of gene expression",276,1189,0.000908689749758727
+"446","GO:BP","GO:0032510","endosome to lysosome transport via multivesicular body sorting pathway",11,17,0.000930949871178891
+"447","GO:BP","GO:0042542","response to hydrogen peroxide",35,97,0.00096769039166735
+"448","GO:BP","GO:0071478","cellular response to radiation",56,180,0.00097470696573511
+"449","GO:BP","GO:0015931","nucleobase-containing compound transport",68,230,0.000984236655971684
+"450","GO:BP","GO:0098780","response to mitochondrial depolarisation",6,6,0.00100477575139602
+"451","GO:BP","GO:0051851","modulation by host of symbiont process",32,86,0.00100809573153556
+"452","GO:BP","GO:1903214","regulation of protein targeting to mitochondrion",20,44,0.00104268003433802
+"453","GO:BP","GO:2000234","positive regulation of rRNA processing",8,10,0.00109190837930072
+"454","GO:BP","GO:0032868","response to insulin",76,265,0.00111874835646247
+"455","GO:BP","GO:0071560","cellular response to transforming growth factor beta stimulus",75,261,0.00116143274843554
+"456","GO:BP","GO:0038127","ERBB signaling pathway",42,125,0.00121037800213198
+"457","GO:BP","GO:0046626","regulation of insulin receptor signaling pathway",26,65,0.00123021124934753
+"458","GO:BP","GO:0000480","endonucleolytic cleavage in 5'-ETS of tricistronic rRNA transcript (SSU-rRNA, 5.8S rRNA, LSU-rRNA)",7,8,0.00123501549159196
+"459","GO:BP","GO:0033157","regulation of intracellular protein transport",49,153,0.00123696670766189
+"460","GO:BP","GO:0007029","endoplasmic reticulum organization",36,102,0.00125797538437472
+"461","GO:BP","GO:0090398","cellular senescence",36,102,0.00125797538437472
+"462","GO:BP","GO:0006650","glycerophospholipid metabolic process",84,301,0.00132629566470204
+"463","GO:BP","GO:0034314","Arp2/3 complex-mediated actin nucleation",21,48,0.00132830641468601
+"464","GO:BP","GO:0019068","virion assembly",17,35,0.00132830641468601
+"465","GO:BP","GO:0010564","regulation of cell cycle process",177,724,0.00132830641468601
+"466","GO:BP","GO:0039702","viral budding via host ESCRT complex",13,23,0.00132830641468601
+"467","GO:BP","GO:1904951","positive regulation of establishment of protein localization",91,332,0.00137244792342889
+"468","GO:BP","GO:0048024","regulation of mRNA splicing, via spliceosome",39,114,0.00137373115231289
+"469","GO:BP","GO:1901798","positive regulation of signal transduction by p53 class mediator",16,32,0.00139038239614345
+"470","GO:BP","GO:0043248","proteasome assembly",10,15,0.00139178514419604
+"471","GO:BP","GO:1903543","positive regulation of exosomal secretion",10,15,0.00139178514419604
+"472","GO:BP","GO:0048208","COPII vesicle coating",14,26,0.00139598723582826
+"473","GO:BP","GO:0030097","hemopoiesis",229,971,0.00139598723582826
+"474","GO:BP","GO:0048207","vesicle targeting, rough ER to cis-Golgi",14,26,0.00139598723582826
+"475","GO:BP","GO:0043122","regulation of canonical NF-kappaB signal transduction",79,280,0.00141331073088797
+"476","GO:BP","GO:0034599","cellular response to oxidative stress",72,250,0.0014352374128418
+"477","GO:BP","GO:1902117","positive regulation of organelle assembly",31,84,0.00149499583342489
+"478","GO:BP","GO:0044091","membrane biogenesis",26,66,0.00159768457707346
+"479","GO:BP","GO:0099504","synaptic vesicle cycle",60,200,0.00160506291498301
+"480","GO:BP","GO:0006278","RNA-templated DNA biosynthetic process",29,77,0.00164862995025276
+"481","GO:BP","GO:0001824","blastocyst development",40,119,0.00169214870243267
+"482","GO:BP","GO:0032940","secretion by cell",199,832,0.00178224071898902
+"483","GO:BP","GO:0045786","negative regulation of cell cycle",103,388,0.00181353824360712
+"484","GO:BP","GO:0009408","response to heat",35,100,0.0018358988307072
+"485","GO:BP","GO:0044089","positive regulation of cellular component biogenesis",127,497,0.00188025861372342
+"486","GO:BP","GO:0032436","positive regulation of proteasomal ubiquitin-dependent protein catabolic process",31,85,0.00189944424608058
+"487","GO:BP","GO:0043487","regulation of RNA stability",56,185,0.00206595180446597
+"488","GO:BP","GO:1901184","regulation of ERBB signaling pathway",26,67,0.00210560969489261
+"489","GO:BP","GO:0070887","cellular response to chemical stimulus",475,2186,0.00210675024150123
+"490","GO:BP","GO:1901874","negative regulation of post-translational protein modification",33,93,0.00210696969297094
+"491","GO:BP","GO:0009299","mRNA transcription",22,53,0.00220202312336127
+"492","GO:BP","GO:2000278","regulation of DNA biosynthetic process",35,101,0.00227150361544681
+"493","GO:BP","GO:0031468","nuclear membrane reassembly",14,27,0.00229898818186456
+"494","GO:BP","GO:0046856","phosphatidylinositol dephosphorylation",14,27,0.00229898818186456
+"495","GO:BP","GO:0016049","cell growth",127,500,0.00243776110000874
+"496","GO:BP","GO:2001242","regulation of intrinsic apoptotic signaling pathway",55,182,0.00244607764472537
+"497","GO:BP","GO:1903844","regulation of cellular response to transforming growth factor beta stimulus",46,145,0.00244824527266358
+"498","GO:BP","GO:1901532","regulation of hematopoietic progenitor cell differentiation",18,40,0.00264746289274709
+"499","GO:BP","GO:0046839","phospholipid dephosphorylation",18,40,0.00264746289274709
+"500","GO:BP","GO:0044843","cell cycle G1/S phase transition",69,242,0.00267404256983096
+"501","GO:BP","GO:1903533","regulation of protein targeting",29,79,0.00268953236822242
+"502","GO:BP","GO:0008283","cell population proliferation",438,2009,0.00286109915654427
+"503","GO:BP","GO:1905897","regulation of response to endoplasmic reticulum stress",30,83,0.00286109915654427
+"504","GO:BP","GO:0000463","maturation of LSU-rRNA from tricistronic rRNA transcript (SSU-rRNA, 5.8S rRNA, LSU-rRNA)",10,16,0.00286109915654427
+"505","GO:BP","GO:0046753","non-lytic viral release",10,16,0.00286109915654427
+"506","GO:BP","GO:2001234","negative regulation of apoptotic signaling pathway",67,234,0.00286109915654427
+"507","GO:BP","GO:0071709","membrane assembly",24,61,0.00286109915654427
+"508","GO:BP","GO:0016237","microautophagy",10,16,0.00286109915654427
+"509","GO:BP","GO:0042795","snRNA transcription by RNA polymerase II",10,16,0.00286109915654427
+"510","GO:BP","GO:0031398","positive regulation of protein ubiquitination",37,110,0.00286109915654427
+"511","GO:BP","GO:0042592","homeostatic process",378,1711,0.00286109915654427
+"512","GO:BP","GO:0097401","synaptic vesicle lumen acidification",10,16,0.00286109915654427
+"513","GO:BP","GO:0031346","positive regulation of cell projection organization",95,357,0.00286873093498949
+"514","GO:BP","GO:0017015","regulation of transforming growth factor beta receptor signaling pathway",45,142,0.0028700684802867
+"515","GO:BP","GO:0010720","positive regulation of cell development",116,452,0.00290629426785395
+"516","GO:BP","GO:0071482","cellular response to light stimulus",40,122,0.00291362655756892
+"517","GO:BP","GO:0042797","tRNA transcription by RNA polymerase III",8,11,0.00291694306819669
+"518","GO:BP","GO:0061763","multivesicular body-lysosome fusion",8,11,0.00291694306819669
+"519","GO:BP","GO:0051469","vesicle fusion with vacuole",8,11,0.00291694306819669
+"520","GO:BP","GO:0045824","negative regulation of innate immune response",31,87,0.0029174508669069
+"521","GO:BP","GO:0030099","myeloid cell differentiation",113,439,0.00306304139525275
+"522","GO:BP","GO:0072594","establishment of protein localization to organelle",162,666,0.00311558726440474
+"523","GO:BP","GO:0034405","response to fluid shear stress",16,34,0.00312538674652156
+"524","GO:BP","GO:0098930","axonal transport",25,65,0.00313389849626966
+"525","GO:BP","GO:0061952","midbody abscission",11,19,0.00333126055627899
+"526","GO:BP","GO:0008089","anterograde axonal transport",21,51,0.0033592327230291
+"527","GO:BP","GO:0042149","cellular response to glucose starvation",21,51,0.0033592327230291
+"528","GO:BP","GO:0002244","hematopoietic progenitor cell differentiation",44,139,0.00338778650626119
+"529","GO:BP","GO:0051170","import into nucleus",51,168,0.00351710986557635
+"530","GO:BP","GO:1902410","mitotic cytokinetic process",14,28,0.00354922240377976
+"531","GO:BP","GO:0035493","SNARE complex assembly",12,22,0.00357698938531072
+"532","GO:BP","GO:0051056","regulation of small GTPase mediated signal transduction",83,306,0.00360172011251591
+"533","GO:BP","GO:0007249","canonical NF-kappaB signal transduction",83,306,0.00360172011251591
+"534","GO:BP","GO:0060155","platelet dense granule organization",13,25,0.00361905840138389
+"535","GO:BP","GO:1990000","amyloid fibril formation",18,41,0.00363605538913046
+"536","GO:BP","GO:0006457","protein folding",63,219,0.0036471515199774
+"537","GO:BP","GO:0007004","telomere maintenance via telomerase",27,73,0.00365948553450748
+"538","GO:BP","GO:0030031","cell projection assembly",148,603,0.00369897434534266
+"539","GO:BP","GO:0098657","import into cell",215,921,0.00380197170079296
+"540","GO:BP","GO:0008213","protein alkylation",20,48,0.00382957743341462
+"541","GO:BP","GO:0042789","mRNA transcription by RNA polymerase II",20,48,0.00382957743341462
+"542","GO:BP","GO:0006479","protein methylation",20,48,0.00382957743341462
+"543","GO:BP","GO:1990416","cellular response to brain-derived neurotrophic factor stimulus",7,9,0.00391609255648254
+"544","GO:BP","GO:0140673","transcription elongation-coupled chromatin remodeling",7,9,0.00391609255648254
+"545","GO:BP","GO:1901987","regulation of cell cycle phase transition",111,433,0.00394678327455575
+"546","GO:BP","GO:0007173","epidermal growth factor receptor signaling pathway",35,104,0.00394678327455575
+"547","GO:BP","GO:0120031","plasma membrane bounded cell projection assembly",145,590,0.00394678327455575
+"548","GO:BP","GO:0043162","ubiquitin-dependent protein catabolic process via the multivesicular body sorting pathway",17,38,0.00403833420905672
+"549","GO:BP","GO:0010821","regulation of mitochondrion organization",38,116,0.00404380005255187
+"550","GO:BP","GO:0033750","ribosome localization",9,14,0.00428295386302385
+"551","GO:BP","GO:0035970","peptidyl-threonine dephosphorylation",9,14,0.00428295386302385
+"552","GO:BP","GO:0000054","ribosomal subunit export from nucleus",9,14,0.00428295386302385
+"553","GO:BP","GO:0032922","circadian regulation of gene expression",26,70,0.00428966450810476
+"554","GO:BP","GO:0000967","rRNA 5'-end processing",5,5,0.0043568643603007
+"555","GO:BP","GO:0000472","endonucleolytic cleavage to generate mature 5'-end of SSU-rRNA from (SSU-rRNA, 5.8S rRNA, LSU-rRNA)",5,5,0.0043568643603007
+"556","GO:BP","GO:0035196","miRNA processing",19,45,0.00435746704272052
+"557","GO:BP","GO:1903321","negative regulation of protein modification by small protein conjugation or removal",31,89,0.00436678096215177
+"558","GO:BP","GO:0048871","multicellular organismal-level homeostasis",191,809,0.0044326015409053
+"559","GO:BP","GO:0006891","intra-Golgi vesicle-mediated transport",16,35,0.00444719303867353
+"560","GO:BP","GO:0000154","rRNA modification",16,35,0.00444719303867353
+"561","GO:BP","GO:1900182","positive regulation of protein localization to nucleus",33,97,0.00458736027936041
+"562","GO:BP","GO:0051049","regulation of transport",351,1589,0.00458736027936041
+"563","GO:BP","GO:2001235","positive regulation of apoptotic signaling pathway",43,137,0.00461170260647386
+"564","GO:BP","GO:0007265","Ras protein signal transduction",39,121,0.00477993577550186
+"565","GO:BP","GO:0099111","microtubule-based transport",61,213,0.00494850459523508
+"566","GO:BP","GO:0071364","cellular response to epidermal growth factor stimulus",18,42,0.00496043087076695
+"567","GO:BP","GO:0043124","negative regulation of canonical NF-kappaB signal transduction",22,56,0.00496043087076695
+"568","GO:BP","GO:0009725","response to hormone",210,902,0.00498310321156132
+"569","GO:BP","GO:0008625","extrinsic apoptotic signaling pathway via death domain receptors",29,82,0.00499074230229579
+"570","GO:BP","GO:0141091","transforming growth factor beta receptor superfamily signaling pathway",90,341,0.00513570227510385
+"571","GO:BP","GO:1903541","regulation of exosomal secretion",10,17,0.00513570227510385
+"572","GO:BP","GO:0007000","nucleolus organization",10,17,0.00513570227510385
+"573","GO:BP","GO:0010833","telomere maintenance via telomere lengthening",30,86,0.00515859916635468
+"574","GO:BP","GO:0022008","neurogenesis",382,1746,0.00523432197214372
+"575","GO:BP","GO:1901700","response to oxygen-containing compound",359,1632,0.00527517298167758
+"576","GO:BP","GO:0050769","positive regulation of neurogenesis",68,244,0.00533720217643273
+"577","GO:BP","GO:0070918","regulatory ncRNA processing",26,71,0.00534331405410226
+"578","GO:BP","GO:0031123","RNA 3'-end processing",32,94,0.00541717921621978
+"579","GO:BP","GO:0006606","protein import into nucleus",49,163,0.00547764632999
+"580","GO:BP","GO:1901698","response to nitrogen compound",232,1010,0.00547764632999
+"581","GO:BP","GO:0060284","regulation of cell development",199,851,0.00547764632999
+"582","GO:BP","GO:0000082","G1/S transition of mitotic cell cycle",61,214,0.00550113334686354
+"583","GO:BP","GO:0046755","viral budding",13,26,0.00550113334686354
+"584","GO:BP","GO:1904030","negative regulation of cyclin-dependent protein kinase activity",11,20,0.00551083855713702
+"585","GO:BP","GO:0009301","snRNA transcription",11,20,0.00551083855713702
+"586","GO:BP","GO:1990182","exosomal secretion",11,20,0.00551083855713702
+"587","GO:BP","GO:0032438","melanosome organization",17,39,0.00552508593509214
+"588","GO:BP","GO:0032042","mitochondrial DNA metabolic process",12,23,0.00558673064589765
+"589","GO:BP","GO:1902254","negative regulation of intrinsic apoptotic signaling pathway by p53 class mediator",12,23,0.00558673064589765
+"590","GO:BP","GO:0140112","extracellular vesicle biogenesis",12,23,0.00558673064589765
+"591","GO:BP","GO:0042255","ribosome assembly",21,53,0.00566518882328541
+"592","GO:BP","GO:0034605","cellular response to heat",24,64,0.00582239078771298
+"593","GO:BP","GO:0033059","cellular pigmentation",24,64,0.00582239078771298
+"594","GO:BP","GO:0060491","regulation of cell projection assembly",59,206,0.00586082767904556
+"595","GO:BP","GO:0010970","transport along microtubule",51,172,0.00587790501093289
+"596","GO:BP","GO:0030149","sphingolipid catabolic process",16,36,0.00618179145010261
+"597","GO:BP","GO:0001558","regulation of cell growth",108,425,0.00618179145010261
+"598","GO:BP","GO:0000460","maturation of 5.8S rRNA",16,36,0.00618179145010261
+"599","GO:BP","GO:0072659","protein localization to plasma membrane",79,294,0.00618179145010261
+"600","GO:BP","GO:0032790","ribosome disassembly",16,36,0.00618179145010261
+"601","GO:BP","GO:0000491","small nucleolar ribonucleoprotein complex assembly",8,12,0.00628250866455236
+"602","GO:BP","GO:0050776","regulation of immune response",208,897,0.00628250866455236
+"603","GO:BP","GO:0009304","tRNA transcription",8,12,0.00628250866455236
+"604","GO:BP","GO:1905671","regulation of lysosome organization",8,12,0.00628250866455236
+"605","GO:BP","GO:0002181","cytoplasmic translation",48,160,0.00633285212355923
+"606","GO:BP","GO:0045088","regulation of innate immune response",109,430,0.00633285212355923
+"607","GO:BP","GO:0018105","peptidyl-serine phosphorylation",59,207,0.00657997181145701
+"608","GO:BP","GO:0045930","negative regulation of mitotic cell cycle",65,233,0.00658327104192917
+"609","GO:BP","GO:0061013","regulation of mRNA catabolic process",55,190,0.00669423510897575
+"610","GO:BP","GO:2001244","positive regulation of intrinsic apoptotic signaling pathway",23,61,0.00682354798636308
+"611","GO:BP","GO:0031397","negative regulation of protein ubiquitination",27,76,0.00685481097874351
+"612","GO:BP","GO:0035303","regulation of dephosphorylation",15,33,0.006855089659064
+"613","GO:BP","GO:0001960","negative regulation of cytokine-mediated signaling pathway",28,80,0.0071247833349726
+"614","GO:BP","GO:0006139","nucleobase-containing compound metabolic process",1593,8016,0.0071247833349726
+"615","GO:BP","GO:1903828","negative regulation of protein localization",60,212,0.00712568881306902
+"616","GO:BP","GO:0007178","cell surface receptor protein serine/threonine kinase signaling pathway",94,363,0.00714871891128344
+"617","GO:BP","GO:0032870","cellular response to hormone stimulus",153,637,0.00727592753728481
+"618","GO:BP","GO:0060761","negative regulation of response to cytokine stimulus",29,84,0.00728092681442296
+"619","GO:BP","GO:0072666","establishment of protein localization to vacuole",24,65,0.00728092681442296
+"620","GO:BP","GO:0051898","negative regulation of phosphatidylinositol 3-kinase/protein kinase B signal transduction",21,54,0.00728092681442296
+"621","GO:BP","GO:0030219","megakaryocyte differentiation",24,65,0.00728092681442296
+"622","GO:BP","GO:0045598","regulation of fat cell differentiation",41,132,0.00731232167816536
+"623","GO:BP","GO:1902369","negative regulation of RNA catabolic process",30,88,0.00744328103311987
+"624","GO:BP","GO:0046903","secretion",222,968,0.00747144218086308
+"625","GO:BP","GO:0048753","pigment granule organization",17,40,0.00747144218086308
+"626","GO:BP","GO:0060443","mammary gland morphogenesis",19,47,0.00753828210679423
+"627","GO:BP","GO:0042771","intrinsic apoptotic signaling pathway in response to DNA damage by p53 class mediator",19,47,0.00753828210679423
+"628","GO:BP","GO:0120032","regulation of plasma membrane bounded cell projection assembly",58,204,0.00759789311846825
+"629","GO:BP","GO:0031348","negative regulation of defense response",69,252,0.00765398019113053
+"630","GO:BP","GO:2001252","positive regulation of chromosome organization",33,100,0.00767569249816836
+"631","GO:BP","GO:0034614","cellular response to reactive oxygen species",45,149,0.00775933878204475
+"632","GO:BP","GO:0046761","viral budding from plasma membrane",9,15,0.00775933878204475
+"633","GO:BP","GO:1904874","positive regulation of telomerase RNA localization to Cajal body",9,15,0.00775933878204475
+"634","GO:BP","GO:0007250","activation of NF-kappaB-inducing kinase activity",9,15,0.00775933878204475
+"635","GO:BP","GO:1904507","positive regulation of telomere maintenance in response to DNA damage",9,15,0.00775933878204475
+"636","GO:BP","GO:1901652","response to peptide",218,950,0.00796654600239815
+"637","GO:BP","GO:0032511","late endosome to vacuole transport via multivesicular body sorting pathway",13,27,0.00804698462325713
+"638","GO:BP","GO:0006898","receptor-mediated endocytosis",70,257,0.00810122536864072
+"639","GO:BP","GO:1901990","regulation of mitotic cell cycle phase transition",87,333,0.00816292024948814
+"640","GO:BP","GO:0008088","axo-dendritic transport",27,77,0.00830177924984264
+"641","GO:BP","GO:0043409","negative regulation of MAPK cascade",47,158,0.00842424374158826
+"642","GO:BP","GO:0034389","lipid droplet organization",16,37,0.00842424374158826
+"643","GO:BP","GO:0010667","negative regulation of cardiac muscle cell apoptotic process",12,24,0.0084508133416666
+"644","GO:BP","GO:0048490","anterograde synaptic vesicle transport",10,18,0.0084508133416666
+"645","GO:BP","GO:0045010","actin nucleation",23,62,0.0084508133416666
+"646","GO:BP","GO:0070102","interleukin-6-mediated signaling pathway",10,18,0.0084508133416666
+"647","GO:BP","GO:0099514","synaptic vesicle cytoskeletal transport",10,18,0.0084508133416666
+"648","GO:BP","GO:1904872","regulation of telomerase RNA localization to Cajal body",10,18,0.0084508133416666
+"649","GO:BP","GO:0099517","synaptic vesicle transport along microtubule",10,18,0.0084508133416666
+"650","GO:BP","GO:0071901","negative regulation of protein serine/threonine kinase activity",28,81,0.0084508133416666
+"651","GO:BP","GO:0031098","stress-activated protein kinase signaling cascade",23,62,0.0084508133416666
+"652","GO:BP","GO:0060338","regulation of type I interferon-mediated signaling pathway",18,44,0.00856272026405208
+"653","GO:BP","GO:0035329","hippo signaling",18,44,0.00856272026405208
+"654","GO:BP","GO:0044794","positive regulation by host of viral process",11,21,0.00859303526911534
+"655","GO:BP","GO:1902806","regulation of cell cycle G1/S phase transition",54,188,0.00859303526911534
+"656","GO:BP","GO:0097734","extracellular exosome biogenesis",11,21,0.00859303526911534
+"657","GO:BP","GO:0048589","developmental growth",159,669,0.00885199448730825
+"658","GO:BP","GO:2000630","positive regulation of miRNA metabolic process",24,66,0.00888539836724392
+"659","GO:BP","GO:0048259","regulation of receptor-mediated endocytosis",35,109,0.00892579498714643
+"660","GO:BP","GO:0070475","rRNA base methylation",7,10,0.00899702573701586
+"661","GO:BP","GO:0051409","response to nitrosative stress",7,10,0.00899702573701586
+"662","GO:BP","GO:0051403","stress-activated MAPK cascade",21,55,0.00911952988518336
+"663","GO:BP","GO:0045597","positive regulation of cell differentiation",200,866,0.00916183267304718
+"664","GO:BP","GO:0016242","negative regulation of macroautophagy",15,34,0.00934879672333534
+"665","GO:BP","GO:0060966","regulation of gene silencing by regulatory ncRNA",15,34,0.00934879672333534
+"666","GO:BP","GO:1903313","positive regulation of mRNA metabolic process",42,138,0.00937354644823795
+"667","GO:BP","GO:1990090","cellular response to nerve growth factor stimulus",19,48,0.00967557040454129
+"668","GO:BP","GO:0006356","regulation of transcription by RNA polymerase I",19,48,0.00967557040454129
+"669","GO:BP","GO:0071345","cellular response to cytokine stimulus",195,843,0.0097249285622409
+"670","GO:BP","GO:2001236","regulation of extrinsic apoptotic signaling pathway",46,155,0.0097261339410842
+"671","GO:BP","GO:0140352","export from cell",207,901,0.00973044319053419
+"672","GO:BP","GO:0051276","chromosome organization",150,628,0.00976495006010771
+"673","GO:BP","GO:0033044","regulation of chromosome organization",65,237,0.00977507065627025
+"674","GO:BP","GO:0046466","membrane lipid catabolic process",17,41,0.00977507065627025
+"675","GO:BP","GO:0010803","regulation of tumor necrosis factor-mediated signaling pathway",22,59,0.00977507065627025
+"676","GO:BP","GO:0044419","biological process involved in interspecies interaction between organisms",374,1724,0.00989178330265077
+"677","GO:BP","GO:0030705","cytoskeleton-dependent intracellular transport",59,211,0.0100338005324636
+"678","GO:BP","GO:0008630","intrinsic apoptotic signaling pathway in response to DNA damage",34,106,0.0105353599588446
+"679","GO:BP","GO:0006892","post-Golgi vesicle-mediated transport",34,106,0.0105353599588446
+"680","GO:BP","GO:0034097","response to cytokine",214,937,0.0108639253280698
+"681","GO:BP","GO:0051347","positive regulation of transferase activity",84,323,0.0110204090507437
+"682","GO:BP","GO:0031124","mRNA 3'-end processing",18,45,0.0112795404151414
+"683","GO:BP","GO:1904262","negative regulation of TORC1 signaling",18,45,0.0112795404151414
+"684","GO:BP","GO:0007030","Golgi organization",45,152,0.0114777871727311
+"685","GO:BP","GO:1901701","cellular response to oxygen-containing compound",258,1153,0.0115369998133831
+"686","GO:BP","GO:0019058","viral life cycle",83,319,0.0115369998133831
+"687","GO:BP","GO:0006260","DNA replication",75,283,0.0115369998133831
+"688","GO:BP","GO:0045742","positive regulation of epidermal growth factor receptor signaling pathway",13,28,0.0115379724203848
+"689","GO:BP","GO:0034139","regulation of toll-like receptor 3 signaling pathway",8,13,0.0119426837251392
+"690","GO:BP","GO:0036295","cellular response to increased oxygen levels",8,13,0.0119426837251392
+"691","GO:BP","GO:0043473","pigmentation",36,115,0.0121574170637475
+"692","GO:BP","GO:0010586","miRNA metabolic process",34,107,0.0124520669810371
+"693","GO:BP","GO:0032388","positive regulation of intracellular transport",42,140,0.0124520669810371
+"694","GO:BP","GO:2000628","regulation of miRNA metabolic process",30,91,0.0125776871503973
+"695","GO:BP","GO:1903241","U2-type prespliceosome assembly",12,25,0.0125776871503973
+"696","GO:BP","GO:0044403","biological process involved in symbiotic interaction",81,311,0.0126509779592041
+"697","GO:BP","GO:0033152","immunoglobulin V(D)J recombination",6,8,0.0127819227249909
+"698","GO:BP","GO:0060331","negative regulation of response to type II interferon",6,8,0.0127819227249909
+"699","GO:BP","GO:0060336","negative regulation of type II interferon-mediated signaling pathway",6,8,0.0127819227249909
+"700","GO:BP","GO:0045454","cell redox homeostasis",17,42,0.0130829509586995
+"701","GO:BP","GO:0034976","response to endoplasmic reticulum stress",63,231,0.0131828568522724
+"702","GO:BP","GO:0051129","negative regulation of cellular component organization",168,719,0.0133121107192524
+"703","GO:BP","GO:0110156","mRNA methylguanosine-cap decapping",9,16,0.0133121107192524
+"704","GO:BP","GO:0032011","ARF protein signal transduction",11,22,0.0133121107192524
+"705","GO:BP","GO:0032012","regulation of ARF protein signal transduction",11,22,0.0133121107192524
+"706","GO:BP","GO:1904292","regulation of ERAD pathway",11,22,0.0133121107192524
+"707","GO:BP","GO:0046486","glycerolipid metabolic process",99,394,0.0134343965346943
+"708","GO:BP","GO:0090672","telomerase RNA localization",10,19,0.0135638136672291
+"709","GO:BP","GO:1904505","regulation of telomere maintenance in response to DNA damage",10,19,0.0135638136672291
+"710","GO:BP","GO:0090671","telomerase RNA localization to Cajal body",10,19,0.0135638136672291
+"711","GO:BP","GO:0090670","RNA localization to Cajal body",10,19,0.0135638136672291
+"712","GO:BP","GO:1903232","melanosome assembly",10,19,0.0135638136672291
+"713","GO:BP","GO:0090685","RNA localization to nucleus",10,19,0.0135638136672291
+"714","GO:BP","GO:0051240","positive regulation of multicellular organismal process",356,1644,0.014368631770944
+"715","GO:BP","GO:0044782","cilium organization",104,418,0.014368631770944
+"716","GO:BP","GO:0031347","regulation of defense response",181,783,0.0144599995630625
+"717","GO:BP","GO:0046685","response to arsenic-containing substance",14,32,0.0144744499274215
+"718","GO:BP","GO:0034142","toll-like receptor 4 signaling pathway",21,57,0.0144744499274215
+"719","GO:BP","GO:1902041","regulation of extrinsic apoptotic signaling pathway via death domain receptors",18,46,0.0144744499274215
+"720","GO:BP","GO:0006739","NADP metabolic process",18,46,0.0144744499274215
+"721","GO:BP","GO:0140029","exocytic process",27,80,0.0144744499274215
+"722","GO:BP","GO:0070849","response to epidermal growth factor",18,46,0.0144744499274215
+"723","GO:BP","GO:0140467","integrated stress response signaling",18,46,0.0144744499274215
+"724","GO:BP","GO:1990849","vacuolar localization",29,88,0.0146839232916333
+"725","GO:BP","GO:0032418","lysosome localization",29,88,0.0146839232916333
+"726","GO:BP","GO:0043535","regulation of blood vessel endothelial cell migration",30,92,0.0147010897336343
+"727","GO:BP","GO:0018209","peptidyl-serine modification",60,219,0.0147144305000146
+"728","GO:BP","GO:0051125","regulation of actin nucleation",16,39,0.0149039793507383
+"729","GO:BP","GO:0001889","liver development",43,146,0.01562512574571
+"730","GO:BP","GO:0048511","rhythmic process",78,300,0.0156538487700446
+"731","GO:BP","GO:0043491","phosphatidylinositol 3-kinase/protein kinase B signal transduction",78,300,0.0156538487700446
+"732","GO:BP","GO:0023052","signaling",1292,6471,0.015848679637224
+"733","GO:BP","GO:0048524","positive regulation of viral process",23,65,0.0158633100397887
+"734","GO:BP","GO:1990089","response to nerve growth factor",19,50,0.0158633100397887
+"735","GO:BP","GO:0046854","phosphatidylinositol phosphate biosynthetic process",23,65,0.0158633100397887
+"736","GO:BP","GO:1901185","negative regulation of ERBB signaling pathway",13,29,0.0161571057555887
+"737","GO:BP","GO:0045116","protein neddylation",13,29,0.0161571057555887
+"738","GO:BP","GO:0071887","leukocyte apoptotic process",36,117,0.0161571057555887
+"739","GO:BP","GO:0034315","regulation of Arp2/3 complex-mediated actin nucleation",13,29,0.0161571057555887
+"740","GO:BP","GO:0006839","mitochondrial transport",52,185,0.0163237845679056
+"741","GO:BP","GO:0062176","R-loop processing",5,6,0.0164177116342631
+"742","GO:BP","GO:0180010","co-transcriptional mRNA 3'-end processing, cleavage and polyadenylation pathway",5,6,0.0164177116342631
+"743","GO:BP","GO:1902525","regulation of protein monoubiquitination",5,6,0.0164177116342631
+"744","GO:BP","GO:0000957","mitochondrial RNA catabolic process",5,6,0.0164177116342631
+"745","GO:BP","GO:1903551","regulation of extracellular exosome assembly",5,6,0.0164177116342631
+"746","GO:BP","GO:0000393","spliceosomal conformational changes to generate catalytic conformation",5,6,0.0164177116342631
+"747","GO:BP","GO:0009416","response to light stimulus",82,319,0.0166570014811415
+"748","GO:BP","GO:0043112","receptor metabolic process",25,73,0.0166570014811415
+"749","GO:BP","GO:0035914","skeletal muscle cell differentiation",26,77,0.01697620705018
+"750","GO:BP","GO:0050779","RNA destabilization",32,101,0.0170137698258015
+"751","GO:BP","GO:0048642","negative regulation of skeletal muscle tissue development",4,4,0.0171244085724228
+"752","GO:BP","GO:0006446","regulation of translational initiation",27,81,0.0171244085724228
+"753","GO:BP","GO:0006598","polyamine catabolic process",4,4,0.0171244085724228
+"754","GO:BP","GO:1903553","positive regulation of extracellular exosome assembly",4,4,0.0171244085724228
+"755","GO:BP","GO:0061157","mRNA destabilization",31,97,0.0171244085724228
+"756","GO:BP","GO:0045739","positive regulation of DNA repair",39,130,0.0171591216067697
+"757","GO:BP","GO:0017157","regulation of exocytosis",53,190,0.0173720709677919
+"758","GO:BP","GO:0034502","protein localization to chromosome",38,126,0.0176214128716943
+"759","GO:BP","GO:1990778","protein localization to cell periphery",91,361,0.0176885924572335
+"760","GO:BP","GO:0031167","rRNA methylation",12,26,0.0177231380740936
+"761","GO:BP","GO:0034138","toll-like receptor 3 signaling pathway",12,26,0.0177231380740936
+"762","GO:BP","GO:0048732","gland development",111,454,0.0178218855549688
+"763","GO:BP","GO:1902237","positive regulation of endoplasmic reticulum stress-induced intrinsic apoptotic signaling pathway",7,11,0.0178218855549688
+"764","GO:BP","GO:0043562","cellular response to nitrogen levels",7,11,0.0178218855549688
+"765","GO:BP","GO:0000290","deadenylation-dependent decapping of nuclear-transcribed mRNA",7,11,0.0178218855549688
+"766","GO:BP","GO:0034058","endosomal vesicle fusion",7,11,0.0178218855549688
+"767","GO:BP","GO:0002831","regulation of response to biotic stimulus",124,515,0.0178218855549688
+"768","GO:BP","GO:0006995","cellular response to nitrogen starvation",7,11,0.0178218855549688
+"769","GO:BP","GO:0000338","protein deneddylation",7,11,0.0178218855549688
+"770","GO:BP","GO:0000165","MAPK cascade",173,749,0.0178459995047166
+"771","GO:BP","GO:0046777","protein autophosphorylation",52,186,0.0178564913008262
+"772","GO:BP","GO:0006623","protein targeting to vacuole",18,47,0.0181695207757028
+"773","GO:BP","GO:0070301","cellular response to hydrogen peroxide",23,66,0.0191057959367092
+"774","GO:BP","GO:0002683","negative regulation of immune system process",121,502,0.0191404139627508
+"775","GO:BP","GO:0060444","branching involved in mammary gland duct morphogenesis",11,23,0.0192859977447472
+"776","GO:BP","GO:0060603","mammary gland duct morphogenesis",14,33,0.0193272207599787
+"777","GO:BP","GO:1902253","regulation of intrinsic apoptotic signaling pathway by p53 class mediator",14,33,0.0193272207599787
+"778","GO:BP","GO:0048731","system development",813,3985,0.0194482264803575
+"779","GO:BP","GO:1903051","negative regulation of proteolysis involved in protein catabolic process",24,70,0.0195166905963251
+"780","GO:BP","GO:0010332","response to gamma radiation",19,51,0.0195664186942607
+"781","GO:BP","GO:0031648","protein destabilization",19,51,0.0195664186942607
+"782","GO:BP","GO:0061014","positive regulation of mRNA catabolic process",32,102,0.0195664186942607
+"783","GO:BP","GO:1901799","negative regulation of proteasomal protein catabolic process",19,51,0.0195664186942607
+"784","GO:BP","GO:2000434","regulation of protein neddylation",10,20,0.0204216056970677
+"785","GO:BP","GO:0097212","lysosomal membrane organization",8,14,0.0204216056970677
+"786","GO:BP","GO:0090201","negative regulation of release of cytochrome c from mitochondria",10,20,0.0204216056970677
+"787","GO:BP","GO:0071498","cellular response to fluid shear stress",10,20,0.0204216056970677
+"788","GO:BP","GO:0048388","endosomal lumen acidification",8,14,0.0204216056970677
+"789","GO:BP","GO:0006684","sphingomyelin metabolic process",10,20,0.0204216056970677
+"790","GO:BP","GO:0097479","synaptic vesicle localization",20,55,0.0207745505180487
+"791","GO:BP","GO:0006415","translational termination",9,17,0.0210026196233644
+"792","GO:BP","GO:0099638","endosome to plasma membrane protein transport",9,17,0.0210026196233644
+"793","GO:BP","GO:0060382","regulation of DNA strand elongation",9,17,0.0210026196233644
+"794","GO:BP","GO:0050777","negative regulation of immune response",53,192,0.0213467417066546
+"795","GO:BP","GO:0061462","protein localization to lysosome",21,59,0.0217707519129761
+"796","GO:BP","GO:1901186","positive regulation of ERBB signaling pathway",13,30,0.0219467916693304
+"797","GO:BP","GO:0043247","telomere maintenance in response to DNA damage",13,30,0.0219467916693304
+"798","GO:BP","GO:0034612","response to tumor necrosis factor",66,250,0.0220005971262095
+"799","GO:BP","GO:0061008","hepaticobiliary system development",43,149,0.0221654110656225
+"800","GO:BP","GO:0009303","rRNA transcription",15,37,0.0223010256737409
+"801","GO:BP","GO:0043254","regulation of protein-containing complex assembly",103,420,0.0224005923189445
+"802","GO:BP","GO:2000045","regulation of G1/S transition of mitotic cell cycle",46,162,0.022416513675865
+"803","GO:BP","GO:0002684","positive regulation of immune system process",237,1066,0.0226481742013821
+"804","GO:BP","GO:0048872","homeostasis of number of cells",82,323,0.0226981840105221
+"805","GO:BP","GO:0044788","modulation by host of viral process",18,48,0.0230621409242334
+"806","GO:BP","GO:0050767","regulation of neurogenesis",96,388,0.0234078166952245
+"807","GO:BP","GO:0030512","negative regulation of transforming growth factor beta receptor signaling pathway",30,95,0.0234089084968547
+"808","GO:BP","GO:0042060","wound healing",105,430,0.0234089084968547
+"809","GO:BP","GO:0007017","microtubule-based process",215,959,0.0236841989034636
+"810","GO:BP","GO:0043489","RNA stabilization",25,75,0.0237047879159626
+"811","GO:BP","GO:0045921","positive regulation of exocytosis",26,79,0.0238292364833701
+"812","GO:BP","GO:0018107","peptidyl-threonine phosphorylation",27,83,0.0238292364833701
+"813","GO:BP","GO:0051702","biological process involved in interaction with symbiont",36,120,0.0240050235595418
+"814","GO:BP","GO:0009888","tissue development",426,2012,0.0240050235595418
+"815","GO:BP","GO:0044839","cell cycle G2/M phase transition",44,154,0.0240189301058863
+"816","GO:BP","GO:0010614","negative regulation of cardiac muscle hypertrophy",12,27,0.0246957297060974
+"817","GO:BP","GO:0010664","negative regulation of striated muscle cell apoptotic process",12,27,0.0246957297060974
+"818","GO:BP","GO:0071356","cellular response to tumor necrosis factor",61,229,0.0249926834544451
+"819","GO:BP","GO:0001775","cell activation",243,1098,0.025081569179002
+"820","GO:BP","GO:0051094","positive regulation of developmental process",290,1331,0.0252062581427558
+"821","GO:BP","GO:0042177","negative regulation of protein catabolic process",34,112,0.0252062581427558
+"822","GO:BP","GO:0007154","cell communication",1292,6496,0.0254224074579694
+"823","GO:BP","GO:0007623","circadian rhythm",56,207,0.0255473993249359
+"824","GO:BP","GO:0032210","regulation of telomere maintenance via telomerase",20,56,0.0256061305462168
+"825","GO:BP","GO:0090151","establishment of protein localization to mitochondrial membrane",14,34,0.0256696497298707
+"826","GO:BP","GO:0033209","tumor necrosis factor-mediated signaling pathway",33,108,0.0257108159015002
+"827","GO:BP","GO:0022612","gland morphogenesis",38,129,0.0258569933805452
+"828","GO:BP","GO:0009611","response to wounding",133,564,0.02587667543332
+"829","GO:BP","GO:0051607","defense response to virus",79,311,0.0259344182596901
+"830","GO:BP","GO:0008637","apoptotic mitochondrial changes",32,104,0.026204539523385
+"831","GO:BP","GO:0090522","vesicle tethering involved in exocytosis",6,9,0.0270624048653696
+"832","GO:BP","GO:1902746","regulation of lens fiber cell differentiation",6,9,0.0270624048653696
+"833","GO:BP","GO:0099532","synaptic vesicle endosomal processing",6,9,0.0270624048653696
+"834","GO:BP","GO:0140895","cell surface toll-like receptor signaling pathway",22,64,0.0271892864091466
+"835","GO:BP","GO:0030522","intracellular receptor signaling pathway",91,367,0.0272910959929588
+"836","GO:BP","GO:0042059","negative regulation of epidermal growth factor receptor signaling pathway",11,24,0.0274672628828431
+"837","GO:BP","GO:0048513","animal organ development",628,3047,0.0279503828793594
+"838","GO:BP","GO:0001890","placenta development",43,151,0.0279917852043802
+"839","GO:BP","GO:0002832","negative regulation of response to biotic stimulus",35,117,0.0281698337336936
+"840","GO:BP","GO:0016070","RNA metabolic process",1369,6907,0.0284240581441394
+"841","GO:BP","GO:0007399","nervous system development",529,2541,0.0284240581441394
+"842","GO:BP","GO:0060271","cilium assembly",96,391,0.0287790650866976
+"843","GO:BP","GO:0043488","regulation of mRNA stability",48,173,0.0289276114348863
+"844","GO:BP","GO:0000966","RNA 5'-end processing",15,38,0.0289517434081483
+"845","GO:BP","GO:0000077","DNA damage checkpoint signaling",38,130,0.0294177786573595
+"846","GO:BP","GO:0007165","signal transduction",1192,5979,0.029458090546293
+"847","GO:BP","GO:0006359","regulation of transcription by RNA polymerase III",13,31,0.029458090546293
+"848","GO:BP","GO:0060964","regulation of miRNA-mediated gene silencing",13,31,0.029458090546293
+"849","GO:BP","GO:0034063","stress granule assembly",13,31,0.029458090546293
+"850","GO:BP","GO:0070979","protein K11-linked ubiquitination",13,31,0.029458090546293
+"851","GO:BP","GO:0019081","viral translation",10,21,0.0300538498805626
+"852","GO:BP","GO:0006098","pentose-phosphate shunt",10,21,0.0300538498805626
+"853","GO:BP","GO:0032482","Rab protein signal transduction",10,21,0.0300538498805626
+"854","GO:BP","GO:0051402","neuron apoptotic process",72,281,0.0304815704123797
+"855","GO:BP","GO:0002262","myeloid cell homeostasis",49,178,0.0308361106608549
+"856","GO:BP","GO:0141187","nucleic acid biosynthetic process",1352,6822,0.0308634559406894
+"857","GO:BP","GO:0035265","organ growth",46,165,0.031256921979323
+"858","GO:BP","GO:0040029","epigenetic regulation of gene expression",64,245,0.0312798118126481
+"859","GO:BP","GO:0048008","platelet-derived growth factor receptor signaling pathway",20,57,0.0312798118126481
+"860","GO:BP","GO:0090316","positive regulation of intracellular protein transport",30,97,0.0314132508669276
+"861","GO:BP","GO:0006054","N-acetylneuraminate metabolic process",7,12,0.0318906826115034
+"862","GO:BP","GO:0097494","regulation of vesicle size",9,18,0.0318906826115034
+"863","GO:BP","GO:0071816","tail-anchored membrane protein insertion into ER membrane",9,18,0.0318906826115034
+"864","GO:BP","GO:0016479","negative regulation of transcription by RNA polymerase I",7,12,0.0318906826115034
+"865","GO:BP","GO:0071243","cellular response to arsenic-containing substance",9,18,0.0318906826115034
+"866","GO:BP","GO:0043534","blood vessel endothelial cell migration",35,118,0.0318906826115034
+"867","GO:BP","GO:0043923","positive regulation by host of viral transcription",9,18,0.0318906826115034
+"868","GO:BP","GO:0045736","negative regulation of cyclin-dependent protein serine/threonine kinase activity",9,18,0.0318906826115034
+"869","GO:BP","GO:0006451","translational readthrough",7,12,0.0318906826115034
+"870","GO:BP","GO:0001514","selenocysteine incorporation",7,12,0.0318906826115034
+"871","GO:BP","GO:0001522","pseudouridine synthesis",9,18,0.0318906826115034
+"872","GO:BP","GO:2000573","positive regulation of DNA biosynthetic process",21,61,0.0318906826115034
+"873","GO:BP","GO:1901988","negative regulation of cell cycle phase transition",67,259,0.0320728830841563
+"874","GO:BP","GO:0046620","regulation of organ growth",28,89,0.0320728830841563
+"875","GO:BP","GO:0033363","secretory granule organization",22,65,0.0323197805271444
+"876","GO:BP","GO:1904356","regulation of telomere maintenance via telomere lengthening",22,65,0.0323197805271444
+"877","GO:BP","GO:0000380","alternative mRNA splicing, via spliceosome",24,73,0.0327416398686275
+"878","GO:BP","GO:1904814","regulation of protein localization to chromosome, telomeric region",8,15,0.0327416398686275
+"879","GO:BP","GO:0035627","ceramide transport",8,15,0.0327416398686275
+"880","GO:BP","GO:0043518","negative regulation of DNA damage response, signal transduction by p53 class mediator",8,15,0.0327416398686275
+"881","GO:BP","GO:0060429","epithelium development",268,1229,0.0327416398686275
+"882","GO:BP","GO:0009266","response to temperature stimulus",47,170,0.0329189676150739
+"883","GO:BP","GO:0036010","protein localization to endosome",12,28,0.0332447630559164
+"884","GO:BP","GO:0031146","SCF-dependent proteasomal ubiquitin-dependent protein catabolic process",17,46,0.0333347306648401
+"885","GO:BP","GO:0047496","vesicle transport along microtubule",17,46,0.0333347306648401
+"886","GO:BP","GO:0071763","nuclear membrane organization",17,46,0.0333347306648401
+"887","GO:BP","GO:0019216","regulation of lipid metabolic process",79,315,0.0350044545074311
+"888","GO:BP","GO:2000059","negative regulation of ubiquitin-dependent protein catabolic process",19,54,0.0369819742909425
+"889","GO:BP","GO:0051241","negative regulation of multicellular organismal process",239,1088,0.036991934593404
+"890","GO:BP","GO:0046677","response to antibiotic",15,39,0.0369955117749318
+"891","GO:BP","GO:0006334","nucleosome assembly",34,115,0.0374653536118105
+"892","GO:BP","GO:0046822","regulation of nucleocytoplasmic transport",34,115,0.0374653536118105
+"893","GO:BP","GO:0043543","protein acylation",28,90,0.0375665567052743
+"894","GO:BP","GO:0000466","maturation of 5.8S rRNA from tricistronic rRNA transcript (SSU-rRNA, 5.8S rRNA, LSU-rRNA)",11,25,0.03818387471929
+"895","GO:BP","GO:0048144","fibroblast proliferation",33,111,0.0385919169052412
+"896","GO:BP","GO:0120034","positive regulation of plasma membrane bounded cell projection assembly",33,111,0.0385919169052412
+"897","GO:BP","GO:0070198","protein localization to chromosome, telomeric region",13,32,0.0389728266344191
+"898","GO:BP","GO:1900368","regulation of post-transcriptional gene silencing by regulatory ncRNA",13,32,0.0389728266344191
+"899","GO:BP","GO:0034248","regulation of amide metabolic process",22,66,0.0389820016479215
+"900","GO:BP","GO:0010324","membrane invagination",22,66,0.0389820016479215
+"901","GO:BP","GO:0016055","Wnt signaling pathway",109,457,0.0391800328076727
+"902","GO:BP","GO:0140888","interferon-mediated signaling pathway",32,107,0.0396066365855798
+"903","GO:BP","GO:0046836","glycolipid transport",5,7,0.0397324338308803
+"904","GO:BP","GO:0006290","pyrimidine dimer repair",5,7,0.0397324338308803
+"905","GO:BP","GO:0180012","co-transcriptional RNA 3'-end processing, cleavage and polyadenylation pathway",5,7,0.0397324338308803
+"906","GO:BP","GO:0072126","positive regulation of glomerular mesangial cell proliferation",5,7,0.0397324338308803
+"907","GO:BP","GO:0071971","extracellular exosome assembly",5,7,0.0397324338308803
+"908","GO:BP","GO:0042327","positive regulation of phosphorylation",143,620,0.0397324338308803
+"909","GO:BP","GO:0036265","RNA (guanine-N7)-methylation",5,7,0.0397324338308803
+"910","GO:BP","GO:0017183","protein histidyl modification to diphthamide",5,7,0.0397324338308803
+"911","GO:BP","GO:0033299","secretion of lysosomal enzymes",5,7,0.0397324338308803
+"912","GO:BP","GO:0046053","dAMP metabolic process",5,7,0.0397324338308803
+"913","GO:BP","GO:0032101","regulation of response to external stimulus",235,1071,0.041053455165432
+"914","GO:BP","GO:1903706","regulation of hemopoiesis",101,420,0.041053455165432
+"915","GO:BP","GO:0019827","stem cell population maintenance",49,181,0.0414725282454505
+"916","GO:BP","GO:2000772","regulation of cellular senescence",17,47,0.0418365379798014
+"917","GO:BP","GO:0140861","DNA repair-dependent chromatin remodeling",10,22,0.042640890257875
+"918","GO:BP","GO:0010594","regulation of endothelial cell migration",46,168,0.042640890257875
+"919","GO:BP","GO:0001832","blastocyst growth",10,22,0.042640890257875
+"920","GO:BP","GO:0007035","vacuolar acidification",14,36,0.0431455437160251
+"921","GO:BP","GO:0032435","negative regulation of proteasomal ubiquitin-dependent protein catabolic process",14,36,0.0431455437160251
+"922","GO:BP","GO:1905168","positive regulation of double-strand break repair via homologous recombination",14,36,0.0431455437160251
+"923","GO:BP","GO:0002088","lens development in camera-type eye",28,91,0.0432914745012218
+"924","GO:BP","GO:0048699","generation of neurons",324,1517,0.0437433394171615
+"925","GO:BP","GO:0044773","mitotic DNA damage checkpoint signaling",27,87,0.0441636544239112
+"926","GO:BP","GO:0006890","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",19,55,0.0448276224230181
+"927","GO:BP","GO:0072344","rescue of stalled ribosome",12,29,0.0448310918591965
+"928","GO:BP","GO:0034143","regulation of toll-like receptor 4 signaling pathway",12,29,0.0448310918591965
+"929","GO:BP","GO:0014741","negative regulation of muscle hypertrophy",12,29,0.0448310918591965
+"930","GO:BP","GO:0051051","negative regulation of transport",99,412,0.0449524967386168
+"931","GO:BP","GO:0030879","mammary gland development",39,138,0.0452588460726901
+"932","GO:BP","GO:1902807","negative regulation of cell cycle G1/S phase transition",25,79,0.0453813697547584
+"933","GO:BP","GO:0008285","negative regulation of cell population proliferation",160,705,0.0454961355240805
+"934","GO:BP","GO:0061951","establishment of protein localization to plasma membrane",21,63,0.0459886971851392
+"935","GO:BP","GO:0061180","mammary gland epithelium development",23,71,0.0459899182646093
+"936","GO:BP","GO:0099518","vesicle cytoskeletal trafficking",23,71,0.0459899182646093
+"937","GO:BP","GO:0014015","positive regulation of gliogenesis",23,71,0.0459899182646093
+"938","GO:BP","GO:0070373","negative regulation of ERK1 and ERK2 cascade",22,67,0.0460139789689361
+"939","GO:BP","GO:0006904","vesicle docking involved in exocytosis",15,40,0.0464862630628364
+"940","GO:BP","GO:0048489","synaptic vesicle transport",15,40,0.0464862630628364
+"941","GO:BP","GO:0051223","regulation of protein transport",105,441,0.0465043937369685
+"942","GO:BP","GO:0097320","plasma membrane tubulation",9,19,0.046651779831372
+"943","GO:BP","GO:0110154","RNA decapping",9,19,0.046651779831372
+"944","GO:BP","GO:0043517","positive regulation of DNA damage response, signal transduction by p53 class mediator",9,19,0.046651779831372
+"945","GO:BP","GO:0001829","trophectodermal cell differentiation",9,19,0.046651779831372
+"946","GO:BP","GO:0051350","negative regulation of lyase activity",9,19,0.046651779831372
+"947","GO:BP","GO:0050792","regulation of viral process",46,169,0.0466521822836528
+"948","GO:BP","GO:0030182","neuron differentiation",307,1434,0.0468318224847305
+"949","GO:BP","GO:0005976","polysaccharide metabolic process",30,100,0.0470264423768642
+"950","GO:BP","GO:1903312","negative regulation of mRNA metabolic process",30,100,0.0470264423768642
+"951","GO:BP","GO:0090092","regulation of transmembrane receptor protein serine/threonine kinase signaling pathway",67,264,0.0480294033175525
+"952","GO:BP","GO:0034101","erythrocyte homeostasis",40,143,0.0483303530455032
+"953","GO:BP","GO:0048666","neuron development",254,1170,0.0485801021679379
+"954","GO:BP","GO:0090199","regulation of release of cytochrome c from mitochondria",16,44,0.0490026619398756
+"955","GO:BP","GO:0002183","cytoplasmic translational initiation",16,44,0.0490026619398756
+"956","GO:BP","GO:0051962","positive regulation of nervous system development",73,292,0.049208409869171
+"957","GO:BP","GO:0000447","endonucleolytic cleavage in ITS1 to separate SSU-rRNA from 5.8S rRNA and LSU-rRNA from tricistronic rRNA transcript (SSU-rRNA, 5.8S rRNA, LSU-rRNA)",6,10,0.049208409869171
+"958","GO:BP","GO:1904851","positive regulation of establishment of protein localization to telomere",6,10,0.049208409869171
+"959","GO:BP","GO:0000492","box C/D snoRNP assembly",6,10,0.049208409869171
+"960","GO:BP","GO:0044829","positive regulation by host of viral genome replication",6,10,0.049208409869171
+"961","GO:BP","GO:0060628","regulation of ER to Golgi vesicle-mediated transport",6,10,0.049208409869171
+"962","GO:BP","GO:0061909","autophagosome-lysosome fusion",6,10,0.049208409869171
+"963","GO:BP","GO:0034727","piecemeal microautophagy of the nucleus",6,10,0.049208409869171
+"964","GO:BP","GO:0030855","epithelial cell differentiation",167,741,0.049208409869171
+"965","GO:BP","GO:1902166","negative regulation of intrinsic apoptotic signaling pathway in response to DNA damage by p53 class mediator",8,16,0.0495784548423605
+"966","GO:BP","GO:0043328","protein transport to vacuole involved in ubiquitin-dependent protein catabolic process via the multivesicular body sorting pathway",8,16,0.0495784548423605
+"967","GO:BP","GO:0090287","regulation of cellular response to growth factor stimulus",79,320,0.0495784548423605
+"968","GO:BP","GO:1904294","positive regulation of ERAD pathway",8,16,0.0495784548423605
+"969","GO:BP","GO:0006978","DNA damage response, signal transduction by p53 class mediator resulting in transcription of p21 class mediator",8,16,0.0495784548423605
+"970","GO:BP","GO:0060147","regulation of post-transcriptional gene silencing",13,33,0.0495784548423605
+"971","GO:BP","GO:0007176","regulation of epidermal growth factor-activated receptor activity",8,16,0.0495784548423605
+"972","GO:BP","GO:0060965","negative regulation of miRNA-mediated gene silencing",8,16,0.0495784548423605
+"973","GO:BP","GO:0000028","ribosomal small subunit assembly",8,16,0.0495784548423605
+"974","GO:BP","GO:0071230","cellular response to amino acid stimulus",27,88,0.049916272971372
+"975","KEGG","KEGG:04140","Autophagy - animal",83,165,3.3133746225928e-13
+"976","KEGG","KEGG:03050","Proteasome",34,46,1.61069915306481e-11
+"977","KEGG","KEGG:04144","Endocytosis",97,248,7.49197582173585e-08
+"978","KEGG","KEGG:05132","Salmonella infection",93,249,1.92377873217265e-06
+"979","KEGG","KEGG:03022","Basal transcription factors",26,43,4.13745642313726e-06
+"980","KEGG","KEGG:04120","Ubiquitin mediated proteolysis",59,140,4.13745642313726e-06
+"981","KEGG","KEGG:03015","mRNA surveillance pathway",43,96,2.84953561746586e-05
+"982","KEGG","KEGG:05017","Spinocerebellar ataxia",56,141,6.75228912654864e-05
+"983","KEGG","KEGG:05131","Shigellosis",86,246,7.75105172454042e-05
+"984","KEGG","KEGG:03040","Spliceosome",65,174,0.000101204168514734
+"985","KEGG","KEGG:03083","Polycomb repressive complex",37,84,0.000178593744407991
+"986","KEGG","KEGG:03250","Viral life cycle - HIV-1",29,62,0.000385636461558713
+"987","KEGG","KEGG:04137","Mitophagy - animal",42,103,0.000385636461558713
+"988","KEGG","KEGG:03020","RNA polymerase",19,34,0.00046352184185241
+"989","KEGG","KEGG:05169","Epstein-Barr virus infection",69,198,0.000531402523556594
+"990","KEGG","KEGG:05203","Viral carcinogenesis",69,201,0.000867618086383947
+"991","KEGG","KEGG:03013","Nucleocytoplasmic transport",42,108,0.00112700849778987
+"992","KEGG","KEGG:05120","Epithelial cell signaling in Helicobacter pylori infection",30,70,0.00145758773437612
+"993","KEGG","KEGG:05210","Colorectal cancer",35,86,0.00145758773437612
+"994","KEGG","KEGG:04136","Autophagy - other",17,32,0.00210335521605664
+"995","KEGG","KEGG:03082","ATP-dependent chromatin remodeling",43,116,0.00272557163260865
+"996","KEGG","KEGG:04150","mTOR signaling pathway",54,155,0.00274492763963141
+"997","KEGG","KEGG:05221","Acute myeloid leukemia",28,67,0.00346728333592716
+"998","KEGG","KEGG:03420","Nucleotide excision repair",26,61,0.00377694265866427
+"999","KEGG","KEGG:05202","Transcriptional misregulation in cancer",63,192,0.00500542720747556
+"1000","KEGG","KEGG:04068","FoxO signaling pathway",46,131,0.00559202178099592
+"1001","KEGG","KEGG:05212","Pancreatic cancer",30,76,0.0058740975949903
+"1002","KEGG","KEGG:04130","SNARE interactions in vesicular transport",16,32,0.0058740975949903
+"1003","KEGG","KEGG:05161","Hepatitis B",54,162,0.00724296022111834
+"1004","KEGG","KEGG:05168","Herpes simplex virus 1 infection",142,506,0.0081384985377311
+"1005","KEGG","KEGG:04710","Circadian rhythm",16,34,0.0119626458719883
+"1006","KEGG","KEGG:05220","Chronic myeloid leukemia",29,76,0.0119626458719883
+"1007","KEGG","KEGG:05014","Amyotrophic lateral sclerosis",105,363,0.012115128515533
+"1008","KEGG","KEGG:04210","Apoptosis",45,135,0.016490596817036
+"1009","KEGG","KEGG:05170","Human immunodeficiency virus 1 infection",65,210,0.016490596817036
+"1010","KEGG","KEGG:05235","PD-L1 expression and PD-1 checkpoint pathway in cancer",32,89,0.018184161581154
+"1011","KEGG","KEGG:05213","Endometrial cancer",23,58,0.018184161581154
+"1012","KEGG","KEGG:04070","Phosphatidylinositol signaling system",34,97,0.0212690082514979
+"1013","KEGG","KEGG:05167","Kaposi sarcoma-associated herpesvirus infection",60,194,0.0215857594113833
+"1014","KEGG","KEGG:04966","Collecting duct acid secretion",13,27,0.0215857594113833
+"1015","KEGG","KEGG:00562","Inositol phosphate metabolism",27,73,0.0226145773068191
+"1016","KEGG","KEGG:05022","Pathways of neurodegeneration - multiple diseases",130,474,0.0243675710121952
+"1017","KEGG","KEGG:05216","Thyroid cancer",16,37,0.026321927927507
+"1018","KEGG","KEGG:04115","p53 signaling pathway",27,74,0.026321927927507
+"1019","KEGG","KEGG:05130","Pathogenic Escherichia coli infection",60,197,0.0282477748677731
+"1020","KEGG","KEGG:04722","Neurotrophin signaling pathway",39,118,0.029236599650971
+"1021","KEGG","KEGG:05211","Renal cell carcinoma",25,68,0.0305773629814096
+"1022","KEGG","KEGG:04625","C-type lectin receptor signaling pathway",35,104,0.0314799829532965
+"1023","KEGG","KEGG:01521","EGFR tyrosine kinase inhibitor resistance",28,79,0.0317934811661683
+"1024","KEGG","KEGG:05215","Prostate cancer",33,97,0.0317934811661683
+"1025","KEGG","KEGG:05418","Fluid shear stress and atherosclerosis",44,138,0.0326433778740186
+"1026","KEGG","KEGG:05165","Human papillomavirus infection",93,330,0.032904283690952
+"1027","KEGG","KEGG:04215","Apoptosis - multiple species",14,32,0.033515506543182
+"1028","KEGG","KEGG:00520","Amino sugar and nucleotide sugar metabolism",19,49,0.0391447626258046
+"1029","KEGG","KEGG:05166","Human T-cell leukemia virus 1 infection",64,218,0.0437598374248371
+"1030","KEGG","KEGG:04211","Longevity regulating pathway",30,89,0.0478820640703684
+"1031","KEGG","KEGG:04623","Cytosolic DNA-sensing pathway",28,82,0.0479039168898781
+"1032","KEGG","KEGG:04660","T cell receptor signaling pathway",38,119,0.0479039168898781
+"1033","KEGG","KEGG:04390","Hippo signaling pathway",48,157,0.0479039168898781

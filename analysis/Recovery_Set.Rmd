@@ -28,7 +28,7 @@ pre[class] {
 }
 ```
 
-```{r Libraries}
+```{r Libraries, include=FALSE}
 library(ggplot2)
 library(ggrepel)
 library(reshape2)
@@ -117,6 +117,7 @@ dge_d <- DGEList.data.frame(counts = counts_raw_filt, group = group_d, genes = r
 #calculate the normalization factors with method TMM
 dged_calc <- calcNormFactors(dge_d, method = "TMM")
 
+#saveRDS(dged_calc, "data/dge_calc_matrix.RDS")
 
 #Pull out factors
 snames_d <- data.frame("samples" = colnames(dged_calc)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
@@ -1573,11 +1574,14 @@ plotMotif<-function(fitted_cormotif,title="")
 
 ```{r Cormotif Attempt New Matrix}
 
-annot_d <- data.frame("samples" = colnames(counts_cpm_filt_dox)) %>% separate_wider_delim(., cols = samples, names = c("Tx", "Time", "Ind"), delim = "_", cols_remove = FALSE) %>% unite(., col = "Tx_Time", Tx, Time, sep = "_", remove = FALSE) 
+Cormotif_matrix <- readRDS("data/dge_calc_matrix.RDS")
+Cormotif_tmm_counts <- Cormotif_matrix$counts
 
-Cormotif_d <- counts_cpm_filt_dox
+annot_d <- data.frame("samples" = colnames(Cormotif_tmm_counts)) %>% separate_wider_delim(., cols = samples, names = c("Tx", "Time", "Ind"), delim = "_", cols_remove = FALSE) %>% unite(., col = "Tx_Time", Tx, Time, sep = "_", remove = FALSE) 
 
-Cormotif_df_d <- as.data.frame(Cormotif_d)
+Cormotif_dox <- cpm(Cormotif_tmm_counts, log = TRUE)
+
+Cormotif_df_d <- as.data.frame(Cormotif_dox)
 
 #make the groupid based on your experiment - 6 different treatments 7 individuals
 
@@ -1589,35 +1593,36 @@ compid_d <- data.frame(c1 = c(1, 3, 5), c2 = c(2, 4, 6))
 
 ```
 
-```{r Cormotif Run}
+```{r Cormotif Run, include=FALSE}
 
 set.seed(12345)
-# Cormotif_dox <- cormotiffit(exprs = Cormotif_d,
-#                                 groupid = groupid_d,
-#                                 compid = compid_d,
-#                                 K=1:6, 
-#                                 max.iter = 500, 
-#                                 BIC = TRUE,
-#                                 runtype = "logCPM")
+Cormotif_dox_tmm <- cormotiffit(exprs = Cormotif_dox,
+                                groupid = groupid_d,
+                                compid = compid_d,
+                                norm.factor.method = "TMM",
+                                BIC = TRUE,
+                                K=1:8,
+                                max.iter = 500,
+                                runtype = "logCPM")
 
 #only need to run this once! 
 #save this to an object so I can retrieve it as needed
 
-#saveRDS(Cormotif_dox, "data/final_data/Cormotif_dox.RDS")
+saveRDS(Cormotif_dox, "data/final_data/Cormotif_dox.RDS")
 
-Cormotif_dox <- readRDS("data/final_data/Cormotif_dox.RDS")
+Cormotif_dox <- readRDS("data/final_data/Cormotif_TMM_dox.RDS")
 
 ```
 
 ```{r Cormotif AIC + BIC Plot}
 
-plotIC(Cormotif_dox)
+plotIC(Cormotif_dox_tmm)
 
 ```
 
 ```{r Cormotif Plot Motifs}
 
-plotMotif(Cormotif_dox)
+plotMotif(Cormotif_dox_tmm)
 
 myColors <-  rev(c("#FFFFFF", "#E6E6E6" ,"#CCCCCC", "#B3B3B3", "#999999", "#808080", "#666666","#4C4C4C", "#333333", "#191919","#000000"))
 
@@ -1636,7 +1641,7 @@ rownames(topgenelist_d) <- rownames(Cormotif_df_d)
 motif_prob_d <- Cormotif_dox$bestmotif$clustlike 
 rownames(motif_prob_d) <- rownames(topgenelist_d)
 #saveRDS(motif_prob_d, "data/final_data/Cormotif_prob_gene_list_dox.RDS")
-
+readRDS("data/final_data/Cormotif_prob_gene_list_dox.RDS")
 
 #Define the gene probability groups - I have 2
 clust1_d <- motif_prob_d %>% 
@@ -1844,6 +1849,7 @@ filt_toptable_abs
 filt_toptable_2_abs
 
 ```
+
 
 ```{r GO KEGG Analysis Updated Cormotif}
 
