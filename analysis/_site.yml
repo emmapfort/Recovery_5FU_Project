@@ -7,8 +7,6 @@ navbar:
     href: index.html
   - text: About
     href: about.html
-  - text: DOX Only DE
-    href: Recovery_DOX.html
   - text: Dose-Response
     href: Recovery_DRC.html
   - text: Quality Control RNAseq
