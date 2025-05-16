@@ -23,121 +23,145 @@ pre[class] {
 
 I did this part with Sayan according to his analysis to ensure that my matrix was consistent with his - allowing me to work on downstream analysis
 
+```{r Necessary Libraries, message=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(Biobase)
+library(limma)
+library(edgeR)
+library(edgebundleR)
+library(scales)
+library(biomaRt)
+library(ggrepel)
+library(ggfortify)
+library(corrplot)
+library(readr)
+library(org.Hs.eg.db)
+library(AnnotationDbi)
+library(ComplexHeatmap)
+library(circlize)
+library(grid)
+library(reshape2)
+library(ggVennDiagram)
+library(UpSetR)
+library(ggpubr)
+library(BiocParallel)
+```
+
+
+
 ```{r Create My Dataframe With All Counts Files}
 #load in libraries needed
-library(readr)
-
 #these counts files are from featureCounts, all saved as RDS objects
 
-####Individual 1 - 84-1####
-Counts_84_DOX_24 <- readRDS("data/counts/Counts_84_DOX_24.RDS")
-Counts_84_DMSO_24 <- readRDS("data/counts/Counts_84_DMSO_24.RDS")
-Counts_84_DOX_24rec <- readRDS("data/counts/Counts_84_DOX_24rec.RDS")
-Counts_84_DMSO_24rec <- readRDS("data/counts/Counts_84_DMSO_24rec.RDS")
-Counts_84_DOX_144rec <- readRDS("data/counts/Counts_84_DOX_144rec.RDS")
-Counts_84_DMSO_144rec <- readRDS("data/counts/Counts_84_DMSO_144rec.RDS")
-
-####Individual 2 - 87-1####
-Counts_87_DOX_24 <- readRDS("data/counts/Counts_87_DOX_24.RDS")
-Counts_87_DMSO_24 <- readRDS("data/counts/Counts_87_DMSO_24.RDS")
-Counts_87_DOX_24rec <- readRDS("data/counts/Counts_87_DOX_24rec.RDS")
-Counts_87_DMSO_24rec <- readRDS("data/counts/Counts_87_DMSO_24rec.RDS")
-Counts_87_DOX_144rec <- readRDS("data/counts/Counts_87_DOX_144rec.RDS")
-Counts_87_DMSO_144rec <- readRDS("data/counts/Counts_87_DMSO_144rec.RDS")
-
-####Individual 3 - 78-1####
-Counts_78_DOX_24 <- readRDS("data/counts/Counts_78_DOX_24.RDS")
-Counts_78_DMSO_24 <- readRDS("data/counts/Counts_78_DMSO_24.RDS")
-Counts_78_DOX_24rec <- readRDS("data/counts/Counts_78_DOX_24rec.RDS")
-Counts_78_DMSO_24rec <- readRDS("data/counts/Counts_78_DMSO_24rec.RDS")
-Counts_78_DOX_144rec <- readRDS("data/counts/Counts_78_DOX_144rec.RDS")
-Counts_78_DMSO_144rec <- readRDS("data/counts/Counts_78_DMSO_144rec.RDS")
-
-####Individual 4 - 75-1####
-Counts_75_DOX_24 <- readRDS("data/counts/Counts_75_DOX_24.RDS")
-Counts_75_DMSO_24 <- readRDS("data/counts/Counts_75_DMSO_24.RDS")
-Counts_75_DOX_24rec <- readRDS("data/counts/Counts_75_DOX_24rec.RDS")
-Counts_75_DMSO_24rec <- readRDS("data/counts/Counts_75_DMSO_24rec.RDS")
-Counts_75_DOX_144rec <- readRDS("data/counts/Counts_75_DOX_144rec.RDS")
-Counts_75_DMSO_144rec <- readRDS("data/counts/Counts_75_DMSO_144rec.RDS")
-
-####Individual 5 - 17-3####
-Counts_17_DOX_24 <- readRDS("data/counts/Counts_17_DOX_24.RDS")
-Counts_17_DMSO_24 <- readRDS("data/counts/Counts_17_DMSO_24.RDS")
-Counts_17_DOX_24rec <- readRDS("data/counts/Counts_17_DOX_24rec.RDS")
-Counts_17_DMSO_24rec <- readRDS("data/counts/Counts_17_DMSO_24rec.RDS")
-Counts_17_DOX_144rec <- readRDS("data/counts/Counts_17_DOX_144rec.RDS")
-Counts_17_DMSO_144rec <- readRDS("data/counts/Counts_17_DMSO_144rec.RDS")
-
-####Individual 6 - 90-1####
-Counts_90_DOX_24 <- readRDS("data/counts/Counts_90_DOX_24.RDS")
-Counts_90_DMSO_24 <- readRDS("data/counts/Counts_90_DMSO_24.RDS")
-Counts_90_DOX_24rec <- readRDS("data/counts/Counts_90_DOX_24rec.RDS")
-Counts_90_DMSO_24rec <- readRDS("data/counts/Counts_90_DMSO_24rec.RDS")
-Counts_90_DOX_144rec <- readRDS("data/counts/Counts_90_DOX_144rec.RDS")
-Counts_90_DMSO_144rec <- readRDS("data/counts/Counts_90_DMSO_144rec.RDS")
-
-####Individual 7 - 90-1REP####
-Counts_90REP_DOX_24 <- readRDS("data/counts/Counts_90REP_DOX_24.RDS")
-Counts_90REP_DMSO_24 <- readRDS("data/counts/Counts_90REP_DMSO_24.RDS")
-Counts_90REP_DOX_24rec <- readRDS("data/counts/Counts_90REP_DOX_24rec.RDS")
-Counts_90REP_DMSO_24rec <- readRDS("data/counts/Counts_90REP_DMSO_24rec.RDS")
-Counts_90REP_DOX_144rec <- readRDS("data/counts/Counts_90REP_DOX_144rec.RDS")
-Counts_90REP_DMSO_144rec <- readRDS("data/counts/Counts_90REP_DMSO_144rec.RDS")
+# ####Individual 1 - 84-1####
+# Counts_84_DOX_24 <- readRDS("data/counts/Counts_84_DOX_24.RDS")
+# Counts_84_DMSO_24 <- readRDS("data/counts/Counts_84_DMSO_24.RDS")
+# Counts_84_DOX_24rec <- readRDS("data/counts/Counts_84_DOX_24rec.RDS")
+# Counts_84_DMSO_24rec <- readRDS("data/counts/Counts_84_DMSO_24rec.RDS")
+# Counts_84_DOX_144rec <- readRDS("data/counts/Counts_84_DOX_144rec.RDS")
+# Counts_84_DMSO_144rec <- readRDS("data/counts/Counts_84_DMSO_144rec.RDS")
+# 
+# ####Individual 2 - 87-1####
+# Counts_87_DOX_24 <- readRDS("data/counts/Counts_87_DOX_24.RDS")
+# Counts_87_DMSO_24 <- readRDS("data/counts/Counts_87_DMSO_24.RDS")
+# Counts_87_DOX_24rec <- readRDS("data/counts/Counts_87_DOX_24rec.RDS")
+# Counts_87_DMSO_24rec <- readRDS("data/counts/Counts_87_DMSO_24rec.RDS")
+# Counts_87_DOX_144rec <- readRDS("data/counts/Counts_87_DOX_144rec.RDS")
+# Counts_87_DMSO_144rec <- readRDS("data/counts/Counts_87_DMSO_144rec.RDS")
+# 
+# ####Individual 3 - 78-1####
+# Counts_78_DOX_24 <- readRDS("data/counts/Counts_78_DOX_24.RDS")
+# Counts_78_DMSO_24 <- readRDS("data/counts/Counts_78_DMSO_24.RDS")
+# Counts_78_DOX_24rec <- readRDS("data/counts/Counts_78_DOX_24rec.RDS")
+# Counts_78_DMSO_24rec <- readRDS("data/counts/Counts_78_DMSO_24rec.RDS")
+# Counts_78_DOX_144rec <- readRDS("data/counts/Counts_78_DOX_144rec.RDS")
+# Counts_78_DMSO_144rec <- readRDS("data/counts/Counts_78_DMSO_144rec.RDS")
+# 
+# ####Individual 4 - 75-1####
+# Counts_75_DOX_24 <- readRDS("data/counts/Counts_75_DOX_24.RDS")
+# Counts_75_DMSO_24 <- readRDS("data/counts/Counts_75_DMSO_24.RDS")
+# Counts_75_DOX_24rec <- readRDS("data/counts/Counts_75_DOX_24rec.RDS")
+# Counts_75_DMSO_24rec <- readRDS("data/counts/Counts_75_DMSO_24rec.RDS")
+# Counts_75_DOX_144rec <- readRDS("data/counts/Counts_75_DOX_144rec.RDS")
+# Counts_75_DMSO_144rec <- readRDS("data/counts/Counts_75_DMSO_144rec.RDS")
+# 
+# ####Individual 5 - 17-3####
+# Counts_17_DOX_24 <- readRDS("data/counts/Counts_17_DOX_24.RDS")
+# Counts_17_DMSO_24 <- readRDS("data/counts/Counts_17_DMSO_24.RDS")
+# Counts_17_DOX_24rec <- readRDS("data/counts/Counts_17_DOX_24rec.RDS")
+# Counts_17_DMSO_24rec <- readRDS("data/counts/Counts_17_DMSO_24rec.RDS")
+# Counts_17_DOX_144rec <- readRDS("data/counts/Counts_17_DOX_144rec.RDS")
+# Counts_17_DMSO_144rec <- readRDS("data/counts/Counts_17_DMSO_144rec.RDS")
+# 
+# ####Individual 6 - 90-1####
+# Counts_90_DOX_24 <- readRDS("data/counts/Counts_90_DOX_24.RDS")
+# Counts_90_DMSO_24 <- readRDS("data/counts/Counts_90_DMSO_24.RDS")
+# Counts_90_DOX_24rec <- readRDS("data/counts/Counts_90_DOX_24rec.RDS")
+# Counts_90_DMSO_24rec <- readRDS("data/counts/Counts_90_DMSO_24rec.RDS")
+# Counts_90_DOX_144rec <- readRDS("data/counts/Counts_90_DOX_144rec.RDS")
+# Counts_90_DMSO_144rec <- readRDS("data/counts/Counts_90_DMSO_144rec.RDS")
+# 
+# ####Individual 7 - 90-1REP####
+# Counts_90REP_DOX_24 <- readRDS("data/counts/Counts_90REP_DOX_24.RDS")
+# Counts_90REP_DMSO_24 <- readRDS("data/counts/Counts_90REP_DMSO_24.RDS")
+# Counts_90REP_DOX_24rec <- readRDS("data/counts/Counts_90REP_DOX_24rec.RDS")
+# Counts_90REP_DMSO_24rec <- readRDS("data/counts/Counts_90REP_DMSO_24rec.RDS")
+# Counts_90REP_DOX_144rec <- readRDS("data/counts/Counts_90REP_DOX_144rec.RDS")
+# Counts_90REP_DMSO_144rec <- readRDS("data/counts/Counts_90REP_DMSO_144rec.RDS")
 
 ```
 
 ```{r Put Counts Together Into Dataframe}
-library(tidyverse)
-
-counts_raw_df <-
-   data.frame(
-     Counts_84_DOX_24,
-     Counts_84_DMSO_24$MCW_EMP_JT_R29_R1.bam,
-     Counts_84_DOX_24rec$MCW_EMP_JT_R30_R1.bam,
-     Counts_84_DMSO_24rec$MCW_EMP_JT_R32_R1.bam,
-     Counts_84_DOX_144rec$MCW_EMP_JT_R33_R1.bam,
-     Counts_84_DMSO_144rec$MCW_EMP_JT_R35_R1.bam,
-     Counts_87_DOX_24$MCW_EMP_JT_R36_R1.bam,
-     Counts_87_DMSO_24$MCW_EMP_JT_R38_R1.bam,
-     Counts_87_DOX_24rec$MCW_EMP_JT_R39_R1.bam,
-     Counts_87_DMSO_24rec$MCW_EMP_JT_R41_R1.bam,
-     Counts_87_DOX_144rec$MCW_EMP_JT_R42_R1.bam,
-     Counts_87_DMSO_144rec$MCW_EMP_JT_R44_R1.bam,
-     Counts_78_DOX_24$MCW_EMP_JT_R45_R1.bam,
-     Counts_78_DMSO_24$MCW_EMP_JT_R47_R1.bam,
-     Counts_78_DOX_24rec$MCW_EMP_JT_R48_R1.bam,
-     Counts_78_DMSO_24rec$MCW_EMP_JT_R50_R1.bam,
-     Counts_78_DOX_144rec$MCW_EMP_JT_R51_R1.bam,
-     Counts_78_DMSO_144rec$MCW_EMP_JT_R53_R1.bam,
-     Counts_75_DOX_24$MCW_EMP_JT_R54_R1.bam,
-     Counts_75_DMSO_24$MCW_EMP_JT_R56_R1.bam,
-     Counts_75_DOX_24rec$MCW_EMP_JT_R57_R1.bam,
-     Counts_75_DMSO_24rec$MCW_EMP_JT_R59_R1.bam,
-     Counts_75_DOX_144rec$MCW_EMP_JT_R60_R1.bam,
-     Counts_75_DMSO_144rec$MCW_EMP_JT_R62_R1.bam,
-     Counts_17_DOX_24$MCW_EMP_JT_R63_R1.bam,
-     Counts_17_DMSO_24$MCW_EMP_JT_R65_R1.bam,
-     Counts_17_DOX_24rec$MCW_EMP_JT_R66_R1.bam,
-     Counts_17_DMSO_24rec$MCW_EMP_JT_R68_R1.bam,
-     Counts_17_DOX_144rec$MCW_EMP_JT_R69_R1.bam,
-     Counts_17_DMSO_144rec$MCW_EMP_JT_R71_R1.bam,
-     Counts_90_DOX_24$MCW_EMP_JT_R72_R1.bam,
-     Counts_90_DMSO_24$MCW_EMP_JT_R74_R1.bam,
-     Counts_90_DOX_24rec$MCW_EMP_JT_R75_R1.bam,
-     Counts_90_DMSO_24rec$MCW_EMP_JT_R77_R1.bam,
-     Counts_90_DOX_144rec$MCW_EMP_JT_R78_R1.bam,
-     Counts_90_DMSO_144rec$MCW_EMP_JT_R80_R1.bam,
-     Counts_90REP_DOX_24$MCW_EMP_JT_R81_R1.bam,
-     Counts_90REP_DMSO_24$MCW_EMP_JT_R83_R1.bam,
-     Counts_90REP_DOX_24rec$MCW_EMP_JT_R84_R1.bam,
-     Counts_90REP_DMSO_24rec$MCW_EMP_JT_R86_R1.bam,
-     Counts_90REP_DOX_144rec$MCW_EMP_JT_R87_R1.bam,
-     Counts_90REP_DMSO_144rec$MCW_EMP_JT_R89_R1.bam
-   )
+# counts_raw_df <-
+#    data.frame(
+#      Counts_84_DOX_24,
+#      Counts_84_DMSO_24$MCW_EMP_JT_R29_R1.bam,
+#      Counts_84_DOX_24rec$MCW_EMP_JT_R30_R1.bam,
+#      Counts_84_DMSO_24rec$MCW_EMP_JT_R32_R1.bam,
+#      Counts_84_DOX_144rec$MCW_EMP_JT_R33_R1.bam,
+#      Counts_84_DMSO_144rec$MCW_EMP_JT_R35_R1.bam,
+#      Counts_87_DOX_24$MCW_EMP_JT_R36_R1.bam,
+#      Counts_87_DMSO_24$MCW_EMP_JT_R38_R1.bam,
+#      Counts_87_DOX_24rec$MCW_EMP_JT_R39_R1.bam,
+#      Counts_87_DMSO_24rec$MCW_EMP_JT_R41_R1.bam,
+#      Counts_87_DOX_144rec$MCW_EMP_JT_R42_R1.bam,
+#      Counts_87_DMSO_144rec$MCW_EMP_JT_R44_R1.bam,
+#      Counts_78_DOX_24$MCW_EMP_JT_R45_R1.bam,
+#      Counts_78_DMSO_24$MCW_EMP_JT_R47_R1.bam,
+#      Counts_78_DOX_24rec$MCW_EMP_JT_R48_R1.bam,
+#      Counts_78_DMSO_24rec$MCW_EMP_JT_R50_R1.bam,
+#      Counts_78_DOX_144rec$MCW_EMP_JT_R51_R1.bam,
+#      Counts_78_DMSO_144rec$MCW_EMP_JT_R53_R1.bam,
+#      Counts_75_DOX_24$MCW_EMP_JT_R54_R1.bam,
+#      Counts_75_DMSO_24$MCW_EMP_JT_R56_R1.bam,
+#      Counts_75_DOX_24rec$MCW_EMP_JT_R57_R1.bam,
+#      Counts_75_DMSO_24rec$MCW_EMP_JT_R59_R1.bam,
+#      Counts_75_DOX_144rec$MCW_EMP_JT_R60_R1.bam,
+#      Counts_75_DMSO_144rec$MCW_EMP_JT_R62_R1.bam,
+#      Counts_17_DOX_24$MCW_EMP_JT_R63_R1.bam,
+#      Counts_17_DMSO_24$MCW_EMP_JT_R65_R1.bam,
+#      Counts_17_DOX_24rec$MCW_EMP_JT_R66_R1.bam,
+#      Counts_17_DMSO_24rec$MCW_EMP_JT_R68_R1.bam,
+#      Counts_17_DOX_144rec$MCW_EMP_JT_R69_R1.bam,
+#      Counts_17_DMSO_144rec$MCW_EMP_JT_R71_R1.bam,
+#      Counts_90_DOX_24$MCW_EMP_JT_R72_R1.bam,
+#      Counts_90_DMSO_24$MCW_EMP_JT_R74_R1.bam,
+#      Counts_90_DOX_24rec$MCW_EMP_JT_R75_R1.bam,
+#      Counts_90_DMSO_24rec$MCW_EMP_JT_R77_R1.bam,
+#      Counts_90_DOX_144rec$MCW_EMP_JT_R78_R1.bam,
+#      Counts_90_DMSO_144rec$MCW_EMP_JT_R80_R1.bam,
+#      Counts_90REP_DOX_24$MCW_EMP_JT_R81_R1.bam,
+#      Counts_90REP_DMSO_24$MCW_EMP_JT_R83_R1.bam,
+#      Counts_90REP_DOX_24rec$MCW_EMP_JT_R84_R1.bam,
+#      Counts_90REP_DMSO_24rec$MCW_EMP_JT_R86_R1.bam,
+#      Counts_90REP_DOX_144rec$MCW_EMP_JT_R87_R1.bam,
+#      Counts_90REP_DMSO_144rec$MCW_EMP_JT_R89_R1.bam
+#    )
 
 #now save this as a matrix
-counts_raw_matrix <- counts_raw_df %>% column_to_rownames(var = "X") %>% as.matrix()
+#counts_raw_matrix <- counts_raw_df %>% column_to_rownames(var = "X") %>% as.matrix()
+
+counts_raw_matrix <- readRDS("data/new/counts_raw_matrix.RDS")
 
 dim(counts_raw_matrix)
 #28395 is my initial amount of genes prior to filtering
@@ -146,8 +170,8 @@ dim(counts_raw_matrix)
 #write.csv(counts_raw_matrix, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/new/counts_raw_matrix_EMP_250514.csv")
 
 #I also want to save this as an R object so I don't have to run the counts every time
-
 #saveRDS(counts_raw_matrix, "data/new/counts_raw_matrix.RDS")
+
 ```
 
 ```{r Colors + Factors}
@@ -294,8 +318,6 @@ Now, I want to filter my dataframe
 Before I can filter by rowMeans, I must convert to log2cpm
 
 ```{r Dataframe Filtering}
-library(edgeR)
-
 #transform counts to cpm as a first step
 counts_cpm_unfilt <- cpm(counts_raw_matrix, log = TRUE)
 dim(counts_cpm_unfilt)
@@ -446,8 +468,6 @@ I want to make sure that these genes are responding as we expect
 We have triple checked this dataset to ensure that columns are in order
 
 ```{r Check Response Genes log2cpm}
-library(org.Hs.eg.db)
-
 #Load in my count matrix
 boxplot1 <- read.csv("data/new/filcpm_final_matrix.csv") %>% 
   as.data.frame()
@@ -535,7 +555,6 @@ However, TP53 and BAX are acting similarly across our data
 
 ```{r PCA Analysis}
 #Now I want to check if my data is as expected on a PCA plot
-
 #perform PCA calculations
 prcomp_res_unfilt <- prcomp(t(counts_cpm_unfilt %>% as.matrix()), center =  TRUE)
 
@@ -600,7 +619,6 @@ ggplot2::autoplot(prcomp_res_filt, data = Metadata, colour = "Condition", shape 
 ```
 
 ```{r Correlation Heatmaps, fig.width=12, fig.height=10}
-library(ComplexHeatmap)
 
 #check to make sure that the column names are correct
 lcpm_2 <- filcpm_matrix
@@ -913,9 +931,9 @@ for (plot_name in names(volcano_plots)) {
 #DDR Gene Expression Heatmap — DOX Over Recovery Time (68 genes, with categories)
 
 # Load libraries
-library(circlize)
-library(grid)
-library(reshape2)
+# library(circlize)
+# library(grid)
+# library(reshape2)
 
 # Load DEG files
 load_deg <- function(path) read.csv(path)
@@ -1043,130 +1061,150 @@ Heatmap(logFC_mat,
 ```
 
 ```{r AIC LogFC Plots, fig.height=14, fig.width=8}
-#load in the appropriate files
-deg_files <- list(
-  "DOX_24T" = "data/new/DEGs/Toptable_V.D24T.csv",
-  "DOX_24R" = "data/new/DEGs/Toptable_V.D24R.csv",
-  "DOX_144R" = "data/new/DEGs/Toptable_V.D144R.csv"
-)
+# #load in the appropriate files
+# deg_files <- list(
+#   "DOX_24T" = "data/new/DEGs/Toptable_V.D24T.csv",
+#   "DOX_24R" = "data/new/DEGs/Toptable_V.D24R.csv",
+#   "DOX_144R" = "data/new/DEGs/Toptable_V.D144R.csv"
+# )
+# 
+# 
+# # ----------------- AC Cardiotoxicity Entrez IDs -----------------
+# entrez_ids <- c(
+#   6272, 8029, 11128, 79899, 54477, 121665, 5095, 22863, 57161, 4692,
+#   8214, 23151, 56606, 108, 22999, 56895, 9603, 3181, 4023, 10499,
+#   92949, 4363, 10057, 5243, 5244, 5880, 1535, 2950, 847, 5447,
+#   3038, 3077, 4846, 3958, 23327, 29899, 23155, 80856, 55020, 78996,
+#   23262, 150383, 9620, 79730, 344595, 5066, 6251, 3482, 9588, 339416,
+#   7292, 55157, 87769, 23409, 720, 3107, 54535, 1590, 80059, 7991,
+#   57110, 8803, 323, 54826, 5916, 23371, 283337, 64078, 80010, 1933,
+#   10818, 51020
+# ) %>% as.character()
+# 
+# #load in my DE genes and filter them by the entrez id
+# 
+# ac_data_list <- map2_dfr(deg_files, names(deg_files), function(file, label) {
+#   read_csv(file, show_col_types = FALSE) %>%
+#     mutate(
+#       Entrez_ID = as.character(Entrez_ID),
+#       Condition = label,
+#       Condition = ifelse(str_detect(label, "DOX"), "CX.5461", "DOX")
+#     ) %>%
+#     filter(Entrez_ID %in% entrez_ids)
+# })
+# 
+# #create full gene × condition table
+# all_conditions <- names(deg_files)
+# all_combos <- crossing(
+#   Entrez_ID = entrez_ids %>% as.character(),
+#   Condition = all_conditions
+# ) %>%
+#   mutate(
+#     Drug = ifelse(str_detect(Condition, "CX"), "CX.5461", "DOX")
+#   )
+# 
+# # ----------------- Merge and Fill Missing Values -----------------
+# complete_ac <- all_combos %>%
+#   left_join(ac_data_list, by = c("Entrez_ID", "Condition", "Drug")) %>%
+#   mutate(
+#     logFC = ifelse(is.na(logFC), 0, logFC),
+#     adj.P.Val = ifelse(is.na(adj.P.Val), 1, adj.P.Val)
+#   )
+# 
+# # ----------------- Annotate Gene Symbols -----------------
+# complete_ac <- complete_ac %>%
+#   mutate(
+#     Gene = mapIds(org.Hs.eg.db, keys = Entrez_ID,
+#                   column = "SYMBOL", keytype = "ENTREZID", multiVals = "first")
+#   )
+# 
+# # ----------------- Order Conditions -----------------
+# complete_ac$Condition <- factor(complete_ac$Condition, levels = c(
+#   "CX_0.1_3", "CX_0.1_24", "CX_0.1_48",
+#   "CX_0.5_3", "CX_0.5_24", "CX_0.5_48",
+#   "DOX_0.1_3", "DOX_0.1_24", "DOX_0.1_48",
+#   "DOX_0.5_3", "DOX_0.5_24", "DOX_0.5_48"
+# ))
+# 
+# # ----------------- Wilcoxon Test: CX vs DOX (paired by condition) -----------------
+# condition_pairs <- tibble(
+#   cx = c("CX_0.1_3", "CX_0.1_24", "CX_0.1_48", "CX_0.5_3", "CX_0.5_24", "CX_0.5_48"),
+#   dox = c("DOX_0.1_3", "DOX_0.1_24", "DOX_0.1_48", "DOX_0.5_3", "DOX_0.5_24", "DOX_0.5_48")
+# )
+# 
+# wilcox_results <- map2_dfr(condition_pairs$cx, condition_pairs$dox, function(cx_label, dox_label) {
+#   cx_vals <- complete_ac %>% filter(Condition == cx_label) %>% pull(logFC)
+#   dox_vals <- complete_ac %>% filter(Condition == dox_label) %>% pull(logFC)
+#   
+#   test <- tryCatch(wilcox.test(cx_vals, dox_vals), error = function(e) NULL)
+#   pval <- if (!is.null(test)) test$p.value else NA
+#   
+#   tibble(
+#     Condition = dox_label,
+#     p_value = signif(pval, 3),
+#     label = case_when(
+#       pval < 0.001 ~ "***",
+#       pval < 0.01  ~ "**",
+#       pval < 0.05  ~ "*",
+#       TRUE         ~ ""
+#     ),
+#     y_pos = max(c(cx_vals, dox_vals), na.rm = TRUE) + 0.5
+#   )
+# })
+# 
+# # ----------------- Plot Boxplot with Wilcoxon Stars -----------------
+# ggplot(complete_ac, aes(x = Condition, y = logFC, fill = Drug)) +
+#   geom_boxplot(outlier.size = 0.6) +
+#   geom_text(data = wilcox_results,
+#             aes(x = Condition, y = y_pos, label = label),
+#             inherit.aes = FALSE,
+#             size = 4, vjust = 0) +
+#   scale_fill_manual(values = c("CX.5461" = "blue", "DOX" = "red")) +
+#   labs(
+#     title = "LogFC of AC Cardiotoxicity Genes",
+#     x = "Condition",
+#     y = "logFC",
+#     fill = "Drug"
+#   ) +
+#   theme_bw(base_size = 14) +
+#   theme(
+#     plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#     axis.title = element_text(size = 14),
+#     axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+#     legend.title = element_text(size = 14),
+#     legend.text = element_text(size = 12)
+#   )
+
+```
+
+```{r Overlap of DEGs}
+#plot a venn diagram with all of your conditions from your toptables
+
+# Load DEGs Data
+DOX_24T <- read.csv("data/new/DEGs/Toptable_V.D24T.csv")
+DOX_24R <- read.csv("data/new/DEGs/Toptable_V.D24R.csv")
+DOX_144R <- read.csv("data/new/DEGs/Toptable_V.D144R.csv")
+
+# Extract Significant DEGs
+DEG1 <- DOX_24T$Entrez_ID[DOX_24T$adj.P.Val < 0.05]
+DEG2 <- DOX_24R$Entrez_ID[DOX_24R$adj.P.Val < 0.05]
+DEG3 <- DOX_144R$Entrez_ID[DOX_144R$adj.P.Val < 0.05]
 
 
-# ----------------- AC Cardiotoxicity Entrez IDs -----------------
-entrez_ids <- c(
-  6272, 8029, 11128, 79899, 54477, 121665, 5095, 22863, 57161, 4692,
-  8214, 23151, 56606, 108, 22999, 56895, 9603, 3181, 4023, 10499,
-  92949, 4363, 10057, 5243, 5244, 5880, 1535, 2950, 847, 5447,
-  3038, 3077, 4846, 3958, 23327, 29899, 23155, 80856, 55020, 78996,
-  23262, 150383, 9620, 79730, 344595, 5066, 6251, 3482, 9588, 339416,
-  7292, 55157, 87769, 23409, 720, 3107, 54535, 1590, 80059, 7991,
-  57110, 8803, 323, 54826, 5916, 23371, 283337, 64078, 80010, 1933,
-  10818, 51020
-) %>% as.character()
-
-entrez_ids <- c(
-  6272, 8029, 11128, 79899, 54477, 121665, 5095, 22863, 57161, 4692,
-  8214, 23151, 56606, 108, 22999, 56895, 9603, 3181, 4023, 10499,
-  92949, 4363, 10057, 5243, 5244, 5880, 1535, 2950, 847, 5447,
-  3038, 3077, 4846, 3958, 23327, 29899, 23155, 80856, 55020, 78996,
-  23262, 150383, 9620, 79730, 344595, 5066, 6251, 3482, 9588, 339416,
-  7292, 55157, 87769, 23409, 720, 3107, 54535, 1590, 80059, 7991,
-  57110, 8803, 323, 54826, 5916, 23371, 283337, 64078, 80010, 1933,
-  10818, 51020
-) %>% as.character()
-
-# ----------------- Load and Filter DEGs -----------------
-
-ac_data_list <- map2_dfr(deg_files, names(deg_files), function(file, label) {
-  read_csv(file, show_col_types = FALSE) %>%
-    mutate(
-      Entrez_ID = as.character(Entrez_ID),
-      Condition = label,
-      Condition = ifelse(str_detect(label, "DOX"), "CX.5461", "DOX")
-    ) %>%
-    filter(Entrez_ID %in% entrez_ids)
-})
-
-#create full gene × condition table
-all_conditions <- names(deg_files)
-all_combos <- crossing(
-  Entrez_ID = entrez_ids %>% as.character(),
-  Condition = all_conditions
-) %>%
-  mutate(
-    Drug = ifelse(str_detect(Condition, "CX"), "CX.5461", "DOX")
-  )
-
-# ----------------- Merge and Fill Missing Values -----------------
-complete_ac <- all_combos %>%
-  left_join(ac_data_list, by = c("Entrez_ID", "Condition", "Drug")) %>%
-  mutate(
-    logFC = ifelse(is.na(logFC), 0, logFC),
-    adj.P.Val = ifelse(is.na(adj.P.Val), 1, adj.P.Val)
-  )
-
-# ----------------- Annotate Gene Symbols -----------------
-complete_ac <- complete_ac %>%
-  mutate(
-    Gene = mapIds(org.Hs.eg.db, keys = Entrez_ID,
-                  column = "SYMBOL", keytype = "ENTREZID", multiVals = "first")
-  )
-
-# ----------------- Order Conditions -----------------
-complete_ac$Condition <- factor(complete_ac$Condition, levels = c(
-  "CX_0.1_3", "CX_0.1_24", "CX_0.1_48",
-  "CX_0.5_3", "CX_0.5_24", "CX_0.5_48",
-  "DOX_0.1_3", "DOX_0.1_24", "DOX_0.1_48",
-  "DOX_0.5_3", "DOX_0.5_24", "DOX_0.5_48"
-))
-
-# ----------------- Wilcoxon Test: CX vs DOX (paired by condition) -----------------
-condition_pairs <- tibble(
-  cx = c("CX_0.1_3", "CX_0.1_24", "CX_0.1_48", "CX_0.5_3", "CX_0.5_24", "CX_0.5_48"),
-  dox = c("DOX_0.1_3", "DOX_0.1_24", "DOX_0.1_48", "DOX_0.5_3", "DOX_0.5_24", "DOX_0.5_48")
-)
-
-wilcox_results <- map2_dfr(condition_pairs$cx, condition_pairs$dox, function(cx_label, dox_label) {
-  cx_vals <- complete_ac %>% filter(Condition == cx_label) %>% pull(logFC)
-  dox_vals <- complete_ac %>% filter(Condition == dox_label) %>% pull(logFC)
-  
-  test <- tryCatch(wilcox.test(cx_vals, dox_vals), error = function(e) NULL)
-  pval <- if (!is.null(test)) test$p.value else NA
-  
-  tibble(
-    Condition = dox_label,
-    p_value = signif(pval, 3),
-    label = case_when(
-      pval < 0.001 ~ "***",
-      pval < 0.01  ~ "**",
-      pval < 0.05  ~ "*",
-      TRUE         ~ ""
-    ),
-    y_pos = max(c(cx_vals, dox_vals), na.rm = TRUE) + 0.5
-  )
-})
-
-# ----------------- Plot Boxplot with Wilcoxon Stars -----------------
-ggplot(complete_ac, aes(x = Condition, y = logFC, fill = Drug)) +
-  geom_boxplot(outlier.size = 0.6) +
-  geom_text(data = wilcox_results,
-            aes(x = Condition, y = y_pos, label = label),
-            inherit.aes = FALSE,
-            size = 4, vjust = 0) +
-  scale_fill_manual(values = c("CX.5461" = "blue", "DOX" = "red")) +
-  labs(
-    title = "LogFC of AC Cardiotoxicity Genes",
-    x = "Condition",
-    y = "logFC",
-    fill = "Drug"
-  ) +
-  theme_bw(base_size = 14) +
+venntest <- list(DEG1, DEG2, DEG3)
+ggVennDiagram(
+  venntest,
+  category.names = c("DOX_24T", "DOX_24R", "DOX_144R")
+) + ggtitle("DXR Specific and Shared DEGs")+
   theme(
-    plot.title = element_text(size = rel(1.5), hjust = 0.5),
-    axis.title = element_text(size = 14),
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
-    legend.title = element_text(size = 14),
-    legend.text = element_text(size = 12)
+    plot.title = element_text(size = 16, face = "bold"),  # Increase title size
+    text = element_text(size = 16)  # Increase text size globally
   )
+
+#Now that I've made my venn diagram, I want to compare these DEGs
+#set 1 : 4362 DOX24T specific genes
+#set2 : 4362 + 4550 + 50 + 272 genes shared across DOX24T (all genes)
+#how many of these are downregulated and how many are upregulated?
 
 ```
 
@@ -1921,19 +1959,134 @@ plotMotif<-function(fitted_cormotif,title="")
 
 ```
 
+
+```{r Cormotif Library}
+#Don't load me in if you're using the above function, as it has been modified above
+library(Cormotif)
+```
+
+
 ```{r Cormotif Data}
 
 #input the cormotif matrix you're going to use
 ##this should be tmm normalized log2cpm
-Cormotif <- ###put in my thing here####
+
+#the matrix that I used previously for limma was TMM counts - cpm this
+#dge was the name of the DGE list object
+
+cormotif_test <- cpm(dge, log = TRUE)
+colnames(cormotif_test) <- (Metadata_2$Final_sample_name)
+
+cormotif_counts <- dge
+
+cormotif_test_df <- cormotif_test %>% 
+  as.data.frame() %>% 
+  rownames_to_column(., var = "Entrez_ID")
+
+#write.csv(cormotif_test, "data/new/Cormotif_test_matrix.csv")
+
+#reorder my test matrix to match the new groupid I've made
+#I want my columns to be in this order:
+#DOX24T 1-6, DOX24R 1-6, DOX144R 1-6, DMSO24T 1-6, DMSO24R 1-6, DMSO144R 1-6
+Cormotif <- read.csv("data/new/Cormotif_matrix_final.csv")
+dim(Cormotif)
+#14319 genes across 37 cols (1 is Entrez_ID)
 Cormotif_df <- data.frame(Cormotif)
 
-rownames(Cormotif_df) <- Cormotif_df$Gene
+rownames(Cormotif_df) <- Cormotif_df$Entrez_ID
 exprs.cormotif <- as.matrix(Cormotif_df[,2:37])
+dim(exprs.cormotif)
 
-# Read group and comparison IDs
-groupid <- read.csv("data/new/GroupID.csv")
-compid <- data.frame(c1 = c(1, 3, 5), c2 = c(2, 4, 6))
+####make a test one to see if the TMM is causing issues or not
+# Cormotif_cpm_test <- read.csv("data/new/filcpm_forCormotif.csv")
+# dim(Cormotif_cpm_test)
+# 
+# Cormotif_cpm_test_df <- data.frame(Cormotif_cpm_test)
+# 
+# rownames(Cormotif_cpm_test_df) <- Cormotif_cpm_test_df$Entrez_ID
+# exprs.cormotif_cpm_test <- as.matrix(Cormotif_cpm_test_df[,2:37])
+# dim(exprs.cormotif_cpm_test)
+
+####don't use this one, the previous is correct
+
+
+#see what happens if you remove ind3 which is driving the response down?
+
+
+
+#put together my group id and comparison id to make the correct comparisons between experimental conditions
+#groupid tells which experimental conditions are grouped together
+#compid tells which experimental conditions should be compared against one another
+##ie DOX24T vs DMSO24T matched control
+groupid_csv <- read.csv("data/new/GroupID.csv")
+#now I have to make this into a vector (named vector)
+groupid <- c(
+  DOX_24T_1 = 1, DOX_24T_2 = 1, DOX_24T_3 = 1, DOX_24T_4 = 1, DOX_24T_5 = 1, DOX_24T_6 = 1,
+  DOX_24R_1 = 2, DOX_24R_2 = 2, DOX_24R_3 = 2, DOX_24R_4 = 2, DOX_24R_5 = 2, DOX_24R_6 = 2,
+  DOX_144R_1 = 3, DOX_144R_2 = 3, DOX_144R_3 = 3, DOX_144R_4 = 3, DOX_144R_5 = 3, DOX_144R_6 = 3,
+  DMSO_24T_1 = 4, DMSO_24T_2 = 4, DMSO_24T_3 = 4, DMSO_24T_4 = 4, DMSO_24T_5 = 4, DMSO_24T_6 = 4,
+  DMSO_24R_1 = 5, DMSO_24R_2 = 5, DMSO_24R_3 = 5, DMSO_24R_4 = 5, DMSO_24R_5 = 5, DMSO_24R_6 = 5,
+  DMSO_144R_1 = 6, DMSO_144R_2 = 6, DMSO_144R_3 = 6, DMSO_144R_4 = 6, DMSO_144R_5 = 6, DMSO_144R_6 = 6
+)
+groupid_1 <- groupid %>% as.vector()
+compid <- data.frame(Cond1 = c(1, 3, 5), Cond2 = c(2, 4, 6))
+
+```
+
+```{r Run Cormotif}
+#fit Cormotif model 
+set.seed(19191)
+#only set the seed ONCE
+
+motif.fitted <- cormotiffit(
+  exprs = exprs.cormotif,
+  groupid = groupid,
+  compid = compid,
+  K = 1:8,
+  max.iter = 1000,
+  BIC = TRUE,
+  runtype = "logCPM"
+)
+
+```
+
+```{r Plot Cormotif}
+
+#plot BIC and AIC to see which number of motifs was best for both models
+plotIC(motif.fitted)
+
+motif.fitted$bic
+
+#now plot the motifs themselves
+plotMotif(motif.fitted, title = "Fitted Motifs for DXR")
+
+```
+
+```{r Extract gene probabilities}
+#extract the posterior probability that these DEGs belong to motifs
+gene_prob_all <- motif.fitted$bestmotif$p.post
+rownames(gene_prob_all) <- rownames(Cormotif_df)
+
+#extract the cluster likelihood - which DEGs are most likely to be in this cluster
+motif_prob <- motif.fitted$bestmotif$clustlike
+rownames(motif_prob) <- rownames(gene_prob_all)
+#write.csv(motif_prob,"data/new/cormotif_probability_genelist_all.csv")
+
+# Define gene probability groups
+prob_all_1  <- rownames(gene_prob_all[(gene_prob_all[,1] >= 0.25 & gene_prob_all[,2] <0.5 & gene_prob_all[,3] <0.5),])
+
+length(prob_all_1)
+
+prob_all_2  <- rownames(gene_prob_all[(gene_prob_all[,1] >=0.3 & gene_prob_all[,2] >0.5 & gene_prob_all[,3] >0.5),])
+
+length(prob_all_2)
+
+prob_all_3  <- rownames(gene_prob_all[(gene_prob_all[,1] >0.5 & gene_prob_all[,2] <0.5 & gene_prob_all[,3] <0.5),])
+
+length(prob_all_3)
+```
+
+```{r}
 
 ```
 
