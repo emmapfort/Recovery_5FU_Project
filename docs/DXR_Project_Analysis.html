@@ -1,0 +1,3274 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Emma M Pfortmiller" />
+
+<meta name="date" content="2025-05-14" />
+
+<title>DXR DE Analysis</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Recovery_RNAseq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="Recovery_DOX.html">DOX Only DE</a>
+</li>
+<li>
+  <a href="Recovery_DRC.html">Dose-Response</a>
+</li>
+<li>
+  <a href="Recovery_RNAseq.html">Quality Control RNAseq</a>
+</li>
+<li>
+  <a href="DXR_Project_Analysis.html">Differential Expression</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/emmapfort/Recovery_5FU_Project">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">DXR DE Analysis</h1>
+<h4 class="author">Emma M Pfortmiller</h4>
+<h4 class="date">2025-05-14</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-05-16
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Recovery_5FU/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20250217code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20250217)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20250217code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20250217)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongabsolute">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>File paths:</strong> absolute </a>
+</p>
+</div>
+<div id="strongFilepathsstrongabsolute" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Using absolute paths to the files within your workflowr project makes it
+difficult for you and others to run your code on a different machine.
+Change the absolute path(s) below to the suggested relative path(s) to
+make your code more reproducible.
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+absolute
+</th>
+<th style="text-align:left;">
+relative
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/new/counts_raw_matrix_EMP_250514.csv
+</td>
+<td style="text-align:left;">
+data/new/counts_raw_matrix_EMP_250514.csv
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttree5db2858b75aae417c5192f21a10a5c89029f2d4ftargetblank5db2858a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/5db2858b75aae417c5192f21a10a5c89029f2d4f" target="_blank">5db2858</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomemmapfortRecovery5FUProjecttree5db2858b75aae417c5192f21a10a5c89029f2d4ftargetblank5db2858a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/tree/5db2858b75aae417c5192f21a10a5c89029f2d4f" target="_blank">5db2858</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/Anat HM/
+    Ignored:    data/CDKN1A_geneplot_Dox.RDS
+    Ignored:    data/Cormotif_dox.RDS
+    Ignored:    data/Cormotif_prob_gene_list.RDS
+    Ignored:    data/Cormotif_prob_gene_list_doxonly.RDS
+    Ignored:    data/DMSO_TNN13_plot.RDS
+    Ignored:    data/DOX_TNN13_plot.RDS
+    Ignored:    data/DOXgeneplots.RDS
+    Ignored:    data/ExpressionMatrix_EMP.csv
+    Ignored:    data/Ind1_DOX_Spearman_plot.RDS
+    Ignored:    data/Ind6REP_Spearman_list.csv
+    Ignored:    data/Ind6REP_Spearman_plot.RDS
+    Ignored:    data/Ind6REP_Spearman_set.csv
+    Ignored:    data/Ind6_Spearman_plot.RDS
+    Ignored:    data/MDM2_geneplot_Dox.RDS
+    Ignored:    data/SIRT1_geneplot_Dox.RDS
+    Ignored:    data/Sample_annotated.csv
+    Ignored:    data/SpearmanHeatmapMatrix_EMP
+    Ignored:    data/annot_dox.RDS
+    Ignored:    data/annot_list_hm.csv
+    Ignored:    data/cormotifARclust_pp.RDS
+    Ignored:    data/cormotif_dxr_1.RDS
+    Ignored:    data/cormotif_dxr_2.RDS
+    Ignored:    data/counts/
+    Ignored:    data/counts_DE_df_dox.RDS
+    Ignored:    data/counts_DE_raw_data.RDS
+    Ignored:    data/counts_raw_filt.RDS
+    Ignored:    data/counts_raw_matrix.RDS
+    Ignored:    data/counts_raw_matrix_EMP_250514.csv
+    Ignored:    data/d24_Spearman_plot.RDS
+    Ignored:    data/dge_calc_dxr.RDS
+    Ignored:    data/dge_calc_matrix.RDS
+    Ignored:    data/ensembl_backup_dox.RDS
+    Ignored:    data/fC_AllCounts.RDS
+    Ignored:    data/fC_DOXCounts.RDS
+    Ignored:    data/featureCounts_Concat_Matrix_DOXSamples_EMP_250430.csv
+    Ignored:    data/filcpm_colnames_matrix.csv
+    Ignored:    data/filcpm_matrix.csv
+    Ignored:    data/filt_gene_list_dox.RDS
+    Ignored:    data/filter_gene_list_final.RDS
+    Ignored:    data/final_data/
+    Ignored:    data/gene_clustlike_motif.RDS
+    Ignored:    data/gene_postprob_motif.RDS
+    Ignored:    data/genedf_dxr.RDS
+    Ignored:    data/genematrix_dox.RDS
+    Ignored:    data/genematrix_dxr.RDS
+    Ignored:    data/heartgenes.csv
+    Ignored:    data/heartgenes_dox.csv
+    Ignored:    data/heatmap_group_Anat.RDS
+    Ignored:    data/ind_num_dox.RDS
+    Ignored:    data/ind_num_dxr.RDS
+    Ignored:    data/initial_cormotif.RDS
+    Ignored:    data/initial_cormotif_dox.RDS
+    Ignored:    data/new/
+    Ignored:    data/new_cormotif_dox.RDS
+    Ignored:    data/plot_leg_d.RDS
+    Ignored:    data/plot_leg_d_horizontal.RDS
+    Ignored:    data/plot_leg_d_vertical.RDS
+    Ignored:    data/process_gene_data_funct.RDS
+    Ignored:    data/tableED_GOBP.RDS
+    Ignored:    data/tableESR_GOBP_postprob.RDS
+    Ignored:    data/tableLD_GOBP.RDS
+    Ignored:    data/tableLR_GOBP_postprob.RDS
+    Ignored:    data/tableNR_GOBP.RDS
+    Ignored:    data/tableNR_GOBP_postprob.RDS
+    Ignored:    data/table_motif1_GOBP_d.RDS
+    Ignored:    data/table_motif2_GOBP_d.RDS
+    Ignored:    data/top.table_V.D144r_dox.RDS
+    Ignored:    data/top.table_V.D24_dox.RDS
+    Ignored:    data/top.table_V.D24r_dox.RDS
+
+Untracked files:
+    Untracked:  analysis/DXR_FullAnalysis.Rmd
+
+Unstaged changes:
+    Modified:   Recovery_5FU.Rproj
+    Modified:   analysis/Recovery_DXR.Rmd
+    Modified:   analysis/_site.yml
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/DXR_Project_Analysis.Rmd</code>)
+and HTML (<code>docs/DXR_Project_Analysis.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/5db2858b75aae417c5192f21a10a5c89029f2d4f/analysis/DXR_Project_Analysis.Rmd" target="_blank">5db2858</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-05-16
+</td>
+<td>
+Removing copied pages + including final analysis
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/b6f4e9c8278259b33d0288c18fa3d9efbb1fd993/analysis/DXR_Project_Analysis.Rmd" target="_blank">b6f4e9c</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-05-16
+</td>
+<td>
+Updated Analysis 05/15/25
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/emmapfort/Recovery_5FU_Project/blob/32de50db55bd494c482d4fb43fd704745e2b0108/analysis/DXR_Project_Analysis.Rmd" target="_blank">32de50d</a>
+</td>
+<td>
+emmapfort
+</td>
+<td>
+2025-05-14
+</td>
+<td>
+Analysis Overhaul 05/14/25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<style type="text/css">
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+  
+}
+</style>
+<p>I did this part with Sayan according to his analysis to ensure that
+my matrix was consistent with his - allowing me to work on downstream
+analysis</p>
+<pre class="r"><code>#load in libraries needed
+#these counts files are from featureCounts, all saved as RDS objects
+
+# ####Individual 1 - 84-1####
+# Counts_84_DOX_24 &lt;- readRDS(&quot;data/counts/Counts_84_DOX_24.RDS&quot;)
+# Counts_84_DMSO_24 &lt;- readRDS(&quot;data/counts/Counts_84_DMSO_24.RDS&quot;)
+# Counts_84_DOX_24rec &lt;- readRDS(&quot;data/counts/Counts_84_DOX_24rec.RDS&quot;)
+# Counts_84_DMSO_24rec &lt;- readRDS(&quot;data/counts/Counts_84_DMSO_24rec.RDS&quot;)
+# Counts_84_DOX_144rec &lt;- readRDS(&quot;data/counts/Counts_84_DOX_144rec.RDS&quot;)
+# Counts_84_DMSO_144rec &lt;- readRDS(&quot;data/counts/Counts_84_DMSO_144rec.RDS&quot;)
+# 
+# ####Individual 2 - 87-1####
+# Counts_87_DOX_24 &lt;- readRDS(&quot;data/counts/Counts_87_DOX_24.RDS&quot;)
+# Counts_87_DMSO_24 &lt;- readRDS(&quot;data/counts/Counts_87_DMSO_24.RDS&quot;)
+# Counts_87_DOX_24rec &lt;- readRDS(&quot;data/counts/Counts_87_DOX_24rec.RDS&quot;)
+# Counts_87_DMSO_24rec &lt;- readRDS(&quot;data/counts/Counts_87_DMSO_24rec.RDS&quot;)
+# Counts_87_DOX_144rec &lt;- readRDS(&quot;data/counts/Counts_87_DOX_144rec.RDS&quot;)
+# Counts_87_DMSO_144rec &lt;- readRDS(&quot;data/counts/Counts_87_DMSO_144rec.RDS&quot;)
+# 
+# ####Individual 3 - 78-1####
+# Counts_78_DOX_24 &lt;- readRDS(&quot;data/counts/Counts_78_DOX_24.RDS&quot;)
+# Counts_78_DMSO_24 &lt;- readRDS(&quot;data/counts/Counts_78_DMSO_24.RDS&quot;)
+# Counts_78_DOX_24rec &lt;- readRDS(&quot;data/counts/Counts_78_DOX_24rec.RDS&quot;)
+# Counts_78_DMSO_24rec &lt;- readRDS(&quot;data/counts/Counts_78_DMSO_24rec.RDS&quot;)
+# Counts_78_DOX_144rec &lt;- readRDS(&quot;data/counts/Counts_78_DOX_144rec.RDS&quot;)
+# Counts_78_DMSO_144rec &lt;- readRDS(&quot;data/counts/Counts_78_DMSO_144rec.RDS&quot;)
+# 
+# ####Individual 4 - 75-1####
+# Counts_75_DOX_24 &lt;- readRDS(&quot;data/counts/Counts_75_DOX_24.RDS&quot;)
+# Counts_75_DMSO_24 &lt;- readRDS(&quot;data/counts/Counts_75_DMSO_24.RDS&quot;)
+# Counts_75_DOX_24rec &lt;- readRDS(&quot;data/counts/Counts_75_DOX_24rec.RDS&quot;)
+# Counts_75_DMSO_24rec &lt;- readRDS(&quot;data/counts/Counts_75_DMSO_24rec.RDS&quot;)
+# Counts_75_DOX_144rec &lt;- readRDS(&quot;data/counts/Counts_75_DOX_144rec.RDS&quot;)
+# Counts_75_DMSO_144rec &lt;- readRDS(&quot;data/counts/Counts_75_DMSO_144rec.RDS&quot;)
+# 
+# ####Individual 5 - 17-3####
+# Counts_17_DOX_24 &lt;- readRDS(&quot;data/counts/Counts_17_DOX_24.RDS&quot;)
+# Counts_17_DMSO_24 &lt;- readRDS(&quot;data/counts/Counts_17_DMSO_24.RDS&quot;)
+# Counts_17_DOX_24rec &lt;- readRDS(&quot;data/counts/Counts_17_DOX_24rec.RDS&quot;)
+# Counts_17_DMSO_24rec &lt;- readRDS(&quot;data/counts/Counts_17_DMSO_24rec.RDS&quot;)
+# Counts_17_DOX_144rec &lt;- readRDS(&quot;data/counts/Counts_17_DOX_144rec.RDS&quot;)
+# Counts_17_DMSO_144rec &lt;- readRDS(&quot;data/counts/Counts_17_DMSO_144rec.RDS&quot;)
+# 
+# ####Individual 6 - 90-1####
+# Counts_90_DOX_24 &lt;- readRDS(&quot;data/counts/Counts_90_DOX_24.RDS&quot;)
+# Counts_90_DMSO_24 &lt;- readRDS(&quot;data/counts/Counts_90_DMSO_24.RDS&quot;)
+# Counts_90_DOX_24rec &lt;- readRDS(&quot;data/counts/Counts_90_DOX_24rec.RDS&quot;)
+# Counts_90_DMSO_24rec &lt;- readRDS(&quot;data/counts/Counts_90_DMSO_24rec.RDS&quot;)
+# Counts_90_DOX_144rec &lt;- readRDS(&quot;data/counts/Counts_90_DOX_144rec.RDS&quot;)
+# Counts_90_DMSO_144rec &lt;- readRDS(&quot;data/counts/Counts_90_DMSO_144rec.RDS&quot;)
+# 
+# ####Individual 7 - 90-1REP####
+# Counts_90REP_DOX_24 &lt;- readRDS(&quot;data/counts/Counts_90REP_DOX_24.RDS&quot;)
+# Counts_90REP_DMSO_24 &lt;- readRDS(&quot;data/counts/Counts_90REP_DMSO_24.RDS&quot;)
+# Counts_90REP_DOX_24rec &lt;- readRDS(&quot;data/counts/Counts_90REP_DOX_24rec.RDS&quot;)
+# Counts_90REP_DMSO_24rec &lt;- readRDS(&quot;data/counts/Counts_90REP_DMSO_24rec.RDS&quot;)
+# Counts_90REP_DOX_144rec &lt;- readRDS(&quot;data/counts/Counts_90REP_DOX_144rec.RDS&quot;)
+# Counts_90REP_DMSO_144rec &lt;- readRDS(&quot;data/counts/Counts_90REP_DMSO_144rec.RDS&quot;)</code></pre>
+<pre class="r"><code># counts_raw_df &lt;-
+#    data.frame(
+#      Counts_84_DOX_24,
+#      Counts_84_DMSO_24$MCW_EMP_JT_R29_R1.bam,
+#      Counts_84_DOX_24rec$MCW_EMP_JT_R30_R1.bam,
+#      Counts_84_DMSO_24rec$MCW_EMP_JT_R32_R1.bam,
+#      Counts_84_DOX_144rec$MCW_EMP_JT_R33_R1.bam,
+#      Counts_84_DMSO_144rec$MCW_EMP_JT_R35_R1.bam,
+#      Counts_87_DOX_24$MCW_EMP_JT_R36_R1.bam,
+#      Counts_87_DMSO_24$MCW_EMP_JT_R38_R1.bam,
+#      Counts_87_DOX_24rec$MCW_EMP_JT_R39_R1.bam,
+#      Counts_87_DMSO_24rec$MCW_EMP_JT_R41_R1.bam,
+#      Counts_87_DOX_144rec$MCW_EMP_JT_R42_R1.bam,
+#      Counts_87_DMSO_144rec$MCW_EMP_JT_R44_R1.bam,
+#      Counts_78_DOX_24$MCW_EMP_JT_R45_R1.bam,
+#      Counts_78_DMSO_24$MCW_EMP_JT_R47_R1.bam,
+#      Counts_78_DOX_24rec$MCW_EMP_JT_R48_R1.bam,
+#      Counts_78_DMSO_24rec$MCW_EMP_JT_R50_R1.bam,
+#      Counts_78_DOX_144rec$MCW_EMP_JT_R51_R1.bam,
+#      Counts_78_DMSO_144rec$MCW_EMP_JT_R53_R1.bam,
+#      Counts_75_DOX_24$MCW_EMP_JT_R54_R1.bam,
+#      Counts_75_DMSO_24$MCW_EMP_JT_R56_R1.bam,
+#      Counts_75_DOX_24rec$MCW_EMP_JT_R57_R1.bam,
+#      Counts_75_DMSO_24rec$MCW_EMP_JT_R59_R1.bam,
+#      Counts_75_DOX_144rec$MCW_EMP_JT_R60_R1.bam,
+#      Counts_75_DMSO_144rec$MCW_EMP_JT_R62_R1.bam,
+#      Counts_17_DOX_24$MCW_EMP_JT_R63_R1.bam,
+#      Counts_17_DMSO_24$MCW_EMP_JT_R65_R1.bam,
+#      Counts_17_DOX_24rec$MCW_EMP_JT_R66_R1.bam,
+#      Counts_17_DMSO_24rec$MCW_EMP_JT_R68_R1.bam,
+#      Counts_17_DOX_144rec$MCW_EMP_JT_R69_R1.bam,
+#      Counts_17_DMSO_144rec$MCW_EMP_JT_R71_R1.bam,
+#      Counts_90_DOX_24$MCW_EMP_JT_R72_R1.bam,
+#      Counts_90_DMSO_24$MCW_EMP_JT_R74_R1.bam,
+#      Counts_90_DOX_24rec$MCW_EMP_JT_R75_R1.bam,
+#      Counts_90_DMSO_24rec$MCW_EMP_JT_R77_R1.bam,
+#      Counts_90_DOX_144rec$MCW_EMP_JT_R78_R1.bam,
+#      Counts_90_DMSO_144rec$MCW_EMP_JT_R80_R1.bam,
+#      Counts_90REP_DOX_24$MCW_EMP_JT_R81_R1.bam,
+#      Counts_90REP_DMSO_24$MCW_EMP_JT_R83_R1.bam,
+#      Counts_90REP_DOX_24rec$MCW_EMP_JT_R84_R1.bam,
+#      Counts_90REP_DMSO_24rec$MCW_EMP_JT_R86_R1.bam,
+#      Counts_90REP_DOX_144rec$MCW_EMP_JT_R87_R1.bam,
+#      Counts_90REP_DMSO_144rec$MCW_EMP_JT_R89_R1.bam
+#    )
+
+#now save this as a matrix
+#counts_raw_matrix &lt;- counts_raw_df %&gt;% column_to_rownames(var = &quot;X&quot;) %&gt;% as.matrix()
+
+counts_raw_matrix &lt;- readRDS(&quot;data/new/counts_raw_matrix.RDS&quot;)
+
+dim(counts_raw_matrix)</code></pre>
+<pre><code>[1] 28395    42</code></pre>
+<pre class="r"><code>#28395 is my initial amount of genes prior to filtering
+
+#write this to a csv so I can save it for later
+#write.csv(counts_raw_matrix, &quot;C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/new/counts_raw_matrix_EMP_250514.csv&quot;)
+
+#I also want to save this as an R object so I don&#39;t have to run the counts every time
+#saveRDS(counts_raw_matrix, &quot;data/new/counts_raw_matrix.RDS&quot;)</code></pre>
+<pre class="r"><code>#I want to include the color schemes I have for my treatment, individuals, and timepoints
+####Colors####
+tx_col &lt;- c(&quot;DOX&quot; = &quot;#499FBD&quot;, &quot;DMSO&quot; = &quot;#BBBBBC&quot;)
+col_tx_large &lt;- rep(c(&quot;#499FBD&quot; , &quot;#BBBBBC&quot;), 21)
+col_tx_large_2 &lt;- c(rep(&quot;#499FBD&quot; , 3), rep(&quot;#BBBBBC&quot;, 3), 21)
+
+ind_col &lt;- c(&quot;#003F5C&quot;, &quot;#45AE91&quot;,  &quot;#58209D&quot;, &quot;#8B3E9B&quot;, &quot;#FF6361&quot;, &quot;#BC4169&quot;, &quot;#FF2362&quot;)
+
+ind_col_norep &lt;- c(&quot;#003F5C&quot;, &quot;#45AE91&quot;,  &quot;#58209D&quot;, &quot;#8B3E9B&quot;, &quot;#FF6361&quot;, &quot;#BC4169&quot;)
+
+time_col &lt;- c(&quot;#238B45&quot;, &quot;#74C476&quot;, &quot;#C7E9C0&quot;)
+
+cond_col &lt;- c(&quot;#003F5C&quot;, &quot;#45AE91&quot;,  &quot;#58209D&quot;, &quot;#8B3E9B&quot;, &quot;#FF6361&quot;, &quot;#BC4169&quot;)</code></pre>
+<pre class="r"><code>#this dataframe contains my alignment percentages from featureCounts
+##already filtered to only include DOX + DMSO samples
+fC_DOXCounts &lt;- readRDS(&quot;data/fC_DOXCounts.RDS&quot;)
+
+#Now I want to plot these values out
+
+####Reads by Sample####
+reads_by_sample &lt;- c(&quot;DOX&quot; = &quot;#499FBD&quot;, &quot;DMSO&quot; = &quot;#BBBBBC&quot;)
+fC_DOXCounts %&gt;% 
+  ggplot(., aes (x = Conditions, y = Total_Align, fill = Treatment, group_by = Line))+
+  geom_col()+
+ geom_hline(aes(yintercept=20000000))+
+ scale_fill_manual(values=reads_by_sample)+
+  ggtitle(expression(&quot;Total number of reads by sample&quot;))+
+  xlab(&quot;&quot;)+
+  ylab(expression(&quot;RNA-sequencing reads&quot;))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = &quot;black&quot;),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = &quot;black&quot;, angle = 90, hjust = 1, vjust = 0.2),
+        #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
+        strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/QC%20Mapping%20Plots-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>####Read Counts by Treatment####
+fC_DOXCounts %&gt;% 
+  ggplot(., aes (x =Treatment, y= Total_Align, fill = Treatment))+
+  geom_boxplot()+
+ scale_fill_manual(values=reads_by_sample)+
+  ggtitle(expression(&quot;Total number of reads by treatment&quot;))+
+  xlab(&quot;&quot;)+
+  ylab(expression(&quot;RNA-sequencing reads&quot;))+
+  theme_bw()+
+  
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = &quot;black&quot;),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = &quot;black&quot;, angle = 90, hjust = 1, vjust = 0.2),
+        #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
+        strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/QC%20Mapping%20Plots-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>####Total Reads Per Individual####
+fC_DOXCounts %&gt;% 
+  ggplot(., aes (x =as.factor(Line), y=Total_Align))+
+  geom_boxplot(aes(fill=as.factor(Line)))+
+ scale_fill_brewer(palette = &quot;Dark2&quot;, name = &quot;Individual&quot;)+
+  ggtitle(expression(&quot;Total number of reads by individual&quot;))+
+  xlab(&quot;&quot;)+
+  ylab(expression(&quot;RNA-sequencing reads&quot;))+
+  theme_bw()+
+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = &quot;black&quot;),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 1),
+        #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
+        strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/QC%20Mapping%20Plots-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>####Total Mapped Reads Per Drug####
+
+reads_by_sample &lt;- c(&quot;DOX&quot; = &quot;#499FBD&quot;, &quot;DMSO&quot; = &quot;#BBBBBC&quot;)
+fC_DOXCounts %&gt;% 
+  ggplot(., aes (x = Conditions, y = Assigned_Align, fill = Treatment, group_by = Line))+
+  geom_col()+
+ geom_hline(aes(yintercept=20000000))+
+ scale_fill_manual(values=reads_by_sample)+
+  ggtitle(expression(&quot;Total number of mapped reads by sample&quot;))+
+  xlab(&quot;&quot;)+
+  ylab(expression(&quot;RNA-sequencing reads&quot;))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = &quot;black&quot;),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = &quot;black&quot;, angle = 90, hjust = 1, vjust = 0.2),
+        #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
+        strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/QC%20Mapping%20Plots-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>####Read Counts by Treatment####
+fC_DOXCounts %&gt;% 
+  ggplot(., aes (x =Treatment, y= Assigned_Align, fill = Treatment))+
+  geom_boxplot()+
+ scale_fill_manual(values=reads_by_sample)+
+  ggtitle(expression(&quot;Total number of mapped reads by treatment&quot;))+
+  xlab(&quot;&quot;)+
+  ylab(expression(&quot;RNA-sequencing reads&quot;))+
+  theme_bw()+
+  
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = &quot;black&quot;),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = &quot;black&quot;, angle = 90, hjust = 1, vjust = 0.2),
+        #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
+        strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/QC%20Mapping%20Plots-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>####Total Reads Per Individual####
+fC_DOXCounts %&gt;% 
+  ggplot(., aes (x =as.factor(Line), y=Assigned_Align))+
+  geom_boxplot(aes(fill=as.factor(Line)))+
+ scale_fill_brewer(palette = &quot;Dark2&quot;, name = &quot;Individual&quot;)+
+  ggtitle(expression(&quot;Total number of mapped reads by individual&quot;))+
+  xlab(&quot;&quot;)+
+  ylab(expression(&quot;RNA-sequencing reads&quot;))+
+  theme_bw()+
+
+  theme(plot.title = element_text(size = rel(2), hjust = 0.5),
+        axis.title = element_text(size = 15, color = &quot;black&quot;),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.text.y = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 0.8, vjust = 0.5),
+        axis.text.x = element_text(size =10, color = &quot;black&quot;, angle = 0, hjust = 1),
+        #strip.text.x = element_text(size = 15, color = &quot;black&quot;, face = &quot;bold&quot;),
+        strip.text.y = element_text(color = &quot;white&quot;))</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/QC%20Mapping%20Plots-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Now, I want to filter my dataframe Before I can filter by rowMeans, I
+must convert to log2cpm</p>
+<pre class="r"><code>#transform counts to cpm as a first step
+counts_cpm_unfilt &lt;- cpm(counts_raw_matrix, log = TRUE)
+dim(counts_cpm_unfilt)</code></pre>
+<pre><code>[1] 28395    42</code></pre>
+<pre class="r"><code>#I should have 28395 genes here since this is unfiltered
+
+hist(counts_cpm_unfilt,  
+     main = &quot;Histogram of Unfiltered Counts&quot;, 
+     xlab = expression(&quot;Log&quot;[2]*&quot; counts-per-million&quot;), 
+     col = 4)</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/Dataframe%20Filtering-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>###filter my data by rowMeans &gt; 0 to exclude lowly expressed genes
+
+filcpm_matrix &lt;- subset(counts_cpm_unfilt, (rowMeans(counts_cpm_unfilt) &gt; 0))
+dim(filcpm_matrix)</code></pre>
+<pre><code>[1] 14319    42</code></pre>
+<pre class="r"><code>#I should have 14319 genes here
+
+#now let&#39;s make a histogram of this to check the difference
+hist(filcpm_matrix,  
+     main = &quot;Histogram of Filtered Counts by rowMeans &gt; 0&quot;, 
+     xlab = expression(&quot;Log&quot;[2]*&quot; counts-per-million&quot;), 
+     col = 2)</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/Dataframe%20Filtering-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#change the column names to match my samples - make sure that they are in the right order
+#Individual 1 = 84-1 (M)
+#Individual 2 = 87-1 (F)
+#Individual 3 = 78-1 (F)
+#Individual 4 = 75-1 (F)
+#Individual 5 = 17-3 (M)
+#Individual 6 = 90-1 (M)
+#Individual 6REP = 90-1REP (M)
+
+#Treatment/time should follow this order:
+#DOX24tx
+#DMSO24tx
+#DOX24rec
+#DMSO24rec
+#DOX144rec
+#DMSO144rec
+
+colnames(filcpm_matrix) &lt;- c(&quot;DOX_24T_Ind1&quot;,
+                                &quot;DMSO_24T_Ind1&quot;,
+                                &quot;DOX_24R_Ind1&quot;,
+                                &quot;DMSO_24R_Ind1&quot;,
+                                &quot;DOX_144R_Ind1&quot;,
+                                &quot;DMSO_144R_Ind1&quot;,
+                                &quot;DOX_24T_Ind2&quot;,
+                                &quot;DMSO_24T_Ind2&quot;,
+                                &quot;DOX_24R_Ind2&quot;,
+                                &quot;DMSO_24R_Ind2&quot;,
+                                &quot;DOX_144R_Ind2&quot;,
+                                &quot;DMSO_144R_Ind2&quot;,
+                                &quot;DOX_24T_Ind3&quot;,
+                                &quot;DMSO_24T_Ind3&quot;,
+                                &quot;DOX_24R_Ind3&quot;,
+                                &quot;DMSO_24R_Ind3&quot;,
+                                &quot;DOX_144R_Ind3&quot;,
+                                &quot;DMSO_144R_Ind3&quot;,
+                                &quot;DOX_24T_Ind4&quot;,
+                                &quot;DMSO_24T_Ind4&quot;,
+                                &quot;DOX_24R_Ind4&quot;,
+                                &quot;DMSO_24R_Ind4&quot;,
+                                &quot;DOX_144R_Ind4&quot;,
+                                &quot;DMSO_144R_Ind4&quot;,
+                                &quot;DOX_24T_Ind5&quot;,
+                                &quot;DMSO_24T_Ind5&quot;,
+                                &quot;DOX_24R_Ind5&quot;,
+                                &quot;DMSO_24R_Ind5&quot;,
+                                &quot;DOX_144R_Ind5&quot;,
+                                &quot;DMSO_144R_Ind5&quot;,
+                                &quot;DOX_24T_Ind6&quot;,
+                                &quot;DMSO_24T_Ind6&quot;,
+                                &quot;DOX_24R_Ind6&quot;,
+                                &quot;DMSO_24R_Ind6&quot;,
+                                &quot;DOX_144R_Ind6&quot;,
+                                &quot;DMSO_144R_Ind6&quot;,
+                                &quot;DOX_24T_Ind6REP&quot;,
+                                &quot;DMSO_24T_Ind6REP&quot;,
+                                &quot;DOX_24R_Ind6REP&quot;,
+                                &quot;DMSO_24R_Ind6REP&quot;,
+                                &quot;DOX_144R_Ind6REP&quot;,
+                                &quot;DMSO_144R_Ind6REP&quot;)
+
+#export this as a csv
+#write.csv(filcpm_matrix, &quot;data/new/filcpm_final_matrix.csv&quot;)</code></pre>
+<pre class="r"><code>#make boxplots of all counts vs log2cpm filtered counts
+
+#set the margins so the x axis isn&#39;t cut off
+##I don&#39;t mind if this one is partially cut off since all you need is the library number and not the whole name
+par(mar = c(8,4,2,2))
+#boxplot of unfiltered cpm matrix
+boxplot(counts_cpm_unfilt, 
+        main = &quot;Boxplots of Unfiltered log2cpm&quot;, 
+        names = colnames(counts_cpm_unfilt), 
+        adj=1, las = 2, cex.axis = 0.7)</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/QC%20Filtering%20Boxplots-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#set the margins so the x axis isn&#39;t cut off
+par(mar = c(8,4,2,2))
+#boxplot of filtered cpm matrix
+boxplot(filcpm_matrix, 
+        main = &quot;Boxplots of Filtered log2cpm (rowMeans &gt; 0)&quot;, 
+        names = colnames(filcpm_matrix), 
+        adj=1, las = 2, cex.axis = 0.7)</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/QC%20Filtering%20Boxplots-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>After making my final matrix, I pulled the gene symbols from the
+entrez IDs I had as my rownames I ran this initially and then moved the
+column into my final matrix My final matrix is called
+filcpm_final_matrix.csv saved under data</p>
+<pre class="r"><code>##I did this earlier so don&#39;t run again, I put the list into the filcpm_final_matrix.csv
+# # ----------------- Load Required Libraries -----------------
+# library(dplyr)
+# library(readr)
+# library(org.Hs.eg.db)
+# library(AnnotationDbi)
+# # ----------------- Load Data -----------------
+# sample_data &lt;- read_csv(&quot;data/filcpm_final_matrix.csv&quot;, show_col_types = FALSE)
+# # ----------------- Ensure Entrez_ID is Present and in Character Format -----------------
+# # Check column names
+# print(colnames(sample_data))
+# # Rename if needed (adjust if the column name is not exactly &#39;Entrez_ID&#39;)
+# # sample_data &lt;- sample_data %&gt;% rename(Entrez_ID = `actual_column_name`)
+# # Convert Entrez_ID to character
+# sample_data &lt;- sample_data %&gt;%
+#   mutate(Entrez_ID = as.character(Entrez_ID))
+# # ----------------- Map Entrez_ID to Gene Symbol -----------------
+# gene_symbols &lt;- AnnotationDbi::select(
+#   org.Hs.eg.db,
+#   keys = sample_data$Entrez_ID,
+#   columns = c(&quot;SYMBOL&quot;),
+#   keytype = &quot;ENTREZID&quot;
+# )
+# # ----------------- Join Back to Main Data -----------------
+# sample_annotated &lt;- left_join(sample_data, gene_symbols, by = c(&quot;Entrez_ID&quot; = &quot;ENTREZID&quot;))
+# # ----------------- Save Annotated Output -----------------
+# #write_csv(sample_annotated, &quot;data/Sample_annotated.csv&quot;)
+
+#Since I ran this before, Sample_annotated.csv columns of EntrezID and Symbol have been copied into my final matrix - so disregard this file except for record-keeping</code></pre>
+<p>Now that I have my final matrix, I would like to check some key genes
+I want to make sure that these genes are responding as we expect We have
+triple checked this dataset to ensure that columns are in order</p>
+<pre class="r"><code>#Load in my count matrix
+boxplot1 &lt;- read.csv(&quot;data/new/filcpm_final_matrix.csv&quot;) %&gt;% 
+  as.data.frame()
+
+#save boxplot1 as an object filcpm_matrix_genes
+#saveRDS(boxplot1, &quot;data/new/filcpm_matrix_genes.RDS&quot;)
+
+#Define gene list(s)
+initial_test_genes &lt;- c(&quot;CDKN1A&quot;, &quot;MDM2&quot;, &quot;BAX&quot;, &quot;RARG&quot;, &quot;TP53&quot;)  
+#Add more gene symbols as needed or add more categories
+
+#Now put in the function I want to use to generate boxplots of genes
+process_gene_data &lt;- function(gene) {
+  gene_data &lt;- boxplot1 %&gt;% filter(SYMBOL == gene)
+  long_data &lt;- gene_data %&gt;%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = &quot;Sample&quot;, values_to = &quot;log2CPM&quot;) %&gt;%
+    mutate(
+      Drug = case_when(
+        grepl(&quot;DOX&quot;, Sample) ~ &quot;DOX&quot;,
+        grepl(&quot;DMSO&quot;, Sample) ~ &quot;DMSO&quot;,
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl(&quot;_24T_&quot;, Sample) ~ &quot;24T&quot;,
+        grepl(&quot;_24R_&quot;, Sample) ~ &quot;24R&quot;,
+        grepl(&quot;_144R_&quot;, Sample) ~ &quot;144R&quot;,
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl(&quot;Ind1$&quot;, Sample) ~ &quot;1&quot;,
+        grepl(&quot;Ind2$&quot;, Sample) ~ &quot;2&quot;,
+        grepl(&quot;Ind3$&quot;, Sample) ~ &quot;3&quot;,
+        grepl(&quot;Ind4$&quot;, Sample) ~ &quot;4&quot;,
+        grepl(&quot;Ind5$&quot;, Sample) ~ &quot;5&quot;,
+        grepl(&quot;Ind6$&quot;, Sample) ~ &quot;6&quot;,
+        grepl(&quot;Ind6REP$&quot;, Sample) ~ &quot;6R&quot;,
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = &quot;_&quot;)
+    )
+  long_data$Condition &lt;- factor(
+    long_data$Condition,
+    levels = c(
+      &quot;DOX_24T&quot;, 
+      &quot;DMSO_24T&quot;, 
+      &quot;DOX_24R&quot;, 
+      &quot;DMSO_24R&quot;, 
+      &quot;DOX_144R&quot;, 
+      &quot;DMSO_144R&quot;
+    )
+  )
+  return(long_data)
+}
+
+#this function is saved under process_gene_data so I will save as an R object
+
+#saveRDS(process_gene_data, &quot;data/new/process_gene_data_funct.RDS&quot;)
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in initial_test_genes) {
+  gene_data &lt;- process_gene_data(gene)
+  p &lt;- ggplot(gene_data, aes(x = Condition, y = log2CPM, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c(&quot;DOX&quot; = &quot;#499FBD&quot;, &quot;DMSO&quot; = &quot;#BBBBBC&quot;)) +
+    ggtitle(paste(&quot;Log2CPM Expression of&quot;, gene)) +
+    labs(x = &quot;Treatment&quot;, y = &quot;log2CPM&quot;) +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = &quot;black&quot;),
+      axis.text.x = element_text(size = 10, color = &quot;black&quot;, angle = 90, hjust = 1)
+    )
+  print(p)
+}</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/Check%20Response%20Genes%20log2cpm-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/DXR_Project_Analysis.Rmd/Check%20Response%20Genes%20log2cpm-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/DXR_Project_Analysis.Rmd/Check%20Response%20Genes%20log2cpm-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/DXR_Project_Analysis.Rmd/Check%20Response%20Genes%20log2cpm-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/DXR_Project_Analysis.Rmd/Check%20Response%20Genes%20log2cpm-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Now I’ve confirmed with some boxplots that my genes are present and
+(mostly) behaving as they should - Sayan’s CDKN1A and MDM2 are initially
+high at 24hr in DOX 0.5 - My CDKN1A and MDM2 are similar to DMSO at 24hr
+DOX 0.5 - These genes increase at DOX24R - These genes are also high at
+DOX144R but not as high as 24R However, TP53 and BAX are acting
+similarly across our data</p>
+<pre class="r"><code>#Now I want to check if my data is as expected on a PCA plot
+#perform PCA calculations
+prcomp_res_unfilt &lt;- prcomp(t(counts_cpm_unfilt %&gt;% as.matrix()), center =  TRUE)
+
+prcomp_res_filt &lt;- prcomp(t(filcpm_matrix %&gt;% as.matrix()), center =  TRUE)
+
+#read in my metadata annotations
+Metadata &lt;- read.csv(&quot;data/new/Metadata.csv&quot;)
+
+#add in labels for individual numbers
+ind_num &lt;- c(&quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, 
+             &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, &quot;2&quot;, 
+             &quot;3&quot;, &quot;3&quot;, &quot;3&quot;, &quot;3&quot;, &quot;3&quot;, &quot;3&quot;, 
+             &quot;4&quot;, &quot;4&quot;, &quot;4&quot;, &quot;4&quot;, &quot;4&quot;, &quot;4&quot;, 
+             &quot;5&quot;, &quot;5&quot;, &quot;5&quot;, &quot;5&quot;, &quot;5&quot;, &quot;5&quot;, 
+             &quot;6&quot;, &quot;6&quot;, &quot;6&quot;, &quot;6&quot;, &quot;6&quot;, &quot;6&quot;, 
+             &quot;6R&quot;, &quot;6R&quot;, &quot;6R&quot;, &quot;6R&quot;, &quot;6R&quot;, &quot;6R&quot;)
+
+#now plot my PCA for unfiltered log2cpm
+####PC1/PC2####
+ggplot2::autoplot(prcomp_res_unfilt, data = Metadata, colour = &quot;Condition&quot;, shape = &quot;Time&quot;, size =4, x=1, y=2) +
+  ggrepel::geom_text_repel(label=ind_num) +
+  scale_color_manual(values=cond_col) +
+  ggtitle(expression(&quot;PCA of Unfiltered log&quot;[2]*&quot;cpm&quot;)) +
+  theme_bw()</code></pre>
+<pre><code>Warning: ggrepel: 8 unlabeled data points (too many overlaps). Consider
+increasing max.overlaps</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/PCA%20Analysis-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>####PC2/PC3####
+ggplot2::autoplot(prcomp_res_unfilt, data = Metadata, colour = &quot;Condition&quot;, shape = &quot;Time&quot;, size =4, x=2, y=3) +
+  ggrepel::geom_text_repel(label=ind_num) +
+  scale_color_manual(values=cond_col) +
+  ggtitle(expression(&quot;PCA of Unfiltered log&quot;[2]*&quot;cpm&quot;)) +
+  theme_bw()</code></pre>
+<pre><code>Warning: ggrepel: 6 unlabeled data points (too many overlaps). Consider
+increasing max.overlaps</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/PCA%20Analysis-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>####PC3/PC4####
+ggplot2::autoplot(prcomp_res_unfilt, data = Metadata, colour = &quot;Condition&quot;, shape = &quot;Time&quot;, size =4, x=3, y=4) +
+  ggrepel::geom_text_repel(label=ind_num) +
+  scale_color_manual(values=cond_col) +
+  ggtitle(expression(&quot;PCA of Unfiltered log&quot;[2]*&quot;cpm&quot;)) +
+  theme_bw()</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/PCA%20Analysis-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Now plot my PCA for filtered log2cpm
+####PC1/PC2####
+ggplot2::autoplot(prcomp_res_filt, data = Metadata, colour = &quot;Condition&quot;, shape = &quot;Time&quot;, size =4, x=1, y=2) +
+  ggrepel::geom_text_repel(label=ind_num) +
+  scale_color_manual(values=cond_col) +
+  ggtitle(expression(&quot;PCA of Filtered log&quot;[2]*&quot;cpm&quot;)) +
+  theme_bw()</code></pre>
+<pre><code>Warning: ggrepel: 7 unlabeled data points (too many overlaps). Consider
+increasing max.overlaps</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/PCA%20Analysis-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>####PC2/PC3####
+ggplot2::autoplot(prcomp_res_filt, data = Metadata, colour = &quot;Condition&quot;, shape = &quot;Time&quot;, size =4, x=2, y=3) +
+  ggrepel::geom_text_repel(label=ind_num) +
+  scale_color_manual(values=cond_col) +
+  ggtitle(expression(&quot;PCA of Filtered log&quot;[2]*&quot;cpm&quot;)) +
+  theme_bw()</code></pre>
+<pre><code>Warning: ggrepel: 3 unlabeled data points (too many overlaps). Consider
+increasing max.overlaps</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/PCA%20Analysis-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>####PC3/PC4####
+ggplot2::autoplot(prcomp_res_filt, data = Metadata, colour = &quot;Condition&quot;, shape = &quot;Time&quot;, size =4, x=3, y=4) +
+  ggrepel::geom_text_repel(label=ind_num) +
+  scale_color_manual(values=cond_col) +
+  ggtitle(expression(&quot;PCA of Filtered log&quot;[2]*&quot;cpm&quot;)) +
+  theme_bw()</code></pre>
+<pre><code>Warning: ggrepel: 1 unlabeled data points (too many overlaps). Consider
+increasing max.overlaps</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/PCA%20Analysis-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#check to make sure that the column names are correct
+lcpm_2 &lt;- filcpm_matrix
+colnames(lcpm_2) &lt;- Metadata$Final_sample_name
+
+#compute the correlation matrices, one pearson and one spearman
+cor_matrix_pearson &lt;- cor(lcpm_2, 
+                          y = NULL, 
+                          use = &quot;everything&quot;,  
+                          method = &quot;pearson&quot;)
+cor_matrix_spearman &lt;- cor(lcpm_2,
+                           y = NULL,
+                           use = &quot;everything&quot;,
+                           method = &quot;spearman&quot;)
+
+# Extract metadata columns
+Individual &lt;- as.character(Metadata$Ind)
+Time &lt;- as.character(Metadata$Time)
+Treatment &lt;- as.character(Metadata$Drug)
+
+# Define color palettes for annotations
+annot_col_cor = list(drugs = c(&quot;DOX&quot; = &quot;#499FBD&quot;, 
+                               &quot;DMSO&quot; = &quot;#BBBBBC&quot;),
+                     individuals = c(&quot;1&quot; = &quot;#003F5C&quot;, 
+                                     &quot;2&quot; = &quot;#45AE91&quot;, 
+                                     &quot;3&quot; = &quot;#58209D&quot;, 
+                                     &quot;4&quot; = &quot;#8B3E9B&quot;, 
+                                     &quot;5&quot; = &quot;#FF6361&quot;, 
+                                     &quot;6&quot; = &quot;#BC4169&quot;, 
+                                     &quot;6R&quot; = &quot;#FF2362&quot;),
+                     timepoints = c(&quot;24T&quot; = &quot;#238B45&quot;,
+                                    &quot;24R&quot; = &quot;#74C476&quot;, 
+                                    &quot;144R&quot; = &quot;#C7E9C0&quot;))
+
+drug_colors &lt;- c(&quot;DOX&quot; = &quot;#499FBD&quot;, 
+                 &quot;DMSO&quot; = &quot;#BBBBBC&quot;)
+ind_colors &lt;- c(&quot;1&quot; = &quot;red&quot;,
+                &quot;2&quot; = &quot;orange&quot;,
+                &quot;3&quot; = &quot;yellow&quot;,
+                &quot;4&quot; = &quot;green&quot;,
+                &quot;5&quot; = &quot;blue&quot;,
+                &quot;6&quot; = &quot;violet&quot;,
+                &quot;6R&quot; = &quot;purple&quot;)
+time_colors &lt;- c(&quot;24T&quot; = &quot;#238B45&quot;,
+                 &quot;24R&quot; = &quot;#74C476&quot;,
+                 &quot;144R&quot; = &quot;#C7E9C0&quot;)
+
+# Create annotations
+top_annotation &lt;- HeatmapAnnotation(
+  Individual = Individual, 
+  Time = Time,
+  Treatment = Treatment,
+  col = list(
+    Individual = ind_colors, 
+    Time = time_colors,
+    Treatment = drug_colors
+  )
+)
+
+####ANNOTATED HEATMAPS####
+# pheatmap(cor_matrix_pearson, border_color = &quot;black&quot;, legend = TRUE, angle_col = 90, display_numbers = FALSE, number_color = &quot;black&quot;, fontsize = 10, fontsize_number = 5, annotation_col = top_annotation, annotation_colors = annot_col)
+
+####Pearson Heatmap####
+heatmap_pearson &lt;- Heatmap(cor_matrix_pearson,
+                           name = &quot;Pearson&quot;,
+                           top_annotation = top_annotation,
+                           show_row_names = TRUE,
+                           show_column_names = TRUE,
+                           cluster_rows = TRUE,
+                           cluster_columns = TRUE,
+                           border = TRUE)
+
+# Draw the heatmap
+draw(heatmap_pearson)</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/Correlation%20Heatmaps-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>####Spearman Heatmap####
+heatmap_spearman &lt;- Heatmap(cor_matrix_spearman,
+                           name = &quot;Spearman&quot;,
+                           top_annotation = top_annotation,
+                           show_row_names = TRUE,
+                           show_column_names = TRUE,
+                           cluster_rows = TRUE,
+                           cluster_columns = TRUE,
+                           border = TRUE)
+
+# Draw the heatmap
+draw(heatmap_spearman)</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/Correlation%20Heatmaps-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Now I want to make a filtered gene list (my rownames)
+##I will use this to filter my counts for limma + Cormotif
+
+filt_gene_list &lt;- rownames(filcpm_matrix)
+#save this filtered gene list as I&#39;ll use it to filter my counts
+#saveRDS(filt_gene_list, &quot;data/new/filt_gene_list.RDS&quot;)</code></pre>
+<pre class="r"><code>counts_raw_matrix &lt;- readRDS(&quot;data/new/counts_raw_matrix.RDS&quot;)
+#change column names to match samples for my raw counts matrix
+colnames(counts_raw_matrix) &lt;- c(&quot;DOX_24T_Ind1&quot;,
+                                &quot;DMSO_24T_Ind1&quot;,
+                                &quot;DOX_24R_Ind1&quot;,
+                                &quot;DMSO_24R_Ind1&quot;,
+                                &quot;DOX_144R_Ind1&quot;,
+                                &quot;DMSO_144R_Ind1&quot;,
+                                &quot;DOX_24T_Ind2&quot;,
+                                &quot;DMSO_24T_Ind2&quot;,
+                                &quot;DOX_24R_Ind2&quot;,
+                                &quot;DMSO_24R_Ind2&quot;,
+                                &quot;DOX_144R_Ind2&quot;,
+                                &quot;DMSO_144R_Ind2&quot;,
+                                &quot;DOX_24T_Ind3&quot;,
+                                &quot;DMSO_24T_Ind3&quot;,
+                                &quot;DOX_24R_Ind3&quot;,
+                                &quot;DMSO_24R_Ind3&quot;,
+                                &quot;DOX_144R_Ind3&quot;,
+                                &quot;DMSO_144R_Ind3&quot;,
+                                &quot;DOX_24T_Ind4&quot;,
+                                &quot;DMSO_24T_Ind4&quot;,
+                                &quot;DOX_24R_Ind4&quot;,
+                                &quot;DMSO_24R_Ind4&quot;,
+                                &quot;DOX_144R_Ind4&quot;,
+                                &quot;DMSO_144R_Ind4&quot;,
+                                &quot;DOX_24T_Ind5&quot;,
+                                &quot;DMSO_24T_Ind5&quot;,
+                                &quot;DOX_24R_Ind5&quot;,
+                                &quot;DMSO_24R_Ind5&quot;,
+                                &quot;DOX_144R_Ind5&quot;,
+                                &quot;DMSO_144R_Ind5&quot;,
+                                &quot;DOX_24T_Ind6&quot;,
+                                &quot;DMSO_24T_Ind6&quot;,
+                                &quot;DOX_24R_Ind6&quot;,
+                                &quot;DMSO_24R_Ind6&quot;,
+                                &quot;DOX_144R_Ind6&quot;,
+                                &quot;DMSO_144R_Ind6&quot;,
+                                &quot;DOX_24T_Ind6REP&quot;,
+                                &quot;DMSO_24T_Ind6REP&quot;,
+                                &quot;DOX_24R_Ind6REP&quot;,
+                                &quot;DMSO_24R_Ind6REP&quot;,
+                                &quot;DOX_144R_Ind6REP&quot;,
+                                &quot;DMSO_144R_Ind6REP&quot;)
+
+
+#subset my count matrix based on filtered CPM matrix
+x &lt;- counts_raw_matrix[row.names(filcpm_matrix),]
+dim(x)</code></pre>
+<pre><code>[1] 14319    42</code></pre>
+<pre class="r"><code>#14319 genes as expected!
+#this is still in counts form
+
+#remove my replicate individual at this time
+x_norep &lt;- x[,1:36]
+
+#modify my metadata to match
+Metadata_2 &lt;- Metadata[1:36,]
+rownames(Metadata_2) &lt;- Metadata_2$Sample_bam
+colnames(x_norep) &lt;- Metadata_2$Sample_ID
+rownames(Metadata_2) &lt;- Metadata_2$Sample_ID
+
+Metadata_2$Condition &lt;- make.names(Metadata_2$Condition)
+Metadata_2$Ind &lt;- as.character(Metadata_2$Ind)</code></pre>
+<pre class="r"><code>#create DGEList object
+dge &lt;- DGEList(counts = x_norep)
+dge$samples$group &lt;- factor(Metadata_2$Condition)
+dge &lt;- calcNormFactors(dge, method = &quot;TMM&quot;)
+
+#saveRDS(dge, &quot;data/new/dge_matrix.RDS&quot;)
+
+#check normalization factors from TMM normalization of LIBRARIES
+dge$samples</code></pre>
+<pre><code>                     group lib.size norm.factors
+84-1_DOX_24        DOX_24T 23393931    0.9745263
+84-1_DMSO_24      DMSO_24T 22853195    0.9565797
+84-1_DOX_24+24     DOX_24R 23846995    1.1659432
+84-1_DMSO_24+24   DMSO_24R 21299355    0.9649641
+84-1_DOX_24+144   DOX_144R 18222568    0.9913625
+84-1_DMSO_24+144 DMSO_144R 28115884    0.9653464
+87-1_DOX_24        DOX_24T 19935097    1.0526605
+87-1_DMSO_24      DMSO_24T 21302879    0.9773889
+87-1_DOX_24+24     DOX_24R 25636959    1.0751043
+87-1_DMSO_24+24   DMSO_24R 26319662    0.9940323
+87-1_DOX_24+144   DOX_144R 23463426    0.9003102
+87-1_DMSO_24+144 DMSO_144R 25840938    0.9888449
+78-1_DOX_24        DOX_24T 23085807    0.7676077
+78-1_DMSO_24      DMSO_24T 25610495    1.0077383
+78-1_DOX_24+24     DOX_24R 18083930    1.1682704
+78-1_DMSO_24+24   DMSO_24R 24331177    0.9906872
+78-1_DOX_24+144   DOX_144R 19754391    0.9941834
+78-1_DMSO_24+144 DMSO_144R 22641509    1.0010734
+75-1_DOX_24        DOX_24T 20583626    1.0676786
+75-1_DMSO_24      DMSO_24T 28166198    1.0031906
+75-1_DOX_24+24     DOX_24R 25831427    1.1530208
+75-1_DMSO_24+24   DMSO_24R 26081158    1.0058953
+75-1_DOX_24+144   DOX_144R 24659898    0.9261599
+75-1_DMSO_24+144 DMSO_144R 25412931    0.9703454
+17-3_DOX_24        DOX_24T 22518848    0.9766893
+17-3_DMSO_24      DMSO_24T 24589534    0.9612345
+17-3_DOX_24+24     DOX_24R 24797547    1.1703079
+17-3_DMSO_24+24   DMSO_24R 25977536    0.9509690
+17-3_DOX_24+144   DOX_144R 27447106    0.9422729
+17-3_DMSO_24+144 DMSO_144R 24893583    0.9356377
+90-1_DOX_24        DOX_24T 25187428    1.0311957
+90-1_DMSO_24      DMSO_24T 25630519    1.0283437
+90-1_DOX_24+24     DOX_24R 26138399    1.1183471
+90-1_DMSO_24+24   DMSO_24R 24430396    0.9988688
+90-1_DOX_24+144   DOX_144R 23323463    0.9496884
+90-1_DMSO_24+144 DMSO_144R 25424152    0.9872926</code></pre>
+<pre class="r"><code>#create my design matrix for DE
+design &lt;- model.matrix(~ 0 + Metadata_2$Condition)
+colnames(design) &lt;- gsub(&quot;Metadata_2\\$Condition&quot;, &quot;&quot;, colnames(design))
+
+#take care that the matrix automatically sorts cols alphabetically
+##currently DMSO144R, DMSO24R, DMSO24T, DOX144R, DOX24R, DOX24T
+
+#run duplicate correlation for individual effect
+corfit &lt;- duplicateCorrelation(object = dge$counts, design = design, block = Metadata_2$Ind)
+
+#voom transformation and plot
+v &lt;- voom(dge, design, block = Metadata_2$Ind, correlation = corfit$consensus.correlation, plot = TRUE)</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/Differential%20Expression%20Analysis-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#fit my linear model
+fit &lt;- lmFit(v, design, block = Metadata_2$Ind, correlation = corfit$consensus.correlation)
+
+#make my contrast matrix to compare across tx and veh
+contrast_matrix &lt;- makeContrasts(
+  V.D24T = DOX_24T - DMSO_24T,
+  V.D24R = DOX_24R - DMSO_24R, 
+  V.D144R = DOX_144R - DMSO_144R,
+  levels = design
+)
+
+#apply these contrasts to compare DOX to DMSO VEH
+fit2 &lt;- contrasts.fit(fit, contrast_matrix)
+fit2 &lt;- eBayes(fit2)
+
+#plot the mean-variance trend
+plotSA(fit2, main = &quot;Final model: Mean-Variance trend&quot;)</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/Differential%20Expression%20Analysis-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#look at the summary of your results
+##this tells you the number of DEGs in each condition
+results_summary &lt;- decideTests(fit2, adjust.method = &quot;BH&quot;, p.value = 0.05)
+summary(results_summary)</code></pre>
+<pre><code>       V.D24T V.D24R V.D144R
+Down     4723   3593     359
+NotSig   5076   7151   13810
+Up       4520   3575     150</code></pre>
+<pre class="r"><code>#        V.D24 V.D24r V.D144r
+# Down    4723   3593     359
+# NotSig  5076   7151   13810
+# Up      4520   3575     150</code></pre>
+<pre class="r"><code># Generate Top Table for Specific Comparisons
+
+Toptable_V.D24T &lt;- topTable(fit = fit2, coef = &quot;V.D24T&quot;, number = nrow(x), adjust.method = &quot;BH&quot;, p.value = 1, sort.by = &quot;none&quot;)
+#write.csv(Toptable_V.D24T, &quot;data/new/DEGs/Toptable_V.D24T.csv&quot;)
+
+Toptable_V.D24R &lt;- topTable(fit = fit2, coef = &quot;V.D24R&quot;, number = nrow(x), adjust.method = &quot;BH&quot;, p.value = 1, sort.by = &quot;none&quot;)
+#write.csv(Toptable_V.D24R, &quot;data/new/DEGs/Toptable_V.D24R.csv&quot;)
+
+Toptable_V.D144R &lt;- topTable(fit = fit2, coef = &quot;V.D144R&quot;, number = nrow(x), adjust.method = &quot;BH&quot;, p.value = 1, sort.by = &quot;none&quot;)
+#write.csv(Toptable_V.D144R, &quot;data/new/DEGs/Toptable_V.D144R.csv&quot;)
+
+#save all of these toptables as R objects
+# saveRDS(list(
+#   V.D24T = Toptable_V.D24T,
+#   V.D24R = Toptable_V.D24R,
+#   V.D144R = Toptable_V.D144R
+# ), file = &quot;data/new/Toptable_list.RDS&quot;)
+
+Toptable_list &lt;- readRDS(&quot;data/new/Toptable_list.RDS&quot;)</code></pre>
+<pre class="r"><code>#make a function to generate volcano plots + add gene numbers
+generate_volcano_plot &lt;- function(toptable, title) {
+  
+  #make significance labels
+  toptable$Significance &lt;- &quot;Not Significant&quot;
+  toptable$Significance[toptable$logFC &gt; 0 &amp; toptable$adj.P.Val &lt; 0.05] &lt;- &quot;Upregulated&quot;
+  toptable$Significance[toptable$logFC &lt; 0 &amp; toptable$adj.P.Val &lt; 0.05] &lt;- &quot;Downregulated&quot;
+  
+  #add number of genes for each significance label
+  upgenes &lt;- toptable %&gt;% filter(Significance == &quot;Upregulated&quot;) %&gt;% nrow()
+  nsgenes &lt;- toptable %&gt;% filter(Significance == &quot;Not Significant&quot;) %&gt;% nrow()
+  downgenes &lt;- toptable %&gt;% filter(Significance == &quot;Downregulated&quot;) %&gt;% nrow()
+
+  #make legend labels for no of genes
+  legend_lab &lt;- c(
+    str_c(&quot;Upregulated: &quot;, upgenes),
+    str_c(&quot;Not Significant: &quot;, nsgenes),
+    str_c(&quot;Downregulated: &quot;, downgenes)
+  )
+  
+  #specify the colors for the legend
+  legend_col &lt;- c(
+    str_c(&quot;Upregulated: &quot; = &quot;blue&quot;),
+    str_c(&quot;Not Significant: &quot; = &quot;gray&quot;),
+    str_c(&quot;Downregulated: &quot; = &quot;red&quot;)
+  )
+
+  #generate volcano plot w/ legend
+  ggplot(toptable, aes(x = logFC, 
+                       y = -log10(P.Value), 
+                       color = Significance)) +
+    geom_point(alpha = 0.4, size = 2) + 
+    scale_color_manual(values = c(&quot;Upregulated&quot; = &quot;blue&quot;,
+                                  &quot;Not Significant&quot; = &quot;gray&quot;,
+                                  &quot;Downregulated&quot; = &quot;red&quot;), 
+                       labels = legend_lab) +
+    xlim(-10, 10) +
+    labs(title = title, 
+         x = expression(x = &quot;log&quot;[2]*&quot;FC&quot;), 
+         y = expression(y = &quot;-log&quot;[10]*&quot;P-value&quot;)) +
+    theme_bw()+
+    guides(color = guide_legend(override.aes = list(color = legend_col)))+
+    theme(legend.position = &quot;right&quot;, 
+          plot.title = element_text(size = rel(1.5), hjust = 0.5),
+          axis.title = element_text(size = rel(1.25)))
+}
+
+#generate volcano plots across each comparison
+volcano_plots &lt;- list(
+  &quot;V.D24T&quot; = generate_volcano_plot(Toptable_V.D24T, &quot;Volcano Plot DOX 24hr (adj P-val&lt;0.05)&quot;),
+  &quot;V.D24R&quot; = generate_volcano_plot(Toptable_V.D24R, &quot;Volcano Plot DOX 24hr Recovery (adj P-val&lt;0.05)&quot;),
+  &quot;V.D144R&quot; = generate_volcano_plot(Toptable_V.D144R, &quot;Volcano Plot DOX 144hr Recovery (adj P-val&lt;0.05)&quot;)
+)
+
+# Display each volcano plot
+for (plot_name in names(volcano_plots)) {
+  print(volcano_plots[[plot_name]])
+}</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/Volcano%20Plots%20of%20DEGs-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/DXR_Project_Analysis.Rmd/Volcano%20Plots%20of%20DEGs-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/DXR_Project_Analysis.Rmd/Volcano%20Plots%20of%20DEGs-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#DDR Gene Expression Heatmap — DOX Over Recovery Time (68 genes, with categories)
+
+# Load libraries
+# library(circlize)
+# library(grid)
+# library(reshape2)
+
+# Load DEG files
+load_deg &lt;- function(path) read.csv(path)
+
+DOX_24T &lt;- load_deg(&quot;data/new/DEGs/Toptable_V.D24T.csv&quot;)
+DOX_24R &lt;- load_deg(&quot;data/new/DEGs/Toptable_V.D24R.csv&quot;)
+DOX_144R &lt;- load_deg(&quot;data/new/DEGs/Toptable_V.D144R.csv&quot;)
+
+# Final Entrez IDs and categories (68 genes)
+entrez_category &lt;- tribble(
+  ~ENTREZID, ~Category,
+  317, &quot;Apoptosis&quot;, 355, &quot;Apoptosis&quot;, 581, &quot;Apoptosis&quot;, 637, &quot;Apoptosis&quot;,
+  836, &quot;Apoptosis&quot;, 841, &quot;Apoptosis&quot;, 842, &quot;Apoptosis&quot;, 27113, &quot;Apoptosis&quot;,
+  5366, &quot;Apoptosis&quot;, 54205, &quot;Apoptosis&quot;, 55367, &quot;Apoptosis&quot;, 8795, &quot;Apoptosis&quot;,
+  1026, &quot;Cell Cycle / Checkpoint&quot;, 1027, &quot;Cell Cycle / Checkpoint&quot;, 595, &quot;Cell Cycle / Checkpoint&quot;,
+  894, &quot;Cell Cycle / Checkpoint&quot;, 896, &quot;Cell Cycle / Checkpoint&quot;, 898, &quot;Cell Cycle / Checkpoint&quot;,
+  9133, &quot;Cell Cycle / Checkpoint&quot;, 9134, &quot;Cell Cycle / Checkpoint&quot;, 891, &quot;Cell Cycle / Checkpoint&quot;,
+  983, &quot;Cell Cycle / Checkpoint&quot;, 1017, &quot;Cell Cycle / Checkpoint&quot;, 1019, &quot;Cell Cycle / Checkpoint&quot;,
+  1020, &quot;Cell Cycle / Checkpoint&quot;, 1021, &quot;Cell Cycle / Checkpoint&quot;, 993, &quot;Cell Cycle / Checkpoint&quot;,
+  995, &quot;Cell Cycle / Checkpoint&quot;, 1869, &quot;Cell Cycle / Checkpoint&quot;, 4609, &quot;Cell Cycle / Checkpoint&quot;,
+  5925, &quot;Cell Cycle / Checkpoint&quot;, 9874, &quot;Cell Cycle / Checkpoint&quot;, 11011, &quot;Cell Cycle / Checkpoint&quot;,
+  1385, &quot;Cell Cycle / Checkpoint&quot;,
+  472, &quot;Damage Sensors / Signal Transducers&quot;, 545, &quot;Damage Sensors / Signal Transducers&quot;,
+  5591, &quot;Damage Sensors / Signal Transducers&quot;, 5810, &quot;Damage Sensors / Signal Transducers&quot;,
+  5883, &quot;Damage Sensors / Signal Transducers&quot;, 5884, &quot;Damage Sensors / Signal Transducers&quot;,
+  6118, &quot;Damage Sensors / Signal Transducers&quot;, 4361, &quot;Damage Sensors / Signal Transducers&quot;,
+  10111, &quot;Damage Sensors / Signal Transducers&quot;, 4683, &quot;Damage Sensors / Signal Transducers&quot;,
+  84126, &quot;Damage Sensors / Signal Transducers&quot;, 3014, &quot;Damage Sensors / Signal Transducers&quot;,
+  672, &quot;DNA Repair&quot;, 2177, &quot;DNA Repair&quot;, 5888, &quot;DNA Repair&quot;, 5893, &quot;DNA Repair&quot;,
+  1647, &quot;DNA Repair&quot;, 4616, &quot;DNA Repair&quot;, 10912, &quot;DNA Repair&quot;, 1111, &quot;DNA Repair&quot;,
+  11200, &quot;DNA Repair&quot;, 1643, &quot;DNA Repair&quot;, 8243, &quot;DNA Repair&quot;, 5981, &quot;DNA Repair&quot;,
+  7157, &quot;p53 Regulators / Targets&quot;, 4193, &quot;p53 Regulators / Targets&quot;, 5371, &quot;p53 Regulators / Targets&quot;,
+  27244, &quot;p53 Regulators / Targets&quot;, 50484, &quot;p53 Regulators / Targets&quot;,
+  5916, &quot;DOX Cardiotoxicity&quot;, 7799, &quot;DOX Cardiotoxicity&quot;, 4292, &quot;DOX Cardiotoxicity&quot;,
+  207, &quot;Miscellaneous / Broad&quot;, 25, &quot;Miscellaneous / Broad&quot;
+)
+
+entrez_ids &lt;- entrez_category$ENTREZID
+
+# Extract relevant DEG values
+extract_data &lt;- function(df, name) {
+  df %&gt;%
+    filter(Entrez_ID %in% entrez_ids) %&gt;%
+    mutate(
+      Gene = mapIds(org.Hs.eg.db, as.character(Entrez_ID),
+                    column = &quot;SYMBOL&quot;, keytype = &quot;ENTREZID&quot;, multiVals = &quot;first&quot;),
+      Condition = name,
+      Signif = ifelse(adj.P.Val &lt; 0.05, &quot;*&quot;, &quot;&quot;)
+    )
+}
+
+# DEG list
+deg_list &lt;- list(&quot;DOX_24T&quot; = DOX_24T, 
+                 &quot;DOX_24R&quot; = DOX_24R, 
+                 &quot;DOX_144R&quot; = DOX_144R
+)
+
+# Combine all DEGs and annotate
+all_data &lt;- bind_rows(mapply(extract_data, deg_list, names(deg_list), SIMPLIFY = FALSE)) %&gt;%
+  left_join(entrez_category, by = c(&quot;Entrez_ID&quot; = &quot;ENTREZID&quot;))</code></pre>
+<pre><code>&#39;select()&#39; returned 1:1 mapping between keys and columns
+&#39;select()&#39; returned 1:1 mapping between keys and columns
+&#39;select()&#39; returned 1:1 mapping between keys and columns</code></pre>
+<pre class="r"><code># Create matrices
+logFC_mat1 &lt;- acast(all_data, Gene ~ Condition, value.var = &quot;logFC&quot;)
+signif_mat1 &lt;- acast(all_data, Gene ~ Condition, value.var = &quot;Signif&quot;)
+
+# Set desired order
+desired_order &lt;- c(&quot;DOX_24T&quot;,
+                   &quot;DOX_24R&quot;,
+                   &quot;DOX_144R&quot;)
+
+logFC_mat &lt;- logFC_mat1[, desired_order, drop = FALSE]
+signif_mat &lt;- signif_mat1[, desired_order, drop = FALSE]
+
+# Column annotation
+meta &lt;- str_split_fixed(colnames(logFC_mat), &quot;_&quot;, 2)
+col_annot &lt;- HeatmapAnnotation(
+  Drug = meta[, 1],
+  Time = meta[, 2],
+  col = list(
+    Drug = c(&quot;DOX&quot; = &quot;#499FBD&quot;, 
+             &quot;DMSO&quot; = &quot;#BBBBBC&quot;),
+    Time = c(&quot;24T&quot; = &quot;#238B45&quot;, 
+             &quot;24R&quot; = &quot;#74C476&quot;, 
+             &quot;144R&quot; = &quot;#C7E9C0&quot;)
+  ),
+  annotation_height = unit(c(1, 1, 1), &quot;cm&quot;)
+)
+
+# Row annotation
+gene_order_df &lt;- all_data %&gt;%
+  distinct(Gene, Category) %&gt;%
+  arrange(factor(Category, levels = sort(unique(entrez_category$Category))), Gene)
+
+ordered_genes &lt;- gene_order_df$Gene
+logFC_mat &lt;- logFC_mat[ordered_genes, ]
+signif_mat &lt;- signif_mat[ordered_genes, ]
+
+category_colors &lt;- structure(
+  c(&quot;darkorange&quot;, &quot;steelblue&quot;, &quot;darkgreen&quot;, &quot;firebrick&quot;, &quot;gold&quot;, &quot;mediumpurple&quot;, &quot;gray60&quot;),
+  names = sort(unique(entrez_category$Category))
+)
+
+ha_left &lt;- rowAnnotation(
+  Category = gene_order_df$Category,
+  col = list(Category = category_colors),
+  annotation_name_side = &quot;top&quot;
+)
+
+# Final Heatmap
+Heatmap(logFC_mat,
+        name = &quot;logFC&quot;,
+        top_annotation = col_annot,
+        left_annotation = ha_left,
+        cluster_columns = FALSE,
+        cluster_rows = FALSE,
+        show_row_names = TRUE,
+        show_column_names = FALSE,
+        row_names_gp = gpar(fontsize = 10),
+        column_title = &quot;DDR Gene Expression Response (n = 68)\n DOX Recovery&quot;,
+        column_title_gp = gpar(fontsize = 14, fontface = &quot;bold&quot;),
+        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(signif_mat[i, j], x, y, gp = gpar(fontsize = 9))
+        }
+)</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/LogFC%20DDR%20Genes-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># #load in the appropriate files
+# deg_files &lt;- list(
+#   &quot;DOX_24T&quot; = &quot;data/new/DEGs/Toptable_V.D24T.csv&quot;,
+#   &quot;DOX_24R&quot; = &quot;data/new/DEGs/Toptable_V.D24R.csv&quot;,
+#   &quot;DOX_144R&quot; = &quot;data/new/DEGs/Toptable_V.D144R.csv&quot;
+# )
+# 
+# 
+# # ----------------- AC Cardiotoxicity Entrez IDs -----------------
+# entrez_ids &lt;- c(
+#   6272, 8029, 11128, 79899, 54477, 121665, 5095, 22863, 57161, 4692,
+#   8214, 23151, 56606, 108, 22999, 56895, 9603, 3181, 4023, 10499,
+#   92949, 4363, 10057, 5243, 5244, 5880, 1535, 2950, 847, 5447,
+#   3038, 3077, 4846, 3958, 23327, 29899, 23155, 80856, 55020, 78996,
+#   23262, 150383, 9620, 79730, 344595, 5066, 6251, 3482, 9588, 339416,
+#   7292, 55157, 87769, 23409, 720, 3107, 54535, 1590, 80059, 7991,
+#   57110, 8803, 323, 54826, 5916, 23371, 283337, 64078, 80010, 1933,
+#   10818, 51020
+# ) %&gt;% as.character()
+# 
+# #load in my DE genes and filter them by the entrez id
+# 
+# ac_data_list &lt;- map2_dfr(deg_files, names(deg_files), function(file, label) {
+#   read_csv(file, show_col_types = FALSE) %&gt;%
+#     mutate(
+#       Entrez_ID = as.character(Entrez_ID),
+#       Condition = label,
+#       Condition = ifelse(str_detect(label, &quot;DOX&quot;), &quot;CX.5461&quot;, &quot;DOX&quot;)
+#     ) %&gt;%
+#     filter(Entrez_ID %in% entrez_ids)
+# })
+# 
+# #create full gene × condition table
+# all_conditions &lt;- names(deg_files)
+# all_combos &lt;- crossing(
+#   Entrez_ID = entrez_ids %&gt;% as.character(),
+#   Condition = all_conditions
+# ) %&gt;%
+#   mutate(
+#     Drug = ifelse(str_detect(Condition, &quot;CX&quot;), &quot;CX.5461&quot;, &quot;DOX&quot;)
+#   )
+# 
+# # ----------------- Merge and Fill Missing Values -----------------
+# complete_ac &lt;- all_combos %&gt;%
+#   left_join(ac_data_list, by = c(&quot;Entrez_ID&quot;, &quot;Condition&quot;, &quot;Drug&quot;)) %&gt;%
+#   mutate(
+#     logFC = ifelse(is.na(logFC), 0, logFC),
+#     adj.P.Val = ifelse(is.na(adj.P.Val), 1, adj.P.Val)
+#   )
+# 
+# # ----------------- Annotate Gene Symbols -----------------
+# complete_ac &lt;- complete_ac %&gt;%
+#   mutate(
+#     Gene = mapIds(org.Hs.eg.db, keys = Entrez_ID,
+#                   column = &quot;SYMBOL&quot;, keytype = &quot;ENTREZID&quot;, multiVals = &quot;first&quot;)
+#   )
+# 
+# # ----------------- Order Conditions -----------------
+# complete_ac$Condition &lt;- factor(complete_ac$Condition, levels = c(
+#   &quot;CX_0.1_3&quot;, &quot;CX_0.1_24&quot;, &quot;CX_0.1_48&quot;,
+#   &quot;CX_0.5_3&quot;, &quot;CX_0.5_24&quot;, &quot;CX_0.5_48&quot;,
+#   &quot;DOX_0.1_3&quot;, &quot;DOX_0.1_24&quot;, &quot;DOX_0.1_48&quot;,
+#   &quot;DOX_0.5_3&quot;, &quot;DOX_0.5_24&quot;, &quot;DOX_0.5_48&quot;
+# ))
+# 
+# # ----------------- Wilcoxon Test: CX vs DOX (paired by condition) -----------------
+# condition_pairs &lt;- tibble(
+#   cx = c(&quot;CX_0.1_3&quot;, &quot;CX_0.1_24&quot;, &quot;CX_0.1_48&quot;, &quot;CX_0.5_3&quot;, &quot;CX_0.5_24&quot;, &quot;CX_0.5_48&quot;),
+#   dox = c(&quot;DOX_0.1_3&quot;, &quot;DOX_0.1_24&quot;, &quot;DOX_0.1_48&quot;, &quot;DOX_0.5_3&quot;, &quot;DOX_0.5_24&quot;, &quot;DOX_0.5_48&quot;)
+# )
+# 
+# wilcox_results &lt;- map2_dfr(condition_pairs$cx, condition_pairs$dox, function(cx_label, dox_label) {
+#   cx_vals &lt;- complete_ac %&gt;% filter(Condition == cx_label) %&gt;% pull(logFC)
+#   dox_vals &lt;- complete_ac %&gt;% filter(Condition == dox_label) %&gt;% pull(logFC)
+#   
+#   test &lt;- tryCatch(wilcox.test(cx_vals, dox_vals), error = function(e) NULL)
+#   pval &lt;- if (!is.null(test)) test$p.value else NA
+#   
+#   tibble(
+#     Condition = dox_label,
+#     p_value = signif(pval, 3),
+#     label = case_when(
+#       pval &lt; 0.001 ~ &quot;***&quot;,
+#       pval &lt; 0.01  ~ &quot;**&quot;,
+#       pval &lt; 0.05  ~ &quot;*&quot;,
+#       TRUE         ~ &quot;&quot;
+#     ),
+#     y_pos = max(c(cx_vals, dox_vals), na.rm = TRUE) + 0.5
+#   )
+# })
+# 
+# # ----------------- Plot Boxplot with Wilcoxon Stars -----------------
+# ggplot(complete_ac, aes(x = Condition, y = logFC, fill = Drug)) +
+#   geom_boxplot(outlier.size = 0.6) +
+#   geom_text(data = wilcox_results,
+#             aes(x = Condition, y = y_pos, label = label),
+#             inherit.aes = FALSE,
+#             size = 4, vjust = 0) +
+#   scale_fill_manual(values = c(&quot;CX.5461&quot; = &quot;blue&quot;, &quot;DOX&quot; = &quot;red&quot;)) +
+#   labs(
+#     title = &quot;LogFC of AC Cardiotoxicity Genes&quot;,
+#     x = &quot;Condition&quot;,
+#     y = &quot;logFC&quot;,
+#     fill = &quot;Drug&quot;
+#   ) +
+#   theme_bw(base_size = 14) +
+#   theme(
+#     plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#     axis.title = element_text(size = 14),
+#     axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+#     legend.title = element_text(size = 14),
+#     legend.text = element_text(size = 12)
+#   )</code></pre>
+<pre class="r"><code>#plot a venn diagram with all of your conditions from your toptables
+
+# Load DEGs Data
+DOX_24T &lt;- read.csv(&quot;data/new/DEGs/Toptable_V.D24T.csv&quot;)
+DOX_24R &lt;- read.csv(&quot;data/new/DEGs/Toptable_V.D24R.csv&quot;)
+DOX_144R &lt;- read.csv(&quot;data/new/DEGs/Toptable_V.D144R.csv&quot;)
+
+# Extract Significant DEGs
+DEG1 &lt;- DOX_24T$Entrez_ID[DOX_24T$adj.P.Val &lt; 0.05]
+DEG2 &lt;- DOX_24R$Entrez_ID[DOX_24R$adj.P.Val &lt; 0.05]
+DEG3 &lt;- DOX_144R$Entrez_ID[DOX_144R$adj.P.Val &lt; 0.05]
+
+
+venntest &lt;- list(DEG1, DEG2, DEG3)
+ggVennDiagram(
+  venntest,
+  category.names = c(&quot;DOX_24T&quot;, &quot;DOX_24R&quot;, &quot;DOX_144R&quot;)
+) + ggtitle(&quot;DXR Specific and Shared DEGs&quot;)+
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),  # Increase title size
+    text = element_text(size = 16)  # Increase text size globally
+  )</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/Overlap%20of%20DEGs-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Now that I&#39;ve made my venn diagram, I want to compare these DEGs
+#set 1 : 4362 DOX24T specific genes
+#set2 : 4362 + 4550 + 50 + 272 genes shared across DOX24T (all genes)
+#how many of these are downregulated and how many are upregulated?</code></pre>
+<pre class="r"><code>## Fit limma model using code as it is found in the original cormotif code. It has
+## only been modified to add names to the matrix of t values, as well as the
+## limma fits
+
+limmafit.default &lt;- function(exprs,groupid,compid) {
+  limmafits  &lt;- list()
+  compnum    &lt;- nrow(compid)
+  genenum    &lt;- nrow(exprs)
+  limmat     &lt;- matrix(0,genenum,compnum)
+  limmas2    &lt;- rep(0,compnum)
+  limmadf    &lt;- rep(0,compnum)
+  limmav0    &lt;- rep(0,compnum)
+  limmag1num &lt;- rep(0,compnum)
+  limmag2num &lt;- rep(0,compnum)
+
+  rownames(limmat)  &lt;- rownames(exprs)
+  colnames(limmat)  &lt;- rownames(compid)
+  names(limmas2)    &lt;- rownames(compid)
+  names(limmadf)    &lt;- rownames(compid)
+  names(limmav0)    &lt;- rownames(compid)
+  names(limmag1num) &lt;- rownames(compid)
+  names(limmag2num) &lt;- rownames(compid)
+
+  for(i in 1:compnum) {
+    selid1 &lt;- which(groupid == compid[i,1])
+    selid2 &lt;- which(groupid == compid[i,2])
+    eset   &lt;- new(&quot;ExpressionSet&quot;, exprs=cbind(exprs[,selid1],exprs[,selid2]))
+    g1num  &lt;- length(selid1)
+    g2num  &lt;- length(selid2)
+    designmat &lt;- cbind(base=rep(1,(g1num+g2num)), delta=c(rep(0,g1num),rep(1,g2num)))
+    fit &lt;- lmFit(eset,designmat)
+    fit &lt;- eBayes(fit)
+    limmat[,i] &lt;- fit$t[,2]
+    limmas2[i] &lt;- fit$s2.prior
+    limmadf[i] &lt;- fit$df.prior
+    limmav0[i] &lt;- fit$var.prior[2]
+    limmag1num[i] &lt;- g1num
+    limmag2num[i] &lt;- g2num
+    limmafits[[i]] &lt;- fit
+
+    # log odds
+    # w&lt;-sqrt(1+fit$var.prior[2]/(1/g1num+1/g2num))
+    # log(0.99)+dt(fit$t[1,2],g1num+g2num-2+fit$df.prior,log=TRUE)-log(0.01)-dt(fit$t[1,2]/w, g1num+g2num-2+fit$df.prior, log=TRUE)+log(w)
+  }
+  names(limmafits) &lt;- rownames(compid)
+  limmacompnum&lt;-nrow(compid)
+  result&lt;-list(t       = limmat,
+               v0      = limmav0,
+               df0     = limmadf,
+               s20     = limmas2,
+               g1num   = limmag1num,
+               g2num   = limmag2num,
+               compnum = limmacompnum,
+               fits    = limmafits)
+}
+
+limmafit.counts &lt;-
+  function (exprs, groupid, compid, norm.factor.method = &quot;TMM&quot;, voom.normalize.method = &quot;none&quot;)
+  {
+    limmafits  &lt;- list()
+    compnum    &lt;- nrow(compid)
+    genenum    &lt;- nrow(exprs)
+    limmat     &lt;- matrix(NA,genenum,compnum)
+    limmas2    &lt;- rep(0,compnum)
+    limmadf    &lt;- rep(0,compnum)
+    limmav0    &lt;- rep(0,compnum)
+    limmag1num &lt;- rep(0,compnum)
+    limmag2num &lt;- rep(0,compnum)
+
+    rownames(limmat)  &lt;- rownames(exprs)
+    colnames(limmat)  &lt;- rownames(compid)
+    names(limmas2)    &lt;- rownames(compid)
+    names(limmadf)    &lt;- rownames(compid)
+    names(limmav0)    &lt;- rownames(compid)
+    names(limmag1num) &lt;- rownames(compid)
+    names(limmag2num) &lt;- rownames(compid)
+
+    for (i in 1:compnum) {
+      message(paste(&quot;Running limma for comparision&quot;,i,&quot;/&quot;,compnum))
+      selid1 &lt;- which(groupid == compid[i, 1])
+      selid2 &lt;- which(groupid == compid[i, 2])
+      # make a new count data frame
+      counts &lt;- cbind(exprs[, selid1], exprs[, selid2])
+
+      # remove NAs
+      not.nas &lt;- which(apply(counts, 1, function(x) !any(is.na(x))) == TRUE)
+
+      # runn voom/limma
+      d &lt;- DGEList(counts[not.nas,])
+      d &lt;- calcNormFactors(d, method = norm.factor.method)
+      g1num &lt;- length(selid1)
+      g2num &lt;- length(selid2)
+      designmat &lt;- cbind(base = rep(1, (g1num + g2num)), delta = c(rep(0,
+                                                                       g1num), rep(1, g2num)))
+
+      y &lt;- voom(d, designmat, normalize.method = voom.normalize.method)
+      fit &lt;- lmFit(y, designmat)
+      fit &lt;- eBayes(fit)
+
+      limmafits[[i]] &lt;- fit
+      limmat[not.nas, i] &lt;- fit$t[, 2]
+      limmas2[i] &lt;- fit$s2.prior
+      limmadf[i] &lt;- fit$df.prior
+      limmav0[i] &lt;- fit$var.prior[2]
+      limmag1num[i] &lt;- g1num
+      limmag2num[i] &lt;- g2num
+    }
+    limmacompnum &lt;- nrow(compid)
+    names(limmafits) &lt;- rownames(compid)
+    result &lt;- list(t       = limmat,
+                   v0      = limmav0,
+                   df0     = limmadf,
+                   s20     = limmas2,
+                   g1num   = limmag1num,
+                   g2num   = limmag2num,
+                   compnum = limmacompnum,
+                   fits    = limmafits)
+  }
+
+limmafit.list &lt;-
+  function (fitlist, cmp.idx=2)
+  {
+    compnum    &lt;- length(fitlist)
+
+    genes &lt;- c()
+    for (i in 1:compnum) genes &lt;- unique(c(genes, rownames(fitlist[[i]])))
+
+    genenum    &lt;- length(genes)
+    limmat     &lt;- matrix(NA,genenum,compnum)
+    limmas2    &lt;- rep(0,compnum)
+    limmadf    &lt;- rep(0,compnum)
+    limmav0    &lt;- rep(0,compnum)
+    limmag1num &lt;- rep(0,compnum)
+    limmag2num &lt;- rep(0,compnum)
+
+    rownames(limmat)  &lt;- genes
+    colnames(limmat)  &lt;- names(fitlist)
+    names(limmas2)    &lt;- names(fitlist)
+    names(limmadf)    &lt;- names(fitlist)
+    names(limmav0)    &lt;- names(fitlist)
+    names(limmag1num) &lt;- names(fitlist)
+    names(limmag2num) &lt;- names(fitlist)
+
+    for (i in 1:compnum) {
+      this.t &lt;- fitlist[[i]]$t[,cmp.idx]
+      limmat[names(this.t),i] &lt;- this.t
+
+      limmas2[i]    &lt;- fitlist[[i]]$s2.prior
+      limmadf[i]    &lt;- fitlist[[i]]$df.prior
+      limmav0[i]    &lt;- fitlist[[i]]$var.prior[cmp.idx]
+      limmag1num[i] &lt;- sum(fitlist[[i]]$design[,cmp.idx]==0)
+      limmag2num[i] &lt;- sum(fitlist[[i]]$design[,cmp.idx]==1)
+    }
+
+    limmacompnum &lt;- compnum
+    result &lt;- list(t       = limmat,
+                   v0      = limmav0,
+                   df0     = limmadf,
+                   s20     = limmas2,
+                   g1num   = limmag1num,
+                   g2num   = limmag2num,
+                   compnum = limmacompnum,
+                   fits    = limmafits)
+
+  }
+
+## Rank genes based on statistics
+generank&lt;-function(x) {
+  xcol&lt;-ncol(x)
+  xrow&lt;-nrow(x)
+  result&lt;-matrix(0,xrow,xcol)
+  z&lt;-(1:1:xrow)
+  for(i in 1:xcol) {
+    y&lt;-sort(x[,i],decreasing=TRUE,na.last=TRUE)
+    result[,i]&lt;-match(x[,i],y)
+    result[,i]&lt;-order(result[,i])
+  }
+  result
+}
+
+## Log-likelihood for moderated t under H0
+modt.f0.loglike&lt;-function(x,df) {
+  a&lt;-dt(x, df, log=TRUE)
+  result&lt;-as.vector(a)
+  flag&lt;-which(is.na(result)==TRUE)
+  result[flag]&lt;-0
+  result
+}
+
+## Log-likelihood for moderated t under H1
+## param=c(df,g1num,g2num,v0)
+modt.f1.loglike&lt;-function(x,param) {
+  df&lt;-param[1]
+  g1num&lt;-param[2]
+  g2num&lt;-param[3]
+  v0&lt;-param[4]
+  w&lt;-sqrt(1+v0/(1/g1num+1/g2num))
+  dt(x/w, df, log=TRUE)-log(w)
+  a&lt;-dt(x/w, df, log=TRUE)-log(w)
+  result&lt;-as.vector(a)
+  flag&lt;-which(is.na(result)==TRUE)
+  result[flag]&lt;-0
+  result
+}
+
+## Correlation Motif Fit
+cmfit.X&lt;-function(x, type, K=1, tol=1e-3, max.iter=100) {
+  ## initialize
+  xrow &lt;- nrow(x)
+  xcol &lt;- ncol(x)
+  loglike0 &lt;- list()
+  loglike1 &lt;- list()
+  p &lt;- rep(1, K)/K
+  q &lt;- matrix(runif(K * xcol), K, xcol)
+  q[1, ] &lt;- rep(0.01, xcol)
+  for (i in 1:xcol) {
+    f0 &lt;- type[[i]][[1]]
+    f0param &lt;- type[[i]][[2]]
+    f1 &lt;- type[[i]][[3]]
+    f1param &lt;- type[[i]][[4]]
+    loglike0[[i]] &lt;- f0(x[, i], f0param)
+    loglike1[[i]] &lt;- f1(x[, i], f1param)
+  }
+  condlike &lt;- list()
+  for (i in 1:xcol) {
+    condlike[[i]] &lt;- matrix(0, xrow, K)
+  }
+  loglike.old &lt;- -1e+10
+  for (i.iter in 1:max.iter) {
+    if ((i.iter%%50) == 0) {
+      print(paste(&quot;We have run the first &quot;, i.iter, &quot; iterations for K=&quot;,
+                  K, sep = &quot;&quot;))
+    }
+    err &lt;- tol + 1
+    clustlike &lt;- matrix(0, xrow, K)
+    #templike &lt;- matrix(0, xrow, 2)
+    templike1 &lt;- rep(0, xrow)
+    templike2 &lt;- rep(0, xrow)
+    for (j in 1:K) {
+      for (i in 1:xcol) {
+        templike1 &lt;- log(q[j, i]) + loglike1[[i]]
+        templike2 &lt;- log(1 - q[j, i]) + loglike0[[i]]
+        tempmax &lt;- Rfast::Pmax(templike1, templike2)
+
+        templike1 &lt;- exp(templike1 - tempmax)
+        templike2 &lt;- exp(templike2 - tempmax)
+
+        tempsum &lt;- templike1 + templike2
+        clustlike[, j] &lt;- clustlike[, j] + tempmax +
+          log(tempsum)
+        condlike[[i]][, j] &lt;- templike1/tempsum
+      }
+      clustlike[, j] &lt;- clustlike[, j] + log(p[j])
+    }
+    #tempmax &lt;- apply(clustlike, 1, max)
+    tempmax &lt;- Rfast::rowMaxs(clustlike, value=TRUE)
+    for (j in 1:K) {
+      clustlike[, j] &lt;- exp(clustlike[, j] - tempmax)
+    }
+    #tempsum &lt;- apply(clustlike, 1, sum)
+    tempsum &lt;- Rfast::rowsums(clustlike)
+    for (j in 1:K) {
+      clustlike[, j] &lt;- clustlike[, j]/tempsum
+    }
+    #p.new &lt;- (apply(clustlike, 2, sum) + 1)/(xrow + K)
+    p.new &lt;- (Rfast::colsums(clustlike) + 1)/(xrow + K)
+    q.new &lt;- matrix(0, K, xcol)
+    for (j in 1:K) {
+      clustpsum &lt;- sum(clustlike[, j])
+      for (i in 1:xcol) {
+        q.new[j, i] &lt;- (sum(clustlike[, j] * condlike[[i]][,
+                                                           j]) + 1)/(clustpsum + 2)
+      }
+    }
+    err.p &lt;- max(abs(p.new - p)/p)
+    err.q &lt;- max(abs(q.new - q)/q)
+    err &lt;- max(err.p, err.q)
+    loglike.new &lt;- (sum(tempmax + log(tempsum)) + sum(log(p.new)) +
+                      sum(log(q.new) + log(1 - q.new)))/xrow
+    p &lt;- p.new
+    q &lt;- q.new
+    loglike.old &lt;- loglike.new
+    if (err &lt; tol) {
+      break
+    }
+  }
+  clustlike &lt;- matrix(0, xrow, K)
+  for (j in 1:K) {
+    for (i in 1:xcol) {
+      templike1 &lt;- log(q[j, i]) + loglike1[[i]]
+      templike2 &lt;- log(1 - q[j, i]) + loglike0[[i]]
+      tempmax &lt;- Rfast::Pmax(templike1, templike2)
+
+      templike1 &lt;- exp(templike1 - tempmax)
+      templike2 &lt;- exp(templike2 - tempmax)
+
+      tempsum &lt;- templike1 + templike2
+      clustlike[, j] &lt;- clustlike[, j] + tempmax + log(tempsum)
+      condlike[[i]][, j] &lt;- templike1/tempsum
+    }
+    clustlike[, j] &lt;- clustlike[, j] + log(p[j])
+  }
+  #tempmax &lt;- apply(clustlike, 1, max)
+  tempmax &lt;- Rfast::rowMaxs(clustlike, value=TRUE)
+  for (j in 1:K) {
+    clustlike[, j] &lt;- exp(clustlike[, j] - tempmax)
+  }
+  #tempsum &lt;- apply(clustlike, 1, sum)
+  tempsum &lt;- Rfast::rowsums(clustlike)
+  for (j in 1:K) {
+    clustlike[, j] &lt;- clustlike[, j]/tempsum
+  }
+  p.post &lt;- matrix(0, xrow, xcol)
+  for (j in 1:K) {
+    for (i in 1:xcol) {
+      p.post[, i] &lt;- p.post[, i] + clustlike[, j] * condlike[[i]][,
+                                                                  j]
+    }
+  }
+  loglike.old &lt;- loglike.old - (sum(log(p)) + sum(log(q) +
+                                                    log(1 - q)))/xrow
+  loglike.old &lt;- loglike.old * xrow
+  result &lt;- list(p.post = p.post, motif.prior = p, motif.q = q,
+                 loglike = loglike.old, clustlike=clustlike, condlike=condlike)
+}
+
+## Fit using (0,0,...,0) and (1,1,...,1)
+cmfitall&lt;-function(x, type, tol=1e-3, max.iter=100) {
+  ## initialize
+  xrow&lt;-nrow(x)
+  xcol&lt;-ncol(x)
+  loglike0&lt;-list()
+  loglike1&lt;-list()
+  p&lt;-0.01
+
+  ## compute loglikelihood
+  L0&lt;-matrix(0,xrow,1)
+  L1&lt;-matrix(0,xrow,1)
+  for(i in 1:xcol) {
+    f0&lt;-type[[i]][[1]]
+    f0param&lt;-type[[i]][[2]]
+    f1&lt;-type[[i]][[3]]
+    f1param&lt;-type[[i]][[4]]
+    loglike0[[i]]&lt;-f0(x[,i],f0param)
+    loglike1[[i]]&lt;-f1(x[,i],f1param)
+    L0&lt;-L0+loglike0[[i]]
+    L1&lt;-L1+loglike1[[i]]
+  }
+
+
+  ## EM algorithm to get MLE of p and q
+  loglike.old &lt;- -1e10
+  for(i.iter in 1:max.iter) {
+    if((i.iter%%50) == 0) {
+      print(paste(&quot;We have run the first &quot;, i.iter, &quot; iterations&quot;,sep=&quot;&quot;))
+    }
+    err&lt;-tol+1
+
+    ## compute posterior cluster membership
+    clustlike&lt;-matrix(0,xrow,2)
+    clustlike[,1]&lt;-log(1-p)+L0
+    clustlike[,2]&lt;-log(p)+L1
+
+    tempmax&lt;-apply(clustlike,1,max)
+    for(j in 1:2) {
+      clustlike[,j]&lt;-exp(clustlike[,j]-tempmax)
+    }
+    tempsum&lt;-apply(clustlike,1,sum)
+
+    ## update motif occurrence rate
+    for(j in 1:2) {
+      clustlike[,j]&lt;-clustlike[,j]/tempsum
+    }
+
+    p.new&lt;-(sum(clustlike[,2])+1)/(xrow+2)
+
+    ## evaluate convergence
+    err&lt;-abs(p.new-p)/p
+
+    ## evaluate whether the log.likelihood increases
+    loglike.new&lt;-(sum(tempmax+log(tempsum))+log(p.new)+log(1-p.new))/xrow
+
+    loglike.old&lt;-loglike.new
+    p&lt;-p.new
+
+    if(err&lt;tol) {
+      break;
+    }
+  }
+
+  ## compute posterior p
+  clustlike&lt;-matrix(0,xrow,2)
+  clustlike[,1]&lt;-log(1-p)+L0
+  clustlike[,2]&lt;-log(p)+L1
+
+  tempmax&lt;-apply(clustlike,1,max)
+  for(j in 1:2) {
+    clustlike[,j]&lt;-exp(clustlike[,j]-tempmax)
+  }
+  tempsum&lt;-apply(clustlike,1,sum)
+
+  for(j in 1:2) {
+    clustlike[,j]&lt;-clustlike[,j]/tempsum
+  }
+
+  p.post&lt;-matrix(0,xrow,xcol)
+  for(i in 1:xcol) {
+    p.post[,i]&lt;-clustlike[,2]
+  }
+
+  ## return
+
+  #calculate back loglikelihood
+  loglike.old&lt;-loglike.old-(log(p)+log(1-p))/xrow
+  loglike.old&lt;-loglike.old*xrow
+  result&lt;-list(p.post=p.post, motif.prior=p, loglike=loglike.old)
+}
+
+## Fit each dataset separately
+cmfitsep&lt;-function(x, type, tol=1e-3, max.iter=100) {
+  ## initialize
+  xrow&lt;-nrow(x)
+  xcol&lt;-ncol(x)
+  loglike0&lt;-list()
+  loglike1&lt;-list()
+  p&lt;-0.01*rep(1,xcol)
+  loglike.final&lt;-rep(0,xcol)
+
+  ## compute loglikelihood
+  for(i in 1:xcol) {
+    f0&lt;-type[[i]][[1]]
+    f0param&lt;-type[[i]][[2]]
+    f1&lt;-type[[i]][[3]]
+    f1param&lt;-type[[i]][[4]]
+    loglike0[[i]]&lt;-f0(x[,i],f0param)
+    loglike1[[i]]&lt;-f1(x[,i],f1param)
+  }
+
+  p.post&lt;-matrix(0,xrow,xcol)
+
+  ## EM algorithm to get MLE of p
+  for(coli in 1:xcol) {
+    loglike.old &lt;- -1e10
+    for(i.iter in 1:max.iter) {
+      if((i.iter%%50) == 0) {
+        print(paste(&quot;We have run the first &quot;, i.iter, &quot; iterations&quot;,sep=&quot;&quot;))
+      }
+      err&lt;-tol+1
+
+      ## compute posterior cluster membership
+      clustlike&lt;-matrix(0,xrow,2)
+      clustlike[,1]&lt;-log(1-p[coli])+loglike0[[coli]]
+      clustlike[,2]&lt;-log(p[coli])+loglike1[[coli]]
+
+      tempmax&lt;-apply(clustlike,1,max)
+      for(j in 1:2) {
+        clustlike[,j]&lt;-exp(clustlike[,j]-tempmax)
+      }
+      tempsum&lt;-apply(clustlike,1,sum)
+
+      ## evaluate whether the log.likelihood increases
+      loglike.new&lt;-sum(tempmax+log(tempsum))/xrow
+
+      ## update motif occurrence rate
+      for(j in 1:2) {
+        clustlike[,j]&lt;-clustlike[,j]/tempsum
+      }
+
+      p.new&lt;-(sum(clustlike[,2]))/(xrow)
+
+      ## evaluate convergence
+      err&lt;-abs(p.new-p[coli])/p[coli]
+      loglike.old&lt;-loglike.new
+      p[coli]&lt;-p.new
+
+      if(err&lt;tol) {
+        break;
+      }
+    }
+
+    ## compute posterior p
+    clustlike&lt;-matrix(0,xrow,2)
+    clustlike[,1]&lt;-log(1-p[coli])+loglike0[[coli]]
+    clustlike[,2]&lt;-log(p[coli])+loglike1[[coli]]
+
+    tempmax&lt;-apply(clustlike,1,max)
+    for(j in 1:2) {
+      clustlike[,j]&lt;-exp(clustlike[,j]-tempmax)
+    }
+    tempsum&lt;-apply(clustlike,1,sum)
+
+    for(j in 1:2) {
+      clustlike[,j]&lt;-clustlike[,j]/tempsum
+    }
+
+    p.post[,coli]&lt;-clustlike[,2]
+    loglike.final[coli]&lt;-loglike.old
+  }
+
+
+  ## return
+  loglike.final&lt;-loglike.final*xrow
+  result&lt;-list(p.post=p.post, motif.prior=p, loglike=loglike.final)
+}
+
+## Fit the full model
+cmfitfull&lt;-function(x, type, tol=1e-3, max.iter=100) {
+  ## initialize
+  xrow&lt;-nrow(x)
+  xcol&lt;-ncol(x)
+  loglike0&lt;-list()
+  loglike1&lt;-list()
+  K&lt;-2^xcol
+  p&lt;-rep(1,K)/K
+  pattern&lt;-rep(0,xcol)
+  patid&lt;-matrix(0,K,xcol)
+
+  ## compute loglikelihood
+  for(i in 1:xcol) {
+    f0&lt;-type[[i]][[1]]
+    f0param&lt;-type[[i]][[2]]
+    f1&lt;-type[[i]][[3]]
+    f1param&lt;-type[[i]][[4]]
+    loglike0[[i]]&lt;-f0(x[,i],f0param)
+    loglike1[[i]]&lt;-f1(x[,i],f1param)
+  }
+  L&lt;-matrix(0,xrow,K)
+  for(i in 1:K)
+  {
+    patid[i,]&lt;-pattern
+    for(j in 1:xcol) {
+      if(pattern[j] &lt; 0.5) {
+        L[,i]&lt;-L[,i]+loglike0[[j]]
+      } else {
+        L[,i]&lt;-L[,i]+loglike1[[j]]
+      }
+    }
+
+    if(i &lt; K) {
+      pattern[xcol]&lt;-pattern[xcol]+1
+      j&lt;-xcol
+      while(pattern[j] &gt; 1) {
+        pattern[j]&lt;-0
+        j&lt;-j-1
+        pattern[j]&lt;-pattern[j]+1
+      }
+    }
+  }
+
+  ## EM algorithm to get MLE of p and q
+  loglike.old &lt;- -1e10
+  for(i.iter in 1:max.iter) {
+    if((i.iter%%50) == 0) {
+      print(paste(&quot;We have run the first &quot;, i.iter, &quot; iterations&quot;,sep=&quot;&quot;))
+    }
+    err&lt;-tol+1
+
+    ## compute posterior cluster membership
+    clustlike&lt;-matrix(0,xrow,K)
+    for(j in 1:K) {
+      clustlike[,j]&lt;-log(p[j])+L[,j]
+    }
+
+    tempmax&lt;-apply(clustlike,1,max)
+    for(j in 1:K) {
+      clustlike[,j]&lt;-exp(clustlike[,j]-tempmax)
+    }
+    tempsum&lt;-apply(clustlike,1,sum)
+
+    ## update motif occurrence rate
+    for(j in 1:K) {
+      clustlike[,j]&lt;-clustlike[,j]/tempsum
+    }
+
+    p.new&lt;-(apply(clustlike,2,sum)+1)/(xrow+K)
+
+    ## evaluate convergence
+    err&lt;-max(abs(p.new-p)/p)
+
+    ## evaluate whether the log.likelihood increases
+    loglike.new&lt;-(sum(tempmax+log(tempsum))+sum(log(p.new)))/xrow
+
+    loglike.old&lt;-loglike.new
+    p&lt;-p.new
+
+    if(err&lt;tol) {
+      break;
+    }
+  }
+
+  ## compute posterior p
+  clustlike&lt;-matrix(0,xrow,K)
+  for(j in 1:K) {
+    clustlike[,j]&lt;-log(p[j])+L[,j]
+  }
+
+  tempmax&lt;-apply(clustlike,1,max)
+  for(j in 1:K) {
+    clustlike[,j]&lt;-exp(clustlike[,j]-tempmax)
+  }
+  tempsum&lt;-apply(clustlike,1,sum)
+
+  for(j in 1:K) {
+    clustlike[,j]&lt;-clustlike[,j]/tempsum
+  }
+
+  p.post&lt;-matrix(0,xrow,xcol)
+  for(j in 1:K) {
+    for(i in 1:xcol) {
+      if(patid[j,i] &gt; 0.5) {
+        p.post[,i]&lt;-p.post[,i]+clustlike[,j]
+      }
+    }
+  }
+
+  ## return
+  #calculate back loglikelihood
+  loglike.old&lt;-loglike.old-sum(log(p))/xrow
+  loglike.old&lt;-loglike.old*xrow
+  result&lt;-list(p.post=p.post, motif.prior=p, loglike=loglike.old)
+}
+
+generatetype&lt;-function(limfitted)
+{
+  jtype&lt;-list()
+  df&lt;-limfitted$g1num+limfitted$g2num-2+limfitted$df0
+  for(j in 1:limfitted$compnum)
+  {
+    jtype[[j]]&lt;-list(f0=modt.f0.loglike, f0.param=df[j], f1=modt.f1.loglike, f1.param=c(df[j],limfitted$g1num[j],limfitted$g2num[j],limfitted$v0[j]))
+  }
+  jtype
+}
+
+cormotiffit &lt;- function(exprs, groupid=NULL, compid=NULL, K=1, tol=1e-3,
+                        max.iter=100, BIC=TRUE, norm.factor.method=&quot;TMM&quot;,
+                        voom.normalize.method = &quot;none&quot;, runtype=c(&quot;logCPM&quot;,&quot;counts&quot;,&quot;limmafits&quot;), each=3)
+{
+  # first I want to do some typechecking. Input can be either a normalized
+  # matrix, a count matrix, or a list of limma fits. Dispatch the correct
+  # limmafit accordingly.
+  # todo: add some typechecking here
+  limfitted &lt;- list()
+  if (runtype==&quot;counts&quot;) {
+    limfitted &lt;- limmafit.counts(exprs,groupid,compid, norm.factor.method, voom.normalize.method)
+  } else if (runtype==&quot;logCPM&quot;) {
+    limfitted &lt;- limmafit.default(exprs,groupid,compid)
+  } else if (runtype==&quot;limmafits&quot;) {
+    limfitted &lt;- limmafit.list(exprs)
+  } else {
+    stop(&quot;runtype must be one of &#39;logCPM&#39;, &#39;counts&#39;, or &#39;limmafits&#39;&quot;)
+  }
+
+
+  jtype&lt;-generatetype(limfitted)
+  fitresult&lt;-list()
+  ks &lt;- rep(K, each = each)
+  fitresult &lt;- bplapply(1:length(ks), function(i, x, type, ks, tol, max.iter) {
+    cmfit.X(x, type, K = ks[i], tol = tol, max.iter = max.iter)
+  }, x=limfitted$t, type=jtype, ks=ks, tol=tol, max.iter=max.iter)
+
+  best.fitresults &lt;- list()
+  for (i in 1:length(K)) {
+    w.k &lt;- which(ks==K[i])
+    this.bic &lt;- c()
+    for (j in w.k) this.bic[j] &lt;- -2 * fitresult[[j]]$loglike + (K[i] - 1 + K[i] * limfitted$compnum) * log(dim(limfitted$t)[1])
+    w.min &lt;- which(this.bic == min(this.bic, na.rm = TRUE))[1]
+    best.fitresults[[i]] &lt;- fitresult[[w.min]]
+  }
+  fitresult &lt;- best.fitresults
+
+  bic &lt;- rep(0, length(K))
+  aic &lt;- rep(0, length(K))
+  loglike &lt;- rep(0, length(K))
+  for (i in 1:length(K)) loglike[i] &lt;- fitresult[[i]]$loglike
+  for (i in 1:length(K)) bic[i] &lt;- -2 * fitresult[[i]]$loglike + (K[i] - 1 + K[i] * limfitted$compnum) * log(dim(limfitted$t)[1])
+  for (i in 1:length(K)) aic[i] &lt;- -2 * fitresult[[i]]$loglike + 2 * (K[i] - 1 + K[i] * limfitted$compnum)
+  if(BIC==TRUE) {
+    bestflag=which(bic==min(bic))
+  }
+  else {
+    bestflag=which(aic==min(aic))
+  }
+  result&lt;-list(bestmotif=fitresult[[bestflag]],bic=cbind(K,bic),
+               aic=cbind(K,aic),loglike=cbind(K,loglike), allmotifs=fitresult)
+
+}
+
+cormotiffitall&lt;-function(exprs,groupid,compid, tol=1e-3, max.iter=100)
+{
+  limfitted&lt;-limmafit(exprs,groupid,compid)
+  jtype&lt;-generatetype(limfitted)
+  fitresult&lt;-cmfitall(limfitted$t,type=jtype,tol=1e-3,max.iter=max.iter)
+}
+
+cormotiffitsep&lt;-function(exprs,groupid,compid, tol=1e-3, max.iter=100)
+{
+  limfitted&lt;-limmafit(exprs,groupid,compid)
+  jtype&lt;-generatetype(limfitted)
+  fitresult&lt;-cmfitsep(limfitted$t,type=jtype,tol=1e-3,max.iter=max.iter)
+}
+
+cormotiffitfull&lt;-function(exprs,groupid,compid, tol=1e-3, max.iter=100)
+{
+  limfitted&lt;-limmafit(exprs,groupid,compid)
+  jtype&lt;-generatetype(limfitted)
+  fitresult&lt;-cmfitfull(limfitted$t,type=jtype,tol=1e-3,max.iter=max.iter)
+}
+
+plotIC&lt;-function(fitted_cormotif)
+{
+  oldpar&lt;-par(mfrow=c(1,2))
+  plot(fitted_cormotif$bic[,1], fitted_cormotif$bic[,2], type=&quot;b&quot;,xlab=&quot;Motif Number&quot;, ylab=&quot;BIC&quot;, main=&quot;BIC&quot;)
+  plot(fitted_cormotif$aic[,1], fitted_cormotif$aic[,2], type=&quot;b&quot;,xlab=&quot;Motif Number&quot;, ylab=&quot;AIC&quot;, main=&quot;AIC&quot;)
+}
+
+plotMotif&lt;-function(fitted_cormotif,title=&quot;&quot;)
+{
+  layout(matrix(1:2,ncol=2))
+  u&lt;-1:dim(fitted_cormotif$bestmotif$motif.q)[2]
+  v&lt;-1:dim(fitted_cormotif$bestmotif$motif.q)[1]
+  image(u,v,t(fitted_cormotif$bestmotif$motif.q),
+        col=gray(seq(from=1,to=0,by=-0.1)),xlab=&quot;Study&quot;,yaxt = &quot;n&quot;,
+        ylab=&quot;Corr. Motifs&quot;,main=paste(title,&quot;pattern&quot;,sep=&quot; &quot;))
+  axis(2,at=1:length(v))
+  for(i in 1:(length(u)+1))
+  {
+    abline(v=(i-0.5))
+  }
+  for(i in 1:(length(v)+1))
+  {
+    abline(h=(i-0.5))
+  }
+  Ng=10000
+  if(is.null(fitted_cormotif$bestmotif$p.post)!=TRUE)
+    Ng=nrow(fitted_cormotif$bestmotif$p.post)
+  genecount=floor(fitted_cormotif$bestmotif$motif.p*Ng)
+  NK=nrow(fitted_cormotif$bestmotif$motif.q)
+  plot(0,0.7,pch=&quot;.&quot;,xlim=c(0,1.2),ylim=c(0.75,NK+0.25),
+       frame.plot=FALSE,axes=FALSE,xlab=&quot;No. of genes&quot;,ylab=&quot;&quot;, main=paste(title,&quot;frequency&quot;,sep=&quot; &quot;))
+  segments(0,0.7,fitted_cormotif$bestmotif$motif.p[1],0.7)
+  rect(0,1:NK-0.3,fitted_cormotif$bestmotif$motif.p,1:NK+0.3,
+       col=&quot;dark grey&quot;)
+  mtext(1:NK,at=1:NK,side=2,cex=0.8)
+  text(fitted_cormotif$bestmotif$motif.p+0.15,1:NK,
+       labels=floor(fitted_cormotif$bestmotif$motif.p*Ng))
+}</code></pre>
+<pre class="r"><code>#Don&#39;t load me in if you&#39;re using the above function, as it has been modified above
+library(Cormotif)</code></pre>
+<pre><code>Loading required package: affy</code></pre>
+<pre><code>
+Attaching package: &#39;affy&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:lubridate&#39;:
+
+    pm</code></pre>
+<pre><code>
+Attaching package: &#39;Cormotif&#39;</code></pre>
+<pre><code>The following objects are masked _by_ &#39;.GlobalEnv&#39;:
+
+    cormotiffit, cormotiffitall, cormotiffitfull, cormotiffitsep,
+    generank, plotIC, plotMotif</code></pre>
+<pre class="r"><code>#input the cormotif matrix you&#39;re going to use
+##this should be tmm normalized log2cpm
+
+#the matrix that I used previously for limma was TMM counts - cpm this
+#dge was the name of the DGE list object
+
+cormotif_test &lt;- cpm(dge, log = TRUE)
+colnames(cormotif_test) &lt;- (Metadata_2$Final_sample_name)
+
+cormotif_counts &lt;- dge
+
+cormotif_test_df &lt;- cormotif_test %&gt;% 
+  as.data.frame() %&gt;% 
+  rownames_to_column(., var = &quot;Entrez_ID&quot;)
+
+#write.csv(cormotif_test, &quot;data/new/Cormotif_test_matrix.csv&quot;)
+
+#reorder my test matrix to match the new groupid I&#39;ve made
+#I want my columns to be in this order:
+#DOX24T 1-6, DOX24R 1-6, DOX144R 1-6, DMSO24T 1-6, DMSO24R 1-6, DMSO144R 1-6
+Cormotif &lt;- read.csv(&quot;data/new/Cormotif_matrix_final.csv&quot;)
+dim(Cormotif)</code></pre>
+<pre><code>[1] 14319    37</code></pre>
+<pre class="r"><code>#14319 genes across 37 cols (1 is Entrez_ID)
+Cormotif_df &lt;- data.frame(Cormotif)
+
+rownames(Cormotif_df) &lt;- Cormotif_df$Entrez_ID
+exprs.cormotif &lt;- as.matrix(Cormotif_df[,2:37])
+dim(exprs.cormotif)</code></pre>
+<pre><code>[1] 14319    36</code></pre>
+<pre class="r"><code>####make a test one to see if the TMM is causing issues or not
+# Cormotif_cpm_test &lt;- read.csv(&quot;data/new/filcpm_forCormotif.csv&quot;)
+# dim(Cormotif_cpm_test)
+# 
+# Cormotif_cpm_test_df &lt;- data.frame(Cormotif_cpm_test)
+# 
+# rownames(Cormotif_cpm_test_df) &lt;- Cormotif_cpm_test_df$Entrez_ID
+# exprs.cormotif_cpm_test &lt;- as.matrix(Cormotif_cpm_test_df[,2:37])
+# dim(exprs.cormotif_cpm_test)
+
+####don&#39;t use this one, the previous is correct
+
+
+#see what happens if you remove ind3 which is driving the response down?
+
+
+
+#put together my group id and comparison id to make the correct comparisons between experimental conditions
+#groupid tells which experimental conditions are grouped together
+#compid tells which experimental conditions should be compared against one another
+##ie DOX24T vs DMSO24T matched control
+groupid_csv &lt;- read.csv(&quot;data/new/GroupID.csv&quot;)
+#now I have to make this into a vector (named vector)
+groupid &lt;- c(
+  DOX_24T_1 = 1, DOX_24T_2 = 1, DOX_24T_3 = 1, DOX_24T_4 = 1, DOX_24T_5 = 1, DOX_24T_6 = 1,
+  DOX_24R_1 = 2, DOX_24R_2 = 2, DOX_24R_3 = 2, DOX_24R_4 = 2, DOX_24R_5 = 2, DOX_24R_6 = 2,
+  DOX_144R_1 = 3, DOX_144R_2 = 3, DOX_144R_3 = 3, DOX_144R_4 = 3, DOX_144R_5 = 3, DOX_144R_6 = 3,
+  DMSO_24T_1 = 4, DMSO_24T_2 = 4, DMSO_24T_3 = 4, DMSO_24T_4 = 4, DMSO_24T_5 = 4, DMSO_24T_6 = 4,
+  DMSO_24R_1 = 5, DMSO_24R_2 = 5, DMSO_24R_3 = 5, DMSO_24R_4 = 5, DMSO_24R_5 = 5, DMSO_24R_6 = 5,
+  DMSO_144R_1 = 6, DMSO_144R_2 = 6, DMSO_144R_3 = 6, DMSO_144R_4 = 6, DMSO_144R_5 = 6, DMSO_144R_6 = 6
+)
+groupid_1 &lt;- groupid %&gt;% as.vector()
+compid &lt;- data.frame(Cond1 = c(1, 3, 5), Cond2 = c(2, 4, 6))</code></pre>
+<pre class="r"><code>#fit Cormotif model 
+set.seed(19191)
+#only set the seed ONCE
+
+motif.fitted &lt;- cormotiffit(
+  exprs = exprs.cormotif,
+  groupid = groupid,
+  compid = compid,
+  K = 1:8,
+  max.iter = 1000,
+  BIC = TRUE,
+  runtype = &quot;logCPM&quot;
+)</code></pre>
+<pre><code>[1] &quot;We have run the first 50 iterations for K=1&quot;
+[1] &quot;We have run the first 100 iterations for K=1&quot;
+[1] &quot;We have run the first 50 iterations for K=1&quot;
+[1] &quot;We have run the first 100 iterations for K=1&quot;
+[1] &quot;We have run the first 50 iterations for K=1&quot;
+[1] &quot;We have run the first 100 iterations for K=1&quot;
+[1] &quot;We have run the first 50 iterations for K=2&quot;
+[1] &quot;We have run the first 100 iterations for K=2&quot;
+[1] &quot;We have run the first 150 iterations for K=2&quot;
+[1] &quot;We have run the first 200 iterations for K=2&quot;
+[1] &quot;We have run the first 250 iterations for K=2&quot;
+[1] &quot;We have run the first 300 iterations for K=2&quot;
+[1] &quot;We have run the first 350 iterations for K=2&quot;
+[1] &quot;We have run the first 400 iterations for K=2&quot;
+[1] &quot;We have run the first 450 iterations for K=2&quot;</code></pre>
+<pre><code>[1] &quot;We have run the first 50 iterations for K=2&quot;
+[1] &quot;We have run the first 100 iterations for K=2&quot;
+[1] &quot;We have run the first 150 iterations for K=2&quot;
+[1] &quot;We have run the first 200 iterations for K=2&quot;
+[1] &quot;We have run the first 250 iterations for K=2&quot;
+[1] &quot;We have run the first 300 iterations for K=2&quot;
+[1] &quot;We have run the first 350 iterations for K=2&quot;
+[1] &quot;We have run the first 50 iterations for K=2&quot;
+[1] &quot;We have run the first 100 iterations for K=2&quot;
+[1] &quot;We have run the first 150 iterations for K=2&quot;
+[1] &quot;We have run the first 200 iterations for K=2&quot;
+[1] &quot;We have run the first 50 iterations for K=3&quot;
+[1] &quot;We have run the first 100 iterations for K=3&quot;
+[1] &quot;We have run the first 150 iterations for K=3&quot;
+[1] &quot;We have run the first 200 iterations for K=3&quot;
+[1] &quot;We have run the first 250 iterations for K=3&quot;
+[1] &quot;We have run the first 300 iterations for K=3&quot;
+[1] &quot;We have run the first 350 iterations for K=3&quot;
+[1] &quot;We have run the first 400 iterations for K=3&quot;
+[1] &quot;We have run the first 450 iterations for K=3&quot;
+[1] &quot;We have run the first 500 iterations for K=3&quot;
+[1] &quot;We have run the first 550 iterations for K=3&quot;
+[1] &quot;We have run the first 600 iterations for K=3&quot;
+[1] &quot;We have run the first 650 iterations for K=3&quot;
+[1] &quot;We have run the first 700 iterations for K=3&quot;
+[1] &quot;We have run the first 50 iterations for K=3&quot;
+[1] &quot;We have run the first 100 iterations for K=3&quot;
+[1] &quot;We have run the first 150 iterations for K=3&quot;
+[1] &quot;We have run the first 200 iterations for K=3&quot;
+[1] &quot;We have run the first 250 iterations for K=3&quot;
+[1] &quot;We have run the first 300 iterations for K=3&quot;
+[1] &quot;We have run the first 350 iterations for K=3&quot;
+[1] &quot;We have run the first 400 iterations for K=3&quot;
+[1] &quot;We have run the first 450 iterations for K=3&quot;
+[1] &quot;We have run the first 500 iterations for K=3&quot;
+[1] &quot;We have run the first 550 iterations for K=3&quot;
+[1] &quot;We have run the first 600 iterations for K=3&quot;
+[1] &quot;We have run the first 650 iterations for K=3&quot;</code></pre>
+<pre><code>[1] &quot;We have run the first 50 iterations for K=3&quot;
+[1] &quot;We have run the first 100 iterations for K=3&quot;
+[1] &quot;We have run the first 150 iterations for K=3&quot;
+[1] &quot;We have run the first 200 iterations for K=3&quot;
+[1] &quot;We have run the first 250 iterations for K=3&quot;
+[1] &quot;We have run the first 300 iterations for K=3&quot;
+[1] &quot;We have run the first 350 iterations for K=3&quot;
+[1] &quot;We have run the first 400 iterations for K=3&quot;
+[1] &quot;We have run the first 50 iterations for K=4&quot;
+[1] &quot;We have run the first 100 iterations for K=4&quot;
+[1] &quot;We have run the first 150 iterations for K=4&quot;
+[1] &quot;We have run the first 200 iterations for K=4&quot;
+[1] &quot;We have run the first 50 iterations for K=4&quot;
+[1] &quot;We have run the first 100 iterations for K=4&quot;
+[1] &quot;We have run the first 150 iterations for K=4&quot;
+[1] &quot;We have run the first 200 iterations for K=4&quot;
+[1] &quot;We have run the first 250 iterations for K=4&quot;
+[1] &quot;We have run the first 300 iterations for K=4&quot;
+[1] &quot;We have run the first 350 iterations for K=4&quot;
+[1] &quot;We have run the first 400 iterations for K=4&quot;
+[1] &quot;We have run the first 450 iterations for K=4&quot;
+[1] &quot;We have run the first 500 iterations for K=4&quot;
+[1] &quot;We have run the first 550 iterations for K=4&quot;
+[1] &quot;We have run the first 600 iterations for K=4&quot;
+[1] &quot;We have run the first 650 iterations for K=4&quot;
+[1] &quot;We have run the first 50 iterations for K=4&quot;
+[1] &quot;We have run the first 100 iterations for K=4&quot;
+[1] &quot;We have run the first 150 iterations for K=4&quot;
+[1] &quot;We have run the first 200 iterations for K=4&quot;</code></pre>
+<pre><code>[1] &quot;We have run the first 50 iterations for K=5&quot;
+[1] &quot;We have run the first 100 iterations for K=5&quot;
+[1] &quot;We have run the first 150 iterations for K=5&quot;
+[1] &quot;We have run the first 200 iterations for K=5&quot;
+[1] &quot;We have run the first 250 iterations for K=5&quot;
+[1] &quot;We have run the first 300 iterations for K=5&quot;
+[1] &quot;We have run the first 350 iterations for K=5&quot;
+[1] &quot;We have run the first 400 iterations for K=5&quot;
+[1] &quot;We have run the first 450 iterations for K=5&quot;
+[1] &quot;We have run the first 500 iterations for K=5&quot;
+[1] &quot;We have run the first 550 iterations for K=5&quot;
+[1] &quot;We have run the first 50 iterations for K=5&quot;
+[1] &quot;We have run the first 100 iterations for K=5&quot;
+[1] &quot;We have run the first 150 iterations for K=5&quot;
+[1] &quot;We have run the first 200 iterations for K=5&quot;
+[1] &quot;We have run the first 250 iterations for K=5&quot;
+[1] &quot;We have run the first 300 iterations for K=5&quot;
+[1] &quot;We have run the first 350 iterations for K=5&quot;
+[1] &quot;We have run the first 400 iterations for K=5&quot;
+[1] &quot;We have run the first 450 iterations for K=5&quot;
+[1] &quot;We have run the first 500 iterations for K=5&quot;
+[1] &quot;We have run the first 550 iterations for K=5&quot;
+[1] &quot;We have run the first 600 iterations for K=5&quot;
+[1] &quot;We have run the first 650 iterations for K=5&quot;
+[1] &quot;We have run the first 700 iterations for K=5&quot;
+[1] &quot;We have run the first 750 iterations for K=5&quot;
+[1] &quot;We have run the first 800 iterations for K=5&quot;
+[1] &quot;We have run the first 850 iterations for K=5&quot;
+[1] &quot;We have run the first 900 iterations for K=5&quot;
+[1] &quot;We have run the first 950 iterations for K=5&quot;
+[1] &quot;We have run the first 1000 iterations for K=5&quot;
+[1] &quot;We have run the first 50 iterations for K=5&quot;
+[1] &quot;We have run the first 100 iterations for K=5&quot;
+[1] &quot;We have run the first 150 iterations for K=5&quot;
+[1] &quot;We have run the first 200 iterations for K=5&quot;
+[1] &quot;We have run the first 250 iterations for K=5&quot;
+[1] &quot;We have run the first 300 iterations for K=5&quot;
+[1] &quot;We have run the first 350 iterations for K=5&quot;
+[1] &quot;We have run the first 400 iterations for K=5&quot;
+[1] &quot;We have run the first 450 iterations for K=5&quot;
+[1] &quot;We have run the first 500 iterations for K=5&quot;
+[1] &quot;We have run the first 550 iterations for K=5&quot;
+[1] &quot;We have run the first 600 iterations for K=5&quot;
+[1] &quot;We have run the first 650 iterations for K=5&quot;
+[1] &quot;We have run the first 700 iterations for K=5&quot;
+[1] &quot;We have run the first 750 iterations for K=5&quot;
+[1] &quot;We have run the first 800 iterations for K=5&quot;
+[1] &quot;We have run the first 50 iterations for K=6&quot;
+[1] &quot;We have run the first 100 iterations for K=6&quot;
+[1] &quot;We have run the first 150 iterations for K=6&quot;
+[1] &quot;We have run the first 200 iterations for K=6&quot;
+[1] &quot;We have run the first 250 iterations for K=6&quot;
+[1] &quot;We have run the first 300 iterations for K=6&quot;
+[1] &quot;We have run the first 350 iterations for K=6&quot;
+[1] &quot;We have run the first 400 iterations for K=6&quot;
+[1] &quot;We have run the first 450 iterations for K=6&quot;
+[1] &quot;We have run the first 500 iterations for K=6&quot;
+[1] &quot;We have run the first 550 iterations for K=6&quot;
+[1] &quot;We have run the first 600 iterations for K=6&quot;
+[1] &quot;We have run the first 650 iterations for K=6&quot;
+[1] &quot;We have run the first 700 iterations for K=6&quot;
+[1] &quot;We have run the first 750 iterations for K=6&quot;
+[1] &quot;We have run the first 800 iterations for K=6&quot;
+[1] &quot;We have run the first 850 iterations for K=6&quot;
+[1] &quot;We have run the first 900 iterations for K=6&quot;
+[1] &quot;We have run the first 950 iterations for K=6&quot;
+[1] &quot;We have run the first 1000 iterations for K=6&quot;</code></pre>
+<pre><code>[1] &quot;We have run the first 50 iterations for K=6&quot;
+[1] &quot;We have run the first 100 iterations for K=6&quot;
+[1] &quot;We have run the first 150 iterations for K=6&quot;
+[1] &quot;We have run the first 200 iterations for K=6&quot;
+[1] &quot;We have run the first 250 iterations for K=6&quot;
+[1] &quot;We have run the first 300 iterations for K=6&quot;
+[1] &quot;We have run the first 350 iterations for K=6&quot;
+[1] &quot;We have run the first 400 iterations for K=6&quot;
+[1] &quot;We have run the first 450 iterations for K=6&quot;
+[1] &quot;We have run the first 500 iterations for K=6&quot;
+[1] &quot;We have run the first 550 iterations for K=6&quot;
+[1] &quot;We have run the first 600 iterations for K=6&quot;
+[1] &quot;We have run the first 650 iterations for K=6&quot;
+[1] &quot;We have run the first 700 iterations for K=6&quot;
+[1] &quot;We have run the first 750 iterations for K=6&quot;
+[1] &quot;We have run the first 800 iterations for K=6&quot;
+[1] &quot;We have run the first 850 iterations for K=6&quot;
+[1] &quot;We have run the first 50 iterations for K=6&quot;
+[1] &quot;We have run the first 100 iterations for K=6&quot;
+[1] &quot;We have run the first 150 iterations for K=6&quot;
+[1] &quot;We have run the first 200 iterations for K=6&quot;
+[1] &quot;We have run the first 250 iterations for K=6&quot;
+[1] &quot;We have run the first 300 iterations for K=6&quot;
+[1] &quot;We have run the first 350 iterations for K=6&quot;
+[1] &quot;We have run the first 400 iterations for K=6&quot;
+[1] &quot;We have run the first 450 iterations for K=6&quot;
+[1] &quot;We have run the first 500 iterations for K=6&quot;
+[1] &quot;We have run the first 550 iterations for K=6&quot;
+[1] &quot;We have run the first 600 iterations for K=6&quot;
+[1] &quot;We have run the first 650 iterations for K=6&quot;
+[1] &quot;We have run the first 700 iterations for K=6&quot;
+[1] &quot;We have run the first 750 iterations for K=6&quot;
+[1] &quot;We have run the first 800 iterations for K=6&quot;
+[1] &quot;We have run the first 50 iterations for K=7&quot;
+[1] &quot;We have run the first 100 iterations for K=7&quot;
+[1] &quot;We have run the first 150 iterations for K=7&quot;
+[1] &quot;We have run the first 200 iterations for K=7&quot;
+[1] &quot;We have run the first 250 iterations for K=7&quot;
+[1] &quot;We have run the first 300 iterations for K=7&quot;
+[1] &quot;We have run the first 350 iterations for K=7&quot;
+[1] &quot;We have run the first 400 iterations for K=7&quot;
+[1] &quot;We have run the first 450 iterations for K=7&quot;
+[1] &quot;We have run the first 500 iterations for K=7&quot;
+[1] &quot;We have run the first 550 iterations for K=7&quot;
+[1] &quot;We have run the first 600 iterations for K=7&quot;
+[1] &quot;We have run the first 650 iterations for K=7&quot;
+[1] &quot;We have run the first 700 iterations for K=7&quot;
+[1] &quot;We have run the first 750 iterations for K=7&quot;
+[1] &quot;We have run the first 800 iterations for K=7&quot;
+[1] &quot;We have run the first 850 iterations for K=7&quot;
+[1] &quot;We have run the first 900 iterations for K=7&quot;
+[1] &quot;We have run the first 950 iterations for K=7&quot;
+[1] &quot;We have run the first 1000 iterations for K=7&quot;
+[1] &quot;We have run the first 50 iterations for K=7&quot;
+[1] &quot;We have run the first 100 iterations for K=7&quot;
+[1] &quot;We have run the first 150 iterations for K=7&quot;
+[1] &quot;We have run the first 200 iterations for K=7&quot;
+[1] &quot;We have run the first 250 iterations for K=7&quot;
+[1] &quot;We have run the first 300 iterations for K=7&quot;
+[1] &quot;We have run the first 350 iterations for K=7&quot;
+[1] &quot;We have run the first 400 iterations for K=7&quot;
+[1] &quot;We have run the first 450 iterations for K=7&quot;
+[1] &quot;We have run the first 500 iterations for K=7&quot;
+[1] &quot;We have run the first 550 iterations for K=7&quot;
+[1] &quot;We have run the first 600 iterations for K=7&quot;
+[1] &quot;We have run the first 650 iterations for K=7&quot;
+[1] &quot;We have run the first 700 iterations for K=7&quot;</code></pre>
+<pre><code>[1] &quot;We have run the first 50 iterations for K=7&quot;
+[1] &quot;We have run the first 100 iterations for K=7&quot;
+[1] &quot;We have run the first 150 iterations for K=7&quot;
+[1] &quot;We have run the first 200 iterations for K=7&quot;
+[1] &quot;We have run the first 250 iterations for K=7&quot;
+[1] &quot;We have run the first 300 iterations for K=7&quot;
+[1] &quot;We have run the first 350 iterations for K=7&quot;
+[1] &quot;We have run the first 400 iterations for K=7&quot;
+[1] &quot;We have run the first 450 iterations for K=7&quot;
+[1] &quot;We have run the first 500 iterations for K=7&quot;
+[1] &quot;We have run the first 550 iterations for K=7&quot;
+[1] &quot;We have run the first 600 iterations for K=7&quot;
+[1] &quot;We have run the first 650 iterations for K=7&quot;
+[1] &quot;We have run the first 700 iterations for K=7&quot;
+[1] &quot;We have run the first 750 iterations for K=7&quot;
+[1] &quot;We have run the first 800 iterations for K=7&quot;
+[1] &quot;We have run the first 850 iterations for K=7&quot;
+[1] &quot;We have run the first 900 iterations for K=7&quot;
+[1] &quot;We have run the first 950 iterations for K=7&quot;
+[1] &quot;We have run the first 1000 iterations for K=7&quot;
+[1] &quot;We have run the first 50 iterations for K=8&quot;
+[1] &quot;We have run the first 100 iterations for K=8&quot;
+[1] &quot;We have run the first 150 iterations for K=8&quot;
+[1] &quot;We have run the first 200 iterations for K=8&quot;
+[1] &quot;We have run the first 250 iterations for K=8&quot;
+[1] &quot;We have run the first 300 iterations for K=8&quot;
+[1] &quot;We have run the first 350 iterations for K=8&quot;
+[1] &quot;We have run the first 400 iterations for K=8&quot;
+[1] &quot;We have run the first 450 iterations for K=8&quot;
+[1] &quot;We have run the first 500 iterations for K=8&quot;
+[1] &quot;We have run the first 550 iterations for K=8&quot;
+[1] &quot;We have run the first 600 iterations for K=8&quot;
+[1] &quot;We have run the first 650 iterations for K=8&quot;
+[1] &quot;We have run the first 700 iterations for K=8&quot;
+[1] &quot;We have run the first 750 iterations for K=8&quot;
+[1] &quot;We have run the first 800 iterations for K=8&quot;
+[1] &quot;We have run the first 850 iterations for K=8&quot;
+[1] &quot;We have run the first 900 iterations for K=8&quot;
+[1] &quot;We have run the first 950 iterations for K=8&quot;
+[1] &quot;We have run the first 1000 iterations for K=8&quot;
+[1] &quot;We have run the first 50 iterations for K=8&quot;
+[1] &quot;We have run the first 100 iterations for K=8&quot;
+[1] &quot;We have run the first 150 iterations for K=8&quot;
+[1] &quot;We have run the first 200 iterations for K=8&quot;
+[1] &quot;We have run the first 250 iterations for K=8&quot;
+[1] &quot;We have run the first 300 iterations for K=8&quot;
+[1] &quot;We have run the first 350 iterations for K=8&quot;
+[1] &quot;We have run the first 400 iterations for K=8&quot;
+[1] &quot;We have run the first 450 iterations for K=8&quot;
+[1] &quot;We have run the first 500 iterations for K=8&quot;
+[1] &quot;We have run the first 550 iterations for K=8&quot;
+[1] &quot;We have run the first 600 iterations for K=8&quot;
+[1] &quot;We have run the first 650 iterations for K=8&quot;
+[1] &quot;We have run the first 700 iterations for K=8&quot;
+[1] &quot;We have run the first 750 iterations for K=8&quot;
+[1] &quot;We have run the first 50 iterations for K=8&quot;
+[1] &quot;We have run the first 100 iterations for K=8&quot;
+[1] &quot;We have run the first 150 iterations for K=8&quot;
+[1] &quot;We have run the first 200 iterations for K=8&quot;
+[1] &quot;We have run the first 250 iterations for K=8&quot;
+[1] &quot;We have run the first 300 iterations for K=8&quot;
+[1] &quot;We have run the first 350 iterations for K=8&quot;
+[1] &quot;We have run the first 400 iterations for K=8&quot;
+[1] &quot;We have run the first 450 iterations for K=8&quot;
+[1] &quot;We have run the first 500 iterations for K=8&quot;
+[1] &quot;We have run the first 550 iterations for K=8&quot;
+[1] &quot;We have run the first 600 iterations for K=8&quot;
+[1] &quot;We have run the first 650 iterations for K=8&quot;
+[1] &quot;We have run the first 700 iterations for K=8&quot;
+[1] &quot;We have run the first 750 iterations for K=8&quot;
+[1] &quot;We have run the first 800 iterations for K=8&quot;
+[1] &quot;We have run the first 850 iterations for K=8&quot;
+[1] &quot;We have run the first 900 iterations for K=8&quot;
+[1] &quot;We have run the first 950 iterations for K=8&quot;
+[1] &quot;We have run the first 1000 iterations for K=8&quot;</code></pre>
+<pre class="r"><code>#plot BIC and AIC to see which number of motifs was best for both models
+plotIC(motif.fitted)</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/Plot%20Cormotif-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>motif.fitted$bic</code></pre>
+<pre><code>     K      bic
+[1,] 1 180063.9
+[2,] 2 180034.4
+[3,] 3 179813.4
+[4,] 4 179855.6
+[5,] 5 179895.7
+[6,] 6 179936.2
+[7,] 7 179976.6
+[8,] 8 180020.3</code></pre>
+<pre class="r"><code>#now plot the motifs themselves
+plotMotif(motif.fitted, title = &quot;Fitted Motifs for DXR&quot;)</code></pre>
+<p><img src="figure/DXR_Project_Analysis.Rmd/Plot%20Cormotif-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#extract the posterior probability that these DEGs belong to motifs
+gene_prob_all &lt;- motif.fitted$bestmotif$p.post
+rownames(gene_prob_all) &lt;- rownames(Cormotif_df)
+
+#extract the cluster likelihood - which DEGs are most likely to be in this cluster
+motif_prob &lt;- motif.fitted$bestmotif$clustlike
+rownames(motif_prob) &lt;- rownames(gene_prob_all)
+#write.csv(motif_prob,&quot;data/new/cormotif_probability_genelist_all.csv&quot;)
+
+# Define gene probability groups
+prob_all_1  &lt;- rownames(gene_prob_all[(gene_prob_all[,1] &gt;= 0.25 &amp; gene_prob_all[,2] &lt;0.5 &amp; gene_prob_all[,3] &lt;0.5),])
+
+length(prob_all_1)</code></pre>
+<pre><code>[1] 8646</code></pre>
+<pre class="r"><code>prob_all_2  &lt;- rownames(gene_prob_all[(gene_prob_all[,1] &gt;=0.3 &amp; gene_prob_all[,2] &gt;0.5 &amp; gene_prob_all[,3] &gt;0.5),])
+
+length(prob_all_2)</code></pre>
+<pre><code>[1] 552</code></pre>
+<pre class="r"><code>prob_all_3  &lt;- rownames(gene_prob_all[(gene_prob_all[,1] &gt;0.5 &amp; gene_prob_all[,2] &lt;0.5 &amp; gene_prob_all[,3] &lt;0.5),])
+
+length(prob_all_3)</code></pre>
+<pre><code>[1] 6353</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.2 (2024-10-31 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 22000)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] grid      stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] Cormotif_1.52.0       affy_1.84.0           BiocParallel_1.40.0  
+ [4] ggpubr_0.6.0          UpSetR_1.4.0          ggVennDiagram_1.5.2  
+ [7] reshape2_1.4.4        circlize_0.4.16       ComplexHeatmap_2.22.0
+[10] org.Hs.eg.db_3.20.0   AnnotationDbi_1.68.0  IRanges_2.40.0       
+[13] S4Vectors_0.44.0      corrplot_0.95         ggfortify_0.4.17     
+[16] ggrepel_0.9.6         biomaRt_2.62.1        scales_1.4.0         
+[19] edgebundleR_0.1.4     edgeR_4.4.0           limma_3.62.1         
+[22] Biobase_2.66.0        BiocGenerics_0.52.0   lubridate_1.9.4      
+[25] forcats_1.0.0         stringr_1.5.1         dplyr_1.1.4          
+[28] purrr_1.0.4           readr_2.1.5           tidyr_1.3.1          
+[31] tibble_3.2.1          ggplot2_3.5.2         tidyverse_2.0.0      
+[34] workflowr_1.7.1      
+
+loaded via a namespace (and not attached):
+  [1] RColorBrewer_1.1-3      rstudioapi_0.17.1       jsonlite_2.0.0         
+  [4] shape_1.4.6.1           magrittr_2.0.3          farver_2.1.2           
+  [7] rmarkdown_2.29          GlobalOptions_0.1.2     fs_1.6.6               
+ [10] zlibbioc_1.52.0         vctrs_0.6.5             memoise_2.0.1          
+ [13] rstatix_0.7.2           htmltools_0.5.8.1       progress_1.2.3         
+ [16] curl_6.0.1              broom_1.0.8             Formula_1.2-5          
+ [19] sass_0.4.10             bslib_0.9.0             htmlwidgets_1.6.4      
+ [22] plyr_1.8.9              httr2_1.1.2             cachem_1.1.0           
+ [25] whisker_0.4.1           igraph_2.1.4            mime_0.13              
+ [28] lifecycle_1.0.4         iterators_1.0.14        pkgconfig_2.0.3        
+ [31] R6_2.6.1                fastmap_1.2.0           GenomeInfoDbData_1.2.13
+ [34] shiny_1.10.0            clue_0.3-66             digest_0.6.37          
+ [37] colorspace_2.1-1        ps_1.9.1                rprojroot_2.0.4        
+ [40] RSQLite_2.3.9           labeling_0.4.3          filelock_1.0.3         
+ [43] timechange_0.3.0        abind_1.4-8             httr_1.4.7             
+ [46] compiler_4.4.2          bit64_4.5.2             withr_3.0.2            
+ [49] doParallel_1.0.17       backports_1.5.0         carData_3.0-5          
+ [52] DBI_1.2.3               ggsignif_0.6.4          rappdirs_0.3.3         
+ [55] rjson_0.2.23            tools_4.4.2             httpuv_1.6.16          
+ [58] glue_1.8.0              callr_3.7.6             promises_1.3.2         
+ [61] getPass_0.2-4           cluster_2.1.6           snow_0.4-4             
+ [64] generics_0.1.3          gtable_0.3.6            tzdb_0.5.0             
+ [67] preprocessCore_1.68.0   hms_1.1.3               car_3.1-3              
+ [70] xml2_1.3.8              XVector_0.46.0          foreach_1.5.2          
+ [73] pillar_1.10.2           later_1.4.2             BiocFileCache_2.14.0   
+ [76] lattice_0.22-6          bit_4.5.0               tidyselect_1.2.1       
+ [79] locfit_1.5-9.12         Biostrings_2.74.0       knitr_1.50             
+ [82] git2r_0.36.2            gridExtra_2.3           xfun_0.52              
+ [85] statmod_1.5.0           matrixStats_1.5.0       stringi_1.8.7          
+ [88] UCSC.utils_1.2.0        yaml_2.3.10             evaluate_1.0.3         
+ [91] codetools_0.2-20        BiocManager_1.30.25     affyio_1.76.0          
+ [94] cli_3.6.3               xtable_1.8-4            processx_3.8.6         
+ [97] jquerylib_0.1.4         Rcpp_1.0.14             GenomeInfoDb_1.42.3    
+[100] dbplyr_2.5.0            png_0.1-8               parallel_4.4.2         
+[103] blob_1.2.4              prettyunits_1.2.0       crayon_1.5.3           
+[106] GetoptLong_1.0.5        rlang_1.1.6             KEGGREST_1.46.0        </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
