@@ -14,11 +14,8 @@ navbar:
   - text: Quality Control RNAseq
     href: Recovery_RNAseq.html
   - text: Differential Expression
-    href: Recovery_DE.html
-  - text: DOX Only DE
-    href: Recovery_DOX.html
-  - text: DOX New Set DE
-    href: Recovery_Set.html
+    href:
+
   right:
   - icon: fab fa-github
     text: Source code

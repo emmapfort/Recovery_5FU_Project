@@ -1,8 +1,16 @@
 ---
-title: "DXR_Project_Analysis"
+title: "DXR DE Analysis"
 author: "Emma M Pfortmiller"
 date: "2025-05-14"
-output: html_document
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    theme: journal
+editor_options: 
+  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
