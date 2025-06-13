@@ -43,13 +43,12 @@ library(edgeR)
 library(pheatmap)
 library(ggfortify)
 library(PCAtools)
-library(Cormotif)
+#library(Cormotif)
 library(RColorBrewer)
 library(biomaRt)
 library(RUVSeq)
 library(Rfast)
 library(cowplot)
-library(Cormotif)
 ```
 
 ```{r Import Counts Files, include=FALSE}
@@ -117,51 +116,51 @@ library(Cormotif)
 ```{r Create Data Matrix}
 #input your counts data for the raw featureCounts files + make a matrix with all DOX + DMSO samples
 
-# counts_raw_df <-
-#   data.frame(
-#     Counts_84_DOX_24,
-#     Counts_84_DMSO_24$MCW_EMP_JT_R29_R1.bam,
-#     Counts_84_DOX_24rec$MCW_EMP_JT_R30_R1.bam,
-#     Counts_84_DMSO_24rec$MCW_EMP_JT_R32_R1.bam,
-#     Counts_84_DOX_144rec$MCW_EMP_JT_R33_R1.bam,
-#     Counts_84_DMSO_144rec$MCW_EMP_JT_R35_R1.bam,
-#     Counts_87_DOX_24$MCW_EMP_JT_R36_R1.bam,
-#     Counts_87_DMSO_24$MCW_EMP_JT_R38_R1.bam,
-#     Counts_87_DOX_24rec$MCW_EMP_JT_R39_R1.bam,
-#     Counts_87_DMSO_24rec$MCW_EMP_JT_R41_R1.bam,
-#     Counts_87_DOX_144rec$MCW_EMP_JT_R42_R1.bam,
-#     Counts_87_DMSO_144rec$MCW_EMP_JT_R44_R1.bam,
-#     Counts_78_DOX_24$MCW_EMP_JT_R45_R1.bam,
-#     Counts_78_DMSO_24$MCW_EMP_JT_R47_R1.bam,
-#     Counts_78_DOX_24rec$MCW_EMP_JT_R48_R1.bam,
-#     Counts_78_DMSO_24rec$MCW_EMP_JT_R50_R1.bam,
-#     Counts_78_DOX_144rec$MCW_EMP_JT_R51_R1.bam,
-#     Counts_78_DMSO_144rec$MCW_EMP_JT_R53_R1.bam,
-#     Counts_75_DOX_24$MCW_EMP_JT_R54_R1.bam,
-#     Counts_75_DMSO_24$MCW_EMP_JT_R56_R1.bam,
-#     Counts_75_DOX_24rec$MCW_EMP_JT_R57_R1.bam,
-#     Counts_75_DMSO_24rec$MCW_EMP_JT_R59_R1.bam,
-#     Counts_75_DOX_144rec$MCW_EMP_JT_R60_R1.bam,
-#     Counts_75_DMSO_144rec$MCW_EMP_JT_R62_R1.bam,
-#     Counts_17_DOX_24$MCW_EMP_JT_R63_R1.bam,
-#     Counts_17_DMSO_24$MCW_EMP_JT_R65_R1.bam,
-#     Counts_17_DOX_24rec$MCW_EMP_JT_R66_R1.bam,
-#     Counts_17_DMSO_24rec$MCW_EMP_JT_R68_R1.bam,
-#     Counts_17_DOX_144rec$MCW_EMP_JT_R69_R1.bam,
-#     Counts_17_DMSO_144rec$MCW_EMP_JT_R71_R1.bam,
-#     Counts_90_DOX_24$MCW_EMP_JT_R72_R1.bam,
-#     Counts_90_DMSO_24$MCW_EMP_JT_R74_R1.bam,
-#     Counts_90_DOX_24rec$MCW_EMP_JT_R75_R1.bam,
-#     Counts_90_DMSO_24rec$MCW_EMP_JT_R77_R1.bam,
-#     Counts_90_DOX_144rec$MCW_EMP_JT_R78_R1.bam,
-#     Counts_90_DMSO_144rec$MCW_EMP_JT_R80_R1.bam,
-#     Counts_90REP_DOX_24$MCW_EMP_JT_R81_R1.bam,
-#     Counts_90REP_DMSO_24$MCW_EMP_JT_R83_R1.bam,
-#     Counts_90REP_DOX_24rec$MCW_EMP_JT_R84_R1.bam,
-#     Counts_90REP_DMSO_24rec$MCW_EMP_JT_R86_R1.bam,
-#     Counts_90REP_DOX_144rec$MCW_EMP_JT_R87_R1.bam,
-#     Counts_90REP_DMSO_144rec$MCW_EMP_JT_R89_R1.bam
-#   )
+counts_raw_df <-
+  data.frame(
+    Counts_84_DOX_24,
+    Counts_84_DMSO_24$MCW_EMP_JT_R29_R1.bam,
+    Counts_84_DOX_24rec$MCW_EMP_JT_R30_R1.bam,
+    Counts_84_DMSO_24rec$MCW_EMP_JT_R32_R1.bam,
+    Counts_84_DOX_144rec$MCW_EMP_JT_R33_R1.bam,
+    Counts_84_DMSO_144rec$MCW_EMP_JT_R35_R1.bam,
+    Counts_87_DOX_24$MCW_EMP_JT_R36_R1.bam,
+    Counts_87_DMSO_24$MCW_EMP_JT_R38_R1.bam,
+    Counts_87_DOX_24rec$MCW_EMP_JT_R39_R1.bam,
+    Counts_87_DMSO_24rec$MCW_EMP_JT_R41_R1.bam,
+    Counts_87_DOX_144rec$MCW_EMP_JT_R42_R1.bam,
+    Counts_87_DMSO_144rec$MCW_EMP_JT_R44_R1.bam,
+    Counts_78_DOX_24$MCW_EMP_JT_R45_R1.bam,
+    Counts_78_DMSO_24$MCW_EMP_JT_R47_R1.bam,
+    Counts_78_DOX_24rec$MCW_EMP_JT_R48_R1.bam,
+    Counts_78_DMSO_24rec$MCW_EMP_JT_R50_R1.bam,
+    Counts_78_DOX_144rec$MCW_EMP_JT_R51_R1.bam,
+    Counts_78_DMSO_144rec$MCW_EMP_JT_R53_R1.bam,
+    Counts_75_DOX_24$MCW_EMP_JT_R54_R1.bam,
+    Counts_75_DMSO_24$MCW_EMP_JT_R56_R1.bam,
+    Counts_75_DOX_24rec$MCW_EMP_JT_R57_R1.bam,
+    Counts_75_DMSO_24rec$MCW_EMP_JT_R59_R1.bam,
+    Counts_75_DOX_144rec$MCW_EMP_JT_R60_R1.bam,
+    Counts_75_DMSO_144rec$MCW_EMP_JT_R62_R1.bam,
+    Counts_17_DOX_24$MCW_EMP_JT_R63_R1.bam,
+    Counts_17_DMSO_24$MCW_EMP_JT_R65_R1.bam,
+    Counts_17_DOX_24rec$MCW_EMP_JT_R66_R1.bam,
+    Counts_17_DMSO_24rec$MCW_EMP_JT_R68_R1.bam,
+    Counts_17_DOX_144rec$MCW_EMP_JT_R69_R1.bam,
+    Counts_17_DMSO_144rec$MCW_EMP_JT_R71_R1.bam,
+    Counts_90_DOX_24$MCW_EMP_JT_R72_R1.bam,
+    Counts_90_DMSO_24$MCW_EMP_JT_R74_R1.bam,
+    Counts_90_DOX_24rec$MCW_EMP_JT_R75_R1.bam,
+    Counts_90_DMSO_24rec$MCW_EMP_JT_R77_R1.bam,
+    Counts_90_DOX_144rec$MCW_EMP_JT_R78_R1.bam,
+    Counts_90_DMSO_144rec$MCW_EMP_JT_R80_R1.bam,
+    Counts_90REP_DOX_24$MCW_EMP_JT_R81_R1.bam,
+    Counts_90REP_DMSO_24$MCW_EMP_JT_R83_R1.bam,
+    Counts_90REP_DOX_24rec$MCW_EMP_JT_R84_R1.bam,
+    Counts_90REP_DMSO_24rec$MCW_EMP_JT_R86_R1.bam,
+    Counts_90REP_DOX_144rec$MCW_EMP_JT_R87_R1.bam,
+    Counts_90REP_DMSO_144rec$MCW_EMP_JT_R89_R1.bam
+  )
 
 # colnames(counts_raw_df) <- c("entrezgene_id", 
 #                                 "DOX_24_Ind1",
@@ -207,7 +206,8 @@ library(Cormotif)
 #                                 "DOX_144rec_Ind6REP",
 #                                 "DMSO_144rec_Ind6REP")
 
-#counts_raw_matrix <- counts_raw_df %>% column_to_rownames(var = "entrezgene_id") %>% as.matrix()
+counts_raw_matrix <- counts_raw_df %>% column_to_rownames(var = "X") %>% as.matrix()
+
 
 #write this one to an R object so I can hold onto it
 #write.csv(counts_raw_matrix, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/featureCounts_Concat_Matrix_DOXSamples_EMP_250430.csv")
@@ -228,16 +228,36 @@ hist(counts_raw_matrix,  xlab = "Unfiltered Counts", xlim = c(-1000,125000), yli
 #Raw Counts
 counts_raw_matrix
 
-counts_raw_df <- data.frame(counts_raw_matrix)
+#counts_raw_df <- data.frame(counts_raw_matrix)
 
 #for QC checks, I need to convert this into cpm as well
 #DO NOT USE FOR FILTERING
 
-counts_cpm_unfilt <- cpm(counts_raw_df, log = TRUE)
+counts_cpm_unfilt <- cpm(counts_raw_matrix, log = TRUE)
+
+hist(counts_cpm_unfilt,  
+     main = "Histogram of total counts (unfiltered)", 
+     xlab = expression("Log"[2]*" counts-per-million"), 
+     col = 4)
+
+#do this one instead now
+###filter my data by rowMeans > 0
+
+filcpm_matrix <- subset(counts_cpm_unfilt, (rowMeans(counts_cpm_unfilt) > 0))
+dim(filcpm_matrix)
+
+#now let's make a histogram of this to check the difference
+hist(filcpm_matrix,  
+     main = "Histogram of filtered counts using rowMeans > 0 method", 
+     xlab = expression("Log"[2]*" counts-per-million"), 
+     col = 2)
+
+#export this as a csv
+#write.csv(filcpm_matrix, "C:/Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/filcpm_matrix.csv")
 
 #Now I need to filter my dataset by rowmeans > 0 and pull those genes for filtering
 
-counts_raw_filt <- counts_raw_matrix[rowMeans(cpm(counts_raw_matrix, log = TRUE)) > 0, ]
+# counts_raw_filt <- counts_raw_matrix[rowMeans(cpm(counts_raw_matrix, log = TRUE)) > 0, ]
 dim(counts_raw_filt)
 #14319 total genes
 
@@ -449,11 +469,11 @@ fC_DOXCounts %>%
 ```{r QC Checks cpm}
 
 ####histogram of total counts, unfiltered####
-hist(counts_cpm_unfilt, main = "Recovery All Individuals log2cpm Unfiltered",
+hist(counts_raw_matrix, main = "Recovery All Individuals log2cpm Unfiltered",
      xlab = expression("log" [2]* "counts per million"))
 
 ####histogram of total counts, filtered####
-hist(filt_cpm_dxr, 
+hist(counts_raw_filt, 
      main = "Recovery All Individuals log2cpm Filtered rowMeans > 0", 
         xlab = expression("log"[2]*"counts per million"))
 
@@ -789,7 +809,7 @@ View(dge_calc_dxr$samples)
 #do I need to use cpm to finally calculate all of these counts?
 #cpm internally recognizes the library norm factors and norms the counts
 
-# dge_calc_dxr_norm <- cpm(dge_calc_dxr)
+dge_calc_dxr_norm <- cpm(dge_calc_dxr)
 
 #Pull out factors
 snames <- data.frame("samples" = colnames(dge_calc_dxr)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
@@ -2713,6 +2733,11 @@ ind_num_norep <- c("1", "1", "1", "1", "1", "1", "2", "2", "2", "2", "2", "2", "
 annot_d <- data.frame("samples" = colnames(filt_counts_norep)) %>% separate_wider_delim(., cols = samples, names = c("Tx", "Time", "Ind"), delim = "_", cols_remove = FALSE) %>% 
   tidyr::unite(., col = "Tx_Time", Tx, Time, sep = "_", remove = FALSE) %>% cbind(., ind_num_norep)
 
+#Cormotif_d <- cpm(dge_calc_dxr, log = TRUE)
+
+#calcnormfactors here?
+View(dge_calc_dxr$samples)
+
 Cormotif_d <- cpm(dge_calc_dxr, log = TRUE)
 
 Cormotif_df_d <- as.data.frame(Cormotif_d)
@@ -2727,12 +2752,12 @@ compid <- data.frame(c1 = c(1, 3, 5), c2 = c(2, 4, 6))
 
 ```{r Cormotif Run, include=FALSE}
 
-set.seed(12345)
+#set.seed(11111)
 cormotif_dxr <- cormotiffit(exprs = Cormotif_d,
                             groupid = groupid,
                             compid = compid,
-                            K=1:8,
-                            max.iter = 500,
+                            K=1:10,
+                            max.iter = 1000,
                             runtype = "logCPM")
 
 #only need to run this once! 
@@ -2740,7 +2765,7 @@ cormotif_dxr <- cormotiffit(exprs = Cormotif_d,
 
 #saveRDS(cormotif_dxr, "data/cormotif_dxr.RDS")
 
-#cormotif_dxr <- readRDS("data/cormotif_dxr.RDS")
+#cormotif_dxr_fin <- readRDS("C:Users/emmap/RDirectory/Recovery_RNAseq/Recovery_5FU/data/cormotif_dxr.RDS")
 
 ```
 

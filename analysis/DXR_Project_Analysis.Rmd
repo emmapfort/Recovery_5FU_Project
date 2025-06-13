@@ -52,7 +52,11 @@ library(reshape2)
 library(ggVennDiagram)
 library(UpSetR)
 library(ggpubr)
+library(VennDiagram)
+library(VennDetail)
 library(BiocParallel)
+library(RUVSeq)
+library(SummarizedExperiment)
 ```
 
 
@@ -484,7 +488,7 @@ boxplot1 <- read.csv("data/new/filcpm_final_matrix.csv") %>%
 #saveRDS(boxplot1, "data/new/filcpm_matrix_genes.RDS")
 
 #Define gene list(s)
-initial_test_genes <- c("CDKN1A", "MDM2", "BAX", "RARG", "TP53")  
+initial_test_genes <- c("CDKN1A", "MDM2", "BAX", "RARG", "TP53", "TOP2B", "TOP2A")  
 #Add more gene symbols as needed or add more categories
 
 #Now put in the function I want to use to generate boxplots of genes
@@ -580,24 +584,26 @@ ind_num <- c("1", "1", "1", "1", "1", "1",
              "6", "6", "6", "6", "6", "6", 
              "6R", "6R", "6R", "6R", "6R", "6R")
 
+# saveRDS(ind_num, "data/new/ind_num.RDS")
+
 #now plot my PCA for unfiltered log2cpm
 ####PC1/PC2####
 ggplot2::autoplot(prcomp_res_unfilt, data = Metadata, colour = "Condition", shape = "Time", size =4, x=1, y=2) +
-  ggrepel::geom_text_repel(label=ind_num) +
+  ggrepel::geom_text_repel(label=ind_num, vjust = -.5, max.overlaps = 30) +
   scale_color_manual(values=cond_col) +
   ggtitle(expression("PCA of Unfiltered log"[2]*"cpm")) +
   theme_bw()
 
 ####PC2/PC3####
 ggplot2::autoplot(prcomp_res_unfilt, data = Metadata, colour = "Condition", shape = "Time", size =4, x=2, y=3) +
-  ggrepel::geom_text_repel(label=ind_num) +
+  ggrepel::geom_text_repel(label=ind_num, vjust = -.5, max.overlaps = 30) +
   scale_color_manual(values=cond_col) +
   ggtitle(expression("PCA of Unfiltered log"[2]*"cpm")) +
   theme_bw()
 
 ####PC3/PC4####
 ggplot2::autoplot(prcomp_res_unfilt, data = Metadata, colour = "Condition", shape = "Time", size =4, x=3, y=4) +
-  ggrepel::geom_text_repel(label=ind_num) +
+  ggrepel::geom_text_repel(label=ind_num, vjust = -.5, max.overlaps = 30) +
   scale_color_manual(values=cond_col) +
   ggtitle(expression("PCA of Unfiltered log"[2]*"cpm")) +
   theme_bw()
@@ -606,21 +612,29 @@ ggplot2::autoplot(prcomp_res_unfilt, data = Metadata, colour = "Condition", shap
 #Now plot my PCA for filtered log2cpm
 ####PC1/PC2####
 ggplot2::autoplot(prcomp_res_filt, data = Metadata, colour = "Condition", shape = "Time", size =4, x=1, y=2) +
-  ggrepel::geom_text_repel(label=ind_num) +
+  ggrepel::geom_text_repel(label=ind_num, vjust = -.5, max.overlaps = 30) +
   scale_color_manual(values=cond_col) +
   ggtitle(expression("PCA of Filtered log"[2]*"cpm")) +
   theme_bw()
 
+
+ggplot2::autoplot(prcomp_res_filt, data = Metadata, colour = "Condition", shape = "Time", size =4, x=1, y=2) +
+  ggrepel::geom_text_repel(label=ind_num, vjust = -.5, max.overlaps = 30) +
+  scale_color_manual(values=cond_col) +
+  ggtitle(expression("PCA of Filtered log"[2]*"cpm")) +
+  theme_bw()
+
+
 ####PC2/PC3####
 ggplot2::autoplot(prcomp_res_filt, data = Metadata, colour = "Condition", shape = "Time", size =4, x=2, y=3) +
-  ggrepel::geom_text_repel(label=ind_num) +
+  ggrepel::geom_text_repel(label=ind_num, vjust = -.5, max.overlaps = 30) +
   scale_color_manual(values=cond_col) +
   ggtitle(expression("PCA of Filtered log"[2]*"cpm")) +
   theme_bw()
 
 ####PC3/PC4####
 ggplot2::autoplot(prcomp_res_filt, data = Metadata, colour = "Condition", shape = "Time", size =4, x=3, y=4) +
-  ggrepel::geom_text_repel(label=ind_num) +
+  ggrepel::geom_text_repel(label=ind_num, vjust = -.5, max.overlaps = 30) +
   scale_color_manual(values=cond_col) +
   ggtitle(expression("PCA of Filtered log"[2]*"cpm")) +
   theme_bw()
@@ -846,6 +860,8 @@ summary(results_summary)
 # NotSig  5076   7151   13810
 # Up      4520   3575     150
 
+vennDiagram(object = results_summary, include = c("up", "down"))
+
 ```
 
 ```{r Make Toptables of DEGs}
@@ -871,6 +887,975 @@ Toptable_V.D144R <- topTable(fit = fit2, coef = "V.D144R", number = nrow(x), adj
 Toptable_list <- readRDS("data/new/Toptable_list.RDS")
 
 ```
+
+
+```{r Top 5 DEGs Limma}
+#use your three toptables so I can pull out top 5 genes from each based on adj. p val
+
+top5_D24T <- Toptable_V.D24T[order(Toptable_V.D24T$adj.P.Val), ][1:5,] %>% 
+  rownames_to_column(., var = "Entrez_ID")
+top5_D24R <- Toptable_V.D24R[order(Toptable_V.D24R$adj.P.Val), ][1:5,] %>% 
+  rownames_to_column(., var = "Entrez_ID")
+top5_D144R <- Toptable_V.D144R[order(Toptable_V.D144R$adj.P.Val), ][1:5,] %>% 
+  rownames_to_column(., var = "Entrez_ID")
+
+#now that I've pulled the top 5 DEGs from each, make a list to pull them from my log2cpm data
+
+boxplot1 <- read.csv("data/new/filcpm_final_matrix.csv") %>% 
+  as.data.frame()
+
+#Define gene list
+#these are the top 5 genes pulled from my toptables
+top5_D24T_geneslist <- c(top5_D24T$Entrez_ID)
+top5_D24R_geneslist <- c(top5_D24R$Entrez_ID)
+top5_D144R_geneslist <- c(top5_D144R$Entrez_ID)
+#Add more gene symbols as needed or add more categories
+
+#now pull these from my log2cpm matrix
+top5_D24T_genes <- boxplot1[boxplot1$Entrez_ID %in% top5_D24T_geneslist,]
+dim(top5_D24T_genes)
+#5 genes in 44 cols
+top5_D24R_genes <- boxplot1[boxplot1$Entrez_ID %in% top5_D24R_geneslist,]
+dim(top5_D24R_genes)
+#5 genes in 44 cols
+top5_D144R_genes <- boxplot1[boxplot1$Entrez_ID %in% top5_D144R_geneslist,]
+dim(top5_D144R_genes)
+#5 genes in 44 cols
+
+#Now put in the function I want to use to generate boxplots of genes
+#####D24T#####
+process_top5_D24T <- function(gene) {
+  gene_data <- top5_D24T_genes %>% filter(Entrez_ID == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2cpm") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6R$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in top5_D24T_geneslist) {
+  gene_data <- process_top5_D24T(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2cpm, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2cpm Expression of", gene, "top 5 DEGs D24T")) +
+    labs(x = "Treatment", y = "log2cpm") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+#####D24R#####
+process_top5_D24R <- function(gene) {
+  gene_data <- top5_D24R_genes %>% filter(Entrez_ID == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2cpm") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6R$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in top5_D24R_geneslist) {
+  gene_data <- process_top5_D24R(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2cpm, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2cpm Expression of", gene, "top 5 DEGs D24R")) +
+    labs(x = "Treatment", y = "log2cpm") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+#####D144R#####
+process_top5_D144R <- function(gene) {
+  gene_data <- top5_D144R_genes %>% filter(Entrez_ID == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2cpm") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6R$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in top5_D144R_geneslist) {
+  gene_data <- process_top5_D144R(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2cpm, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2cpm Expression of", gene, "top 5 DEGs D144R")) +
+    labs(x = "Treatment", y = "log2cpm") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+
+```
+
+```{r DOX24T DEGs logFC all Conditions}
+# Toptable_V.D24T
+
+#make a list of all of the genes in this set so I can plot the logFC in other sets
+D24T_DEGs <- DOX_24T$Entrez_ID[DOX_24T$adj.P.Val < 0.05]
+length(D24T_DEGs)
+#9243 genes in length after adj. p value cutoff
+#if I did p value only - 9658 genes
+
+#now that I have a list of my DEGs from D24T - pull these genes out from the other DEG lists
+# D24R_DEGs <- Toptable_V.D24R[Toptable_V.D24R$adj.P.Val < 0.05,]
+
+# D24R_DEGs_D24T <- D24R_DEGs %>%  
+#   rownames_to_column(., var = "Entrez_ID")
+
+# D24R_DEGs_D24T <- D24R_DEGs_D24T[D24R_DEGs_D24T$Entrez_ID %in% D24T_DEGs,]
+# dim(D24R_DEGs_D24T)
+#4831 genes in common here after adj p value cutoff
+
+# D144R_DEGs <- Toptable_V.D144R[Toptable_V.D144R$adj.P.Val < 0.05,]
+# 
+# D144R_DEGs_D24T <- D144R_DEGs %>%  
+#   rownames_to_column(., var = "Entrez_ID")
+# 
+# D144R_DEGs_D24T <- D144R_DEGs_D24T[D144R_DEGs_D24T$Entrez_ID %in% D24T_DEGs,]
+# dim(D144R_DEGs_D24T)
+#322 genes in common after adj p value cutoff
+
+#now I want to plot the logFC of these
+
+#ignore the above for now, just plot those full gene sets in logFC
+D24T_DEGs <- DOX_24T$Entrez_ID[DOX_24T$adj.P.Val < 0.05]
+length(D24T_DEGs)
+
+D24R_DEGs <- DOX_24R$Entrez_ID[DOX_24R$adj.P.Val < 0.05]
+length(D24R_DEGs)
+
+D144R_DEGs <- DOX_144R$Entrez_ID[DOX_144R$adj.P.Val < 0.05]
+length(D144R_DEGs)
+#now that I have the full list of genes, I want to plot the logFC across conditions
+#to do this - make a combined toptable
+
+# Toptable_list
+
+#plot the set of genes across conditions
+# 
+# logFC_long_allsets <- imap_dfr(Toptable_list, function(tbl, condition) {
+#   tbl %>% 
+#     rownames_to_column(var = "Entrez_ID") %>% 
+#     dplyr::select(Entrez_ID, logFC) %>% 
+#     mutate(Condition = condition)
+# })
+# 
+# 
+# ggplot(logFC_long_allsets, aes(x = Condition, y = logFC, group = Entrez_ID, color = Entrez_ID)) +
+#   geom_boxplot() +
+#   geom_point(size = 2) +
+#   labs(
+#     title = "logFC of Genes Across Conditions",
+#     x = "Condition",
+#     y = "logFC"
+#   ) +
+#   theme_minimal()
+
+
+####Try this####
+
+#Combine the toptables I have from pairwise analysis into a single dataframe
+d24_toptable_dxr <- Toptable_V.D24T %>% 
+  rownames_to_column(var = "Entrez_ID") %>% 
+  mutate(Time = "24")
+
+d24r_toptable_dxr <- Toptable_V.D24R %>% 
+  rownames_to_column(var = "Entrez_ID") %>% 
+  mutate(Time = "24R")
+
+d144r_toptable_dxr <- Toptable_V.D144R %>% 
+  rownames_to_column(var = "Entrez_ID") %>% 
+  mutate(Time = "144R")
+
+combined_toptables_dxr <- bind_rows(
+  d24_toptable_dxr,
+  d24r_toptable_dxr,
+  d144r_toptable_dxr)
+
+#Filter the data based on each motif
+filt_toptable_dxr <- combined_toptables_dxr %>% 
+  dplyr::filter(Entrez_ID  %in% D24T_DEGs) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for D24T DEGs Across Conditions")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#now do the same with the other conditions
+
+filt_toptable_dxr_24r <- combined_toptables_dxr %>% 
+  dplyr::filter(Entrez_ID  %in% D24R_DEGs) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for D24R DEGs Across Conditions")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#D144R
+
+filt_toptable_dxr_144r <- combined_toptables_dxr %>% 
+  dplyr::filter(Entrez_ID  %in% D144R_DEGs) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for D144R DEGs Across Conditions")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#now put the names of these graphs to print them
+filt_toptable_dxr
+filt_toptable_dxr_24r
+filt_toptable_dxr_144r
+
+
+```
+
+```{r RUVs Correction Data Setup - no RUV yet, fig.height=6, fig.width=8}
+
+filt_gene_list <- rownames(filcpm_matrix)
+#14319 genes as usual
+
+#in order to make this match with annot later down the line, change the col names for counts_raw_matrix to match final_sample_names in annot
+
+#i'll also want to make sure I keep the replicate for this set
+
+colnames(counts_raw_matrix) <- Metadata$Final_sample_name
+
+RUV_filt_counts <- counts_raw_matrix %>% 
+  as.data.frame() %>% 
+  dplyr::filter(., row.names(.)%in% filt_gene_list)
+
+#add in the annotation files
+ind_num <- readRDS("data/new/ind_num.RDS")
+annot <- read.csv("data/new/Metadata.csv")
+
+#  counts need to be integer values and in a numeric matrix
+# note: the log transformation needs to be accounted for in the isLog argument in RUVs function.
+counts <- as.matrix(RUV_filt_counts)
+
+# Create a DataFrame for the phenoData
+phenoData <- DataFrame(annot)
+
+# Now create the RangedSummarizedExperiment necessary for RUVs input
+# looks like it did need both the phenodata and the counts.
+set <- SummarizedExperiment(assays =  counts, metadata = phenoData)
+
+# Generate a background matrix
+# The column "Cond" holds the comparisons that you actually want to make. DOX_24, DMSO_24,5FU_24, DOX_3,etc.
+scIdx <-RUVSeq::makeGroups(phenoData$Condition)
+scIdx
+
+#now I've made all of the data I need for this - they are located in each section for k values
+
+#DO NOT USE THESE COUNTS FOR LINEAR MODELING
+
+#colors for all of the plots
+fill_col_ind <- c("#66C2A5", "#FC8D62", "#1F78B4", "#E78AC3", "#A6D854", "#FFD92A", "#8B3E9B")
+
+fill_col_ind_dark <- c("#003F5C", "#45AE91",  "#58508D", "#BC4099", "#8B3E9B", "#FF6361", "#FF2362")
+
+fill_col_tx <- c("#63666D", "#499FBD", "#DCACED")
+
+fill_col_txtime <- c("#003F5C", "#45AE91",  "#58508D", "#BC4099", "#8B3E9B", "#FF6361", "#FF2362", "#A6D854", "#FC8D62")
+
+# before ruv (counts PCA)
+prcomp_res_counts <- prcomp(t(counts), scale. = FALSE, center = TRUE)
+annot_prcomp_res <- prcomp_res_counts$x %>% cbind(., annot)
+
+group_2 <- annot$Condition
+
+#now plot my PCA for filtered counts
+####PC1/PC2####
+ggplot2::autoplot(prcomp_res_counts, 
+                  data = annot, 
+                  colour = "Condition", 
+                  shape = "Time", 
+                  size =4, 
+                  x=1, 
+                  y=2) +
+  ggrepel::geom_text_repel(label=ind_num, 
+                           vjust = -0.5, 
+                           max.overlaps = 30) +
+  scale_color_manual(values=cond_col) +
+  ggtitle(expression("PCA of Filtered Counts")) +
+  theme_bw()
+
+####PC2/PC3####
+ggplot2::autoplot(prcomp_res_counts, 
+                  data = annot, 
+                  colour = "Condition", 
+                  shape = "Time", 
+                  size =4, 
+                  x=2, 
+                  y=3) +
+  ggrepel::geom_text_repel(label=ind_num, 
+                           vjust = -0.5, 
+                           max.overlaps = 30) +
+  scale_color_manual(values=cond_col) +
+  ggtitle(expression("PCA of Filtered Counts")) +
+  theme_bw()
+
+#go ahead and plot PCA of log2cpm to compare (somewhat) later since the norm counts output isn't possible with these data since they don't undergo correction
+
+prcomp_res_cpm <- prcomp(t(filcpm_matrix %>% as.matrix()), center =  TRUE)
+
+####PC1/PC2####
+ggplot2::autoplot(prcomp_res_cpm, 
+                  data = annot, 
+                  colour = "Condition", 
+                  shape = "Time", 
+                  size =4, 
+                  x=1, 
+                  y=2) +
+  ggrepel::geom_text_repel(label=ind_num, 
+                           vjust = -0.5, 
+                           max.overlaps = 30) +
+  scale_color_manual(values=cond_col) +
+  ggtitle(expression("PCA of log2cpm no RUVs")) +
+  theme_bw()
+
+####PC2/PC3####
+ggplot2::autoplot(prcomp_res_cpm, 
+                  data = annot, 
+                  colour = "Condition", 
+                  shape = "Time", 
+                  size =4, 
+                  x=2, 
+                  y=3) +
+  ggrepel::geom_text_repel(label=ind_num, 
+                           vjust = -0.5, 
+                           max.overlaps = 30) +
+  scale_color_manual(values=cond_col) +
+  ggtitle(expression("PCA of log2cpm no RUVs")) +
+  theme_bw()
+
+
+####new PCA plots no correction####
+#PCA plots for each value of k attached in each section
+
+#make sure that your replicate is still included for RUV
+#will have to use Metadata with 42 cols for this
+#ensure that all of these dimensions stay at 42 w/rep
+# dge1 <- DGEList(counts = x)
+# dge1$samples$group <- factor(Metadata$Condition)
+# dge1 <- calcNormFactors(dge1, method = "TMM")
+# 
+# #calculate the normalization factors with method TMM
+# dge1_calc <- calcNormFactors(dge1, method = "TMM")
+# 
+# #Pull out factors
+# snames1 <- data.frame("samples" = colnames(dge1_calc)) %>% separate_wider_delim(., cols = samples, names = c("Treatment", "Time", "Individual"), delim = "_", cols_remove = FALSE)
+# 
+# snames1_ind <- snames1$Individual
+
+#####Now start performing RUV 1-3###
+
+```
+
+```{r RUVs k1, fig.height=6, fig.width=8}
+#Apply RUVs function from RUVSeq
+#"k" will be iteratively adjusted over time depending on your PCA.
+set1 <- RUVSeq::RUVs(x = counts, k =1, scIdx = scIdx, isLog = FALSE)
+
+#get the ruv weights to put into the linear model. n weights = k.
+#k=1
+RUV_df1 <- set1$W %>% as.data.frame()
+RUV_df1$Names <- rownames(RUV_df1)
+
+#Check that the names match
+#k=1
+RUV_df_rm1 <- RUV_df1[RUV_df1$Names %in% annot$Final_sample_name, ] 
+RUV_1 <-  RUV_df_rm1$W_1
+
+#PCA checks
+#k=1
+prcomp_res_1 <- prcomp(t(set1$normalizedCounts), scale. = FALSE, center = TRUE)
+annot_prcomp_res_1 <- prcomp_res_1$x %>% cbind(., annot)
+
+ggplot2::autoplot(prcomp_res_1, data = annot, colour = "Condition", shape = "Time", size =4, x = 1, y = 2)+
+  theme_bw()+
+  scale_color_manual(values=cond_col)+
+  ggrepel::geom_text_repel(label= ind_num, vjust = -0.5, max.overlaps = 30)+
+  ggtitle("RUVs Correction k=1 NormCounts")
+
+ggplot2::autoplot(prcomp_res_1, data = annot, colour = "Condition", shape = "Time", size =4, x=2, y=3)+
+  theme_bw()+
+  scale_color_manual(values=cond_col)+
+  ggrepel::geom_text_repel(label= ind_num, vjust = -0.5, max.overlaps = 30)+
+  ggtitle("RUVs Correction k=1 NormCounts")
+
+#also try by converting these values to log2cpm
+
+RUV_df_rm1_cpm <- cpm(set1$normalizedCounts, log = TRUE)
+
+prcomp_res_1_cpm <- prcomp(t(RUV_df_rm1_cpm), scale. = FALSE, center = TRUE)
+annot_prcomp_res_1_cpm <- prcomp_res_1_cpm$x %>% cbind(., annot)
+
+##PC1/2
+ggplot2::autoplot(prcomp_res_1_cpm, 
+                  data = annot, 
+                  colour = "Condition", 
+                  shape = "Time", 
+                  size = 4,
+                  x=1,
+                  y=2)+
+  theme_bw()+
+  scale_color_manual(values=cond_col)+
+  ggrepel::geom_text_repel(label= ind_num, 
+                           vjust = -0.5, 
+                           max.overlaps = 30)+
+  ggtitle("RUVs Correction k=1 log2cpm")
+
+###PC2/3
+ggplot2::autoplot(prcomp_res_1_cpm, 
+                  data = annot, 
+                  colour = "Condition", 
+                  shape = "Time", 
+                  size = 4, 
+                  x=2, 
+                  y=3)+
+  theme_bw()+
+  scale_color_manual(values=cond_col)+
+  ggrepel::geom_text_repel(label= ind_num, 
+                           vjust = -0.5, 
+                           max.overlaps = 30)+
+  ggtitle("RUVs Correction k=1 log2cpm")
+
+```
+```{r RUVs k2, fig.height=6, fig.width=8}
+#Apply RUVs function from RUVSeq
+#"k" will be iteratively adjusted over time depending on your PCA.
+set2 <- RUVSeq::RUVs(x = counts, k =2, scIdx = scIdx, isLog = FALSE)
+
+#get the ruv weights to put into the linear model. n weights = k.
+#k=2
+RUV_df2 <- set2$W %>% as.data.frame()
+RUV_df2$Names <- rownames(RUV_df2)
+
+#Check that the names match
+#k=2
+RUV_df_rm2 <- RUV_df2[RUV_df2$Names %in% annot$Final_sample_name, ] 
+RUV_2 <-  RUV_df_rm2$W_2
+
+#PCA checks
+#k=2
+prcomp_res_2 <- prcomp(t(set2$normalizedCounts), scale. = FALSE, center = TRUE)
+annot_prcomp_res_2 <- prcomp_res_2$x %>% cbind(., annot)
+
+##PC1/2
+ggplot2::autoplot(prcomp_res_2, 
+                  data = annot, 
+                  colour = "Condition", 
+                  shape = "Time", 
+                  size =4, 
+                  x=1,
+                  y=2)+
+  theme_bw()+
+  scale_color_manual(values=cond_col)+
+  ggrepel::geom_text_repel(label= ind_num, 
+                           vjust = -0.5, 
+                           max.overlaps = 30)+
+  ggtitle("RUVs Correction k=2 NormCounts")
+
+###PC2/3
+ggplot2::autoplot(prcomp_res_2, 
+                  data = annot, 
+                  colour = "Condition", 
+                  shape = "Time", 
+                  size =4, 
+                  x=2, 
+                  y=3)+
+  theme_bw()+
+  scale_color_manual(values=cond_col)+
+  ggrepel::geom_text_repel(label= ind_num, 
+                           vjust = -0.5, 
+                           max.overlaps = 30)+
+  ggtitle("RUVs Correction k=2 NormCounts")
+
+#now convert this to log2cpm using the normalized counts from set2
+
+RUV_df_rm2_cpm <- cpm(set2$normalizedCounts, log = TRUE)
+
+prcomp_res_2_cpm <- prcomp(t(RUV_df_rm2_cpm), scale. = FALSE, center = TRUE)
+annot_prcomp_res_2_cpm <- prcomp_res_2_cpm$x %>% cbind(., annot)
+
+ggplot2::autoplot(prcomp_res_2_cpm, 
+                  data = annot, 
+                  colour = "Condition", 
+                  shape = "Time", 
+                  size =4, 
+                  x=1, 
+                  y=2)+
+  theme_bw()+
+  scale_color_manual(values=cond_col)+
+  ggrepel::geom_text_repel(label= ind_num, 
+                           vjust = -0.5, 
+                           max.overlaps = 30)+
+  ggtitle("RUVs Correction k=2 log2cpm")
+
+###PC2/3
+ggplot2::autoplot(prcomp_res_2_cpm, 
+                  data = annot, 
+                  colour = "Condition", 
+                  shape = "Time", 
+                  size =4, 
+                  x=2, 
+                  y=3)+
+  theme_bw()+
+  scale_color_manual(values=cond_col)+
+  ggrepel::geom_text_repel(label= ind_num, 
+                           vjust = -0.5, 
+                           max.overlaps = 30)+
+  ggtitle("RUVs Correction k=2 log2cpm")
+
+```
+
+```{r RUVs k3, fig.height=6, fig.width=8}
+
+#Apply RUVs function from RUVSeq
+#"k" will be iteratively adjusted over time depending on your PCA.
+set3 <- RUVSeq::RUVs(x = counts, k =3, scIdx = scIdx, isLog = FALSE)
+
+#get the ruv weights to put into the linear model. n weights = k.
+#k=3
+RUV_df3 <- set3$W %>% as.data.frame()
+RUV_df3$Names <- rownames(RUV_df3)
+
+#Check that the names match
+#k=3
+RUV_df_rm3 <- RUV_df3[RUV_df3$Names %in% annot$Final_sample_name, ] 
+RUV_3 <-  RUV_df_rm3$W_3
+
+#PCA checks
+#k=3
+prcomp_res_3 <- prcomp(t(set3$normalizedCounts), scale. = FALSE, center = TRUE)
+annot_prcomp_res_3 <- prcomp_res_3$x %>% cbind(., annot)
+
+###PC1/2
+ggplot2::autoplot(prcomp_res_3, 
+                  data = annot, 
+                  colour = "Condition", 
+                  shape = "Time", 
+                  size =4, 
+                  x=1, 
+                  y=2)+
+  theme_bw()+
+  scale_color_manual(values=cond_col)+
+  ggrepel::geom_text_repel(label= ind_num, 
+                           vjust = -0.5, 
+                           max.overlaps = 30)+
+  ggtitle("RUVs Correction k=3 NormCounts")
+
+###PC2/3
+ggplot2::autoplot(prcomp_res_3, 
+                  data = annot, 
+                  colour = "Condition", 
+                  shape = "Time", 
+                  size =4, 
+                  x=2, 
+                  y=3)+
+  theme_bw()+
+  scale_color_manual(values=cond_col)+
+  ggrepel::geom_text_repel(label= ind_num, 
+                           vjust = -0.5, 
+                           max.overlaps = 30)+
+  ggtitle("RUVs Correction k=3 NormCounts")
+
+#now convert this to log2cpm using the normalized counts from set3
+
+RUV_df_rm3_cpm <- cpm(set3$normalizedCounts, log = TRUE)
+
+prcomp_res_3_cpm <- prcomp(t(RUV_df_rm3_cpm), scale. = FALSE, center = TRUE)
+annot_prcomp_res_3_cpm <- prcomp_res_3_cpm$x %>% cbind(., annot)
+
+##PC1/2
+ggplot2::autoplot(prcomp_res_3_cpm, 
+                  data = annot, 
+                  colour = "Condition", 
+                  shape = "Time", 
+                  size =4, 
+                  x=1, 
+                  y=2)+
+  theme_bw()+
+  scale_color_manual(values=cond_col)+
+  ggrepel::geom_text_repel(label= ind_num, 
+                           vjust = -0.5, 
+                           max.overlaps = 30)+
+  ggtitle("RUVs Correction k=3 log2cpm")
+
+###PC2/3
+ggplot2::autoplot(prcomp_res_3_cpm, 
+                  data = annot, 
+                  colour = "Condition", 
+                  shape = "Time", 
+                  size =4, 
+                  x=2, 
+                  y=3)+
+  theme_bw()+
+  scale_color_manual(values=cond_col)+
+  ggrepel::geom_text_repel(label= ind_num, 
+                           vjust = -0.5, 
+                           max.overlaps = 30)+
+  ggtitle("RUVs Correction k=3 log2cpm")
+
+```
+
+```{r RUVs HM Spearman, fig.height=10, fig.width=12}
+#Now that I've put together the PCA plots for both normalized counts and log2cpm
+#I want to make these into heatmaps
+
+####RUVs k=1-3
+#check to make sure that the column names are correct
+dim(set1$normalizedCounts)
+dim(set2$normalizedCounts)
+dim(set3$normalizedCounts)
+
+#take the normalized counts from k=1 and put together a dataframe with the correct columns
+normcounts_k1 <- set1$normalizedCounts %>% as.data.frame()
+#do the same with k=2 and k=3
+normcounts_k2 <- set2$normalizedCounts %>% as.data.frame()
+normcounts_k3 <- set3$normalizedCounts %>% as.data.frame()
+
+#do the same with the log2cpm conversion
+cpm_k1 <- cpm(set1$normalizedCounts, log = TRUE) %>% as.data.frame()
+cpm_k2 <- cpm(set2$normalizedCounts, log = TRUE) %>% as.data.frame()
+cpm_k3 <- cpm(set3$normalizedCounts, log = TRUE) %>% as.data.frame()
+
+#compute the correlation matrices for RUVs 1-3 with normalized counts
+#k=1
+cor_matrix_spmn_k1 <- cor(normcounts_k1,
+                           y = NULL,
+                           use = "everything",
+                           method = "spearman")
+
+#k=2
+cor_matrix_spmn_k2 <- cor(normcounts_k2,
+                          y = NULL,
+                          use = "everything",
+                          method = "spearman")
+
+#k=3
+cor_matrix_spmn_k3 <- cor(normcounts_k3,
+                          y = NULL,
+                          use = "everything",
+                          method = "spearman")
+
+#Do the same with the log2cpm converted versions
+#k=1
+cor_matrix_spmn_k1_cpm <- cor(cpm_k1,
+                           y = NULL,
+                           use = "everything",
+                           method = "spearman")
+
+#k=2
+cor_matrix_spmn_k2_cpm <- cor(cpm_k2,
+                          y = NULL,
+                          use = "everything",
+                          method = "spearman")
+
+#k=3
+cor_matrix_spmn_k3_cpm <- cor(cpm_k3,
+                          y = NULL,
+                          use = "everything",
+                          method = "spearman")
+
+#extract metadata columns
+Individual <- as.character(Metadata$Ind)
+Time <- as.character(Metadata$Time)
+Treatment <- as.character(Metadata$Drug)
+
+# Define color palettes for annotations
+annot_col_cor = list(Treatment = c("DOX" = "#499FBD", 
+                               "DMSO" = "#BBBBBC"),
+                     Individuals = c("1" = "#003F5C", 
+                                     "2" = "#45AE91", 
+                                     "3" = "#58209D", 
+                                     "4" = "#8B3E9B", 
+                                     "5" = "#FF6361", 
+                                     "6" = "#BC4169", 
+                                     "6R" = "#FF2362"),
+                     Timepoints = c("24T" = "#238B45",
+                                    "24R" = "#74C476", 
+                                    "144R" = "#C7E9C0"))
+
+tx_colors <- c("DOX" = "#499FBD", 
+                 "DMSO" = "#BBBBBC")
+ind_colors <- c("1" = "red",
+                "2" = "orange",
+                "3" = "yellow",
+                "4" = "green",
+                "5" = "blue",
+                "6" = "violet",
+                "6R" = "purple")
+time_colors <- c("24T" = "#238B45",
+                 "24R" = "#74C476",
+                 "144R" = "#C7E9C0")
+
+# Create annotations
+top_annotation <- HeatmapAnnotation(
+  Individual = Individual, 
+  Time = Time,
+  Treatment = Treatment,
+  col = list(
+    Individual = ind_colors, 
+    Time = time_colors,
+    Treatment = tx_colors
+  )
+)
+
+####ANNOTATED HEATMAPS####
+####Spearman Heatmap k=1 ####
+heatmap_spmn_k1 <- Heatmap(cor_matrix_spmn_k1,
+                           name = "Spearman",
+                           top_annotation = top_annotation,
+                           show_row_names = TRUE,
+                           show_column_names = TRUE,
+                           cluster_rows = TRUE,
+                           cluster_columns = TRUE,
+                           border = TRUE, 
+                           column_title = "Normalized Counts k=1")
+
+# Draw the heatmap k=1
+draw(heatmap_spmn_k1)
+
+####Spearman Heatmap k=2####
+heatmap_spmn_k2 <- Heatmap(cor_matrix_spmn_k2,
+                           name = "Spearman",
+                           top_annotation = top_annotation,
+                           show_row_names = TRUE,
+                           show_column_names = TRUE,
+                           cluster_rows = TRUE,
+                           cluster_columns = TRUE,
+                           border = TRUE, 
+                           column_title = "Normalized Counts k=2")
+
+# Draw the heatmap k=2
+draw(heatmap_spmn_k2)
+
+####Spearman Heatmap k=3####
+heatmap_spmn_k3 <- Heatmap(cor_matrix_spmn_k3,
+                           name = "Spearman",
+                           top_annotation = top_annotation,
+                           show_row_names = TRUE,
+                           show_column_names = TRUE,
+                           cluster_rows = TRUE,
+                           cluster_columns = TRUE,
+                           border = TRUE, 
+                           column_title = "Normalized Counts k=3")
+
+# Draw the heatmap k=3
+draw(heatmap_spmn_k3)
+
+####Spearman Heatmap k=1 log2cpm####
+heatmap_spmn_k1_cpm <- Heatmap(cor_matrix_spmn_k1_cpm,
+                           name = "Spearman",
+                           top_annotation = top_annotation,
+                           show_row_names = TRUE,
+                           show_column_names = TRUE,
+                           cluster_rows = TRUE,
+                           cluster_columns = TRUE,
+                           border = TRUE, 
+                           column_title = "log2cpm of Normalized Counts k=1")
+
+# Draw the heatmap k=1 log2cpm
+draw(heatmap_spmn_k1_cpm)
+
+####Spearman Heatmap k=2 log2cpm####
+heatmap_spmn_k2_cpm <- Heatmap(cor_matrix_spmn_k2_cpm,
+                           name = "Spearman",
+                           top_annotation = top_annotation,
+                           show_row_names = TRUE,
+                           show_column_names = TRUE,
+                           cluster_rows = TRUE,
+                           cluster_columns = TRUE,
+                           border = TRUE, 
+                           column_title = "log2cpm of Normalized Counts k=2")
+
+# Draw the heatmap k=2 log2cpm
+draw(heatmap_spmn_k2_cpm)
+
+####Spearman Heatmap k=3 log2cpm####
+heatmap_spmn_k3_cpm <- Heatmap(cor_matrix_spmn_k3_cpm,
+                           name = "Spearman",
+                           top_annotation = top_annotation,
+                           show_row_names = TRUE,
+                           show_column_names = TRUE,
+                           cluster_rows = TRUE,
+                           cluster_columns = TRUE,
+                           border = TRUE, 
+                           column_title = "log2cpm of Normalized Counts k=3")
+
+# Draw the heatmap k=3 log2cpm
+draw(heatmap_spmn_k3_cpm)
+
+
+```
+
+
+```{r Extra Code For Now to add top genes to volcano plots}
+# top15 <- "toptable" %>% 
+#   filter(Direction != "Not Significant") %>% 
+#   arrange(adj.P.Value) %>% 
+#   head(15)
+```
+
 
 ```{r Volcano Plots of DEGs}
 #make a function to generate volcano plots + add gene numbers
@@ -1214,10 +2199,388 @@ ggVennDiagram(
 #set2 : 4362 + 4550 + 50 + 272 genes shared across DOX24T (all genes)
 #how many of these are downregulated and how many are upregulated?
 
+# Extract Significant DEGs
+# Create a list of DEGs for each sample
+
+# Example gene sets
+
+DEG1 <- DOX_24T$Entrez_ID[DOX_24T$adj.P.Val < 0.05]
+DEG2 <- DOX_24R$Entrez_ID[DOX_24R$adj.P.Val < 0.05]
+DEG3 <- DOX_144R$Entrez_ID[DOX_144R$adj.P.Val < 0.05]
+
+#try and use the VennDetail package to extract the genes from each condition
+#Set 1 - DOX_24T only genes
+#Set 2 - DOX_24T shared genes
+
+venn_test <- venndetail(venntest)
+plot(venn_test)
+detail(venn_test)
+#now that I have the genes subsetted by condition, I can pull out the genes I want to look at
+
+venn_DOX_24T <- getSet(object = venn_test, subset = c("Group 1"))
+dim(venn_DOX_24T)
+#4362 genes in DOX_24T only
+
+venn_DOX_shared <- getSet(object = venn_test, subset = c("Shared", "Group 1", "Group 1_Group 2", "Group 1_Group 3"))
+dim(venn_DOX_shared)
+#total of 9243 genes:
+  #4559 DOX_24T only 
+  #272 shared all
+  #50 DOX_24T vs DOX_144R
+  #4362 DOX_24T vs DOX_24R
+
+#now I can look at these sets to see which ones are up and down regulated in each
+#after that, run GO analysis
+venn_shared_DEGs <- venn_DOX_shared %>% 
+  as.data.frame() %>% 
+  column_to_rownames(., var = "Detail")
+
+venn_DOX24T_DEGs <- venn_DOX_24T %>% 
+  as.data.frame() %>% 
+  column_to_rownames(., var = "Detail")
+
+#pull these genes out of my DEG matrix with logFC
+DOX_24T_DEGs <- Toptable_list$V.D24T[row.names(venn_DOX24T_DEGs),]
+DOX_24T_shared_DEGs <- Toptable_list$V.D24T[row.names(venn_shared_DEGs),]
+
+#I want to go ahead and do this for every condition so I can see the genes in there
+#I also want to filter these by their logFC being up or down for GO/KEGG
+
+DOX24T_DEGs_GO <- DOX_24T_DEGs %>% 
+  dplyr::filter(., adj.P.Val < 0.05)
+
+DOX24T_DEGs_GO_up <- DOX24T_DEGs_GO %>% 
+  dplyr::filter(., logFC > 0)  %>% 
+  rownames_to_column(., var = "entrezgene_ID") %>% 
+  dplyr::select("entrezgene_ID")
+#has 4029 genes
+
+DOX24T_DEGs_GO_down <- DOX24T_DEGs_GO %>% 
+  dplyr::filter(., logFC < 0)  %>% 
+  rownames_to_column(., var = "entrezgene_ID") %>% 
+  dplyr::select("entrezgene_ID")
+#has 4305 genes
+
+#shared genes venn diagram
+DOX24Tshare_DEGs_GO <- DOX_24T_shared_DEGs %>% 
+  dplyr::filter(., adj.P.Val < 0.05) 
+
+DOX24Tshare_DEGs_GO_up <- DOX24Tshare_DEGs_GO %>% 
+  dplyr::filter(., logFC > 0)  %>% 
+  rownames_to_column(., var = "entrezgene_ID") %>% 
+  dplyr::select("entrezgene_ID")
+#has 4731 genes
+
+DOX24Tshare_DEGs_GO_down <- DOX24Tshare_DEGs_GO %>% 
+  dplyr::filter(., logFC < 0)  %>% 
+  rownames_to_column(., var = "entrezgene_ID") %>% 
+  dplyr::select("entrezgene_ID")
+
+
+
+
+
 ```
 
-```{r Cormotif Function}
+```{r GO KEGG Overlap}
+library(gprofiler2)
+#####DOX24 Upregulated Genes#####
+D24_DEGs_up_mat <- as.matrix(DOX24T_DEGs_GO_up)
 
+DOX_24_up_dxr_gene <- gost(query = D24_DEGs_up_mat,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+DOX_24_up_gost_genes <- gostplot(DOX_24_up_dxr_gene, capped = FALSE, interactive = TRUE)
+DOX_24_up_gost_genes
+
+table_DOX24_up_genes <- DOX_24_up_dxr_gene$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_DOX24_up_genes %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#write.csv(table_DOX24_up_genes, "output/table_DOX24_upreg_genes.csv")
+
+#GO:BP
+table_DOX24_up_genes_GOBP <- table_DOX24_up_genes %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+#saveRDS(table_motif1_GOBP_d, "data/table_motif1_GOBP_d.RDS")
+
+table_DOX24_up_genes_GOBP %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24T Specific Up DEGs Enriched GO:BP Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_DOX24_up_genes_KEGG <- table_DOX24_up_genes %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_DOX24_up_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24T Specific Up DEGs Enriched KEGG Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#####DOX24 Downregulated Genes#####
+D24_DEGs_down_mat <- as.matrix(DOX24T_DEGs_GO_down)
+
+DOX_24_down_dxr_gene <- gost(query = D24_DEGs_down_mat,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+DOX_24_down_gost_genes <- gostplot(DOX_24_down_dxr_gene, capped = FALSE, interactive = TRUE)
+DOX_24_down_gost_genes
+
+table_DOX24_down_genes <- DOX_24_down_dxr_gene$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_DOX24_down_genes %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#write.csv(table_DOX24_down_genes, "output/table_DOX24_downreg_genes.csv")
+
+#GO:BP
+table_DOX24_down_genes_GOBP <- table_DOX24_down_genes %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+#saveRDS(table_motif1_GOBP_d, "data/table_motif1_GOBP_d.RDS")
+
+table_DOX24_down_genes_GOBP %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24T Specific Down DEGs Enriched GO:BP Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_DOX24_down_genes_KEGG <- table_DOX24_down_genes %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_DOX24_down_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24T Specific Down DEGs Enriched KEGG Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+
+#####DOX24T share Upregulated DEGs GO KEGG#####
+D24Tshare_DEGs_up_mat <- as.matrix(DOX24Tshare_DEGs_GO_up)
+
+DOX_24Tshare_up_dxr_gene <- gost(query = D24Tshare_DEGs_up_mat,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+DOX_24Tshare_up_gost_genes <- gostplot(DOX_24Tshare_up_dxr_gene, capped = FALSE, interactive = TRUE)
+DOX_24Tshare_up_gost_genes
+
+table_DOX24Tshare_up_genes <- DOX_24Tshare_up_dxr_gene$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_DOX24Tshare_up_genes %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#write.csv(table_DOX24R_up_genes, "output/table_DOX24R_upreg_genes.csv")
+
+#GO:BP
+table_DOX24Tshare_up_genes_GOBP <- table_DOX24Tshare_up_genes %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+#saveRDS(table_motif1_GOBP_d, "data/table_motif1_GOBP_d.RDS")
+
+table_DOX24Tshare_up_genes_GOBP %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24T Shared Up DEGs Enriched GO:BP Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_DOX24Tshare_up_genes_KEGG <- table_DOX24Tshare_up_genes %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_DOX24Tshare_up_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24T Shared Up DEGs Enriched KEGG Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#####DOX24R Downregulated DEGs GO KEGG#####
+D24Tshare_DEGs_down_mat <- as.matrix(DOX24Tshare_DEGs_GO_down)
+
+DOX_24Tshare_down_dxr_gene <- gost(query = D24Tshare_DEGs_down_mat,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+DOX_24Tshare_down_gost_genes <- gostplot(DOX_24Tshare_down_dxr_gene, capped = FALSE, interactive = TRUE)
+DOX_24Tshare_down_gost_genes
+
+table_DOX24Tshare_down_genes <- DOX_24Tshare_down_dxr_gene$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_DOX24Tshare_down_genes %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#write.csv(table_DOX24R_down_genes, "output/table_DOX24R_downreg_genes.csv")
+
+#GO:BP
+table_DOX24Tshare_down_genes_GOBP <- table_DOX24Tshare_down_genes %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+#saveRDS(table_motif1_GOBP_d, "data/table_motif1_GOBP_d.RDS")
+
+table_DOX24Tshare_down_genes_GOBP %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24T Shared Down DEGs Enriched GO:BP Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_DOX24Tshare_down_genes_KEGG <- table_DOX24Tshare_down_genes %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_DOX24Tshare_down_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24T Shared Down DEGs Enriched KEGG Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+```
+
+
+
+```{r Cormotif Function}
 ## Fit limma model using code as it is found in the original cormotif code. It has
 ## only been modified to add names to the matrix of t values, as well as the
 ## limma fits
@@ -1860,7 +3223,7 @@ cormotiffit <- function(exprs, groupid=NULL, compid=NULL, K=1, tol=1e-3,
   # limmafit accordingly.
   # todo: add some typechecking here
   limfitted <- list()
-  if (runtype=="counts") {
+  if (runtype=="counts") {DOX_24T_shared_DEGs
     limfitted <- limmafit.counts(exprs,groupid,compid, norm.factor.method, voom.normalize.method)
   } else if (runtype=="logCPM") {
     limfitted <- limmafit.default(exprs,groupid,compid)
@@ -1970,7 +3333,7 @@ plotMotif<-function(fitted_cormotif,title="")
 
 ```{r Cormotif Library}
 #Don't load me in if you're using the above function, as it has been modified above
-library(Cormotif)
+#library(Cormotif)
 ```
 
 
@@ -2005,27 +3368,17 @@ rownames(Cormotif_df) <- Cormotif_df$Entrez_ID
 exprs.cormotif <- as.matrix(Cormotif_df[,2:37])
 dim(exprs.cormotif)
 
-####make a test one to see if the TMM is causing issues or not
-# Cormotif_cpm_test <- read.csv("data/new/filcpm_forCormotif.csv")
-# dim(Cormotif_cpm_test)
-# 
-# Cormotif_cpm_test_df <- data.frame(Cormotif_cpm_test)
-# 
-# rownames(Cormotif_cpm_test_df) <- Cormotif_cpm_test_df$Entrez_ID
-# exprs.cormotif_cpm_test <- as.matrix(Cormotif_cpm_test_df[,2:37])
-# dim(exprs.cormotif_cpm_test)
-
-####don't use this one, the previous is correct
-
 
 #see what happens if you remove ind3 which is driving the response down?
 
 
 
 #put together my group id and comparison id to make the correct comparisons between experimental conditions
+
 #groupid tells which experimental conditions are grouped together
 #compid tells which experimental conditions should be compared against one another
 ##ie DOX24T vs DMSO24T matched control
+
 groupid_csv <- read.csv("data/new/GroupID.csv")
 #now I have to make this into a vector (named vector)
 groupid <- c(
@@ -2036,17 +3389,17 @@ groupid <- c(
   DMSO_24R_1 = 5, DMSO_24R_2 = 5, DMSO_24R_3 = 5, DMSO_24R_4 = 5, DMSO_24R_5 = 5, DMSO_24R_6 = 5,
   DMSO_144R_1 = 6, DMSO_144R_2 = 6, DMSO_144R_3 = 6, DMSO_144R_4 = 6, DMSO_144R_5 = 6, DMSO_144R_6 = 6
 )
-groupid_1 <- groupid %>% as.vector()
-compid <- data.frame(Cond1 = c(1, 3, 5), Cond2 = c(2, 4, 6))
+# groupid_1 <- groupid_csv %>% as.vector()
+compid <- data.frame(Cond1 = c(1, 2, 3), Cond2 = c(4, 5, 6))
 
 ```
 
 ```{r Run Cormotif}
-#fit Cormotif model 
+#fit Cormotif model
 set.seed(19191)
 #only set the seed ONCE
 
-motif.fitted <- cormotiffit(
+motif.fitted_new <- cormotiffit(
   exprs = exprs.cormotif,
   groupid = groupid,
   compid = compid,
@@ -2056,6 +3409,8 @@ motif.fitted <- cormotiffit(
   runtype = "logCPM"
 )
 
+# saveRDS(motif.fitted, "data/new/motif.fitted_new_250604.RDS")
+motif.fitted <- readRDS("data/new/motif.fitted_final_3motif.RDS")
 ```
 
 ```{r Plot Cormotif}
@@ -2075,26 +3430,1418 @@ plotMotif(motif.fitted, title = "Fitted Motifs for DXR")
 gene_prob_all <- motif.fitted$bestmotif$p.post
 rownames(gene_prob_all) <- rownames(Cormotif_df)
 
+#assign each gene to a motif with max post prob
+assigned_motifs <- apply(gene_prob_all, 1, which.max)
+max_probs <- apply(gene_prob_all, 1, max)
+
+#combine these into a dataframe - motif assigned genes (p.post)
+motif_assignment_df <- gene_prob_all %>%
+  as.data.frame() %>%
+  rownames_to_column("Gene") %>%
+  mutate(
+    Assigned_Motif = assigned_motifs[Gene],
+    Max_Probability = max_probs[Gene]
+  )
+
+#now before I change any of these to be like the shade of the box, just do 0.5
+
+# Define gene probability groups
+prob_all_1  <- rownames(gene_prob_all[(gene_prob_all[,1] >0.05 & gene_prob_all[,1] <0.3 & gene_prob_all[,2] <0.5 & gene_prob_all[,3] <0.5),])
+
+length(prob_all_1)
+#5675
+
+prob_all_2  <- rownames(gene_prob_all[(gene_prob_all[,1] >0.5 & gene_prob_all[,2] <0.5 & gene_prob_all[,3] <0.5),])
+
+length(prob_all_2)
+#6353
+
+prob_all_3  <- rownames(gene_prob_all[(gene_prob_all[,1] >0.3 & gene_prob_all[,1] <0.9 & gene_prob_all[,2] >0.5 & gene_prob_all[,3] >0.5),])
+
+length(prob_all_3)
+#231 genes with >0.3 <0.9 1
+
+#compare between motif 1 and 2
+mf1_genes <- prob_all_1
+mf2_genes <- prob_all_2
+mf3_genes <- prob_all_3
+
+vennCor <- list(mf1_genes, mf2_genes, mf3_genes)
+ggVennDiagram(
+  vennCor,
+  category.names = c("Motif 1", "Motif 2", "Motif 3")
+) + ggtitle("Cormotif Specific and Shared DEGs (>0.6)")+
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),  # Increase title size
+    text = element_text(size = 16)  # Increase text size globally
+  )
+
+
 #extract the cluster likelihood - which DEGs are most likely to be in this cluster
 motif_prob <- motif.fitted$bestmotif$clustlike
 rownames(motif_prob) <- rownames(gene_prob_all)
 #write.csv(motif_prob,"data/new/cormotif_probability_genelist_all.csv")
 
-# Define gene probability groups
-prob_all_1  <- rownames(gene_prob_all[(gene_prob_all[,1] >= 0.25 & gene_prob_all[,2] <0.5 & gene_prob_all[,3] <0.5),])
+####try this Renee's way####
+clust1_p <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V1>0.5 & V2<0.5 & V3<0.5) %>% 
+  rownames
+clust2_p <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V2>0.5 & V1<0.5 & V3<0.5) %>% 
+  rownames
+clust3_p <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V3>0.5 & V1 <0.5 & V2 <0.5) %>% 
+  rownames
 
-length(prob_all_1)
+length(clust1_p)
+length(clust2_p)
+length(clust3_p)
 
-prob_all_2  <- rownames(gene_prob_all[(gene_prob_all[,1] >=0.3 & gene_prob_all[,2] >0.5 & gene_prob_all[,3] >0.5),])
+mf1_genes_p <- clust1_p
+mf2_genes_p <- clust2_p
+mf3_genes_p <- clust3_p
 
-length(prob_all_2)
+vennCor <- list(mf1_genes_p, mf2_genes_p, mf3_genes_p)
+ggVennDiagram(
+  vennCor,
+  category.names = c("Motif 1", "Motif 2", "Motif 3")
+) + ggtitle("Cormotif Specific and Shared DEGs")+
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),  # Increase title size
+    text = element_text(size = 16)  # Increase text size globally
+  )
 
-prob_all_3  <- rownames(gene_prob_all[(gene_prob_all[,1] >0.5 & gene_prob_all[,2] <0.5 & gene_prob_all[,3] <0.5),])
-
-length(prob_all_3)
 ```
 
-```{r}
+
+```{r Extract Gene Probability clust then p.post}
+#begin with the clustlike cutoffs and then overlay the p.post to check if the genes are present in both
+
+####motif 1####
+#filter 1: clustlike
+clust1_genes <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V1>0.5 & V2<0.5 & V3<0.5) %>% 
+  rownames
+### Filter 2: Gene-level posterior pattern
+prob_filtered_genes_1 <- rownames(gene_prob_all[(gene_prob_all[,1] >0.05 & gene_prob_all[,1] <0.3 & gene_prob_all[,2] <0.5 & gene_prob_all[,3] <0.5),])
+### Final intersection of both filters
+final_genes_1 <- intersect(clust1_genes, prob_filtered_genes_1)
+cat("Number of genes passing both filters:", length(final_genes_1), "\n")
+
+#5638 genes pass both filters here
+
+####motif 2####
+#filter 1: clustlike
+clust2_genes <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V2>0.5 & V1<0.5 & V3<0.5) %>% 
+  rownames
+### Filter 2: Gene-level posterior pattern
+prob_filtered_genes_2 <- rownames(gene_prob_all[(gene_prob_all[,1] >0.5 & gene_prob_all[,2] <0.5 & gene_prob_all[,3] <0.5),])
+### Final intersection of both filters
+final_genes_2 <- intersect(clust2_genes, prob_filtered_genes_2)
+cat("Number of genes passing both filters:", length(final_genes_2), "\n")
+
+#6218 genes pass both filters here
+
+
+####motif3####
+#filter 1: clustlike
+clust3_genes <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V3 > 0.5 & V1 < 0.5 & V2 < 0.5) %>%
+  rownames()
+### Filter 2: Gene-level posterior pattern (Motif 2 & 3 high, Motif 1 intermediate)
+prob_filtered_genes <- rownames(gene_prob_all[
+  gene_prob_all[,1] > 0.3 & gene_prob_all[,1] < 0.9 &
+  gene_prob_all[,2] > 0.5 &
+  gene_prob_all[,3] > 0.5, ])
+### Final intersection of both filters
+final_genes_3 <- intersect(clust3_genes, prob_filtered_genes)
+cat("Number of genes passing both filters:", length(final_genes_3), "\n")
+
+#231 genes pass both filters here
+
+#what is the proportion of my genes that are included?
+# 5638+6218+231
+#12087
+# 12087/14319
+#84.4% of my genes are represented here out of the 14319 original
+
+#now, ensure that none of these genes are shared amongst categories
+vennCor_final <- list(final_genes_1, final_genes_2, final_genes_3)
+ggVennDiagram(
+  vennCor_final,
+  category.names = c("Motif 1", "Motif 2", "Motif 3")
+) + ggtitle("Cormotif Specific and Shared DEGs")+
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),  # Increase title size
+    text = element_text(size = 16)  # Increase text size globally
+  )
+
+#no overlapping genes found in these gene sets
+
+clusterdata_dxr_fin <- data.frame(
+  Category = c("Motif 1", "Motif 2", "Motif 3"), 
+  Value = c(length(final_genes_1), length(final_genes_2), length(final_genes_3))
+)
+
+piecolors_dxr_fin <- c("Motif 1" = "#007896", 
+                       "Motif 2" = "#58508D",
+                       "Motif 3" = "#BC5090")
+
+#make a piechart of these distributions
+clusterdata_dxr_fin %>% ggplot(aes(x = "", y = Value, fill = Category))+
+  geom_bar(width = 1, stat = "identity")+
+  coord_polar("y", start = 0)+
+  geom_text(aes(label = Value),
+            position = position_stack(vjust = 0.5),
+            size = 4, color = "black")+
+  labs(title = "Distribution of Gene Clusters Identified By Cormotif", x = NULL, y = NULL)+
+  theme_void()+
+  scale_fill_manual(values = piecolors_dxr_fin)
+
+#now, continue by plotting the logFC of all of these gene sets per motif, as well as look at some random genes for log2cpm to see if the patterns are reflected in the example genes
+
+
+
+```
+
+```{r logFC of Cormotif Motifs}
+##motif 1
+motif1_genes_fin <- final_genes_1
+length(motif1_genes_fin)
+
+##motif 2 
+motif2_genes_fin <- final_genes_2
+length(motif2_genes_fin)
+
+##motif 3
+motif3_genes_fin <- final_genes_3
+length(motif3_genes_fin)
+
+#Combine the toptables I have from pairwise analysis into a single dataframe
+d24_toptable_dxr <- Toptable_V.D24T %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Time = "24")
+
+d24r_toptable_dxr <- Toptable_V.D24R %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Time = "24R")
+
+d144r_toptable_dxr <- Toptable_V.D144R %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Time = "144R")
+
+combined_toptables_dxr <- bind_rows(
+  d24_toptable_dxr,
+  d24r_toptable_dxr,
+  d144r_toptable_dxr)
+
+#Filter the data based on each motif
+filt_toptable_dxr_fin <- combined_toptables_dxr %>% 
+  dplyr::filter(entrezgene_ID  %in% final_genes_1) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for all genes in Motif 1 (n=5638)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_2_dxr_fin <- combined_toptables_dxr %>% 
+  dplyr::filter(entrezgene_ID  %in% final_genes_2) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for all genes in Motif 2 (n=6218)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 3
+filt_toptable_3_dxr_fin <- combined_toptables_dxr %>% 
+  dplyr::filter(entrezgene_ID  %in% final_genes_3) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for all genes in Motif 3 (n=231)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#plots
+filt_toptable_dxr_fin
+filt_toptable_2_dxr_fin 
+filt_toptable_3_dxr_fin
+
+
+#now plot the abs logFC for each of these too
+filt_toptable_abs_fin <- combined_toptables_dxr %>% 
+  dplyr::filter(entrezgene_ID  %in% final_genes_1) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC for all genes in Motif 1 (n=5638)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_2_abs_fin <- combined_toptables_dxr %>% 
+  dplyr::filter(entrezgene_ID  %in% final_genes_2) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC for all genes in Motif 2 (n=6218)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_3_abs_fin <- combined_toptables_dxr %>% 
+  dplyr::filter(entrezgene_ID  %in% final_genes_3) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC for all genes in Motif 3 (n=231)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#plots
+filt_toptable_abs_fin
+filt_toptable_2_abs_fin
+filt_toptable_3_abs_fin
+
+```
+
+```{r log2cpm Cormotif Genes}
+#use the final genes from cross-verifying with clustlike + p.post
+
+#Load in my count matrices
+# final_genes_1
+# final_genes_2
+# final_genes_3
+
+#these are all the genes that are present in each category, make them into dataframes by filtering out the rest of the genes in my main boxplot df
+boxplots_cormotif <- boxplot1
+
+motif1_genes_fin <- boxplots_cormotif[boxplots_cormotif$Entrez_ID %in% final_genes_1,]
+dim(motif1_genes_fin)
+#5638 genes in 44 cols
+motif2_genes_fin <- boxplots_cormotif[boxplots_cormotif$Entrez_ID %in% final_genes_2,]
+dim(motif2_genes_fin)
+#6218 genes in 44 cols
+motif3_genes_fin <- boxplots_cormotif[boxplots_cormotif$Entrez_ID %in% final_genes_3,]
+dim(motif3_genes_fin)
+#231 genes in 44 cols
+
+#pull out some random genes for each using sample
+
+m1_genes_fin <- motif1_genes_fin[sample(nrow(motif1_genes_fin), 3), , drop = FALSE]
+
+#Define gene list(s)
+#these are the genes pulled out by m1_genes
+initial_test_genes1_fin <- c(m1_genes_fin$SYMBOL)  
+#Add more gene symbols as needed or add more categories
+
+#Now put in the function I want to use to generate boxplots of genes
+process_gene_data_1_fin <- function(gene) {
+  gene_data <- motif1_genes_fin %>% filter(SYMBOL == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2CPM") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6REP$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in initial_test_genes1_fin) {
+  gene_data <- process_gene_data_1_fin(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2CPM, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2CPM Expression of", gene, "Motif 1")) +
+    labs(x = "Treatment", y = "log2CPM") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+#####motif 2#####
+
+m2_genes_fin <- motif2_genes_fin[sample(nrow(motif2_genes_fin), 3), , drop = FALSE]
+
+#Define gene list(s)
+#these are the genes pulled out by m1_genes
+initial_test_genes2_fin <- c(m2_genes_fin$SYMBOL)  
+#Add more gene symbols as needed or add more categories
+
+#Now put in the function I want to use to generate boxplots of genes
+process_gene_datam2_fin <- function(gene) {
+  gene_data <- motif2_genes_fin %>% filter(SYMBOL == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2CPM") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6REP$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+#this function is saved under process_gene_data so I will save as an R object
+
+#saveRDS(process_gene_data, "data/new/process_gene_data_funct.RDS")
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in initial_test_genes2_fin) {
+  gene_data <- process_gene_datam2_fin(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2CPM, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2CPM Expression of", gene, "Motif 2")) +
+    labs(x = "Treatment", y = "log2CPM") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+#####motif 3#####
+
+m3_genes_fin <- motif3_genes_fin[sample(nrow(motif3_genes_fin), 3), , drop = FALSE]
+
+#Define gene list(s)
+#these are the genes pulled out by m3_genes
+initial_test_genes3_fin <- c(m3_genes_fin$SYMBOL)  
+#Add more gene symbols as needed or add more categories
+
+#Now put in the function I want to use to generate boxplots of genes
+process_gene_datam3_fin <- function(gene) {
+  gene_data <- motif3_genes_fin %>% filter(SYMBOL == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2CPM") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6REP$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in initial_test_genes3_fin) {
+  gene_data <- process_gene_datam3_fin(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2CPM, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2CPM Expression of", gene, "Motif 3")) +
+    labs(x = "Treatment", y = "log2CPM") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+```
+
+
+```{r Extract Gene Probabilities by Cluster}
+
+####try this Renee's way####
+# clust1 <- motif_prob %>%
+#   as.data.frame() %>%
+#   filter(V1>0.6) %>% 
+#   rownames
+# clust2 <- motif_prob %>%
+#   as.data.frame() %>%
+#   filter(V2>0.6) %>% 
+#   rownames
+# clust3 <- motif_prob %>%
+#   as.data.frame() %>%
+#   filter(V3>0.6) %>% 
+#   rownames
+
+# length(clust1)
+# #6827
+# #5538 with cutoff 0.6
+# length(clust2)
+# #6474
+# #5422 with cutoff 0.6
+# length(clust3)
+# #607
+# #518 with cutoff 0.6
+
+
+motif_prob %>% 
+  as.data.frame() %>% 
+  ggplot(., aes(x = V1))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)
+
+motif_prob %>% 
+  as.data.frame() %>% 
+  ggplot(., aes(x = V2))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)
+
+motif_prob %>% 
+  as.data.frame() %>% 
+  ggplot(., aes(x = V3))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)
+
+#now that I've looked at the distribution, I can make some determinations on which cutoffs are appropriate for my data
+#For now, I'm moving on with >0.6 as my cutoff
+
+#venn diagram of overlapping genes across motifs
+
+#venn 1
+#plot a venn diagram with all of your conditions from your toptables
+
+# Load motif Data
+mf1_genes_p <- clust1_p
+mf2_genes_p <- clust2_p
+mf3_genes_p <- clust3_p
+
+vennCor <- list(mf1_genes_p, mf2_genes_p, mf3_genes_p)
+ggVennDiagram(
+  vennCor,
+  category.names = c("Motif 1", "Motif 2", "Motif 3")
+) + ggtitle("Cormotif Specific and Shared DEGs")+
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),  # Increase title size
+    text = element_text(size = 16)  # Increase text size globally
+  )
+
+#Now go ahead and base your cutoffs on the values from bestmotif motif.prior
+
+clust1_c <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V1>0.4299) %>% 
+  rownames
+clust2_c <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V2>0.5057) %>% 
+  rownames
+clust3_c <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V3>0.0643) %>% 
+  rownames
+
+length(clust1_c)
+#6827
+#5538 with cutoff 0.6
+#7604 with cutoff 0.4299
+length(clust2_c)
+#6474
+#5422 with cutoff 0.6
+#6420 with cutoff 0.5057
+length(clust3_c)
+#607
+#518 with cutoff 0.6
+#2010 with cutoff 0.063
+#way too many genes compared to 910 genes
+
+mf1_genes_c <- clust1_c
+mf2_genes_c <- clust2_c
+mf3_genes_c <- clust3_c
+
+vennCor_p <- list(mf1_genes_c, mf2_genes_c, mf3_genes_c)
+ggVennDiagram(
+  vennCor_p,
+  category.names = c("Motif 1", "Motif 2", "Motif 3")
+) + ggtitle("Cormotif Specific and Shared DEGs (motif.prior cutoff)")+
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),  # Increase title size
+    text = element_text(size = 16)  # Increase text size globally
+  )
+
+#when I plot this venn- there are overlapping genes
+
+#now I'm going to base the cutoff solely on the number of genes I get
+
+clust1_h <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V1>0.56) %>% 
+  rownames
+clust2_h <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V2>0.56) %>% 
+  rownames
+clust3_h <- motif_prob %>%
+  as.data.frame() %>%
+  filter(V3>0.56) %>% 
+  rownames
+
+length(clust1_h)
+#6101 vs 6155 at cutoff of 0.56
+length(clust2_h)
+#7185 vs 7241 at cutoff of 0.44
+length(clust3_h)
+#911 vs 921 at cutoff of 0.25
+
+mf1_genes_h <- clust1_h
+mf2_genes_h <- clust2_h
+mf3_genes_h <- clust3_h
+
+vennCor_h <- list(mf1_genes_h, mf2_genes_h, mf3_genes_h)
+ggVennDiagram(
+  vennCor_h,
+  category.names = c("Motif 1", "Motif 2", "Motif 3")
+) + ggtitle("Cormotif Specific and Shared DEGs")+
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),  # Increase title size
+    text = element_text(size = 16)  # Increase text size globally
+  )
+
+#i used the most stringent cutoff from the group (motif 1 at >0.56)
+#this made it so that no genes were overlapping, but I'm missing a lot of genes from motif 2 and 3
+
+```
+
+
+```{r Cormotif Gene Pie Chart}
+clusterdata_dxr <- data.frame(
+  Category = c("Motif 1", "Motif 2", "Motif 3"), 
+  Value = c(length(prob_all_1), length(prob_all_2), length(prob_all_3))
+)
+
+piecolors_dxr <- c("Motif 1" = "#007896", 
+                   "Motif 2" = "#58508D",
+                   "Motif 3" = "#BC5090")
+
+#make a piechart of these distributions
+clusterdata_dxr %>% ggplot(aes(x = "", y = Value, fill = Category))+
+  geom_bar(width = 1, stat = "identity")+
+  coord_polar("y", start = 0)+
+  geom_text(aes(label = Value),
+            position = position_stack(vjust = 0.5),
+            size = 4, color = "black")+
+  labs(title = "Distribution of Gene Clusters Identified By Cormotif", x = NULL, y = NULL)+
+  theme_void()+
+  scale_fill_manual(values = piecolors_dxr)
+
+```
+
+
+```{r Plot Cormotif logFC Conditions}
+#Extract the gene IDs from each motif
+
+##motif 1
+motif1_genes <- prob_all_1
+length(motif1_genes)
+
+##motif 2 
+motif2_genes <- clust2
+length(motif2_genes)
+
+##motif 3
+motif3_genes <- clust3
+length(motif3_genes)
+
+#Combine the toptables I have from pairwise analysis into a single dataframe
+d24_toptable_dxr <- Toptable_V.D24T %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Time = "24")
+
+d24r_toptable_dxr <- Toptable_V.D24R %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Time = "24R")
+
+d144r_toptable_dxr <- Toptable_V.D144R %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Time = "144R")
+
+combined_toptables_dxr <- bind_rows(
+  d24_toptable_dxr,
+  d24r_toptable_dxr,
+  d144r_toptable_dxr)
+
+#Filter the data based on each motif
+filt_toptable_dxr <- combined_toptables_dxr %>% 
+  dplyr::filter(entrezgene_ID  %in% clust1) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for all genes in Motif 1")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_2_dxr <- combined_toptables_dxr %>% 
+  dplyr::filter(entrezgene_ID  %in% clust2) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for all genes in Motif 2")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 3
+filt_toptable_3_dxr <- combined_toptables_dxr %>% 
+  dplyr::filter(entrezgene_ID  %in% clust3) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC for all genes in Motif 3")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#plots
+filt_toptable_dxr
+filt_toptable_2_dxr
+filt_toptable_3_dxr
+
+
+#now plot the abs logFC for each of these too
+filt_toptable_abs <- combined_toptables_dxr %>% 
+  dplyr::filter(entrezgene_ID  %in% clust1) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC for all genes in Motif 1")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_2_abs <- combined_toptables_dxr %>% 
+  dplyr::filter(entrezgene_ID  %in% clust2) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC for all genes in Motif 2")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_3_abs <- combined_toptables_dxr %>% 
+  dplyr::filter(entrezgene_ID  %in% clust3) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC for all genes in Motif 3")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#plots
+filt_toptable_abs
+filt_toptable_2_abs
+filt_toptable_3_abs
+
+
+```
+
+```{r Plot Cormotif Example Genes}
+#Load in my count matrices
+# clust1
+# clust2
+# clust3
+
+#these are all the genes that are present in each category, make them into dataframes by filtering out the rest of the genes in my main boxplot df
+boxplots_cormotif <- boxplot1
+
+motif1_genes <- boxplots_cormotif[boxplots_cormotif$Entrez_ID %in% prob_all_1,]
+dim(motif1_genes)
+#6353 genes in 44 cols
+motif2_genes <- boxplots_cormotif[boxplots_cormotif$Entrez_ID %in% prob_all_2,]
+dim(motif2_genes)
+#6353 genes in 44 cols
+motif3_genes <- boxplots_cormotif[boxplots_cormotif$Entrez_ID %in% prob_all_3,]
+dim(motif3_genes)
+#461 genes in 44 cols
+
+#pull out some random genes for each using sample
+
+m1_genes <- motif1_genes[sample(nrow(motif1_genes), 3), , drop = FALSE]
+
+#Define gene list(s)
+#these are the genes pulled out by m1_genes
+initial_test_genes1 <- c("TRIM66")  
+#Add more gene symbols as needed or add more categories
+
+#Now put in the function I want to use to generate boxplots of genes
+process_gene_datam1 <- function(gene) {
+  gene_data <- motif1_genes %>% filter(SYMBOL == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2CPM") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6REP$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+#this function is saved under process_gene_data so I will save as an R object
+
+#saveRDS(process_gene_data, "data/new/process_gene_data_funct.RDS")
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in initial_test_genes1) {
+  gene_data <- process_gene_datam1(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2CPM, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2CPM Expression of", gene, "Motif 1")) +
+    labs(x = "Treatment", y = "log2CPM") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+#####motif 2#####
+
+m2_genes <- motif2_genes[sample(nrow(motif2_genes), 3), , drop = FALSE]
+
+#Define gene list(s)
+#these are the genes pulled out by m1_genes
+initial_test_genes2 <- c("DUSP8")  
+#Add more gene symbols as needed or add more categories
+
+#Now put in the function I want to use to generate boxplots of genes
+process_gene_datam2 <- function(gene) {
+  gene_data <- motif2_genes %>% filter(SYMBOL == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2CPM") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6REP$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+#this function is saved under process_gene_data so I will save as an R object
+
+#saveRDS(process_gene_data, "data/new/process_gene_data_funct.RDS")
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in initial_test_genes2) {
+  gene_data <- process_gene_datam2(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2CPM, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2CPM Expression of", gene, "Motif 2")) +
+    labs(x = "Treatment", y = "log2CPM") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+#####motif 3#####
+
+m3_genes <- motif3_genes[sample(nrow(motif3_genes), 3), , drop = FALSE]
+
+#Define gene list(s)
+#these are the genes pulled out by m1_genes
+initial_test_genes3 <- c("PNMA8B")  
+#Add more gene symbols as needed or add more categories
+
+#Now put in the function I want to use to generate boxplots of genes
+process_gene_datam3 <- function(gene) {
+  gene_data <- motif3_genes %>% filter(SYMBOL == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2CPM") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6REP$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+#this function is saved under process_gene_data so I will save as an R object
+
+#saveRDS(process_gene_data, "data/new/process_gene_data_funct.RDS")
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in initial_test_genes3) {
+  gene_data <- process_gene_datam3(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2CPM, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2CPM Expression of", gene, "Motif 3")) +
+    labs(x = "Treatment", y = "log2CPM") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+```
+
+```{r log2cpm Cormotif clustlike}
+#Load in my count matrices
+# clust1_p
+# clust2_p
+# clust3_p
+
+#these are all the genes that are present in each category, make them into dataframes by filtering out the rest of the genes in my main boxplot df
+boxplots_cormotif <- boxplot1
+
+motif1_genes_clust <- boxplots_cormotif[boxplots_cormotif$Entrez_ID %in% clust1_p,]
+dim(motif1_genes_clust)
+#6827 genes in 44 cols
+motif2_genes_clust <- boxplots_cormotif[boxplots_cormotif$Entrez_ID %in% clust2_p,]
+dim(motif2_genes_clust)
+#6474 genes in 44 cols
+motif3_genes_clust <- boxplots_cormotif[boxplots_cormotif$Entrez_ID %in% clust3_p,]
+dim(motif3_genes_clust)
+#607 genes in 44 cols
+
+#pull out some random genes for each using sample
+
+m1_genes <- motif1_genes[sample(nrow(motif1_genes), 3), , drop = FALSE]
+
+#Define gene list(s)
+#these are the genes pulled out by m1_genes
+initial_test_genes1_clust <- c(m1_genes$SYMBOL)  
+#Add more gene symbols as needed or add more categories
+
+#Now put in the function I want to use to generate boxplots of genes
+process_gene_datam1 <- function(gene) {
+  gene_data <- motif1_genes %>% filter(SYMBOL == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2CPM") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6REP$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+#this function is saved under process_gene_data so I will save as an R object
+
+#saveRDS(process_gene_data, "data/new/process_gene_data_funct.RDS")
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in initial_test_genes1_clust) {
+  gene_data <- process_gene_datam1(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2CPM, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2CPM Expression of", gene, "Motif 1")) +
+    labs(x = "Treatment", y = "log2CPM") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+#####motif 2#####
+
+m2_genes_clust <- motif2_genes_clust[sample(nrow(motif2_genes_clust), 3), , drop = FALSE]
+
+#Define gene list(s)
+#these are the genes pulled out by m1_genes
+initial_test_genes2 <- c("DUSP8")  
+#Add more gene symbols as needed or add more categories
+
+#Now put in the function I want to use to generate boxplots of genes
+process_gene_datam2 <- function(gene) {
+  gene_data <- motif2_genes %>% filter(SYMBOL == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2CPM") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6REP$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+#this function is saved under process_gene_data so I will save as an R object
+
+#saveRDS(process_gene_data, "data/new/process_gene_data_funct.RDS")
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in initial_test_genes2) {
+  gene_data <- process_gene_datam2(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2CPM, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2CPM Expression of", gene, "Motif 2")) +
+    labs(x = "Treatment", y = "log2CPM") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+#####motif 3#####
+
+m3_genes_clust <- motif3_genes_clust[sample(nrow(motif3_genes_clust), 3), , drop = FALSE]
+
+#Define gene list(s)
+#these are the genes pulled out by m1_genes
+initial_test_genes3_clust <- c(m3_genes_clust$SYMBOL)  
+#Add more gene symbols as needed or add more categories
+
+#Now put in the function I want to use to generate boxplots of genes
+process_gene_datam3_clust <- function(gene) {
+  gene_data <- motif3_genes_clust %>% filter(SYMBOL == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2CPM") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6REP$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+#this function is saved under process_gene_data so I will save as an R object
+
+#saveRDS(process_gene_data, "data/new/process_gene_data_funct.RDS")
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in initial_test_genes3_clust) {
+  gene_data <- process_gene_datam3_clust(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2CPM, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2CPM Expression of", gene, "Motif 3")) +
+    labs(x = "Treatment", y = "log2CPM") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
 
 ```
 
