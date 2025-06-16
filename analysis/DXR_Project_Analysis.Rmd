@@ -1115,6 +1115,11 @@ for (gene in top5_D144R_geneslist) {
 ```{r DOX24T DEGs logFC all Conditions}
 # Toptable_V.D24T
 
+# Load DEGs Data
+DOX_24T <- read.csv("data/new/DEGs/Toptable_V.D24T.csv")
+DOX_24R <- read.csv("data/new/DEGs/Toptable_V.D24R.csv")
+DOX_144R <- read.csv("data/new/DEGs/Toptable_V.D144R.csv")
+
 #make a list of all of the genes in this set so I can plot the logFC in other sets
 D24T_DEGs <- DOX_24T$Entrez_ID[DOX_24T$adj.P.Val < 0.05]
 length(D24T_DEGs)
