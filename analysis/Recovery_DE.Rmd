@@ -1380,23 +1380,6 @@ ggplot2::autoplot(prcomp_res_1, data = annot, colour = "Tx_Time", size =4)+
   ggrepel::geom_text_repel(label= ind_num)+
   ggtitle("RUVs Correction k=1")
 
-# annot_prcomp_res_1 %>% ggplot(., aes(x=PC1, y=PC2, size = 10)) +
-#   geom_point(aes(color = Ind, shape = Time, fill = Tx)) +
-#                        scale_shape_manual(values = c(21, 22, 24)) +
-#   scale_fill_manual(values =  fill_col_tx)+
-#   scale_color_manual(values = c(fill_col_ind_dark))+
-#   guides(fill=guide_legend(override.aes=list(shape=21)))+
-#   guides(color=guide_legend(override.aes=list(shape=21)))+
-#   guides(fill=guide_legend(override.aes=list(shape=21,fill=fill_col_tx,color=fill_col_tx)))+
-#   ggtitle("RUVs k=1")
-
-# annot_prcomp_res_1 %>% ggplot(., aes(x=PC1, y=PC2, size =10)) +
-#   geom_point(aes(color = Tx, shape = Time))+
-#   ggrepel::geom_text_repel(label=ind_num)+
-#   theme_bw()+
-#   scale_color_manual(values = c(fill_col_tx))+
-#   ggtitle("RUVs k=1")
-
 #k=1
 annot$samples == RUV_df_rm$Names
 annot$RUV_1 <- RUV_df_rm$W_1

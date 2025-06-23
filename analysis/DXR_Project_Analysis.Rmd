@@ -1429,6 +1429,9 @@ RUV_df1$Names <- rownames(RUV_df1)
 RUV_df_rm1 <- RUV_df1[RUV_df1$Names %in% annot$Final_sample_name, ] 
 RUV_1 <-  RUV_df_rm1$W_1
 
+#saveRDS(RUV_df_rm1, "data/new/RUV_df_rm1.RDS")
+#saveRDS(RUV_1, "data/new/RUV_1.RDS")
+
 #PCA checks
 #k=1
 prcomp_res_1 <- prcomp(t(set1$normalizedCounts), scale. = FALSE, center = TRUE)
@@ -2012,16 +2015,212 @@ draw(heatmap_spmn_k3_cpm)
 
 ```
 
+```{r DE RUVs k1}
+#same DGEList object as before
+dge <- readRDS("data/new/dge_matrix.RDS")
 
-```{r Extra Code For Now to add top genes to volcano plots}
-# top15 <- "toptable" %>% 
-#   filter(Direction != "Not Significant") %>% 
-#   arrange(adj.P.Value) %>% 
-#   head(15)
+#check normalization factors from TMM normalization of LIBRARIES
+dge$samples
+
+#read in my covariate information RUV_1 dataframe + remove 6R
+RUV_df_rm1 <- readRDS("data/new/RUV_df_rm1.RDS")
+
+#filter out 6R for DE analysis
+RUV_1_df_filt <- RUV_df_rm1[!grepl("6R$", rownames(RUV_df_rm1)), , drop = FALSE]
+
+Metadata_2$W_1 <- RUV_1_df_filt$W_1
+
+#now ensure that RUV_1 has the right number of cols after removing rep
+length(RUV_1_df_filt$W_1)
+#36 
+
+#now make this into a list
+RUV_1_DE <-  RUV_1_df_filt$W_1
+
+#saveRDS(RUV_1_DE, "data/new/RUV_1_DE.RDS")
+
+#create my design matrix for DE + RUVs covariate k=1
+design1 <- model.matrix(~0 + RUV_1_DE + Metadata_2$Condition)
+colnames(design1) <- gsub("Metadata_2\\$Condition", "", colnames(design1))
+
+#take care that the matrix automatically sorts cols alphabetically
+##currently DMSO144R, DMSO24R, DMSO24T, DOX144R, DOX24R, DOX24T
+
+#run duplicate correlation for individual effect
+corfit1 <- duplicateCorrelation(object = dge$counts, design = design1, block = Metadata_2$Ind)
+
+#voom transformation and plot
+v1 <- voom(dge, design1, block = Metadata_2$Ind, correlation = corfit1$consensus.correlation, plot = TRUE)
+
+#fit my linear model
+fit1 <- lmFit(v1, design1, block = Metadata_2$Ind, correlation = corfit1$consensus.correlation)
+
+#make my contrast matrix to compare across tx and veh
+contrast_matrix_RUV <- makeContrasts(
+  V.D24T = DOX_24T - DMSO_24T,
+  V.D24R = DOX_24R - DMSO_24R, 
+  V.D144R = DOX_144R - DMSO_144R,
+  RUV_1_24T = RUV_1_DE - DMSO_24T,
+  RUV_1_24R = RUV_1_DE - DMSO_24R,
+  RUV_1_144R = RUV_1_DE - DMSO_144R,  
+  levels = design1
+)
+
+#apply these contrasts to compare DOX to DMSO VEH
+fit_RUV <- contrasts.fit(fit1, contrast_matrix_RUV)
+fit_RUV <- eBayes(fit_RUV)
+
+#plot the mean-variance trend
+plotSA(fit_RUV, main = "Mean-Variance Trend, RUVs k=1")
+
+#look at the summary of your results
+##this tells you the number of DEGs in each condition
+results_summary1 <- decideTests(fit_RUV, adjust.method = "BH", p.value = 0.05)
+
+summary(results_summary1)
+#        V.D24T V.D24R V.D144R RUV_1_24T RUV_1_24R RUV_1_144R
+# Down     4866   3727     466     13212     13224      13168
+# NotSig   4899   7107   13659      1014      1002       1058
+# Up       4554   3485     194        93        93         93
+
+#compare this to my previous DEGs I found
+summary(results_summary)
+#        V.D24T V.D24R V.D144R
+# Down     4723   3593     359
+# NotSig   5076   7151   13810
+# Up       4520   3575     150
+
+
+#overall, there are more DEGs found after RUVs k=1 correction 
+#this was an expected result as it increases tx effect w/ correction
+
+```
+
+```{r TopTables DE RUV}
+# Generate Top Table for Specific Comparisons
+
+Toptable_V.D24T_k1 <- topTable(fit = fit_RUV, coef = "V.D24T", number = nrow(x), adjust.method = "BH", p.value = 1, sort.by = "none")
+#write.csv(Toptable_V.D24T_k1, "data/new/DEGs/Toptable_V.D24T_k1.csv")
+
+Toptable_V.D24R_k1 <- topTable(fit = fit_RUV, coef = "V.D24R", number = nrow(x), adjust.method = "BH", p.value = 1, sort.by = "none")
+#write.csv(Toptable_V.D24R_k1, "data/new/DEGs/Toptable_V.D24R_k1.csv")
+
+Toptable_V.D144R_k1 <- topTable(fit = fit_RUV, coef = "V.D144R", number = nrow(x), adjust.method = "BH", p.value = 1, sort.by = "none")
+#write.csv(Toptable_V.D144R_k1, "data/new/DEGs/Toptable_V.D144R_k1.csv")
+
+# save all of these toptables as R objects
+# saveRDS(list(
+#   V.D24T_k1 = Toptable_V.D24T_k1,
+#   V.D24R_k1 = Toptable_V.D24R_k1,
+#   V.D144R_k1 = Toptable_V.D144R_k1
+# ), file = "data/new/Toptable_list_RUVk1.RDS")
+
+Toptable_list_RUVk1 <- readRDS("data/new/Toptable_list_RUVk1.RDS")
+
+#################################################################
+#this section is commented out since it only needs to run once
+#kept the code for posterity
+
+# #I want to add the hgnc symbols to my toptables as well
+# ####D24T####
+# #load in data
+# sample_toptab_24T <- read_csv("data/new/DEGs/Toptable_V.D24T_k1.csv", show_col_types = FALSE)
+# # ----------------- Ensure Entrez_ID is Present and in Character Format -----------------
+# # Check column names
+# print(colnames(sample_toptab_24T))
+# # Rename if needed (adjust if the column name is not exactly 'Entrez_ID')
+# colnames(sample_toptab_24T)[1] <- "Entrez_ID"
+# # Convert Entrez_ID to character
+# sample_toptab_24T <- sample_toptab_24T %>%
+#   mutate(Entrez_ID = as.character(Entrez_ID))
+# # ----------------- Map Entrez_ID to Gene Symbol -----------------
+# gene_symbols1 <- AnnotationDbi::select(
+#   org.Hs.eg.db,
+#   keys = sample_toptab_24T$Entrez_ID,
+#   columns = c("SYMBOL"),
+#   keytype = "ENTREZID"
+# )
+# # ----------------- Join Back to Main Data -----------------
+# Toptable_RUV_24T <- left_join(sample_toptab_24T, gene_symbols1, by = c("Entrez_ID" = "ENTREZID"))
+# Toptable_RUV_24T %>% column_to_rownames(., var = "Entrez_ID")
+# # ----------------- Save Annotated Output -----------------
+# #write_csv(Toptable_RUV_24T, "data/new/DEGs/Toptable_RUV_24T.csv")
+# 
+# #now do this again for my other two toptables
+# 
+# ####24R####
+# #load in data
+# sample_toptab_24R <- read_csv("data/new/DEGs/Toptable_V.D24R_k1.csv", show_col_types = FALSE)
+# # ----------------- Ensure Entrez_ID is Present and in Character Format -----------------
+# # Check column names
+# print(colnames(sample_toptab_24R))
+# # Rename if needed (adjust if the column name is not exactly 'Entrez_ID')
+# colnames(sample_toptab_24R)[1] <- "Entrez_ID"
+# # Convert Entrez_ID to character
+# sample_toptab_24R <- sample_toptab_24R %>%
+#   mutate(Entrez_ID = as.character(Entrez_ID))
+# # ----------------- Map Entrez_ID to Gene Symbol -----------------
+# gene_symbols2 <- AnnotationDbi::select(
+#   org.Hs.eg.db,
+#   keys = sample_toptab_24R$Entrez_ID,
+#   columns = c("SYMBOL"),
+#   keytype = "ENTREZID"
+# )
+# # ----------------- Join Back to Main Data -----------------
+# Toptable_RUV_24R <- left_join(sample_toptab_24R, gene_symbols2, by = c("Entrez_ID" = "ENTREZID"))
+# Toptable_RUV_24R %>% column_to_rownames(., var = "Entrez_ID")
+# # ----------------- Save Annotated Output -----------------
+# #I'll make these symbols into rownames later for my volcano plots
+# #write_csv(Toptable_RUV_24R, "data/new/DEGs/Toptable_RUV_24R.csv")
+# 
+# 
+# ####D144R####
+# #load in data
+# sample_toptab_144R <- read_csv("data/new/DEGs/Toptable_V.D144R_k1.csv", show_col_types = FALSE)
+# # ----------------- Ensure Entrez_ID is Present and in Character Format -----------------
+# # Check column names
+# print(colnames(sample_toptab_144R))
+# # Rename if needed (adjust if the column name is not exactly 'Entrez_ID')
+# colnames(sample_toptab_144R)[1] <- "Entrez_ID"
+# # Convert Entrez_ID to character
+# sample_toptab_144R <- sample_toptab_144R %>%
+#   mutate(Entrez_ID = as.character(Entrez_ID))
+# # ----------------- Map Entrez_ID to Gene Symbol -----------------
+# gene_symbols3 <- AnnotationDbi::select(
+#   org.Hs.eg.db,
+#   keys = sample_toptab_144R$Entrez_ID,
+#   columns = c("SYMBOL"),
+#   keytype = "ENTREZID"
+# )
+# # ----------------- Join Back to Main Data -----------------
+# Toptable_RUV_144R <- left_join(sample_toptab_144R, gene_symbols3, by = c("Entrez_ID" = "ENTREZID"))
+# Toptable_RUV_144R %>% column_to_rownames(., var = "Entrez_ID")
+# # ----------------- Save Annotated Output -----------------
+# #I'll make these symbols into rownames later for my volcano plots
+# #write_csv(Toptable_RUV_144R, "data/new/DEGs/Toptable_RUV_144R.csv")
+
+Toptable_RUV_24T
+Toptable_RUV_24R
+Toptable_RUV_144R
+
+# write.csv(Toptable_RUV_24T, "data/new/DEGs/Toptable_RUV_24T_final.csv")
+# write.csv(Toptable_RUV_24R, "data/new/DEGs/Toptable_RUV_24R_final.csv")
+# write.csv(Toptable_RUV_144R, "data/new/DEGs/Toptable_RUV_144R_final.csv")
+
+
+# save all of these toptables as R objects
+# saveRDS(list(
+#   V.D24T_RUV = Toptable_RUV_24T,
+#   V.D24R_RUV = Toptable_RUV_24R,
+#   V.D144R_RUV = Toptable_RUV_144R
+# ), file = "data/new/Toptable_list_RUVk1_Symbols.RDS")
+
+Toptable_list_RUVk1_symbols <- readRDS("data/new/Toptable_list_RUVk1_Symbols.RDS")
+
 ```
 
 
-```{r Volcano Plots of DEGs}
+```{r Volcano Plots of DEGs Original}
 #make a function to generate volcano plots + add gene numbers
 generate_volcano_plot <- function(toptable, title) {
   
@@ -2083,6 +2282,417 @@ for (plot_name in names(volcano_plots)) {
 
 
 ```
+
+```{r RUV Top5 DEGs}
+#use your three toptables so I can pull out top 5 genes from each based on adj. p val
+
+top5_D24T_1 <- Toptable_RUV_24T[order(Toptable_RUV_24T$adj.P.Val), ][1:5,] 
+top5_D24R_1 <- Toptable_RUV_24R[order(Toptable_RUV_24R$adj.P.Val), ][1:5,] 
+top5_D144R_1 <- Toptable_RUV_144R[order(Toptable_RUV_144R$adj.P.Val), ][1:5,]
+
+#now that I've pulled the top 5 DEGs from each, make a list to pull them from my log2cpm data
+
+boxplot1 <- read.csv("data/new/filcpm_final_matrix.csv") %>% 
+  as.data.frame()
+
+#Define gene list
+#these are the top 5 genes pulled from my toptables
+top5_D24T_geneslist_1 <- c(top5_D24T_1$Entrez_ID)
+top5_D24R_geneslist_1 <- c(top5_D24R_1$Entrez_ID)
+top5_D144R_geneslist_1 <- c(top5_D144R_1$Entrez_ID)
+#Add more gene symbols as needed or add more categories
+
+#now pull these from my log2cpm matrix
+top5_D24T_genes_1 <- boxplot1[boxplot1$Entrez_ID %in% top5_D24T_geneslist_1,]
+dim(top5_D24T_genes_1)
+#5 genes in 44 cols
+top5_D24R_genes_1 <- boxplot1[boxplot1$Entrez_ID %in% top5_D24R_geneslist_1,]
+dim(top5_D24R_genes_1)
+#5 genes in 44 cols
+top5_D144R_genes_1 <- boxplot1[boxplot1$Entrez_ID %in% top5_D144R_geneslist_1,]
+dim(top5_D144R_genes_1)
+#5 genes in 44 cols
+
+#Now put in the function I want to use to generate boxplots of genes
+#####D24T#####
+process_top5_D24T_1 <- function(gene) {
+  gene_data <- top5_D24T_genes_1 %>% filter(Entrez_ID == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2cpm") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6R$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in top5_D24T_geneslist_1) {
+  gene_data <- process_top5_D24T_1(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2cpm, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2cpm", gene, "top5DEGs D24T RUVs")) +
+    labs(x = "Treatment", y = "log2cpm") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+#####D24R#####
+process_top5_D24R_1 <- function(gene) {
+  gene_data <- top5_D24R_genes_1 %>% filter(Entrez_ID == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2cpm") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6R$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in top5_D24R_geneslist_1) {
+  gene_data <- process_top5_D24R_1(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2cpm, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2cpm", gene, "top5DEGs D24R RUVs")) +
+    labs(x = "Treatment", y = "log2cpm") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+#####D144R#####
+process_top5_D144R_1 <- function(gene) {
+  gene_data <- top5_D144R_genes_1 %>% filter(Entrez_ID == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2cpm") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6R$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in top5_D144R_geneslist_1) {
+  gene_data <- process_top5_D144R_1(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2cpm, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2cpm", gene, "top5DEGs D144R RUVs")) +
+    labs(x = "Treatment", y = "log2cpm") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+
+```
+
+```{r RUV logFC DEGs all Conditions}
+# Toptable_RUV_24T
+# Toptable_RUV_24R
+# Toptable_RUV_144R
+
+# Load DEGs Data
+DOX_24T_1 <- read.csv("data/new/DEGs/Toptable_RUV_24T_final.csv")
+DOX_24R_1 <- read.csv("data/new/DEGs/Toptable_RUV_24R_final.csv")
+DOX_144R_1 <- read.csv("data/new/DEGs/Toptable_RUV_144R_final.csv")
+
+#make a list of all of the genes in this set so I can plot the logFC in other sets
+D24T_DEGs_1 <- DOX_24T_1$Entrez_ID[DOX_24T_1$adj.P.Val < 0.05]
+length(D24T_DEGs_1)
+#9243 genes
+
+D24R_DEGs_1 <- DOX_24R_1$Entrez_ID[DOX_24R_1$adj.P.Val < 0.05]
+length(D24R_DEGs_1)
+#7168 genes
+
+D144R_DEGs_1 <- DOX_144R_1$Entrez_ID[DOX_144R_1$adj.P.Val < 0.05]
+length(D144R_DEGs_1)
+#509 genes
+
+#plot those full gene sets in logFC
+D24T_DEGs_1 <- DOX_24T$Entrez_ID[DOX_24T$adj.P.Val < 0.05]
+length(D24T_DEGs)
+
+D24R_DEGs_1 <- DOX_24R$Entrez_ID[DOX_24R$adj.P.Val < 0.05]
+length(D24R_DEGs)
+
+D144R_DEGs_1 <- DOX_144R$Entrez_ID[DOX_144R$adj.P.Val < 0.05]
+length(D144R_DEGs)
+#now that I have the full list of genes, I want to plot the logFC across conditions
+
+
+#Combine the toptables I have from pairwise analysis into a single dataframe
+d24_toptable_dxr_1 <- Toptable_RUV_24T %>% 
+  mutate(Time = "24")
+
+d24r_toptable_dxr_1 <- Toptable_RUV_24R %>% 
+  mutate(Time = "24R")
+
+d144r_toptable_dxr_1 <- Toptable_RUV_144R %>% 
+  mutate(Time = "144R")
+
+combined_toptables_dxr_RUV <- bind_rows(
+  d24_toptable_dxr_1,
+  d24r_toptable_dxr_1,
+  d144r_toptable_dxr_1)
+
+#Filter the data based on each motif
+filt_toptable_dxr_RUV <- combined_toptables_dxr_RUV %>% 
+  dplyr::filter(Entrez_ID  %in% D24T_DEGs_1) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC D24T DEGs Across Conditions RUVs")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#now do the same with the other conditions
+
+filt_toptable_dxr_24r_RUV <- combined_toptables_dxr_RUV %>% 
+  dplyr::filter(Entrez_ID  %in% D24R_DEGs_1) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC D24R DEGs Across Conditions RUVs")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#D144R
+
+filt_toptable_dxr_144r_RUV <- combined_toptables_dxr_RUV %>% 
+  dplyr::filter(Entrez_ID  %in% D144R_DEGs_1) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC D144R DEGs Across Conditions RUVs")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#now put the names of these graphs to print them
+filt_toptable_dxr_RUV
+filt_toptable_dxr_24r_RUV
+filt_toptable_dxr_144r_RUV
+
+
+```
+
+```{r Volcano Plots RUVs Corrected k1}
+#make a function to generate volcano plots + add gene numbers
+#ensure the gene symbols are in a col so I can plot names of top 15
+generate_volcano_plot_RUV <- function(toptable, title) {
+  
+  #make significance labels
+  toptable$Significance <- "Not Significant"
+  toptable$Significance[toptable$logFC > 0 & toptable$adj.P.Val < 0.05] <- "Upregulated"
+  toptable$Significance[toptable$logFC < 0 & toptable$adj.P.Val < 0.05] <- "Downregulated"
+  
+  #add number of genes for each significance label
+  upgenes <- toptable %>% filter(Significance == "Upregulated") %>% nrow()
+  nsgenes <- toptable %>% filter(Significance == "Not Significant") %>% nrow()
+  downgenes <- toptable %>% filter(Significance == "Downregulated") %>% nrow()
+
+  #make legend labels for no of genes
+  legend_lab <- c(
+    str_c("Upregulated: ", upgenes),
+    str_c("Not Significant: ", nsgenes),
+    str_c("Downregulated: ", downgenes)
+  )
+  
+  #specify the colors for the legend
+  legend_col <- c(
+    str_c("Upregulated: " = "blue"),
+    str_c("Not Significant: " = "gray"),
+    str_c("Downregulated: " = "red")
+  )
+  
+  #add the top 15 genes by adj. p value
+  top_genes <- toptable %>%
+    filter(!is.na(SYMBOL)) %>%
+    arrange(adj.P.Val) %>%
+    slice_head(n = 15)
+  
+  #generate volcano plot w/ legend
+  ggplot(toptable, aes(x = logFC, 
+                       y = -log10(P.Value), 
+                       color = Significance)) +
+    geom_point(alpha = 0.4, size = 2) + 
+    scale_color_manual(values = c("Upregulated" = "blue",
+                                  "Not Significant" = "gray",
+                                  "Downregulated" = "red"), 
+                       labels = legend_lab) +
+    xlim(-10, 10) +
+    labs(title = title, 
+         x = expression(x = "log"[2]*"FC"), 
+         y = expression(y = "-log"[10]*"P-value")) +
+    theme_bw()+
+    guides(color = guide_legend(override.aes = list(color = legend_col)))+
+    theme(legend.position = "right", 
+          plot.title = element_text(size = rel(1.5), hjust = 0.5),
+          axis.title = element_text(size = rel(1.25)))
+}
+
+#generate volcano plots across each comparison
+volcano_plots_RUV <- list(
+  "V.D24T_RUV" = generate_volcano_plot(Toptable_RUV_24T, "DOX 24T RUVs k=1 (adj P-val<0.05)"),
+  "V.D24R_RUV" = generate_volcano_plot(Toptable_RUV_24R, "DOX 24R RUVs k=1 (adj P-val<0.05)"),
+  "V.D144R_RUV" = generate_volcano_plot(Toptable_RUV_144R, "DOX 144R RUVs k=1 (adj P-val<0.05)")
+)
+
+# Display each volcano plot
+for (plot_name in names(volcano_plots_RUV)) {
+  print(volcano_plots_RUV[[plot_name]])
+}
+
+
+```
+
 
 ```{r LogFC DDR Genes, fig.height=14, fig.width=8}
 #DDR Gene Expression Heatmap — DOX Over Recovery Time (68 genes, with categories)
@@ -2334,7 +2944,7 @@ Heatmap(logFC_mat,
 
 ```
 
-```{r Overlap of DEGs}
+```{r Overlap of DEGs Original}
 #plot a venn diagram with all of your conditions from your toptables
 
 # Load DEGs Data
@@ -2375,7 +2985,7 @@ DEG3 <- DOX_144R$Entrez_ID[DOX_144R$adj.P.Val < 0.05]
 #try and use the VennDetail package to extract the genes from each condition
 #Set 1 - DOX_24T only genes
 #Set 2 - DOX_24T shared genes
-
+plot.new()
 venn_test <- venndetail(venntest)
 plot(venn_test)
 detail(venn_test)
@@ -2390,8 +3000,16 @@ dim(venn_DOX_shared)
 #total of 9243 genes:
   #4559 DOX_24T only 
   #272 shared all
-  #50 DOX_24T vs DOX_144R
-  #4362 DOX_24T vs DOX_24R
+  #50 DOX_24T + DOX_144R
+  #4362 DOX_24T + DOX_24R
+
+venn_DOX144R_shared <- getSet(object = venn_test, subset = c("Shared", "Group 3", "Group 2_Group 3", "Group 1_Group 3"))
+dim(venn_DOX144R_shared)
+#total of 509 genes:
+ #272 shared all
+ #32 DOX144R Specific
+ #50 DOX24T + DOX144R
+ #155 DOX24R + DOX144R
 
 #now I can look at these sets to see which ones are up and down regulated in each
 #after that, run GO analysis
@@ -2399,14 +3017,19 @@ venn_shared_DEGs <- venn_DOX_shared %>%
   as.data.frame() %>% 
   column_to_rownames(., var = "Detail")
 
+venn_sharedD144R_DEGs <- venn_DOX144R_shared %>% 
+  as.data.frame() %>% 
+  column_to_rownames(., var = "Detail")
+
 venn_DOX24T_DEGs <- venn_DOX_24T %>% 
   as.data.frame() %>% 
   column_to_rownames(., var = "Detail")
 
+
 #pull these genes out of my DEG matrix with logFC
 DOX_24T_DEGs <- Toptable_list$V.D24T[row.names(venn_DOX24T_DEGs),]
 DOX_24T_shared_DEGs <- Toptable_list$V.D24T[row.names(venn_shared_DEGs),]
-
+DOX_144R_shared_DEGs <- Toptable_list$V.D144R[row.names(venn_sharedD144R_DEGs),]
 #I want to go ahead and do this for every condition so I can see the genes in there
 #I also want to filter these by their logFC being up or down for GO/KEGG
 
@@ -2429,6 +3052,10 @@ DOX24T_DEGs_GO_down <- DOX24T_DEGs_GO %>%
 DOX24Tshare_DEGs_GO <- DOX_24T_shared_DEGs %>% 
   dplyr::filter(., adj.P.Val < 0.05) 
 
+DOX24T_share_DEGs_GO_plot <- DOX24Tshare_DEGs_GO %>% 
+  rownames_to_column(., var = "Entrez_ID") %>% 
+  dplyr::select("Entrez_ID")
+
 DOX24Tshare_DEGs_GO_up <- DOX24Tshare_DEGs_GO %>% 
   dplyr::filter(., logFC > 0)  %>% 
   rownames_to_column(., var = "entrezgene_ID") %>% 
@@ -2440,9 +3067,571 @@ DOX24Tshare_DEGs_GO_down <- DOX24Tshare_DEGs_GO %>%
   rownames_to_column(., var = "entrezgene_ID") %>% 
   dplyr::select("entrezgene_ID")
 
+DOX144Rshare_DEGs_GO <- DOX_144R_shared_DEGs %>% 
+  dplyr::filter(., adj.P.Val < 0.05)
+
+DOX144Rshare_DEGs_GO_plot <- DOX144Rshare_DEGs_GO %>% 
+  rownames_to_column(., var = "Entrez_ID") %>% 
+  dplyr::select("Entrez_ID")
+
+
+#now go ahead and do this for each condition as well
+
+#DOX24T
+venn_DOX_24T <- getSet(object = venn_test, subset = c("Group 1"))
+dim(venn_DOX_24T)
+#4362 genes in DOX_24T only
+
+venn_DOX24T_DEGs <- venn_DOX_24T %>% 
+  as.data.frame() %>% 
+  column_to_rownames(., var = "Detail")
+
+#pull these genes out of my DEG matrix with logFC
+DOX_24T_DEGs <- Toptable_list$V.D24T[row.names(venn_DOX24T_DEGs),]
+
+DOX24T_DEGs_GO <- DOX_24T_DEGs %>% 
+  rownames_to_column(., var = "Entrez_ID") %>% 
+  dplyr::filter(., adj.P.Val < 0.05) %>% 
+  dplyr::select("Entrez_ID")
+
+#DOX24R
+venn_DOX_24R <- getSet(object = venn_test, subset = c("Group 2"))
+dim(venn_DOX_24R)
+#2182 genes in DOX_24R only
+
+venn_DOX24R_DEGs <- venn_DOX_24R %>% 
+  as.data.frame() %>% 
+  column_to_rownames(., var = "Detail")
+
+#pull these genes out of my DEG matrix with logFC
+DOX_24R_DEGs <- Toptable_list$V.D24R[row.names(venn_DOX24R_DEGs),]
+
+DOX24R_DEGs_GO <- DOX_24R_DEGs %>% 
+  rownames_to_column(., var = "Entrez_ID") %>% 
+  dplyr::filter(., adj.P.Val < 0.05) %>% 
+  dplyr::select("Entrez_ID")
+
+
+#DOX144R
+venn_DOX_144R <- getSet(object = venn_test, subset = c("Group 3"))
+dim(venn_DOX_144R)
+#32 genes in DOX_144R only
+
+venn_DOX144R_DEGs <- venn_DOX_144R %>% 
+  as.data.frame() %>% 
+  column_to_rownames(., var = "Detail")
+
+#pull these genes out of my DEG matrix with logFC
+DOX_144R_DEGs <- Toptable_list$V.D144R[row.names(venn_DOX144R_DEGs),]
+
+DOX144R_DEGs_GO <- DOX_144R_DEGs %>% 
+  rownames_to_column(., var = "Entrez_ID") %>% 
+  dplyr::filter(., adj.P.Val < 0.05) %>% 
+  dplyr::select("Entrez_ID")
+
+#this set doesn't yield a GO/KEGG plot as there are too few genes
+#instead, I pulled all genes associated with DOX144R
+
 ```
 
-```{r GO KEGG Overlap DEGs}
+
+```{r RUVs Overlap of DEGs}
+#plot a venn diagram with all of your conditions from your toptables
+
+# Load DEGs Data
+DOX_24T_1 <- read.csv("data/new/DEGs/Toptable_RUV_24T.csv")
+DOX_24R_1 <- read.csv("data/new/DEGs/Toptable_RUV_24R.csv")
+DOX_144R_1 <- read.csv("data/new/DEGs/Toptable_RUV_144R.csv")
+
+# Extract Significant DEGs
+DEG1_RUV <- DOX_24T_1$Entrez_ID[DOX_24T_1$adj.P.Val < 0.05]
+DEG2_RUV <- DOX_24R_1$Entrez_ID[DOX_24R_1$adj.P.Val < 0.05]
+DEG3_RUV <- DOX_144R_1$Entrez_ID[DOX_144R_1$adj.P.Val < 0.05]
+
+
+venntest_RUV <- list(DEG1_RUV, DEG2_RUV, DEG3_RUV)
+ggVennDiagram(
+  venntest_RUV,
+  category.names = c("DOX_24T", "DOX_24R", "DOX_144R")
+) + ggtitle("DXR Specific and Shared DEGs RUVs")+
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),  # Increase title size
+    text = element_text(size = 16)  # Increase text size globally
+  )
+
+#try and use the VennDetail package to extract the genes from each condition
+#Set 1 - DOX_24T only genes
+#Set 2 - DOX_24T shared genes
+#Set 3 - DOX_144R shared genes
+plot.new()
+venn_test_RUV <- venndetail(venntest_RUV)
+plot(venn_test_RUV)
+detail(venn_test_RUV)
+#now that I have the genes subsetted by condition, I can pull out the genes I want to look at
+
+venn_DOX_24T_RUV <- getSet(object = venn_test_RUV, subset = c("Group 1"))
+dim(venn_DOX_24T_RUV)
+#4411 genes in DOX_24T only
+
+venn_DOX_shared_RUV <- getSet(object = venn_test_RUV, subset = c("Shared", "Group 1_Group 2", "Group 1_Group 3"))
+dim(venn_DOX_shared_RUV)
+#total of 5009 genes in this set which does not include D24T specific genes
+
+venn_DOX144R_shared_RUV <- getSet(object = venn_test_RUV, subset = c("Shared", "Group 3", "Group 2_Group 3", "Group 1_Group 3"))
+dim(venn_DOX144R_shared_RUV)
+#total of 660 genes: (original 509)
+ #342 shared all
+ #32 DOX144R Specific
+ #85 DOX24T + DOX144R
+ #181 DOX24R + DOX144R
+
+#after that, run GO analysis
+venn_shared_DEGs_RUV <- venn_DOX_shared_RUV %>% 
+  as.data.frame() %>% 
+  column_to_rownames(., var = "Detail")
+
+venn_DOX24T_DEGs_RUV <- venn_DOX_24T_RUV %>% 
+  as.data.frame() %>% 
+  column_to_rownames(., var = "Detail")
+
+venn_sharedD144R_DEGs_RUV <- venn_DOX144R_shared_RUV %>% 
+  as.data.frame() %>% 
+  column_to_rownames(., var = "Detail")
+
+#pull these genes out of my DEG matrix with logFC
+DOX_24T_DEGs_RUV <-
+  Toptable_list_RUVk1_symbols$V.D24T_RUV[row.names(venn_DOX24T_DEGs_RUV),]
+DOX_24T_shared_DEGs_RUV <- 
+  Toptable_list_RUVk1_symbols$V.D24T_RUV[row.names(venn_shared_DEGs_RUV),]
+DOX_144R_shared_DEGs_RUV <- 
+  Toptable_list_RUVk1_symbols$V.D144R_RUV[row.names(venn_sharedD144R_DEGs_RUV),]
+
+#next, make the vectors that I need for plotting after cutting off by adj. p value < 0.05
+DOX24T_DEGs_GO_RUV <- DOX_24T_DEGs_RUV %>% 
+  dplyr::filter(., adj.P.Val < 0.05)
+
+#shared D24T genes venn diagram
+DOX24Tshare_DEGs_GO_RUV <- DOX_24T_shared_DEGs_RUV %>% 
+  dplyr::filter(., adj.P.Val < 0.05) 
+
+DOX24T_share_DEGs_GO_plot_RUV <- DOX24Tshare_DEGs_GO_RUV %>% 
+  dplyr::select("Entrez_ID")
+
+#shared D144R genes venn diagram
+
+DOX144Rshare_DEGs_GO_RUV <- DOX_144R_shared_DEGs_RUV %>% 
+  dplyr::filter(., adj.P.Val < 0.05)
+
+DOX144Rshare_DEGs_GO_plot_RUV <- DOX144Rshare_DEGs_GO_RUV %>% 
+  dplyr::select("Entrez_ID")
+
+#now go ahead and do this for each condition as well
+
+#DOX24T
+venn_DOX_24T_RUV <- getSet(object = venn_test_RUV, subset = c("Group 1"))
+dim(venn_DOX_24T_RUV)
+#4411 genes in DOX_24T only
+
+venn_DOX24T_DEGs_RUV <- venn_DOX_24T_RUV %>% 
+  as.data.frame() %>% 
+  column_to_rownames(., var = "Detail")
+
+#pull these genes out of my DEG matrix with logFC
+DOX_24T_DEGs_RUV <- Toptable_list_RUVk1_symbols$V.D24T_RUV[row.names(venn_DOX24T_DEGs_RUV),]
+
+DOX24T_DEGs_GO_RUV <- DOX_24T_DEGs_RUV %>% 
+  dplyr::filter(., adj.P.Val < 0.05) %>% 
+  dplyr::select("Entrez_ID")
+
+#DOX24R
+venn_DOX_24R_RUV <- getSet(object = venn_test_RUV, subset = c("Group 2"))
+dim(venn_DOX_24R_RUV)
+#2107 genes in DOX_24R only
+
+venn_DOX24R_DEGs_RUV <- venn_DOX_24R_RUV %>% 
+  as.data.frame() %>% 
+  column_to_rownames(., var = "Detail")
+
+#pull these genes out of my DEG matrix with logFC
+DOX_24R_DEGs_RUV <- Toptable_list_RUVk1_symbols$V.D24R_RUV[row.names(venn_DOX24R_DEGs_RUV),]
+
+DOX24R_DEGs_GO_RUV <- DOX_24R_DEGs_RUV %>% 
+  dplyr::filter(., adj.P.Val < 0.05) %>% 
+  dplyr::select("Entrez_ID")
+
+
+#DOX144R
+venn_DOX_144R_RUV <- getSet(object = venn_test_RUV, subset = c("Group 3"))
+dim(venn_DOX_144R_RUV)
+#52 genes in DOX_144R only
+
+venn_DOX144R_DEGs_RUV <- venn_DOX_144R_RUV %>% 
+  as.data.frame() %>% 
+  column_to_rownames(., var = "Detail")
+
+#pull these genes out of my DEG matrix with logFC
+DOX_144R_DEGs_RUV <- 
+  Toptable_list_RUVk1_symbols$V.D144R_RUV[row.names(venn_DOX144R_DEGs_RUV),]
+
+DOX144R_DEGs_GO_RUV <- DOX_144R_DEGs_RUV %>% 
+  dplyr::filter(., adj.P.Val < 0.05) %>% 
+  dplyr::select("Entrez_ID")
+```
+
+```{r GO KEGG Overlap DEGs Original}
+#####DOX24 Genes#####
+D24_DEGs_mat <- as.matrix(DOX24T_DEGs_GO)
+
+DOX_24_dxr_gene <- gost(query = D24_DEGs_mat,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+DOX_24_gost_genes <- gostplot(DOX_24_dxr_gene, capped = FALSE, interactive = TRUE)
+DOX_24_gost_genes
+
+table_DOX24_genes <- DOX_24_dxr_gene$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_DOX24_genes %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+write.csv(table_DOX24_genes, "output/table_DOX24_genes.csv")
+
+#GO:BP
+table_DOX24_genes_GOBP <- table_DOX24_genes %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+
+table_DOX24_genes_GOBP %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24T Specific DEGs Enriched GO:BP Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_DOX24_genes_KEGG <- table_DOX24_genes %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_DOX24_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24T Specific DEGs Enriched KEGG Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+
+#####DOX24T shared DEGs GO KEGG#####
+D24Tshare_DEGs_mat <- as.matrix(DOX24T_share_DEGs_GO_plot)
+
+DOX_24Tshare_dxr_gene <- gost(query = D24Tshare_DEGs_mat,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+DOX_24Tshare_gost_genes <- gostplot(DOX_24Tshare_dxr_gene, capped = FALSE, interactive = TRUE)
+DOX_24Tshare_gost_genes
+
+table_DOX24Tshare_genes <- DOX_24Tshare_dxr_gene$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_DOX24Tshare_genes %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#GO:BP
+table_DOX24Tshare_genes_GOBP <- table_DOX24Tshare_genes %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_DOX24Tshare_genes_GOBP %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24T Shared DEGs Enriched GO:BP Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_DOX24Tshare_genes_KEGG <- table_DOX24Tshare_genes %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_DOX24Tshare_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24T Shared DEGs Enriched KEGG Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#####DOX24R DEGs GO KEGG#####
+D24R_DEGs_mat <- as.matrix(DOX24R_DEGs_GO)
+
+DOX_24R_dxr_gene <- gost(query = D24R_DEGs_mat,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+DOX_24R_gost_genes <- gostplot(DOX_24R_dxr_gene, capped = FALSE, interactive = TRUE)
+DOX_24R_gost_genes
+
+table_DOX24R_genes <- DOX_24R_dxr_gene$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_DOX24R_genes %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#GO:BP
+table_DOX24R_genes_GOBP <- table_DOX24R_genes %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_DOX24R_genes_GOBP %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24R Specific DEGs Enriched GO:BP Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_DOX24R_genes_KEGG <- table_DOX24R_genes %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_DOX24R_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24R DEGs Enriched KEGG Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#####DOX144R DEGs GO KEGG#####
+# D144R_DEGs_mat <- as.matrix(DOX144R_DEGs_GO)
+# 
+# DOX_144R_dxr_gene <- gost(query = D144R_DEGs_mat,
+#                       organism = "hsapiens",
+#                       ordered_query = FALSE,
+#                       measure_underrepresentation = FALSE,
+#                       evcodes = FALSE,
+#                       user_threshold = 0.05,
+#                       correction_method = c("fdr"),
+#                       sources = c("GO:BP", "KEGG"))
+# 
+# DOX_144R_gost_genes <- gostplot(DOX_144R_dxr_gene, capped = FALSE, interactive = TRUE)
+# DOX_144R_gost_genes
+# 
+# table_DOX144R_genes <- DOX_144R_dxr_gene$result %>% 
+#   dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+# 
+# table_DOX144R_genes %>% 
+#   mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+#   kableExtra::kable(.,) %>% 
+#   kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+#   kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+#   kableExtra::scroll_box(width = "100%", height = "400px")
+# 
+# #GO:BP
+# table_DOX144R_genes_GOBP <- table_DOX144R_genes %>% 
+#   dplyr::filter(source=="GO:BP") %>% 
+#   dplyr::select(p_value, term_name, intersection_size) %>% 
+#   dplyr::slice_min(., n=10, order_by=p_value) %>% 
+#   mutate(log_val = -log10(p_value))
+# 
+# table_DOX144R_genes_GOBP %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+#   geom_point(aes(size = intersection_size)) +
+#   ggtitle("DOX144R Specific DEGs Enriched GO:BP Terms")+
+#   xlab(expression("-log"[10]~"p-value"))+
+#   guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+#   ylab("GO:BP term")+
+#   scale_y_discrete(labels = scales::label_wrap(30))+
+#   theme_bw()+
+#   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#         axis.title = element_text(size = 15, colour = "black"),
+#         axis.ticks = element_line(linewidth = 1.5),
+#         axis.line = element_line(linewidth = 1.5),
+#         axis.text = element_text(size = 10, colour = "black", angle = 0),
+#         strip.text = element_text(size = 15, colour = "black", face = "bold"))
+# 
+# #KEGG
+# table_DOX144R_genes_KEGG <- table_DOX144R_genes %>% 
+#   dplyr::filter(source=="KEGG") %>% 
+#   dplyr::select(p_value, term_name, intersection_size) %>% 
+#   dplyr::slice_min(., n=10, order_by=p_value) %>% 
+#   mutate(log_val = -log10(p_value))
+# 
+# table_DOX144R_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+#   geom_point(aes(size = intersection_size)) +
+#   ggtitle("DOX144R DEGs Enriched KEGG Terms")+
+#   xlab(expression("-log"[10]~"p-value"))+
+#   guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+#   ylab("KEGG term")+
+#   scale_y_discrete(labels = scales::label_wrap(30))+
+#   theme_bw()+
+#   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#         axis.title = element_text(size = 15, colour = "black"),
+#         axis.ticks = element_line(linewidth = 1.5),
+#         axis.line = element_line(linewidth = 1.5),
+#         axis.text = element_text(size = 10, colour = "black", angle = 0),
+#         strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#####DOX144R shared DEGs GO KEGG#####
+D144Rshare_DEGs_mat <- as.matrix(DOX144Rshare_DEGs_GO_plot)
+
+DOX_144Rshare_dxr_gene <- gost(query = D144Rshare_DEGs_mat,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+DOX_144Rshare_gost_genes <- gostplot(DOX_144Rshare_dxr_gene, capped = FALSE, interactive = TRUE)
+DOX_144Rshare_gost_genes
+
+table_DOX144Rshare_genes <- DOX_144Rshare_dxr_gene$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_DOX144Rshare_genes %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#GO:BP
+table_DOX144Rshare_genes_GOBP <- table_DOX144Rshare_genes %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_DOX144Rshare_genes_GOBP %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX144R Shared DEGs Enriched GO:BP Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_DOX144Rshare_genes_KEGG <- table_DOX144Rshare_genes %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_DOX144Rshare_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX144R Shared DEGs Enriched KEGG Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+```
+
+
+```{r GO KEGG Overlap DEGs Up/Down}
 library(gprofiler2)
 #####DOX24 Upregulated Genes#####
 D24_DEGs_up_mat <- as.matrix(DOX24T_DEGs_GO_up)
@@ -2738,6 +3927,382 @@ table_DOX24Tshare_down_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(ter
         strip.text = element_text(size = 15, colour = "black", face = "bold"))
 ```
 
+```{r RUVs GO KEGG}
+#####DOX24 Genes Specific#####
+D24_DEGs_mat_RUV <- as.matrix(DOX24T_DEGs_GO_RUV)
+D24_DEGs_vec_RUV <- as.character(DOX24T_DEGs_GO_RUV$Entrez_ID)
+
+#saveRDS(D24_DEGs_mat_RUV, "data/new/RUV/D24_DEGs_mat_RUV.RDS")
+
+DOX_24_dxr_gene_RUV <- gost(query = D24_DEGs_vec_RUV,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+#check if there are any KEGG terms popping up
+unique(DOX_24_dxr_gene_RUV$result$source)
+#only GO:BP appearing
+
+DOX_24_gost_genes_RUV <- gostplot(DOX_24_dxr_gene_RUV, capped = FALSE, interactive = TRUE)
+DOX_24_gost_genes_RUV
+
+table_DOX24_genes_RUV <- DOX_24_dxr_gene_RUV$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_DOX24_genes_RUV %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+
+#GO:BP
+table_DOX24_genes_GOBP_RUV <- table_DOX24_genes_RUV %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+
+table_DOX24_genes_GOBP_RUV %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24T Specific DEGs Enriched GO:BP Terms RUVs")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+# #KEGG - no KEGG terms popped up for this one?
+# table_DOX24_genes_KEGG_RUV <- table_DOX24_genes_RUV %>% 
+#   dplyr::filter(source=="KEGG") %>% 
+#   dplyr::select(p_value, term_name, intersection_size) %>% 
+#   dplyr::slice_min(., n=10, order_by=p_value) %>% 
+#   mutate(log_val = -log10(p_value))
+# 
+# table_DOX24_genes_KEGG_RUV %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+#   geom_point(aes(size = intersection_size)) +
+#   ggtitle("DOX24T Specific DEGs Enriched KEGG Terms RUVs")+
+#   xlab(expression("-log"[10]~"p-value"))+
+#   guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+#   ylab("KEGG term")+
+#   scale_y_discrete(labels = scales::label_wrap(30))+
+#   theme_bw()+
+#   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#         axis.title = element_text(size = 15, colour = "black"),
+#         axis.ticks = element_line(linewidth = 1.5),
+#         axis.line = element_line(linewidth = 1.5),
+#         axis.text = element_text(size = 10, colour = "black", angle = 0),
+#         strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+
+#####DOX24T shared DEGs GO KEGG#####
+D24Tshare_DEGs_mat_RUV <- as.matrix(DOX24T_share_DEGs_GO_plot_RUV)
+
+DOX_24Tshare_dxr_gene_RUV <- gost(query = D24Tshare_DEGs_mat_RUV,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+#check if there are any KEGG terms popping up
+unique(DOX_24Tshare_dxr_gene_RUV$result$source)
+#only GO:BP appearing
+
+DOX_24Tshare_gost_genes_RUV <- 
+  gostplot(DOX_24Tshare_dxr_gene_RUV, capped = FALSE, interactive = TRUE)
+DOX_24Tshare_gost_genes_RUV
+
+table_DOX24Tshare_genes_RUV <- DOX_24Tshare_dxr_gene_RUV$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_DOX24Tshare_genes_RUV %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#GO:BP
+table_DOX24Tshare_genes_GOBP_RUV <- table_DOX24Tshare_genes_RUV %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_DOX24Tshare_genes_GOBP_RUV %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24T Shared DEGs Enriched GO:BP Terms RUVs")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+# #KEGG
+# table_DOX24Tshare_genes_KEGG_RUV <- table_DOX24Tshare_genes_RUV %>% 
+#   dplyr::filter(source=="KEGG") %>% 
+#   dplyr::select(p_value, term_name, intersection_size) %>% 
+#   dplyr::slice_min(., n=10, order_by=p_value) %>% 
+#   mutate(log_val = -log10(p_value))
+# 
+# table_DOX24Tshare_genes_KEGG_RUV %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+#   geom_point(aes(size = intersection_size)) +
+#   ggtitle("DOX24T Shared DEGs Enriched KEGG Terms RUVs")+
+#   xlab(expression("-log"[10]~"p-value"))+
+#   guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+#   ylab("KEGG term")+
+#   scale_y_discrete(labels = scales::label_wrap(30))+
+#   theme_bw()+
+#   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#         axis.title = element_text(size = 15, colour = "black"),
+#         axis.ticks = element_line(linewidth = 1.5),
+#         axis.line = element_line(linewidth = 1.5),
+#         axis.text = element_text(size = 10, colour = "black", angle = 0),
+#         strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#####DOX24R DEGs GO KEGG#####
+D24R_DEGs_mat_RUV <- as.matrix(DOX24R_DEGs_GO_RUV)
+
+DOX_24R_dxr_gene_RUV <- gost(query = D24R_DEGs_mat_RUV,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+#check if there are any KEGG terms popping up
+unique(DOX_24R_dxr_gene_RUV$result$source)
+#only GO:BP appearing
+
+DOX_24R_gost_genes_RUV <- 
+  gostplot(DOX_24R_dxr_gene_RUV, capped = FALSE, interactive = TRUE)
+DOX_24R_gost_genes_RUV
+
+table_DOX24R_genes_RUV <- DOX_24R_dxr_gene_RUV$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_DOX24R_genes_RUV %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#GO:BP
+table_DOX24R_genes_GOBP_RUV <- table_DOX24R_genes_RUV %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_DOX24R_genes_GOBP_RUV %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX24R Specific DEGs Enriched GO:BP Terms RUVs")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+# #KEGG
+# table_DOX24R_genes_KEGG_RUV <- table_DOX24R_genes_RUV %>% 
+#   dplyr::filter(source=="KEGG") %>% 
+#   dplyr::select(p_value, term_name, intersection_size) %>% 
+#   dplyr::slice_min(., n=10, order_by=p_value) %>% 
+#   mutate(log_val = -log10(p_value))
+# 
+# table_DOX24R_genes_KEGG_RUV %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+#   geom_point(aes(size = intersection_size)) +
+#   ggtitle("DOX24R DEGs Enriched KEGG Terms RUVs")+
+#   xlab(expression("-log"[10]~"p-value"))+
+#   guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+#   ylab("KEGG term")+
+#   scale_y_discrete(labels = scales::label_wrap(30))+
+#   theme_bw()+
+#   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#         axis.title = element_text(size = 15, colour = "black"),
+#         axis.ticks = element_line(linewidth = 1.5),
+#         axis.line = element_line(linewidth = 1.5),
+#         axis.text = element_text(size = 10, colour = "black", angle = 0),
+#         strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+####DOX144R DEGs GO KEGG#####
+D144R_DEGs_mat_RUV <- as.matrix(DOX144R_DEGs_GO_RUV)
+
+DOX_144R_dxr_gene_RUV <- gost(query = D144R_DEGs_mat_RUV,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+#check if there are any KEGG terms popping up
+unique(DOX_144R_dxr_gene_RUV$result$source)
+#GO:BP and KEGG appearing here
+
+DOX_144R_gost_genes_RUV <- 
+  gostplot(DOX_144R_dxr_gene_RUV, capped = FALSE, interactive = TRUE)
+DOX_144R_gost_genes_RUV
+
+table_DOX144R_genes_RUV <- DOX_144R_dxr_gene_RUV$result %>%
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_DOX144R_genes_RUV %>%
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>%
+  kableExtra::kable(.,) %>%
+  kableExtra::kable_paper("striped", full_width = FALSE) %>%
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#GO:BP
+table_DOX144R_genes_GOBP_RUV <- table_DOX144R_genes_RUV %>%
+  dplyr::filter(source=="GO:BP") %>%
+  dplyr::select(p_value, term_name, intersection_size) %>%
+  dplyr::slice_min(., n=10, order_by=p_value) %>%
+  mutate(log_val = -log10(p_value))
+
+table_DOX144R_genes_GOBP_RUV %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX144R Specific DEGs Enriched GO:BP Terms RUVs")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_DOX144R_genes_KEGG_RUV <- table_DOX144R_genes_RUV %>%
+  dplyr::filter(source=="KEGG") %>%
+  dplyr::select(p_value, term_name, intersection_size) %>%
+  dplyr::slice_min(., n=10, order_by=p_value) %>%
+  mutate(log_val = -log10(p_value))
+
+table_DOX144R_genes_KEGG_RUV %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX144R DEGs Enriched KEGG Terms RUVs")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#####DOX144R shared DEGs GO KEGG#####
+D144Rshare_DEGs_mat_RUV <- as.matrix(DOX144Rshare_DEGs_GO_plot_RUV)
+
+DOX_144Rshare_dxr_gene_RUV <- gost(query = D144Rshare_DEGs_mat_RUV,
+                      organism = "hsapiens",
+                      ordered_query = FALSE,
+                      measure_underrepresentation = FALSE,
+                      evcodes = FALSE,
+                      user_threshold = 0.05,
+                      correction_method = c("fdr"),
+                      sources = c("GO:BP", "KEGG"))
+
+#check if any KEGG terms are appearing
+unique(DOX_144Rshare_dxr_gene_RUV$result$source)
+#only GO:BP appearing here
+
+DOX_144Rshare_gost_genes_RUV <- 
+  gostplot(DOX_144Rshare_dxr_gene_RUV, capped = FALSE, interactive = TRUE)
+DOX_144Rshare_gost_genes_RUV
+
+table_DOX144Rshare_genes_RUV <- DOX_144Rshare_dxr_gene_RUV$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_DOX144Rshare_genes_RUV %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#GO:BP
+table_DOX144Rshare_genes_GOBP_RUV <- table_DOX144Rshare_genes_RUV %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_DOX144Rshare_genes_GOBP_RUV %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("DOX144R Shared DEGs Enriched GO:BP Terms RUVs")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+# #KEGG
+# table_DOX144Rshare_genes_KEGG_RUV <- table_DOX144Rshare_genes_RUV %>% 
+#   dplyr::filter(source=="KEGG") %>% 
+#   dplyr::select(p_value, term_name, intersection_size) %>% 
+#   dplyr::slice_min(., n=10, order_by=p_value) %>% 
+#   mutate(log_val = -log10(p_value))
+# 
+# table_DOX144Rshare_genes_KEGG_RUV %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+#   geom_point(aes(size = intersection_size)) +
+#   ggtitle("DOX144R Shared DEGs Enriched KEGG Terms RUVs")+
+#   xlab(expression("-log"[10]~"p-value"))+
+#   guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+#   ylab("KEGG term")+
+#   scale_y_discrete(labels = scales::label_wrap(30))+
+#   theme_bw()+
+#   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#         axis.title = element_text(size = 15, colour = "black"),
+#         axis.ticks = element_line(linewidth = 1.5),
+#         axis.line = element_line(linewidth = 1.5),
+#         axis.text = element_text(size = 10, colour = "black", angle = 0),
+#         strip.text = element_text(size = 15, colour = "black", face = "bold"))
+```
 
 
 ```{r Cormotif Function}
@@ -3815,6 +5380,20 @@ cat("Number of genes passing both filters:", length(final_genes_3), "\n")
 (12087/14319)*100
 #84.4% of my genes are represented here out of the 14319 original
 
+#want to find out which genes are not assigned to motifs
+
+final_genes_list <- union(final_genes_1, union(final_genes_2, final_genes_3))
+length(final_genes_list)
+#12087 genes as found above
+initial_genes_list <- rownames(filcpm_matrix)
+length(initial_genes_list)
+#14319 genes as usual
+unassigned_genes_list <- setdiff(initial_genes_list, final_genes_list)
+length(unassigned_genes_list)
+#2232 genes not assigned - correct number
+
+#saveRDS(unassigned_genes_list, "data/new/Cormotif/unassigned_genes_Cormotif.RDS")
+
 #now, ensure that none of these genes are shared amongst categories
 vennCor_final <- list(final_genes_1, final_genes_2, final_genes_3)
 ggVennDiagram(
@@ -3849,6 +5428,7 @@ clusterdata_dxr_fin %>% ggplot(aes(x = "", y = Value, fill = Category))+
   scale_fill_manual(values = piecolors_dxr_fin)
 
 #now, continue by plotting the logFC of all of these gene sets per motif, as well as look at some random genes for log2cpm to see if the patterns are reflected in the example genes
+
 
 ```
 
@@ -4801,6 +6381,144 @@ table_motif3_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_
         axis.line = element_line(linewidth = 1.5),
         axis.text = element_text(size = 10, colour = "black", angle = 0),
         strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+```
+
+```{r Cormotif Unassigned Gene Set}
+#now let's pull out the genes that were not assigned to a motif from above
+
+unassigned_genes_list <- readRDS("data/new/Cormotif/unassigned_genes_Cormotif.RDS")
+
+#with these unassigned genes, I want to plot logFC and GO/KEGG of unassigned genes
+#####logFC#####
+
+##no motif genes
+unassign_genes_fin <- unassigned_genes_list
+length(unassign_genes_fin)
+#2232 genes 
+
+#Combine the toptables I have from pairwise analysis into a single dataframe
+combined_toptables_dxr <- bind_rows(
+  d24_toptable_dxr,
+  d24r_toptable_dxr,
+  d144r_toptable_dxr)
+
+#Filter the data based on each motif
+filt_toptable_dxr_fin_unassign <- combined_toptables_dxr %>% 
+  dplyr::filter(Entrez_ID  %in% unassign_genes_fin) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC of Unassigned Genes (n=2232)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+filt_toptable_dxr_fin_unassign
+
+
+filt_toptable_abs_fin_unassign <- combined_toptables_dxr %>% 
+  dplyr::filter(Entrez_ID  %in% unassign_genes_fin) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC of Unassigned Genes (n=2232)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+filt_toptable_abs_fin_unassign
+
+####GO KEGG####
+unassigned_genes_matrix <- as.matrix(unassign_genes_fin)
+length(unassigned_genes_matrix)
+#2232 genes in this set
+
+unassign_mat_GOKEGG <- gost(query = unassigned_genes_matrix,
+                          organism = "hsapiens",
+                          ordered_query = FALSE,
+                          measure_underrepresentation = FALSE,
+                          evcodes = FALSE,
+                          user_threshold = 0.05,
+                          correction_method = c("fdr"),
+                          sources = c("GO:BP", "KEGG"))
+
+unassign_GOKEGG_genes <- gostplot(unassign_mat_GOKEGG, capped = FALSE, interactive = TRUE)
+unassign_GOKEGG_genes
+
+table_unassign_GOKEGG_genes <- unassign_mat_GOKEGG$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_unassign_GOKEGG_genes %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+#GO:BP
+table_unassign_genes_GOBP <- table_unassign_GOKEGG_genes %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_unassign_genes_GOBP %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("Cormotif Unassigned Enriched GO:BP Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_unassign_genes_KEGG <- table_unassign_GOKEGG_genes %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_unassign_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("Cormotif Unassigned DEGs Enriched KEGG Terms")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+
 
 ```
 
