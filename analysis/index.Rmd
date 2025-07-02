@@ -3,10 +3,15 @@ title: "Home"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
-    toc: false
+    toc: true
+    toc_float: 
+      collapsed: true
+      smooth_scroll: true
     theme: journal
 editor_options:
   chunk_output_type: console
 ---
 
 Welcome to my research website.
+
+This project aims to understand the effects of Doxorubicin, an anthracycline used for chemotherapy, after a recovery period.
