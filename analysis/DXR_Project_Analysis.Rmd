@@ -1654,117 +1654,117 @@ ggplot2::autoplot(prcomp_res_3_cpm,
 
 ```
 
-```{r RUVs k3 Boxplots of Contributing Factors}
+```{r RUVs Boxplots of Contributing Factors, include = FALSE}
 #I want to take a look at my RUV corrected k=3 PCA to see what the major contributing factors are - I'll create boxplots with my metadata to accompany the PCA plots
 
 #load my normalized counts data and my log2cpm converted data
-normcounts_k3_matrix <- set3$normalizedCounts %>% as.matrix()
-RUV_k3_cpm <- cpm(set3$normalizedCounts, log = TRUE)
-
-#load in my metadata sheet
-Metadata_RUV <- read.csv("data/Metadata.csv")
-Metadata_RUV$Time <- factor(Metadata_RUV$Time, 
-                            levels = c("24T", "24R", "144R"), 
-                            labels = c("24T", "24R", "144R"))
-Metadata_RUV$Ind <- as.factor(Metadata_RUV$Ind)
-Metadata_RUV$Drug <- as.character(Metadata$Drug)
-Metadata_RUV$Sex <- factor(Metadata_RUV$Sex, 
-                           levels = c("M", "F")) 
-
-
-#PCA plots in normalized counts and log2cpm
-
-prcomp_res_3_RUV_normcounts <- prcomp(t(normcounts_k3_matrix), scale. = FALSE, center = TRUE)
-pca_df_3_RUV_normcounts <- as.data.frame(prcomp_res_3_RUV_normcounts$x[, 1:3])  #PC1–PC3
-pca_df_3_RUV_normcounts$Ind <- Metadata_RUV$Ind
-pca_df_3_RUV_normcounts$Drug <- Metadata_RUV$Drug
-pca_df_3_RUV_normcounts$Time <- Metadata_RUV$Time
-pca_df_3_RUV_normcounts$Sex <- Metadata_RUV$Sex
-
-prcomp_res_3_RUV_cpm <- prcomp(t(RUV_k3_cpm), scale. = FALSE, center = TRUE)
-pca_df_3_RUV_cpm <- as.data.frame(prcomp_res_3_RUV_cpm$x[,1:3]) #PC1-3
-pca_df_3_RUV_cpm$Ind <- Metadata_RUV$Ind
-pca_df_3_RUV_cpm$Drug <- Metadata_RUV$Drug
-pca_df_3_RUV_cpm$Time <- Metadata_RUV$Time
-pca_df_3_RUV_cpm$Sex <- Metadata_RUV$Sex
-
-#p-value from linear model
-get_regr_pval <- function(mod) {
-  stopifnot(class(mod) == "lm")
-  fstat <- summary(mod)$fstatistic
-  pval <- 1 - pf(fstat[1], fstat[2], fstat[3])
-  return(pval)
-}
-
-#create boxplots of PCA contributing factors based on metadata
-plot_pc_k3_normcounts_box <- function(df, group_var, pc) {
-  group_data <- df[[group_var]]
-  n_groups <- length(unique(group_data))
-  
-  if (n_groups > 1) {
-    model <- lm(df[[pc]] ~ group_data)
-    pval <- get_regr_pval(model)
-    pval_label <- paste0("p-value: ", signif(pval, 3))
-  } else {
-    pval_label <- "p-value: NA"
-  }
-  
-  ggplot(df, aes(x = .data[[group_var]], y = .data[[pc]], fill = .data[[group_var]])) +
-    geom_boxplot(color = "black") +
-    theme_bw(base_size = 11) +
-    ylab(pc) + xlab(group_var) +
-    ggtitle(NULL, subtitle = pval_label) +
-    theme(
-      legend.position = "none",
-      plot.subtitle = element_text(size = 10),
-      panel.border = element_rect(color = "black", fill = NA)
-    )
-}
-
-#Generate 12 plots: PC1–3 × Ind, Drug, Time, Sex (these are )
-pcs <- c("PC1", "PC2", "PC3")
-group_vars <- c("Ind", "Drug", "Time", "Sex")
-plots <- list()
-
-for (pc in pcs) {
-  for (group in group_vars) {
-    key <- paste(pc, group, sep = "_")
-    
-    base_plot <- plot_pc_k3_normcounts_box(pca_df_3_RUV_normcounts, group, pc)
-    
-    if (pc == "PC1") {
-      upper_limit <- max(pca_df_3_RUV_normcounts[[pc]], na.rm = TRUE) * 1.1
-      plots[[key]] <- base_plot +
-        scale_y_continuous(limits = c(-60, upper_limit),
-                           breaks = c(-60, -30, 0, 30, 60, 90, 120))
-    } else {
-      plots[[key]] <- base_plot
-    }
-  }
-}
-
-# 📌 Remove main titles (retain subtitles for p-values)
-plots <- lapply(plots, function(p) {
-  p + theme(plot.title = element_blank())
-})
-
-# 📌 Create column headers
-header_ind  <- ggplot() + theme_void() + ggtitle("Ind")   + theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"))
-header_drug <- ggplot() + theme_void() + ggtitle("Drug")  + theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"))
-header_conc <- ggplot() + theme_void() + ggtitle("Conc")  + theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"))
-header_time <- ggplot() + theme_void() + ggtitle("Time")  + theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"))
-header_sex  <- ggplot() + theme_void() + ggtitle("Sex")   + theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"))  # ✅ New header
-
-# 📌 Assemble 5-column layout with 3 PC rows
-final_plot <- (
-  (header_ind | header_drug | header_conc | header_time | header_sex) /
-    (plots[["PC1_Ind"]] | plots[["PC1_Drug"]] | plots[["PC1_Conc"]] | plots[["PC1_Time"]] | plots[["PC1_Sex"]]) /
-    (plots[["PC2_Ind"]] | plots[["PC2_Drug"]] | plots[["PC2_Conc"]] | plots[["PC2_Time"]] | plots[["PC2_Sex"]]) /
-    (plots[["PC3_Ind"]] | plots[["PC3_Drug"]] | plots[["PC3_Conc"]] | plots[["PC3_Time"]] | plots[["PC3_Sex"]])
-) + plot_layout(heights = c(0.07, 1, 1, 1))  # Title row height
-
-# 📌 Display the plot
-print(final_plot)
+# normcounts_k1_matrix <- set1$normalizedCounts %>% as.matrix()
+# RUV_k1_cpm <- cpm(set1$normalizedCounts, log = TRUE)
+# 
+# #load in my metadata sheet
+# Metadata_RUV <- read.csv("data/Metadata.csv")
+# Metadata_RUV$Time <- factor(Metadata_RUV$Time, 
+#                             levels = c("24T", "24R", "144R"), 
+#                             labels = c("24T", "24R", "144R"))
+# Metadata_RUV$Ind <- as.factor(Metadata_RUV$Ind)
+# Metadata_RUV$Drug <- as.character(Metadata$Drug)
+# Metadata_RUV$Sex <- factor(Metadata_RUV$Sex, 
+#                            levels = c("M", "F")) 
+# 
+# 
+# #PCA plots in normalized counts and log2cpm
+# 
+# prcomp_res_3_RUV_normcounts <- prcomp(t(normcounts_k3_matrix), scale. = FALSE, center = TRUE)
+# pca_df_3_RUV_normcounts <- as.data.frame(prcomp_res_3_RUV_normcounts$x[, 1:3])  #PC1–PC3
+# pca_df_3_RUV_normcounts$Ind <- Metadata_RUV$Ind
+# pca_df_3_RUV_normcounts$Drug <- Metadata_RUV$Drug
+# pca_df_3_RUV_normcounts$Time <- Metadata_RUV$Time
+# pca_df_3_RUV_normcounts$Sex <- Metadata_RUV$Sex
+# 
+# prcomp_res_3_RUV_cpm <- prcomp(t(RUV_k3_cpm), scale. = FALSE, center = TRUE)
+# pca_df_3_RUV_cpm <- as.data.frame(prcomp_res_3_RUV_cpm$x[,1:3]) #PC1-3
+# pca_df_3_RUV_cpm$Ind <- Metadata_RUV$Ind
+# pca_df_3_RUV_cpm$Drug <- Metadata_RUV$Drug
+# pca_df_3_RUV_cpm$Time <- Metadata_RUV$Time
+# pca_df_3_RUV_cpm$Sex <- Metadata_RUV$Sex
+# 
+# #p-value from linear model
+# get_regr_pval <- function(mod) {
+#   stopifnot(class(mod) == "lm")
+#   fstat <- summary(mod)$fstatistic
+#   pval <- 1 - pf(fstat[1], fstat[2], fstat[3])
+#   return(pval)
+# }
+# 
+# #create boxplots of PCA contributing factors based on metadata
+# plot_pc_k3_normcounts_box <- function(df, group_var, pc) {
+#   group_data <- df[[group_var]]
+#   n_groups <- length(unique(group_data))
+#   
+#   if (n_groups > 1) {
+#     model <- lm(df[[pc]] ~ group_data)
+#     pval <- get_regr_pval(model)
+#     pval_label <- paste0("p-value: ", signif(pval, 3))
+#   } else {
+#     pval_label <- "p-value: NA"
+#   }
+#   
+#   ggplot(df, aes(x = .data[[group_var]], y = .data[[pc]], fill = .data[[group_var]])) +
+#     geom_boxplot(color = "black") +
+#     theme_bw(base_size = 11) +
+#     ylab(pc) + xlab(group_var) +
+#     ggtitle(NULL, subtitle = pval_label) +
+#     theme(
+#       legend.position = "none",
+#       plot.subtitle = element_text(size = 10),
+#       panel.border = element_rect(color = "black", fill = NA)
+#     )
+# }
+# 
+# #Generate 12 plots: PC1–3 × Ind, Drug, Time, Sex (these are )
+# pcs <- c("PC1", "PC2", "PC3")
+# group_vars <- c("Ind", "Drug", "Time", "Sex")
+# plots <- list()
+# 
+# for (pc in pcs) {
+#   for (group in group_vars) {
+#     key <- paste(pc, group, sep = "_")
+#     
+#     base_plot <- plot_pc_k3_normcounts_box(pca_df_3_RUV_normcounts, group, pc)
+#     
+#     if (pc == "PC1") {
+#       upper_limit <- max(pca_df_3_RUV_normcounts[[pc]], na.rm = TRUE) * 1.1
+#       plots[[key]] <- base_plot +
+#         scale_y_continuous(limits = c(-60, upper_limit),
+#                            breaks = c(-60, -30, 0, 30, 60, 90, 120))
+#     } else {
+#       plots[[key]] <- base_plot
+#     }
+#   }
+# }
+# 
+# # 📌 Remove main titles (retain subtitles for p-values)
+# plots <- lapply(plots, function(p) {
+#   p + theme(plot.title = element_blank())
+# })
+# 
+# # 📌 Create column headers
+# header_ind  <- ggplot() + theme_void() + ggtitle("Ind")   + theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"))
+# header_drug <- ggplot() + theme_void() + ggtitle("Drug")  + theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"))
+# header_conc <- ggplot() + theme_void() + ggtitle("Conc")  + theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"))
+# header_time <- ggplot() + theme_void() + ggtitle("Time")  + theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"))
+# header_sex  <- ggplot() + theme_void() + ggtitle("Sex")   + theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"))  # ✅ New header
+# 
+# # 📌 Assemble 5-column layout with 3 PC rows
+# final_plot <- (
+#   (header_ind | header_drug | header_conc | header_time | header_sex) /
+#     (plots[["PC1_Ind"]] | plots[["PC1_Drug"]] | plots[["PC1_Conc"]] | plots[["PC1_Time"]] | plots[["PC1_Sex"]]) /
+#     (plots[["PC2_Ind"]] | plots[["PC2_Drug"]] | plots[["PC2_Conc"]] | plots[["PC2_Time"]] | plots[["PC2_Sex"]]) /
+#     (plots[["PC3_Ind"]] | plots[["PC3_Drug"]] | plots[["PC3_Conc"]] | plots[["PC3_Time"]] | plots[["PC3_Sex"]])
+# ) + plot_layout(heights = c(0.07, 1, 1, 1))  # Title row height
+# 
+# # 📌 Display the plot
+# print(final_plot)
 
 
 ```
@@ -2188,13 +2188,14 @@ Toptable_list_RUVk1 <- readRDS("data/new/Toptable_list_RUVk1.RDS")
 # #I'll make these symbols into rownames later for my volcano plots
 # #write_csv(Toptable_RUV_144R, "data/new/DEGs/Toptable_RUV_144R.csv")
 
-Toptable_RUV_24T
-Toptable_RUV_24R
-Toptable_RUV_144R
-
 # write.csv(Toptable_RUV_24T, "data/new/DEGs/Toptable_RUV_24T_final.csv")
 # write.csv(Toptable_RUV_24R, "data/new/DEGs/Toptable_RUV_24R_final.csv")
 # write.csv(Toptable_RUV_144R, "data/new/DEGs/Toptable_RUV_144R_final.csv")
+
+Toptable_RUV_24T <- read.csv("data/new/DEGs/Toptable_RUV_24T_final.csv")
+Toptable_RUV_24R <- read.csv("data/new/DEGs/Toptable_RUV_24R_final.csv")
+Toptable_RUV_144R <- read.csv("data/new/DEGs/Toptable_RUV_144R_final.csv")
+
 
 
 # save all of these toptables as R objects
@@ -2815,7 +2816,7 @@ Heatmap(logFC_mat_DDR,
 )
 ```
 
-```{r DIC Genes logFC HM}
+```{r DIC Genes logFC HM noRUVs}
 #plot a list of 29 functionally validated DIC genes
 # Load DEG files
 load_deg <- function(path) read.csv(path)
@@ -3023,7 +3024,7 @@ entrez_ids_p53 <- c(1026,50484,4193,9766,9518,7832,1643,1647,1263,57103,51065,87
 # Function to extract relevant data
 extract_data_p53 <- function(df, name) {
   df %>%
-    filter(Entrez_ID %in% entrez_ids) %>%
+    filter(Entrez_ID %in% entrez_ids_p53) %>%
     mutate(Gene = mapIds(org.Hs.eg.db, as.character(Entrez_ID),
                          column = "SYMBOL", keytype = "ENTREZID", multiVals = "first"),
            Condition = name,
@@ -3400,15 +3401,14 @@ DOX144R_DEGs_GO <- DOX_144R_DEGs %>%
 #plot a venn diagram with all of your conditions from your toptables
 
 # Load DEGs Data
-DOX_24T_1 <- read.csv("data/new/DEGs/Toptable_RUV_24T.csv")
-DOX_24R_1 <- read.csv("data/new/DEGs/Toptable_RUV_24R.csv")
-DOX_144R_1 <- read.csv("data/new/DEGs/Toptable_RUV_144R.csv")
+DOX_24T_1 <- read.csv("data/new/DEGs/TTBL_RUV_24T_OLD.csv")
+DOX_24R_1 <- read.csv("data/new/DEGs/TTBL_RUV_24R_OLD.csv")
+DOX_144R_1 <- read.csv("data/new/DEGs/TTBL_RUV_144R_OLD.csv")
 
 # Extract Significant DEGs
 DEG1_RUV <- DOX_24T_1$Entrez_ID[DOX_24T_1$adj.P.Val < 0.05]
 DEG2_RUV <- DOX_24R_1$Entrez_ID[DOX_24R_1$adj.P.Val < 0.05]
 DEG3_RUV <- DOX_144R_1$Entrez_ID[DOX_144R_1$adj.P.Val < 0.05]
-
 
 venntest_RUV <- list(DEG1_RUV, DEG2_RUV, DEG3_RUV)
 ggVennDiagram(
@@ -3541,6 +3541,8 @@ DOX144R_DEGs_GO_RUV <- DOX_144R_DEGs_RUV %>%
 
 ```{r GO KEGG Overlap DEGs Original}
 #####DOX24 Genes#####
+library(gprofiler2)
+
 D24_DEGs_mat <- as.matrix(DOX24T_DEGs_GO)
 
 DOX_24_dxr_gene <- gost(query = D24_DEGs_mat,
@@ -3893,7 +3895,7 @@ table_DOX144Rshare_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_na
 
 
 ```{r GO KEGG Overlap DEGs Up/Down}
-library(gprofiler2)
+# library(gprofiler2)
 #####DOX24 Upregulated Genes#####
 D24_DEGs_up_mat <- as.matrix(DOX24T_DEGs_GO_up)
 
@@ -4635,6 +4637,9 @@ deg_list_RUV <- list("DOX_24T" = DOX_24T_R,
 all_data_DDR_RUV <- bind_rows(mapply(extract_data_DDR_R, deg_list_RUV, names(deg_list_RUV), SIMPLIFY = FALSE)) %>%
   left_join(entrez_category_DDR, by = c("Entrez_ID" = "ENTREZID"))
 
+# DDR_genesymbols_list_RUV <- all_data_DDR_RUV$Gene
+# write.csv(DDR_genesymbols_list_RUV, "data/new/RUV/DDR_Genes_list_RUV.csv")
+
 # Create matrices
 logFC_matddr_R <- acast(all_data_DDR_RUV, Gene ~ Condition, value.var = "logFC")
 signif_matddr_R <- acast(all_data_DDR_RUV, Gene ~ Condition, value.var = "Signif")
@@ -4700,7 +4705,322 @@ Heatmap(logFC_mat_DDR_RUV,
 ```
 
 
-```{r DIC Genes logFC HM}
+```{r logFC DDR Boxplots RUVs Genes}
+library(car)
+
+#get an overall idea of the response occurring in all genes with logFC across time
+#start with the logFC and then do the abs logFC
+
+####data setup####
+#Read DNA Damage Response Gene List
+
+#this had an extra column that was unncessesary
+# DNA_damage <- read.csv("data/new/RUV/DDR_Genes_list_RUV.csv", stringsAsFactors = FALSE) %>% 
+#   dplyr::select(-(X))
+#   
+# names(DNA_damage)[names(DNA_damage) == "x"] <- "Symbol"
+#   
+#saveRDS(DNA_damage, "data/new/RUV/DNA_damage_genesymbols.RDS")
+
+#this is the final processed version with a single list of symbols with col name
+DNA_damage <- readRDS("data/new/RUV/DNA_damage_genesymbols.RDS")
+
+#Convert gene symbols to Entrez IDs
+DNA_damage <- DNA_damage %>%
+  mutate(Entrez_ID = mapIds(org.Hs.eg.db,
+                            keys = Symbol,
+                            column = "ENTREZID",
+                            keytype = "SYMBOL",
+                            multiVals = "first"))
+
+DNA_damage_genes <- na.omit(DNA_damage$Entrez_ID)
+
+time_colors <- c("24T" = "#238B45",
+                 "24R" = "#74C476",
+                 "144R" = "#C7E9C0")
+
+#load in my DEGs which I'll use to create a combined toptable
+load_deg <- function(path) read.csv(path)
+
+DOX_24T_R <- load_deg("data/new/DEGs/Toptable_RUV_24T_final.csv")
+DOX_24R_R <- load_deg("data/new/DEGs/Toptable_RUV_24R_final.csv")
+DOX_144R_R <- load_deg("data/new/DEGs/Toptable_RUV_144R_final.csv")
+
+all_toptables_RUV <- bind_rows(
+  DOX_24T_R %>% mutate(Drug = "DOX", Timepoint = "24T"),
+  DOX_24R_R %>% mutate(Drug = "DOX", Timepoint = "24R"),
+  DOX_144R_R %>% mutate(Drug = "DOX", Timepoint = "144R"),
+)
+
+
+filtered_toptables_RUV <- all_toptables_RUV %>%
+  filter(Entrez_ID %in% DNA_damage_genes)
+
+filtered_toptables_RUV <- filtered_toptables_RUV %>%
+  mutate(
+    Drug = factor(Drug, levels = c("DOX")),
+    Timepoint = factor(Timepoint, levels = c("24T", "24R", "144R"), 
+                       labels = c("Timepoint: 24T", "Timepoint: 24R", "Timepoint: 144R"))
+  )
+
+levene_results_RUV <- filtered_toptables_RUV %>%
+  group_by(Timepoint) %>%
+  summarise(p_value = leveneTest(logFC ~ Timepoint, data = .)$`Pr(>F)`[1], .groups = "drop") %>%
+  mutate(significance = ifelse(p_value < 0.05, "*", ""))  # Use p < 0.05 threshold for stars
+
+# **🔹 Determine Y-axis position for Stars**
+star_positions <- filtered_toptables_RUV %>%
+  group_by(Timepoint,Drug) %>%
+  summarise(y_pos = max(logFC, na.rm = TRUE) + 0.5, .groups = "drop") %>%
+  group_by(Timepoint) %>%
+  summarise(y_pos = max(y_pos), .groups = "drop")
+
+# **🔹 Merge Levene test results with Y positions**
+levene_results_plot_RUV <- levene_results_RUV %>%
+  left_join(star_positions, by = c("Timepoint")) %>%
+  mutate(x_position = 1.5)
+
+ggplot(filtered_toptables_RUV, aes(x = Drug, y = logFC, fill = Timepoint)) +
+  geom_violin(trim = FALSE, alpha = 0.5) +  # Violin plot for logFC
+  geom_boxplot(width = 0.1, outlier.shape = NA, color = "black", alpha = 0.5) +  # Add boxplot inside violin
+  scale_fill_manual(values = c(
+    "Timepoint: 24T" = "#238B45",
+    "Timepoint: 24R" = "#74C476",
+    "Timepoint: 144R" = "#C7E9C0")) +  
+  facet_grid(Drug ~ Timepoint) +  
+  geom_text(
+    data = levene_results_plot_RUV %>% filter(significance == "*"),  # Only plot significant comparisons
+    aes(x = x_position, y = y_pos, label = significance), 
+    size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+  ) +
+  theme_bw() +
+  xlab("") +
+  ylab("Log Fold Change") +  
+  ggtitle("LogFC Distribution for DDR Genes") +
+  theme(
+    plot.title = element_text(size = rel(1.5), hjust = 0.5),
+    axis.title = element_text(size = 15, color = "black"),
+    axis.line = element_line(linewidth = 1.5),
+    strip.background = element_rect(fill = "gray"),  
+    strip.text = element_text(size = 12, color = "black", face = "bold"),  
+    axis.text.x = element_text(size = 8, color = "black", angle = 0)
+  )
+
+```
+```{r DDR RUVs Genes Proportion}
+# Read DNA Damage Genes List
+# DNA_damage
+# 
+# # Convert gene symbols to Entrez IDs
+# DNA_damage <- DNA_damage %>%
+#   mutate(Entrez_ID = mapIds(org.Hs.eg.db,
+#                             keys = Symbol,
+#                             column = "ENTREZID",
+#                             keytype = "SYMBOL",
+#                             multiVals = "first"))
+# 
+# # Extract DNA damage gene Entrez IDs
+# DNA_damage_genes <- na.omit(DNA_damage$Entrez_ID)
+# total_DNA_damage_genes <- length(DNA_damage_genes)  # Total number of DNA damage genes
+# 
+# # Define DEG lists (with significant ones only)
+# DOX_DEGs <- list(
+#   "DOX_24T" = DEG1_RUV, "DOX_24R" = DEG2_RUV, "DOX_144R" = DEG3_RUV
+# )
+# 
+# # Function to calculate the presence of DNA damage genes in DEGs 
+# calculate_proportion_DDR <- function(deg_list, drug_name) {
+#   data.frame(
+#     Sample = names(deg_list),
+#     Drug = drug_name,
+#     DNA_Damage_DEGs = sapply(deg_list, function(ids) sum(ids %in% DNA_damage_genes)),  # DEGs present in DNA damage set
+#     Non_DNA_Damage_DEGs = sapply(deg_list, function(ids) total_DNA_damage_genes - sum(ids %in% DNA_damage_genes))  # Remaining DNA damage genes
+#   ) %>%
+#     mutate(
+#       Yes_Proportion = (DNA_Damage_DEGs / total_DNA_damage_genes) * 100,  # Percentage of DEGs in DNA damage genes
+#       No_Proportion = (Non_DNA_Damage_DEGs / total_DNA_damage_genes) * 100  # Remaining DNA damage genes as No
+#     )
+# }
+# 
+# # Calculate proportions for CX-5461 and DOX
+# DOX_proportion <- calculate_proportion_DDR(DOX_DEGs, "DOX")
+# 
+# # Convert to long format for stacked bar plot
+# proportion_long <- DOX_proportion %>%
+#   dplyr::select(Sample, Drug, Yes_Proportion, No_Proportion) %>%
+#   pivot_longer(cols = c(Yes_Proportion, No_Proportion), names_to = "Category", values_to = "Percentage") %>%
+#   mutate(Category = ifelse(Category == "Yes_Proportion", "Yes", "No"))
+# 
+# # **Ensure correct order of samples on X-axis**
+# sample_order <- c(
+#   "DOX_24T", "DOX_24R", "DOX_144R"
+# )
+# proportion_long$Sample <- factor(proportion_long$Sample, levels = sample_order, ordered = TRUE)
+# 
+# # **Fix: Ensure "Yes" is on top and "No" is at the bottom in stacked bars**
+# proportion_long$Category <- factor(proportion_long$Category, levels = c("Yes", "No"))  # Ensures "Yes" on top, "No" at bottom
+# 
+# # **Perform Chi-Square Test for DOX across timepoints**
+# chi_square_results <- data.frame(Sample = character(), P_Value = numeric())
+# 
+# for (i in seq(1, 6)) {  #comparing across timepoints
+#   tx24_sample <- sample_order[i] #DOX24T
+#   rec24_sample <- sample_order[i + 6]   #DOX24R
+#   rec144_sample <- sample_order[i + 12] #DOX144R
+#   
+#   tx24_data <- filter(DOX_proportion, Sample == tx24_sample)
+#   rec24_data <- filter(DOX_proportion, Sample == rec24_sample)
+#   rec144_data <- filter(DOX_proportion, Sample == rec144_sample)
+#   
+#   # Construct contingency table for Chi-Square test
+#   contingency_table <- matrix(
+#     c(tx24_data$DNA_Damage_DEGs, tx24_data$Non_DNA_Damage_DEGs,
+#       rec24_data$DNA_Damage_DEGs, rec24_data$Non_DNA_Damage_DEGs,
+#       rec144_data$DNA_Damage_DEGs, rec144_data$Non_DNA_Damage_DEGs),
+#     nrow = 3, byrow = TRUE
+#   )
+#   
+#   # Run Chi-Square Test
+#   test_result <- chisq.test(contingency_table)
+#   p_value <- test_result$p.value
+#   
+#   # Store results
+#   chi_square_results <- rbind(chi_square_results, data.frame(Sample = tx24_sample, P_Value = p_value))
+# }
+# 
+# # Add significance stars
+# chi_square_results$Significant <- ifelse(chi_square_results$P_Value < 0.05, "*", "")
+# 
+# # Merge Chi-Square results
+# proportion_long <- left_join(proportion_long, chi_square_results, by = "Sample")
+# 
+# # **Save output**
+# write.csv(proportion_long, "C:/Work/Postdoc_UTMB/CX-5461 Project/Transcriptome literatures/lit2/Proportion_Stacked_DNA_Damage_DEGs_with_ChiSquare.csv", row.names = FALSE)
+# 
+# 
+# # Define correct factor orders for samples
+# sample_order <- c(
+#   "CX_0.1_3", "CX_0.1_24", "CX_0.1_48", "CX_0.5_3", "CX_0.5_24", "CX_0.5_48",
+#   "DOX_0.1_3", "DOX_0.1_24", "DOX_0.1_48", "DOX_0.5_3", "DOX_0.5_24", "DOX_0.5_48"
+# )
+# 
+# # Reapply factor levels for correct order in both proportion_data and proportion_long
+# proportion_data$Sample <- factor(proportion_data$Sample, levels = sample_order, ordered = TRUE)
+# proportion_long$Sample <- factor(proportion_long$Sample, levels = sample_order, ordered = TRUE)
+# 
+# # **Fix: Ensure "Yes" is on top and "No" is at the bottom in stacked bars**
+# proportion_long$Category <- factor(proportion_long$Category, levels = c("Yes", "No")
+```
+
+```{r logFC DDR Genes RUVs Across Timepoints}
+library(rstatix)
+# Read DNA Damage Response Gene List
+# DNA_damage as above
+
+# Convert gene symbols to Entrez IDs
+# DNA_damage <- DNA_damage %>%
+#   mutate(Entrez_ID = mapIds(org.Hs.eg.db,
+#                             keys = Symbol,
+#                             column = "ENTREZID",
+#                             keytype = "SYMBOL",
+#                             multiVals = "first"))
+
+# DNA_damage_genes <- na.omit(DNA_damage$Entrez_ID)
+
+# saveRDS(DNA_damage_genes, "data/new/RUV/DNA_damage_genes_symbolentrez.RDS")
+
+DNA_damage_genes <- readRDS("data/new/RUV/DNA_damage_genes_symbolentrez.RDS")
+
+all_toptables_RUV <- bind_rows(
+  DOX_24T_R %>% mutate(Drug = "DOX", Timepoint = "24T"),
+  DOX_24R_R %>% mutate(Drug = "DOX", Timepoint = "24R"),
+  DOX_144R_R %>% mutate(Drug = "DOX", Timepoint = "144R"),
+)
+
+filtered_toptables_RUV <- all_toptables_RUV %>%
+  filter(Entrez_ID %in% DNA_damage_genes) %>%
+  mutate(abs_logFC = abs(logFC))
+
+filtered_toptables_RUV <- filtered_toptables_RUV %>%
+  mutate(
+    Drug = factor(Drug, levels = c("DOX")),
+    Timepoint = factor(Timepoint, levels = c("24T", "24R", "144R"), 
+                       labels = c("Timepoint: 24T", "Timepoint: 24R", "Timepoint: 144R"))
+  )
+
+wilcox_results <- filtered_toptables_RUV %>%
+  wilcox_test(abs_logFC ~ Timepoint) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  mutate(significance = ifelse(p < 0.05, "*", ""))
+
+#make a little thing of your timepoint comparisons
+pairs <- wilcox_results %>% 
+  dplyr::select(group1, group2) %>% 
+  distinct()
+
+max_per_timepoint <- filtered_toptables_RUV %>% 
+  group_by(Timepoint) %>% 
+  summarise(max_logFC = max(abs_logFC, na.rm = TRUE), .groups = "drop")
+  
+#Join max values for group1
+star_positions <- pairs %>%
+  left_join(max_per_timepoint, by = c("group1" = "Timepoint"))
+names(star_positions)[names(star_positions) == "max_logFC"] <- "max1"
+
+#Join max values for group2, with suffixes to avoid name conflict
+star_positions <- star_positions %>%
+  left_join(max_per_timepoint, by = c("group2" = "Timepoint"), suffix = c(".group1", ".group2"))
+names(star_positions)[names(star_positions) == "max_logFC"] <- "max2"
+
+star_positions <- star_positions %>% 
+  mutate(y_pos = pmax(max1, max2, na.rm = TRUE) + 0.2)
+
+#now star positions has the same group1 and group2 as wilcoxon
+
+wilcox_results_plot <- wilcox_results %>%
+  left_join(star_positions, by = c("group1", "group2")) %>%
+  mutate(x_position = 1.5)  
+
+wilcox_results_plot <- wilcox_results_plot %>% 
+  mutate(group1 = gsub("Timepoint: ", "", group1),
+         group2 = gsub("Timepoint: ", "", group2))
+
+wilcox_results_plot <- wilcox_results_plot %>%
+  mutate(x_position = case_when(
+    group1 == "24T" & group2 == "24R" ~ 1.5,
+    group1 == "24T" & group2 == "144R" ~ 2,
+    group1 == "24R" & group2 == "144R" ~ 2.5
+  ))
+
+ggplot(filtered_toptables_RUV, aes(x = Timepoint, y = logFC, fill = Timepoint)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "Timepoint: 24T" = "#238B45",
+    "Timepoint: 24R" = "#74C476",
+    "Timepoint: 144R" = "#C7E9C0")) +  
+  facet_wrap(~ Drug) +  
+  geom_text(
+    data = wilcox_results_plot, 
+    aes(x = x_position, y = y_pos, label = significance), 
+    size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+  ) +
+  theme_bw() +
+  xlab("") +
+  ylab("Log Fold Change") +  
+  ggtitle("Log Fold Change for DDR Genes") +
+  theme(
+    plot.title = element_text(size = rel(1.5), hjust = 0.5),
+    axis.title = element_text(size = 15, color = "black"),
+    axis.line = element_line(linewidth = 1.5),
+    strip.background = element_rect(fill = "gray"),  
+    strip.text = element_text(size = 12, color = "black", face = "bold"),  
+    axis.text.x = element_text(size = 8, color = "black", angle = 0)
+  )
+```
+
+
+
+```{r RUVs DIC Genes logFC HM}
 #plot a list of 29 functionally validated DIC genes
 # Load DEG files
 load_deg <- function(path) read.csv(path)
@@ -4864,7 +5184,13 @@ Heatmap(logFC_mat_DIC_RUV,
 )
 ```
 
-```{r p53 Target Genes logFC HM, fig.height=50, fig.width=10}
+```{r logFC Boxplots DIC RUVs Genes}
+#get an overall idea of the logFC of these genes over timepoints
+
+```
+
+
+```{r RUVs p53 Target Genes logFC HM, fig.height=50, fig.width=10}
 # Load libraries
 
 # Load DEG files
@@ -4962,6 +5288,116 @@ Heatmap(logFC_mat_p53_RUV,
         column_title = "P53 Target Genes Expression\nDOX Recovery (RUVs Corrected)",
         column_title_gp = gpar(fontsize = 14, fontface = "bold")
 )
+
+```
+
+
+```{r Read and Process DEGs Data}
+#read in boxplot1 for my log2cpm data
+boxplot1 <- read.csv("data/new/filcpm_final_matrix.csv") %>% 
+  as.data.frame()
+#this dataframe is unchanged
+
+# Load Toptables
+deg_files_ruv <- list.files("data/new/DEGs", pattern = "Toptable_RUV.*\\.csv", full.names = TRUE)
+deg_list_ruv <- lapply(deg_files_ruv, read.csv)
+names(deg_list_ruv) <- gsub("data/DEGs/Toptable_|\\.csv", "", deg_files_ruv)  
+
+# Function to check significance based on **Entrez_ID in the correct sample**
+is_significant <- function(gene, drug, conc, timepoint) {
+  condition <- paste(drug, conc, timepoint, sep = "_")
+  if (!condition %in% names(deg_list_ruv)) return(FALSE)
+  
+  toptable <- deg_list[[condition]]
+  gene_entrez <- boxplot1$ENTREZID[boxplot1$SYMBOL == gene]
+  
+  if (length(gene_entrez) == 0) return(FALSE)
+  
+  return(any(gene_entrez %in% toptable$Entrez_ID[toptable$adj.P.Val < 0.05]))
+}
+
+```
+
+```{r Process Data for Plotting RUVs logFC Boxplots}
+
+process_gene_data_DDR_RUVs_boxplots <- function(gene) {
+  gene_data_boxplots_RUVs <- boxplot1 %>% filter(SYMBOL == gene)
+  # Reshape data
+  long_data_RUV_DDR <- gene_data_boxplots_RUVs %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2CPM") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6R$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, Indv, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+    # Identify significant conditions **per Drug, Conc, and Timepoint**
+  significance_labels <- long_data_RUV_DDR %>%
+    distinct(Drug, Timepoint, Indv) %>%
+    rowwise() %>%
+    mutate(
+      max_log2CPM = max(long_data_RUV_DDR$log2CPM[long_data_RUV_DDR$Condition == Condition], na.rm = TRUE),
+      Significance = ifelse(is_significant(gene, Drug, Timepoint, Indv), "*", "")
+    ) %>%
+    filter(Significance != "") %>% ungroup()
+  
+  list(long_data_RUV_DDR = long_data_RUV_DDR, significance_labels = significance_labels)
+}
+
+#####now I can go ahead and generate boxplots as requested
+#want one for DDR, one for DIC, and one for p53
+
+#genelists:
+DDR_genes_ruv <- all_data_DDR_RUV$Gene
+DIC_genes_ruv <- all_data_DIC_RUV$Gene
+p53_genes_ruv <- all_data_p53_RUV$Gene
+
+# #Generate Boxplots from the above function using our gene lists above
+# for (gene in boxplot1) {
+#   gene_data_boxplots_RUVs <- process_top5_D24R_1(gene)
+#   p <- ggplot(gene_data_boxplots_RUVs, aes(x = Condition, y = log2cpm, fill = Drug)) +
+#     geom_boxplot(outlier.shape = NA) +
+#     geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+#     scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+#     ggtitle(paste("Log2cpm", gene, "top5DEGs D24R RUVs")) +
+#     labs(x = "Treatment", y = "log2cpm") +
+#     theme_bw() +
+#     theme(
+#       plot.title = element_text(size = rel(2), hjust = 0.5),
+#       axis.title = element_text(size = 15, color = "black"),
+#       axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+#     )
+#   print(p)
+# }
 
 ```
 
@@ -5844,6 +6280,7 @@ legend('bottomleft',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4"
 ```
 
 
+
 ```{r Extract gene probabilities}
 #extract the posterior probability that these DEGs belong to motifs
 gene_prob_all <- motif.fitted$bestmotif$p.post
@@ -6658,143 +7095,6 @@ for (gene in initial_test_genes3_fin) {
 ```
 
 
-```{r Extract Gene Probabilities by Cluster, include=FALSE}
-
-####try this Renee's way####
-# clust1 <- motif_prob %>%
-#   as.data.frame() %>%
-#   filter(V1>0.6) %>% 
-#   rownames
-# clust2 <- motif_prob %>%
-#   as.data.frame() %>%
-#   filter(V2>0.6) %>% 
-#   rownames
-# clust3 <- motif_prob %>%
-#   as.data.frame() %>%
-#   filter(V3>0.6) %>% 
-#   rownames
-
-# length(clust1)
-# #6827
-# #5538 with cutoff 0.6
-# length(clust2)
-# #6474
-# #5422 with cutoff 0.6
-# length(clust3)
-# #607
-# #518 with cutoff 0.6
-
-
-
-#now that I've looked at the distribution, I can make some determinations on which cutoffs are appropriate for my data
-#For now, I'm moving on with >0.6 as my cutoff
-
-#venn diagram of overlapping genes across motifs
-
-#venn 1
-#plot a venn diagram with all of your conditions from your toptables
-
-# Load motif Data
-# mf1_genes_p <- clust1_p
-# mf2_genes_p <- clust2_p
-# mf3_genes_p <- clust3_p
-# 
-# vennCor <- list(mf1_genes_p, mf2_genes_p, mf3_genes_p)
-# ggVennDiagram(
-#   vennCor,
-#   category.names = c("Motif 1", "Motif 2", "Motif 3")
-# ) + ggtitle("Cormotif Specific and Shared DEGs")+
-#   theme(
-#     plot.title = element_text(size = 16, face = "bold"),  # Increase title size
-#     text = element_text(size = 16)  # Increase text size globally
-#   )
-
-#Now go ahead and base your cutoffs on the values from bestmotif motif.prior
-
-# clust1_c <- motif_prob %>%
-#   as.data.frame() %>%
-#   filter(V1>0.4299) %>% 
-#   rownames
-# clust2_c <- motif_prob %>%
-#   as.data.frame() %>%
-#   filter(V2>0.5057) %>% 
-#   rownames
-# clust3_c <- motif_prob %>%
-#   as.data.frame() %>%
-#   filter(V3>0.0643) %>% 
-#   rownames
-# 
-# length(clust1_c)
-# #6827
-# #5538 with cutoff 0.6
-# #7604 with cutoff 0.4299
-# length(clust2_c)
-# #6474
-# #5422 with cutoff 0.6
-# #6420 with cutoff 0.5057
-# length(clust3_c)
-# #607
-# #518 with cutoff 0.6
-# #2010 with cutoff 0.063
-# #way too many genes compared to 910 genes
-
-# mf1_genes_c <- clust1_c
-# mf2_genes_c <- clust2_c
-# mf3_genes_c <- clust3_c
-# 
-# vennCor_p <- list(mf1_genes_c, mf2_genes_c, mf3_genes_c)
-# ggVennDiagram(
-#   vennCor_p,
-#   category.names = c("Motif 1", "Motif 2", "Motif 3")
-# ) + ggtitle("Cormotif Specific and Shared DEGs (motif.prior cutoff)")+
-#   theme(
-#     plot.title = element_text(size = 16, face = "bold"),  # Increase title size
-#     text = element_text(size = 16)  # Increase text size globally
-#   )
-
-#when I plot this venn- there are overlapping genes
-
-#now I'm going to base the cutoff solely on the number of genes I get
-
-# clust1_h <- motif_prob %>%
-#   as.data.frame() %>%
-#   filter(V1>0.56) %>% 
-#   rownames
-# clust2_h <- motif_prob %>%
-#   as.data.frame() %>%
-#   filter(V2>0.56) %>% 
-#   rownames
-# clust3_h <- motif_prob %>%
-#   as.data.frame() %>%
-#   filter(V3>0.56) %>% 
-#   rownames
-
-# length(clust1_h)
-# #6101 vs 6155 at cutoff of 0.56
-# length(clust2_h)
-# #7185 vs 7241 at cutoff of 0.44
-# length(clust3_h)
-# #911 vs 921 at cutoff of 0.25
-# 
-# mf1_genes_h <- clust1_h
-# mf2_genes_h <- clust2_h
-# mf3_genes_h <- clust3_h
-
-# vennCor_h <- list(mf1_genes_h, mf2_genes_h, mf3_genes_h)
-# ggVennDiagram(
-#   vennCor_h,
-#   category.names = c("Motif 1", "Motif 2", "Motif 3")
-# ) + ggtitle("Cormotif Specific and Shared DEGs")+
-#   theme(
-#     plot.title = element_text(size = 16, face = "bold"),  # Increase title size
-#     text = element_text(size = 16)  # Increase text size globally
-#   )
-
-#i used the most stringent cutoff from the group (motif 1 at >0.56)
-#this made it so that no genes were overlapping, but I'm missing a lot of genes from motif 2 and 3
-
-```
-
 ```{r Cormotif GO KEGG Final Genes}
 #now take these final gene sets for each motif - clustlike + p.post consensus genes
 
@@ -7045,8 +7345,10 @@ table_motif3_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_
 
 ```
 
-```{r Cormotif Unassigned Gene Set}
+```{r Cormotif Unassigned Gene Set, include = FALSE}
 #now let's pull out the genes that were not assigned to a motif from above
+
+#this one is giving me an issue with wflow_build so I'll fix it later
 
 unassigned_genes_list <- readRDS("data/new/Cormotif/unassigned_genes_Cormotif.RDS")
 
@@ -7065,51 +7367,51 @@ combined_toptables_dxr <- bind_rows(
   d144r_toptable_dxr)
 
 #Filter the data based on each motif
-filt_toptable_dxr_fin_unassign <- combined_toptables_dxr %>% 
-  dplyr::filter(Entrez_ID  %in% unassign_genes_fin) %>% 
-  mutate(absFC = abs(logFC)) %>% 
-  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
-  ggplot(., aes(x = time, y = logFC))+
-  geom_boxplot(aes(fill = time))+
-  scale_fill_manual(values = time_col)+
-  guides(fill = guide_legend(title = "Time"))+
-  theme_bw()+
-  xlab(" ")+
-  ylab("logFC")+
-  theme_bw()+
-  ggtitle("LogFC of Unassigned Genes (n=2232)")+
-  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
-        axis.title = element_text(size = 15, colour = "black"),
-        strip.background = element_rect(fill = "#CAD899"),
-        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
-        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+# filt_toptable_dxr_fin_unassign <- as.data.frame(combined_toptables_dxr) %>% 
+#   dplyr::filter(Entrez_ID  %in% unassign_genes_fin) %>% 
+#   mutate(absFC = abs(logFC)) %>% 
+#   mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+#   ggplot(., aes(x = time, y = logFC))+
+#   geom_boxplot(aes(fill = time))+
+#   scale_fill_manual(values = time_col)+
+#   guides(fill = guide_legend(title = "Time"))+
+#   theme_bw()+
+#   xlab(" ")+
+#   ylab("logFC")+
+#   theme_bw()+
+#   ggtitle("LogFC of Unassigned Genes (n=2232)")+
+#   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#         axis.title = element_text(size = 15, colour = "black"),
+#         strip.background = element_rect(fill = "#CAD899"),
+#         axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+#         strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+# 
+# filt_toptable_dxr_fin_unassign
 
-filt_toptable_dxr_fin_unassign
 
-
-filt_toptable_abs_fin_unassign <- combined_toptables_dxr %>% 
-  dplyr::filter(Entrez_ID  %in% unassign_genes_fin) %>% 
-  mutate(absFC = abs(logFC)) %>% 
-  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
-  ggplot(., aes(x = time, y = absFC))+
-  geom_boxplot(aes(fill = time))+
-  scale_fill_manual(values = time_col)+
-  guides(fill = guide_legend(title = "Time"))+
-  theme_bw()+
-  xlab(" ")+
-  ylab("|logFC|")+
-  theme_bw()+
-  ggtitle("Abs LogFC of Unassigned Genes (n=2232)")+
-  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
-        axis.title = element_text(size = 15, colour = "black"),
-        strip.background = element_rect(fill = "#CAD899"),
-        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
-        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
-
-filt_toptable_abs_fin_unassign
+# filt_toptable_abs_fin_unassign <- as.data.frame(combined_toptables_dxr) %>% 
+#   dplyr::filter(Entrez_ID  %in% unassign_genes_fin) %>% 
+#   mutate(absFC = abs(logFC)) %>% 
+#   mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+#   ggplot(., aes(x = time, y = absFC))+
+#   geom_boxplot(aes(fill = time))+
+#   scale_fill_manual(values = time_col)+
+#   guides(fill = guide_legend(title = "Time"))+
+#   theme_bw()+
+#   xlab(" ")+
+#   ylab("|logFC|")+
+#   theme_bw()+
+#   ggtitle("Abs LogFC of Unassigned Genes (n=2232)")+
+#   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#         axis.title = element_text(size = 15, colour = "black"),
+#         strip.background = element_rect(fill = "#CAD899"),
+#         axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+#         strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+# 
+# filt_toptable_abs_fin_unassign
 
 ####GO KEGG####
-unassigned_genes_matrix <- as.matrix(unassign_genes_fin)
+unassigned_genes_matrix <- as.matrix(unassigned_genes_list)
 length(unassigned_genes_matrix)
 #2232 genes in this set
 
@@ -7183,48 +7485,47 @@ table_unassign_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, 
 
 ```
 
-
 ```{r  RUVs Cormotif with Norm Counts}
 # #read in the norm counts df (normalized counts from RUV)
-# set1 <- readRDS("data/new/RUV/set1_RUVsk1_normcounts.RDS")
-# NormCounts_RUV_rep <- as.data.frame(set1$normalizedCounts)
+set1 <- readRDS("data/new/RUV/set1_RUVsk1_normcounts.RDS")
+NormCounts_RUV_rep <- as.data.frame(set1$normalizedCounts)
 # 
 # #read in my metadata sheet that I'll use as the standard for labelling
 # #this one already has the replicate individual removed
-# Metadata_2 <- readRDS("data/new/Metadata_2_norep.RDS")
+Metadata_2 <- readRDS("data/new/Metadata_2_norep.RDS")
 # 
 # #I'll have to remove the replicate at this stage so I can properly run Cormotif
-# NormCounts_RUV <- NormCounts_RUV_rep %>% 
-#   dplyr::select(-(contains("6R")))
+NormCounts_RUV <- NormCounts_RUV_rep %>%
+  dplyr::select(-(contains("6R")))
 # 
 # #now ensure the column names match the original dge$counts with Sample_name
-# colnames(NormCounts_RUV) <- Metadata_2$Sample_name
+colnames(NormCounts_RUV) <- Metadata_2$Sample_name
 # 
 # #now, make this into a dge object as I did for DE + Cormotif
-# dge_RUV <- DGEList(counts = NormCounts_RUV)
+dge_RUV <- DGEList(counts = NormCounts_RUV)
 # 
 # #put the Condition names as a factor onto the dge object for further sorting
-# dge_RUV$samples$group <- factor(Metadata_2[colnames(NormCounts_RUV), "Condition"])
+dge_RUV$samples$group <- factor(Metadata_2[colnames(NormCounts_RUV), "Condition"])
 # 
 # #TMM normalize the normalized counts input with the dge object
-# dge_RUV_calc <- calcNormFactors(dge_RUV, method = "TMM")
+dge_RUV_calc <- calcNormFactors(dge_RUV, method = "TMM")
 # #this is producing a lot of NaNs warnings, perhaps because TMM should occur before norm counts?
 # 
 # #try by performing TMM normalization before norm counts in set1
 # 
-# counts <- readRDS("data/new/RUV/filt_counts_matrix.RDS")
+counts <- readRDS("data/new/RUV/filt_counts_matrix.RDS")
 # #use this counts file to feed into set1 - but instead TMM normalize it first
 # 
-# counts_tmm <- calcNormFactors(counts, method = "TMM")
+counts_tmm <- calcNormFactors(counts, method = "TMM")
 # 
 # set1_tmm <- RUVSeq::RUVs(x = counts_tmm, k =1, scIdx = scIdx, isLog = FALSE)
-# 
+# error with tmm normalized counts going into RUVseq
 # 
 # summary(colSums(NormCounts_RUV))
 # dge_RUV$samples
-# 
-# ncol(NormCounts_RUV) == nrow(Metadata_2)           # Should be TRUE
-# all(colnames(NormCounts_RUV) == rownames(Metadata_2))
+# # 
+ncol(NormCounts_RUV) == nrow(Metadata_2)           # Should be TRUE
+all(colnames(NormCounts_RUV) == rownames(Metadata_2))
 # 
 # 
 # #save this file so I can read it in later!
@@ -7247,9 +7548,9 @@ table_unassign_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, 
 # cmf_RUV_counts <- dge_RUV_calc
 # 
 # #now make your TMM normalized cpm of norm counts into a dataframe + add Entrez_ID as a col
-# cmf_RUV_df <- cmf_RUV_cpm %>% 
-#   as.data.frame() %>% 
-#   rownames_to_column(., var = "Entrez_ID")
+# cmf_RUV_df <- cmf_RUV_cpm %>%
+  # as.data.frame() %>%
+  # rownames_to_column(., var = "Entrez_ID")
 # 
 # #save this to a csv file so I can reorder this matrix easily
 # #write.csv(cmf_RUV_cpm, "data/new/Cormotif/RUV/Cormotif_RUVk1_cpm_matrix.csv")
@@ -7259,13 +7560,13 @@ table_unassign_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, 
 # #DOX24T 1-6, DOX24R 1-6, DOX144R 1-6, DMSO24T 1-6, DMSO24R 1-6, DMSO144R 1-6
 # Cormotif_RUV <- read.csv("data/new/cmf_RUV_final.csv")
 # dim(Cormotif_RUV)
-# #14319 genes across 37 cols (1 is Entrez_ID)
+# # #14319 genes across 37 cols (1 is Entrez_ID)
 # Cormotif_RUV_df <- data.frame(Cormotif_RUV)
-# 
+# # 
 # rownames(Cormotif_RUV_df) <- Cormotif_RUV_df$Entrez_ID
 # exprs.cmf_RUV <- as.matrix(Cormotif_RUV_df[,2:37])
 # dim(exprs.cmf_RUV)
-# 
+# # 
 # 
 # #put together my group id and comparison id to make the correct comparisons between experimental conditions
 # 
@@ -7273,44 +7574,42 @@ table_unassign_genes_KEGG %>% ggplot(., aes(x = log_val, y = reorder(term_name, 
 # #compid tells which experimental conditions should be compared against one another
 # ##ie DOX24T vs DMSO24T matched control
 # 
-# groupid_csv <- read.csv("data/new/GroupID.csv")
-# #now I have to make this into a vector (named vector)?
 # groupid <- c(
-#   DOX_24T_1 = 1, 
-#   DOX_24T_2 = 1, 
-#   DOX_24T_3 = 1, 
-#   DOX_24T_4 = 1, 
-#   DOX_24T_5 = 1, 
+#   DOX_24T_1 = 1,
+#   DOX_24T_2 = 1,
+#   DOX_24T_3 = 1,
+#   DOX_24T_4 = 1,
+#   DOX_24T_5 = 1,
 #   DOX_24T_6 = 1,
-#   DOX_24R_1 = 2, 
-#   DOX_24R_2 = 2, 
-#   DOX_24R_3 = 2, 
-#   DOX_24R_4 = 2, 
-#   DOX_24R_5 = 2, 
+#   DOX_24R_1 = 2,
+#   DOX_24R_2 = 2,
+#   DOX_24R_3 = 2,
+#   DOX_24R_4 = 2,
+#   DOX_24R_5 = 2,
 #   DOX_24R_6 = 2,
-#   DOX_144R_1 = 3, 
-#   DOX_144R_2 = 3, 
-#   DOX_144R_3 = 3, 
-#   DOX_144R_4 = 3, 
-#   DOX_144R_5 = 3, 
+#   DOX_144R_1 = 3,
+#   DOX_144R_2 = 3,
+#   DOX_144R_3 = 3,
+#   DOX_144R_4 = 3,
+#   DOX_144R_5 = 3,
 #   DOX_144R_6 = 3,
-#   DMSO_24T_1 = 4, 
-#   DMSO_24T_2 = 4, 
-#   DMSO_24T_3 = 4, 
-#   DMSO_24T_4 = 4, 
-#   DMSO_24T_5 = 4, 
+#   DMSO_24T_1 = 4,
+#   DMSO_24T_2 = 4,
+#   DMSO_24T_3 = 4,
+#   DMSO_24T_4 = 4,
+#   DMSO_24T_5 = 4,
 #   DMSO_24T_6 = 4,
-#   DMSO_24R_1 = 5, 
-#   DMSO_24R_2 = 5, 
-#   DMSO_24R_3 = 5, 
-#   DMSO_24R_4 = 5, 
-#   DMSO_24R_5 = 5, 
+#   DMSO_24R_1 = 5,
+#   DMSO_24R_2 = 5,
+#   DMSO_24R_3 = 5,
+#   DMSO_24R_4 = 5,
+#   DMSO_24R_5 = 5,
 #   DMSO_24R_6 = 5,
-#   DMSO_144R_1 = 6, 
-#   DMSO_144R_2 = 6, 
-#   DMSO_144R_3 = 6, 
-#   DMSO_144R_4 = 6, 
-#   DMSO_144R_5 = 6, 
+#   DMSO_144R_1 = 6,
+#   DMSO_144R_2 = 6,
+#   DMSO_144R_3 = 6,
+#   DMSO_144R_4 = 6,
+#   DMSO_144R_5 = 6,
 #   DMSO_144R_6 = 6
 # )
 # #saveRDS(groupid, "data/new/groupidCormotif.RDS")
@@ -7345,7 +7644,7 @@ dim(dge_test_tmm)
 RUV_filt_counts_tmm <- dge_test_tmm$counts %>% 
   as.data.frame() 
 
-# Entrez_ID_tmm_RUV <- RUV_counts_tmm$Entrez_ID
+Entrez_ID_tmm_RUV <- RUV_filt_counts_tmm$Entrez_ID
 # saveRDS(Entrez_ID_tmm_RUV, "data/new/RUV/entrezID_tmm_RUV_list.RDS")
 
 dim(RUV_filt_counts_tmm)
@@ -7495,32 +7794,33 @@ compid_cmf <- readRDS("data/new/compidCormotif.RDS")
 #set the seed the same as the previous one to ensure consistency
 
 #fit Cormotif model
-set.seed(19191)
+# set.seed(19191)
 #only set the seed ONCE
+# 
+# motif.fitted_ruv <- cormotiffit(
+#   exprs = exprs.cmf_ruv,
+#   groupid = groupid_csv,
+#   compid = compid_cmf,
+#   K = 1:10,
+#   max.iter = 1000,
+#   BIC = TRUE,
+#   runtype = "logCPM"
+# )
 
-motif.fitted_ruv <- cormotiffit(
-  exprs = exprs.cmf_ruv,
-  groupid = groupid_csv,
-  compid = compid_cmf,
-  K = 1:10,
-  max.iter = 1000,
-  BIC = TRUE,
-  runtype = "logCPM"
-)
+# saveRDS(motif.fitted_RUV, "data/new/RUV/motif.fitted_ruv_250624.RDS")
+motif.fitted_RUV <- readRDS("data/new/RUV/motif.fitted_ruv_250624.RDS")
 
-#saveRDS(motif.fitted_ruv, "data/new/RUV/motif.fitted_ruv_250624.RDS")
-motif.fitted_ruv <- readRDS("data/new/motif.fitted_ruv_250624.RDS")
 ```
 
 ```{r RUVs Cormotif Plots}
 
 #plot BIC and AIC to see which number of motifs was best for both models
-plotIC(motif.fitted_ruv)
+plotIC(motif.fitted_RUV)
 
-motif.fitted_ruv$bic
+motif.fitted_RUV$bic
 
 #now plot the motifs themselves
-plotMotif(motif.fitted_ruv, title = "Fitted Motifs for DXR RUVs")
+plotMotif(motif.fitted_RUV, title = "Fitted Motifs for DXR RUVs")
 
 #plot the probability legend
 myColors <-  rev(c("#FFFFFF", "#E6E6E6" ,"#CCCCCC", "#B3B3B3", "#999999", "#808080", "#666666","#4C4C4C", "#333333", "#191919","#000000"))
@@ -7528,186 +7828,111 @@ myColors <-  rev(c("#FFFFFF", "#E6E6E6" ,"#CCCCCC", "#B3B3B3", "#999999", "#8080
 plot.new()
 legend('bottomleft',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4",  "0.5", "0.6", "0.7", "0.8","0.9", "1")), box.col="white",title = "Probability\nlegend", horiz=FALSE,title.cex=.8)
 
+```
+
+```{r RUVs Plot Cormotif no TMM}
+#plot the AIC and BIC (we're interested in the Bayesian most of all)
+# plotIC(motif.fit_RUV)
+# 
+# #visual check of the lowest BIC
+# motif.fit_RUV$bic
+# 
+# #plot the motifs
+# plotMotif(motif.fit_RUV)
+# 
+# #plot the probability legend
+# myColors <-  rev(c("#FFFFFF", "#E6E6E6" ,"#CCCCCC", "#B3B3B3", "#999999", "#808080", "#666666","#4C4C4C", "#333333", "#191919","#000000"))
+# 
+# plot.new()
+# legend('bottomleft',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4",  "0.5", "0.6", "0.7", "0.8","0.9", "1")), box.col="white",title = "Probability\nlegend", horiz=FALSE,title.cex=.8)
 
 ```
 
-```{r RUVs Cormotif no TMM}
-#now I want to try this without doing the TMM normalization, as it's likely unnecessary
-#the normalized counts are based on unwanted variation - residuals
-#they are not TMM normalized or anything like that
+```{r RUVs Cormotif log2 Norm Counts}
 
-RUV_CMF_normcounts_rep <- as.data.frame(set1$normalizedCounts)
-
-#first want to cut out the replicate samples as not needed for Cormotif
-RUV_CMF_normcounts <- RUV_CMF_normcounts_rep %>% 
-  dplyr::select(-(contains("6R")))
-
-#then create a dge object of the normalized counts from RUVs
-dge_RUV_CMF <- DGEList(RUV_CMF_normcounts)
-dim(dge_RUV_CMF)
-
-#to put into Cormotif must be in log2cpm
-dge_RUV_CMF_cpm <- cpm(dge_RUV_CMF, log = TRUE)
-dim(dge_RUV_CMF_cpm)
-
-#now that the normalized counts are in cpm format, format my matrix for Cormotif
-
-cmf_RUV_df <- dge_RUV_CMF_cpm %>% 
-  as.data.frame() %>% 
-  rownames_to_column(., var = "Entrez_ID")
-
-#write.csv(x = dge_RUV_CMF_cpm, file = "data/new/RUV/cormotif_normcountsRUVs_matrix.csv")
-
-#reorder my test matrix to match the new groupid I've made
-#I want my columns to be in this order:
-#DOX24T 1-6, DOX24R 1-6, DOX144R 1-6, DMSO24T 1-6, DMSO24R 1-6, DMSO144R 1-6
-CMF_RUV <- read.csv("data/new/RUV/cormotif_normcountsRUVs_matrix.csv")
-dim(CMF_RUV)
-#14319 genes across 37 cols (1 is Entrez_ID)
-CMF_RUV_df <- data.frame(CMF_RUV)
-
-rownames(CMF_RUV_df) <- CMF_RUV_df$Entrez_ID
-exprs.CMF_RUV <- as.matrix(CMF_RUV_df[,2:37])
-dim(exprs.cormotif)
-#14319 genes in 36 columns, set up for plugging into Cormotif
-
-#now I need to set up my groupid and compid accordingly
-
-#put together my group id and comparison id to make the correct comparisons between experimental conditions
-
-#groupid tells which experimental conditions are grouped together
-#compid tells which experimental conditions should be compared against one another
-##ie DOX24T vs DMSO24T matched control
-
-groupid_csv <- read.csv("data/new/GroupID.csv")
-as.character(groupid_csv)
-
-#now I have to make this into a vector (named vector)?
-groupid <- c(
-  DOX_24T_1 = 1,
-  DOX_24T_2 = 1,
-  DOX_24T_3 = 1,
-  DOX_24T_4 = 1,
-  DOX_24T_5 = 1,
-  DOX_24T_6 = 1,
-  DOX_24R_1 = 2,
-  DOX_24R_2 = 2,
-  DOX_24R_3 = 2,
-  DOX_24R_4 = 2,
-  DOX_24R_5 = 2,
-  DOX_24R_6 = 2,
-  DOX_144R_1 = 3,
-  DOX_144R_2 = 3,
-  DOX_144R_3 = 3,
-  DOX_144R_4 = 3,
-  DOX_144R_5 = 3,
-  DOX_144R_6 = 3,
-  DMSO_24T_1 = 4,
-  DMSO_24T_2 = 4,
-  DMSO_24T_3 = 4,
-  DMSO_24T_4 = 4,
-  DMSO_24T_5 = 4,
-  DMSO_24T_6 = 4,
-  DMSO_24R_1 = 5,
-  DMSO_24R_2 = 5,
-  DMSO_24R_3 = 5,
-  DMSO_24R_4 = 5,
-  DMSO_24R_5 = 5,
-  DMSO_24R_6 = 5,
-  DMSO_144R_1 = 6,
-  DMSO_144R_2 = 6,
-  DMSO_144R_3 = 6,
-  DMSO_144R_4 = 6,
-  DMSO_144R_5 = 6,
-  DMSO_144R_6 = 6
-)
-saveRDS(groupid, "data/new/groupidCormotif.RDS")
-
-compid <- data.frame(Cond1 = c(1, 3, 5), Cond2 = c(2, 4, 6))
-compid1 <- data.frame(Cond1 = c(1, 2, 3), Cond2 = c(4, 5, 6))
-
-#saveRDS(compid, "data/new/compidCormotif.RDS")
-compid_cmf <- readRDS("data/new/compidCormotif.RDS")
-
+# lognormcounts_CMF_rep <- as.matrix(set1$normalizedCounts)
+# lognormcounts_CMF <- log2(lognormcounts_CMF_rep + 1)
+# #add a pseudocount to ensure any values are not negative or zero
+# 
+# #first want to cut out the replicate samples as not needed for Cormotif
+# lognormcounts_CMF <- as.data.frame(lognormcounts_CMF) %>% 
+#   dplyr::select(-(contains("6R"))) %>% 
+#   as.matrix()
+# 
+# #14319 genes in 36 columns, set up for plugging into Cormotif
+# 
+# #now I need to set up my groupid and compid accordingly
+# 
+# #put together my group id and comparison id to make the correct comparisons between experimental conditions
+# 
+# #groupid tells which experimental conditions are grouped together
+# #compid tells which experimental conditions should be compared against one another
+# ##ie DOX24T vs DMSO24T matched control
+# 
+# groupid_other <- readRDS("data/new/RUV/groupid_other_unrearranged.RDS")
+# 
+# #now put together your compid
+# compid1 <- data.frame(Cond1 = c(1, 2, 3), Cond2 = c(4, 5, 6))
 
 ```
 
-```{r RUVs Run Cormotif no TMM}
+```{r RUVs Cormotif log2 normalized counts Run}
 #set the seed the same as the previous one to ensure consistency
 
 #fit Cormotif model
-set.seed(19191)
+# set.seed(19191)
 #only set the seed ONCE
 
-motif.fit_RUV <- cormotiffit(
-  exprs = exprs.CMF_RUV,
-  groupid = groupid,
-  compid = compid1,
-  K = 1:8,
-  max.iter = 800,
-  BIC = TRUE,
-  runtype = "logCPM"
-)
+# motif.fit_RUV_log2 <- cormotiffit(
+#   exprs = lognormcounts_CMF,
+#   groupid = groupid_other,
+#   compid = compid1,
+#   K = 1:8,
+#   max.iter = 500,
+#   BIC = TRUE,
+#   runtype = "logCPM"
+# )
 
-saveRDS(motif.fit_RUV, "data/new/RUV/motif.fit_RUVnormcounts_250625.RDS")
-motif.fit_ruv <- readRDS("data/new/motif.fit_RUVnormcounts_250625.RDS")
+#Warning: Zero sample variances detected, have been offset away from zero#
 
-
-```
-
-```{r RUVs Plot Cormotif}
-#plot the AIC and BIC (we're interested in the Bayesian most of all)
-plotIC(motif.fit_RUV)
-
-#visual check of the lowest BIC
-motif.fit_RUV$bic
-
-#plot the motifs
-plotMotif(motif.fit_RUV)
-
-#plot the probability legend
-myColors <-  rev(c("#FFFFFF", "#E6E6E6" ,"#CCCCCC", "#B3B3B3", "#999999", "#808080", "#666666","#4C4C4C", "#333333", "#191919","#000000"))
-
-plot.new()
-legend('bottomleft',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4",  "0.5", "0.6", "0.7", "0.8","0.9", "1")), box.col="white",title = "Probability\nlegend", horiz=FALSE,title.cex=.8)
+# saveRDS(motif.fit_RUV_log2, "data/new/RUV/motif.fit_RUVnormcounts_log2NC_250629.RDS")
+# motif.fit_RUV_log2 <- readRDS("data/new/RUV/motif.fit_RUVnormcounts_log2NC_250629.RDS")
 
 ```
 
-```{r RUVs Cormotif log2 norm counts}
+```{r RUVs Plot Cormotif log2 of normcounts}
+# #plot the AIC and BIC (we're interested in the Bayesian most of all)
+# plotIC(motif.fit_RUV_log2)
+# 
+# #visual check of the lowest BIC
+# motif.fit_RUV_log2$bic
+# 
+# #plot the motifs
+# plotMotif(motif.fit_RUV_log2, title = "Log2 RUVs Norm Counts")
+# 
+# #plot the probability legend
+# myColors <-  rev(c("#FFFFFF", "#E6E6E6" ,"#CCCCCC", "#B3B3B3", "#999999", "#808080", "#666666","#4C4C4C", "#333333", "#191919","#000000"))
+# 
+# plot.new()
+# legend('bottomleft',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4",  "0.5", "0.6", "0.7", "0.8","0.9", "1")), box.col="white",title = "Probability\nlegend", horiz=FALSE,title.cex=.8)
+
+```
+
+```{r RUVs Cormotif log2cpm norm counts}
 #since both the TMM normalized norm counts and the cpm norm counts are giving me issues:
 #I am going to try this with just the log2 of the normalized counts from RUVs
 
-lognormcounts_CMF_rep <- as.data.frame(set1$normalizedCounts)
-lognormcounts_CMF_rep <- log2(set1$normalizedCounts + 1)
+lognormcounts_CMF_rep <- as.matrix(set1$normalizedCounts)
+lognormcounts_CMF_cpm <- cpm(lognormcounts_CMF_rep + 1, log = TRUE)
 #add a pseudocount to ensure any values are not negative or zero
 
 #first want to cut out the replicate samples as not needed for Cormotif
-lognormcounts_CMF <- as.data.frame(lognormcounts_CMF_rep) %>% 
-  dplyr::select(-(contains("6R")))
-
-# #then create a dge object of the normalized counts from RUVs
-# dge_logNC_RUV <- DGEList(lognormcounts_CMF)
-# dim(dge_RUV_CMF)
-# #14319 genes in 36 columns as anticipated
-
-#now go ahead and start putting together your data for Cormotif
-logNC_CMF_RUV <- lognormcounts_CMF %>% 
-  as.data.frame() %>% 
-  rownames_to_column(., var = "Entrez_ID")
+lognormcounts_CMF_cpm <- as.data.frame(lognormcounts_CMF_cpm) %>% 
+  dplyr::select(-(contains("6R"))) %>% 
+  as.matrix()
 
 #write.csv(x = logNC_CMF_RUV, file = "data/new/RUV/Cormotif_log2normcounts_RUV_matrix.csv")
 
-#reorder my test matrix to match the new groupid I've made
-#I want my columns to be in this order:
-#DOX24T 1-6, DOX24R 1-6, DOX144R 1-6, DMSO24T 1-6, DMSO24R 1-6, DMSO144R 1-6
-logNC_CMF_RUV <- read.csv("data/new/RUV/Cormotif_log2normcounts_RUV_matrix.csv")
-dim(logNC_CMF_RUV)
-#14319 genes across 37 cols (1 is Entrez_ID)
-logNC_CMF_RUV_df <- data.frame(logNC_CMF_RUV)
-
-rownames(logNC_CMF_RUV_df) <- logNC_CMF_RUV_df$Entrez_ID
-exprs.logNC_CMF_RUV <- as.matrix(logNC_CMF_RUV_df[,2:37])
-dim(exprs.logNC_CMF_RUV)
 #14319 genes in 36 columns, set up for plugging into Cormotif
 
 #now I need to set up my groupid and compid accordingly
@@ -7718,59 +7943,249 @@ dim(exprs.logNC_CMF_RUV)
 #compid tells which experimental conditions should be compared against one another
 ##ie DOX24T vs DMSO24T matched control
 
-groupid_csv <- read.csv("data/new/GroupID.csv")
-as.character(groupid_csv)
+groupid_other <- readRDS("data/new/RUV/groupid_other_unrearranged.RDS")
 
 #now I have to make this into a vector (named vector)?
-groupid <- c(
-  DOX_24T_1 = 1,
-  DOX_24T_2 = 1,
-  DOX_24T_3 = 1,
-  DOX_24T_4 = 1,
-  DOX_24T_5 = 1,
-  DOX_24T_6 = 1,
-  DOX_24R_1 = 2,
-  DOX_24R_2 = 2,
-  DOX_24R_3 = 2,
-  DOX_24R_4 = 2,
-  DOX_24R_5 = 2,
-  DOX_24R_6 = 2,
-  DOX_144R_1 = 3,
-  DOX_144R_2 = 3,
-  DOX_144R_3 = 3,
-  DOX_144R_4 = 3,
-  DOX_144R_5 = 3,
-  DOX_144R_6 = 3,
-  DMSO_24T_1 = 4,
-  DMSO_24T_2 = 4,
-  DMSO_24T_3 = 4,
-  DMSO_24T_4 = 4,
-  DMSO_24T_5 = 4,
-  DMSO_24T_6 = 4,
-  DMSO_24R_1 = 5,
-  DMSO_24R_2 = 5,
-  DMSO_24R_3 = 5,
-  DMSO_24R_4 = 5,
-  DMSO_24R_5 = 5,
-  DMSO_24R_6 = 5,
-  DMSO_144R_1 = 6,
-  DMSO_144R_2 = 6,
-  DMSO_144R_3 = 6,
-  DMSO_144R_4 = 6,
-  DMSO_144R_5 = 6,
-  DMSO_144R_6 = 6
-)
-saveRDS(groupid, "data/new/groupidCormotif.RDS")
 
 compid <- data.frame(Cond1 = c(1, 3, 5), Cond2 = c(2, 4, 6))
 compid1 <- data.frame(Cond1 = c(1, 2, 3), Cond2 = c(4, 5, 6))
 
-#saveRDS(compid, "data/new/compidCormotif.RDS")
-compid_cmf <- readRDS("data/new/compidCormotif.RDS")
 
 ```
 
-```{r RUVs Run Cormotif}
+```{r RUVs Run Cormotif log2cpm normcounts}
+
+#set the seed the same as the previous one to ensure consistency
+
+#fit Cormotif model
+# set.seed(19191)
+#only set the seed ONCE
+
+# motif.fit_RUV_logNC <- cormotiffit(
+#   exprs = lognormcounts_CMF_cpm,
+#   groupid = groupid_other,
+#   compid = compid1,
+#   K = 1:8,
+#   max.iter = 500,
+#   BIC = TRUE,
+#   runtype = "logCPM"
+# )
+
+# saveRDS(motif.fit_RUV_logNC, "data/new/RUV/motif.fit_RUVnormcounts_log2cpm_250630.RDS")
+motif.fit_RUV_logNC_cpm <- readRDS("data/new/RUV/motif.fit_RUVnormcounts_log2cpm_250630.RDS")
+
+```
+
+```{r RUVs Plot Cormotif log2cpm normcounts}
+#plot the AIC and BIC (we're interested in the Bayesian most of all)
+plotIC(motif.fit_RUV_logNC_cpm)
+
+#visual check of the lowest BIC
+motif.fit_RUV_logNC_cpm$bic
+
+#plot the motifs
+plotMotif(motif.fit_RUV_logNC_cpm)
+
+#plot the probability legend
+myColors <-  rev(c("#FFFFFF", "#E6E6E6" ,"#CCCCCC", "#B3B3B3", "#999999", "#808080", "#666666","#4C4C4C", "#333333", "#191919","#000000"))
+
+plot.new()
+legend('bottomleft',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4",  "0.5", "0.6", "0.7", "0.8","0.9", "1")), box.col="white",title = "Probability\nlegend", horiz=FALSE,title.cex=.8)
+
+```
+
+```{r RUVs Cormotif Plain Norm Counts}
+# #now since I'm having some strange outputs with the transformed data
+# #I want to try and just feed in the normalized counts only
+# 
+normcounts_CMF_rep <- as.data.frame(set1$normalizedCounts)
+# 
+#first want to cut out the replicate samples as not needed for Cormotif
+normcounts_CMF <- as.data.frame(normcounts_CMF_rep) %>%
+  dplyr::select(-(contains("6R")))
+
+# #14319 genes in 36 columns, set up for plugging into Cormotif
+
+# #now I need to set up my groupid and compid accordingly
+# #put together my group id and comparison id to make the correct comparisons between experimental conditions
+
+# #groupid tells which experimental conditions are grouped together
+# #compid tells which experimental conditions should be compared against one another
+# ##ie DOX24T vs DMSO24T matched control
+
+#groupid that doesn't require changing order of matrix:
+# groupid_other <- c(
+#   DOX_24T_1 = 1,
+#   DMSO_24T_1 = 4,
+#   DOX_24R_1 = 2,
+#   DMSO_24R_1 = 5,
+#   DOX_144R_1 = 3,
+#   DMSO_144R_1 = 6,
+# 
+#   DOX_24T_2 = 1,
+#   DMSO_24T_2 = 4,
+#   DOX_24R_2 = 2,
+#   DMSO_24R_2 = 5,
+#   DOX_144R_2 = 3,
+#   DMSO_144R_2 = 6,
+# 
+#   DOX_24T_3 = 1,
+#   DMSO_24T_3 = 4,
+#   DOX_24R_3 = 2,
+#   DMSO_24R_3 = 5,
+#   DOX_144R_3 = 3,
+#   DMSO_144R_3 = 6,
+# 
+#   DOX_24T_4 = 1,
+#   DMSO_24T_4 = 4,
+#   DOX_24R_4 = 2,
+#   DMSO_24R_4 = 5,
+#   DOX_144R_4 = 3,
+#   DMSO_144R_4 = 6,
+# 
+#   DOX_24T_5 = 1,
+#   DMSO_24T_5 = 4,
+#   DOX_24R_5 = 2,
+#   DMSO_24R_5 = 5,
+#   DOX_144R_5 = 3,
+#   DMSO_144R_5 = 6,
+# 
+#   DOX_24T_6 = 1,
+#   DMSO_24T_6 = 4,
+#   DOX_24R_6 = 2,
+#   DMSO_24R_6 = 5,
+#   DOX_144R_6 = 3,
+#   DMSO_144R_6 = 6
+# )
+
+groupid_other <- readRDS("data/new/RUV/groupid_other_unrearranged.RDS")
+
+compid <- data.frame(Cond1 = c(1, 3, 5), Cond2 = c(2, 4, 6))
+compid1 <- data.frame(Cond1 = c(1, 2, 3), Cond2 = c(4, 5, 6))
+
+```
+
+```{r RUVs Run Cormotif NormCounts Only}
+
+# #set the seed the same as the previous one to ensure consistency
+# 
+# #fit Cormotif model
+# # set.seed(19191)
+# # #only set the seed ONCE
+# # 
+# # motif.fit_RUV_NC_test <- cormotiffit(
+# #   exprs = exprs.NC_CMF_RUV,
+# #   groupid = groupid_other,
+# #   compid = compid,
+# #   K = 1:10,
+# #   max.iter = 1000,
+# #   BIC = TRUE,
+# #   runtype = "counts"
+# # )
+# 
+#saveRDS(motif.fit_RUV_NC_test, "data/new/RUV/motif.fit_RUVnormcounts_compid_250630.RDS")
+motif.fit_RUV_NC_test <- readRDS("data/new/RUV/motif.fit_RUVnormcounts_250630.RDS")
+
+```
+
+```{r RUVs Plot Cormotif NormCounts Only}
+# #plot the AIC and BIC (we're interested in the Bayesian most of all)
+
+plotIC(motif.fit_RUV_NC_test)
+# 
+# #visual check of the lowest BIC
+# motif.fit_RUV_NC_test$bic
+# 
+# #plot the motifs
+plotMotif(motif.fit_RUV_NC_test)
+# 
+#plot the probability legend
+myColors <-  rev(c("#FFFFFF", "#E6E6E6" ,"#CCCCCC", "#B3B3B3", "#999999", "#808080", "#666666","#4C4C4C", "#333333", "#191919","#000000"))
+
+plot.new()
+legend('bottomleft',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4",  "0.5", "0.6", "0.7", "0.8","0.9", "1")), box.col="white",title = "Probability\nlegend", horiz=FALSE,title.cex=.8)
+
+```
+
+```{r RUVs Cormotif Input}
+#I have tried a few different ways to input data into Cormotif after RUVs correction
+
+#1st way - TMM normalized norm counts from RUVs, cpm transformed
+#2nd way - TMM normalized FILT counts into RUVs, cpm transformed
+#3rd way - log2 converted normalized counts from RUVs
+#4th way - just norm counts from RUVs (runtype = "counts" does limma + TMM for me)
+#5th way - log2cpm norm counts from RUVs, runtype = logCPM
+
+# #try the original one without doing cpm just for comparisons' sake
+# counts_CMF_original <- dge
+# colnames(counts_CMF_original) <- (Metadata_2$Final_sample_name)
+# 
+# cormotif_counts_df <- counts_CMF_original %>% 
+#   as.data.frame() %>% 
+#   rownames_to_column(., var = "Entrez_ID")
+# 
+# #write.csv(cormotif_test, "data/new/Cormotif_test_matrix.csv")
+# 
+# #reorder my test matrix to match the new groupid I've made
+# #I want my columns to be in this order:
+# #DOX24T 1-6, DOX24R 1-6, DOX144R 1-6, DMSO24T 1-6, DMSO24R 1-6, DMSO144R 1-6
+# # Cormotif <- read.csv("data/new/Cormotif_matrix_final.csv")
+# # dim(Cormotif)
+# #14319 genes across 37 cols (1 is Entrez_ID)
+# # Cormotif_df <- data.frame(Cormotif)
+# 
+# # rownames(cormotif_counts_df) <- cormotif_counts_df$Entrez_ID
+# # exprs.cormotif_counts <- as.matrix(cormotif_counts_df[,2:37])
+# # dim(exprs.cormotif_counts)
+# 
+# #put together my group id and comparison id to make the correct comparisons between experimental conditions
+# 
+# #groupid tells which experimental conditions are grouped together
+# #compid tells which experimental conditions should be compared against one another
+# ##ie DOX24T vs DMSO24T matched control
+# 
+# #use counts_CMF_original
+# # View(counts_CMF_original)
+# 
+# groupid_other <- readRDS("data/new/RUV/groupid_other_unrearranged.RDS")
+# 
+# compid1 <- data.frame(Cond1 = c(1, 3, 5), Cond2 = c(2, 4, 6))
+# #saveRDS(compid, "data/new/compidCormotif.RDS")
+```
+
+```{r Run Cormotif original counts}
+# #fit Cormotif model
+# set.seed(19191)
+# #only set the seed ONCE
+# 
+# motif.fitted_counts <- cormotiffit(
+#   exprs = counts_CMF_original,
+#   groupid = groupid_other,
+#   compid = compid,
+#   K = 1:8,
+#   max.iter = 1000,
+#   BIC = TRUE,
+#   runtype = "counts"
+# )
+# 
+# 
+
+# saveRDS(motif.fitted_counts, "data/new/RUV/motif.filtcountsinput_EMP_250629.RDS")
+
+motif.fitted_counts <- readRDS("data/new/RUV/motif.filtcountsinput_EMP_250629.RDS")
+
+plotIC(motif.fitted_counts)
+plotMotif(motif.fitted_counts)
+
+```
+
+
+Now that I've finished up with Cormotif, I want to make comparisons across DEGs and Cormotif analysis to identify DEGs within my motifs
+I also want to find out if any of my DEGs within a certain category (DDR, DIC, p53 target genes) are enriched in a motif.
+```{r DDR Genes Enrichment Motifs}
+#start by reading in the DEG list
+
+
 
 
 

@@ -5,12 +5,8 @@ navbar:
   left:
   - text: Home
     href: index.html
-  - text: About
-    href: about.html
   - text: Dose-Response
     href: Recovery_DRC.html
-  - text: Quality Control RNAseq
-    href: Recovery_RNAseq.html
   - text: Differential Expression
     href: DXR_Project_Analysis.html
   right:
