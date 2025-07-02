@@ -1,22 +1,25 @@
-name: Recovery_RNAseq
+name: DXR_RNAseq
 output_dir: ../docs
+
 navbar:
-  title: Recovery_RNAseq
+  title: DXR_RNAseq
   left:
-  - text: Home
-    href: index.html
-  - text: Dose-Response
-    href: Recovery_DRC.html
-  - text: Differential Expression
-    href: DXR_Project_Analysis.html
+    - text: About
+      href: index.html
+    - text: Dose-Response
+      href: Recovery_DRC.html
+    - text: Differential Analysis
+      href: DXR_Project_Analysis.html
   right:
-  - icon: fab fa-github
-    text: Source code
-    href: https://github.com/emmapfort/Recovery_5FU_Project
+    - icon: fab fa-github
+      href: https://github.com/emmapfort/DXR_Project
+      text: Source Code
+
 output:
   workflowr::wflow_html:
     toc: true
-    toc_depth: 2
     toc_float: true
+
+    toc_depth: 2
     theme: journal
     highlight: textmate
