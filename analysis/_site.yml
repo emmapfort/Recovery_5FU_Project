@@ -21,6 +21,6 @@ output:
     toc_float:
       collapsed: false
       smooth_scroll: true
-    toc_depth: 3
+    toc_depth: 4
     theme: journal
     highlight: textmate

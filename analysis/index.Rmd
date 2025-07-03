@@ -9,7 +9,7 @@ output:
       smooth_scroll: true
     theme: journal
 editor_options:
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 Welcome to my research website.
