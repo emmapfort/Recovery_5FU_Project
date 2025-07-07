@@ -2868,6 +2868,7 @@ DIC_genes <- tribble(
 
 gene_df_DIC <- tibble(HGNC = DIC_genes)
 
+
 gene_df_DIC <- gene_df_DIC %>% 
   mutate(Entrez_ID = mapIds(org.Hs.eg.db,
                             keys = DIC_genes$SYMBOL,
@@ -2881,6 +2882,8 @@ gene_df_DIC <- gene_df_DIC %>%
 #plus I've ensured that Entrez_ID is a character for later joining
 
 entrez_ids_DIC <- gene_df_DIC$Entrez_ID
+
+# saveRDS(entrez_ids_DIC, "data/new/RUV/DIC_genes_entrezid.RDS")
 
 # Extract relevant DEG values
 extract_data_DIC <- function(df, name) {
@@ -3029,6 +3032,8 @@ entrez_ids_p53 <- c(1026,50484,4193,9766,9518,7832,1643,1647,1263,57103,51065,87
                 57060,64065,51090,5453,8496,333926,55671,5900,55544,23179,8601,389,6223,55800,6385,
                 4088,6643,122809,257397,285343,7011,54790,374618,55362,51754,7157,9537,22906,7205,
                 80705,219699,55245,83719,7748,25946,118738)
+
+# p53_genes <- saveRDS(entrez_ids_p53, "data/new/RUV/p53_genelist_entrezid.RDS")
 
 # Function to extract relevant data
 extract_data_p53 <- function(df, name) {
@@ -4620,11 +4625,12 @@ entrez_category_DDR <- tribble(
   11200, "DNA Repair", 1643, "DNA Repair", 8243, "DNA Repair", 5981, "DNA Repair",
   7157, "p53 Regulators / Targets", 4193, "p53 Regulators / Targets", 5371, "p53 Regulators / Targets",
   27244, "p53 Regulators / Targets", 50484, "p53 Regulators / Targets",
-  5916, "DOX Cardiotoxicity", 7799, "DOX Cardiotoxicity", 4292, "DOX Cardiotoxicity",
   207, "Miscellaneous / Broad", 25, "Miscellaneous / Broad"
 )
 
 entrez_ids_DDR_R <- entrez_category_DDR$ENTREZID
+
+# saveRDS(entrez_ids_DDR_R, "data/new/RUV/DDR_genes_entrezid.RDS")
 
 # Extract relevant DEG values
 extract_data_DDR_R <- function(df, name) {
@@ -4687,7 +4693,7 @@ logFC_mat_DDR_RUV <- logFC_mat_DDR_RUV[ordered_genes_DDR_RUV, ]
 signif_mat_DDR_RUV <- signif_mat_DDR_RUV[ordered_genes_DDR_RUV, ]
 
 category_colors_DDR <- structure(
-  c("darkorange", "steelblue", "darkgreen", "firebrick", "gold", "mediumpurple", "gray60"),
+  c("darkorange", "steelblue", "darkgreen", "firebrick", "mediumpurple", "gray60"),
   names = sort(unique(entrez_category_DDR$Category))
 )
 
@@ -5004,6 +5010,7 @@ wilcox_results_plot <- wilcox_results_plot %>%
     group1 == "24R" & group2 == "144R" ~ 2.5
   ))
 
+####logFC####
 ggplot(filtered_toptables_RUV, aes(x = Timepoint, y = logFC, fill = Timepoint)) +
   geom_boxplot() +
   scale_fill_manual(values = c(
@@ -5020,6 +5027,32 @@ ggplot(filtered_toptables_RUV, aes(x = Timepoint, y = logFC, fill = Timepoint)) 
   xlab("") +
   ylab("Log Fold Change") +  
   ggtitle("Log Fold Change for DDR Genes") +
+  theme(
+    plot.title = element_text(size = rel(1.5), hjust = 0.5),
+    axis.title = element_text(size = 15, color = "black"),
+    axis.line = element_line(linewidth = 1.5),
+    strip.background = element_rect(fill = "gray"),  
+    strip.text = element_text(size = 12, color = "black", face = "bold"),  
+    axis.text.x = element_text(size = 8, color = "black", angle = 0)
+  )
+
+####abs logFC####
+ggplot(filtered_toptables_RUV, aes(x = Timepoint, y = abs_logFC, fill = Timepoint)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "Timepoint: 24T" = "#238B45",
+    "Timepoint: 24R" = "#74C476",
+    "Timepoint: 144R" = "#C7E9C0")) +  
+  facet_wrap(~ Drug) +  
+  geom_text(
+    data = wilcox_results_plot, 
+    aes(x = x_position, y = y_pos, label = significance), 
+    size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+  ) +
+  theme_bw() +
+  xlab("") +
+  ylab("|Log Fold Change|") +  
+  ggtitle("|Log Fold Change| for DDR Genes") +
   theme(
     plot.title = element_text(size = rel(1.5), hjust = 0.5),
     axis.title = element_text(size = 15, color = "black"),
@@ -5084,6 +5117,10 @@ gene_df_DIC_RUV <- gene_df_DIC_RUV %>%
                             multiVals = "first")) %>% 
   unnest_wider(HGNC) %>% 
   mutate(Entrez_ID = as.character(Entrez_ID))
+
+# DIC_genes_symb <- gene_df_DIC_RUV %>% 
+#   dplyr::select("SYMBOL", "Entrez_ID")
+# saveRDS(DIC_genes_symb, "data/new/RUV/DIC_genelist_symbolentrez_RUV.RDS")
 
 #now I've put together a dataframe with the HGNC, Category, and Entrez_ID
 #plus I've ensured that Entrez_ID is a character for later joining
@@ -5198,7 +5235,138 @@ Heatmap(logFC_mat_DIC_RUV,
 
 ```{r logFC Boxplots DIC RUVs Genes}
 #get an overall idea of the logFC of these genes over timepoints
+library(rstatix)
+# Read DIC gene list - named DOX_cardiotox
 
+# DOX_cardiotox <- readRDS("data/new/RUV/DIC_genelist_symbolentrez_RUV.RDS")
+# 
+# # Convert gene symbols to Entrez IDs
+# DOX_cardiotox <- DOX_cardiotox %>%
+#   mutate(Entrez_ID = mapIds(org.Hs.eg.db,
+#                             keys = SYMBOL,
+#                             column = "ENTREZID",
+#                             keytype = "SYMBOL",
+#                             multiVals = "first"))
+# 
+# DOX_cardiotox_genes <- na.omit(DOX_cardiotox$Entrez_ID)
+
+# saveRDS(DOX_cardiotox_genes, "data/new/RUV/DIC_genes_symbolentrez.RDS")
+#this already has both SYMBOL and Entrez_ID
+
+DOX_cardiotox_genes <- readRDS("data/new/RUV/DIC_genes_symbolentrez.RDS")
+
+all_toptables_RUV <- bind_rows(
+  DOX_24T_R %>% mutate(Drug = "DOX", Timepoint = "24T"),
+  DOX_24R_R %>% mutate(Drug = "DOX", Timepoint = "24R"),
+  DOX_144R_R %>% mutate(Drug = "DOX", Timepoint = "144R"),
+)
+
+filtered_toptables_RUV_DIC <- all_toptables_RUV %>%
+  filter(Entrez_ID %in% DOX_cardiotox_genes) %>%
+  mutate(abs_logFC = abs(logFC))
+
+filtered_toptables_RUV_DIC <- filtered_toptables_RUV_DIC %>%
+  mutate(
+    Drug = factor(Drug, levels = c("DOX")),
+    Timepoint = factor(Timepoint, levels = c("24T", "24R", "144R"), 
+                       labels = c("Timepoint: 24T", "Timepoint: 24R", "Timepoint: 144R"))
+  )
+
+wilcox_results_DIC <- filtered_toptables_RUV_DIC %>%
+  wilcox_test(abs_logFC ~ Timepoint) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  mutate(significance = ifelse(p < 0.05, "*", ""))
+
+#make a little thing of your timepoint comparisons
+pairs_DIC <- wilcox_results_DIC %>% 
+  dplyr::select(group1, group2) %>% 
+  distinct()
+
+max_per_timepoint_DIC <- filtered_toptables_RUV_DIC %>% 
+  group_by(Timepoint) %>% 
+  summarise(max_logFC = max(abs_logFC, na.rm = TRUE), .groups = "drop")
+  
+#Join max values for group1
+star_positions_DIC <- pairs_DIC %>%
+  left_join(max_per_timepoint_DIC, by = c("group1" = "Timepoint"))
+names(star_positions_DIC)[names(star_positions_DIC) == "max_logFC"] <- "max1"
+
+#Join max values for group2, with suffixes to avoid name conflict
+star_positions_DIC <- star_positions_DIC %>%
+  left_join(max_per_timepoint_DIC, by = c("group2" = "Timepoint"), suffix = c(".group1", ".group2"))
+names(star_positions_DIC)[names(star_positions_DIC) == "max_logFC"] <- "max2"
+
+star_positions_DIC <- star_positions_DIC %>% 
+  mutate(y_pos = pmax(max1, max2, na.rm = TRUE) + 0.2)
+
+#now star positions has the same group1 and group2 as wilcoxon
+
+wilcox_results_plot_DIC <- wilcox_results_DIC %>%
+  left_join(star_positions_DIC, by = c("group1", "group2")) %>%
+  mutate(x_position = 1.5)  
+
+wilcox_results_plot_DIC <- wilcox_results_plot_DIC %>% 
+  mutate(group1 = gsub("Timepoint: ", "", group1),
+         group2 = gsub("Timepoint: ", "", group2))
+
+wilcox_results_plot_DIC <- wilcox_results_plot_DIC %>%
+  mutate(x_position = case_when(
+    group1 == "24T" & group2 == "24R" ~ 1.5,
+    group1 == "24T" & group2 == "144R" ~ 2,
+    group1 == "24R" & group2 == "144R" ~ 2.5
+  ))
+
+####logFC####
+ggplot(filtered_toptables_RUV_DIC, aes(x = Timepoint, y = logFC, fill = Timepoint)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "Timepoint: 24T" = "#238B45",
+    "Timepoint: 24R" = "#74C476",
+    "Timepoint: 144R" = "#C7E9C0")) +  
+  facet_wrap(~ Drug) +  
+  geom_text(
+    data = wilcox_results_plot_DIC, 
+    aes(x = x_position, y = y_pos, label = significance), 
+    size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+  ) +
+  theme_bw() +
+  xlab("") +
+  ylab("Log Fold Change") +  
+  ggtitle("Log Fold Change for DIC Genes") +
+  theme(
+    plot.title = element_text(size = rel(1.5), hjust = 0.5),
+    axis.title = element_text(size = 15, color = "black"),
+    axis.line = element_line(linewidth = 1.5),
+    strip.background = element_rect(fill = "gray"),  
+    strip.text = element_text(size = 12, color = "black", face = "bold"),  
+    axis.text.x = element_text(size = 8, color = "black", angle = 0)
+  )
+
+####abs logFC####
+ggplot(filtered_toptables_RUV_DIC, aes(x = Timepoint, y = abs_logFC, fill = Timepoint)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "Timepoint: 24T" = "#238B45",
+    "Timepoint: 24R" = "#74C476",
+    "Timepoint: 144R" = "#C7E9C0")) +  
+  facet_wrap(~ Drug) +  
+  geom_text(
+    data = wilcox_results_plot_DIC, 
+    aes(x = x_position, y = y_pos, label = significance), 
+    size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+  ) +
+  theme_bw() +
+  xlab("") +
+  ylab("|Log Fold Change|") +  
+  ggtitle("|Log Fold Change| for DIC Genes") +
+  theme(
+    plot.title = element_text(size = rel(1.5), hjust = 0.5),
+    axis.title = element_text(size = 15, color = "black"),
+    axis.line = element_line(linewidth = 1.5),
+    strip.background = element_rect(fill = "gray"),  
+    strip.text = element_text(size = 12, color = "black", face = "bold"),  
+    axis.text.x = element_text(size = 8, color = "black", angle = 0)
+  )
 ```
 
 #p53 Target Genes logFC Heatmap RUVs Corrected
@@ -5236,15 +5404,21 @@ entrez_ids_p53 <- c(1026,50484,4193,9766,9518,7832,1643,1647,1263,57103,51065,87
                 4088,6643,122809,257397,285343,7011,54790,374618,55362,51754,7157,9537,22906,7205,
                 80705,219699,55245,83719,7748,25946,118738)
 
+# saveRDS(entrez_ids_p53, "data/new/RUV/p53_targetgenes_entrezid.RDS")
+
 # Function to extract relevant data
 extract_data_p53_RUV <- function(df, name) {
   df %>%
     filter(Entrez_ID %in% entrez_ids_p53) %>%
-    mutate(Gene = mapIds(org.Hs.eg.db, as.character(Entrez_ID),
-                         column = "SYMBOL", keytype = "ENTREZID", multiVals = "first"),
+    mutate(Gene = mapIds(org.Hs.eg.db, 
+                         as.character(Entrez_ID),
+                         column = "SYMBOL", 
+                         keytype = "ENTREZID", 
+                         multiVals = "first"),
            Condition = name,
            Signif = ifelse(adj.P.Val < 0.05, "*", ""))
 }
+
 
 # Collect all data
 # DEG list
@@ -5258,6 +5432,14 @@ all_data_p53_RUV <- bind_rows(mapply(extract_data_p53_RUV, deg_list_RUV, names(d
 #unnecessary to join again as there are not categories on this list of entrezids
 # %>%
 #   left_join(entrez_ids, by = c("Entrez_ID" = "ENTREZID"))
+
+#make a list of these genes for later analysis
+# saveRDS(all_data_p53_RUV, "data/new/RUV/p53_targetgenes_RUV.RDS")
+
+# p53_genes <- all_data_p53_RUV %>% 
+#   dplyr::select("SYMBOL", "Entrez_ID")
+
+# saveRDS(p53_genes, "data/new/RUV/p53_genes_symbolentrez.RDS")
 
 # Create matrices
 logFC_mat53_RUV <- acast(all_data_p53_RUV, Gene ~ Condition, value.var = "logFC")
@@ -5302,6 +5484,398 @@ Heatmap(logFC_mat_p53_RUV,
 )
 
 ```
+
+##p53 logFC boxplots
+```{r logFC Boxplots p53 RUVs}
+
+#get an overall idea of the logFC of these genes over timepoints
+# library(rstatix)
+# Read p53 gene list - named p53_genes
+
+# p53_genes <- readRDS("data/new/RUV/p53_genes_symbolentrez.RDS")
+# 
+# # Convert gene symbols to Entrez IDs
+# p53_targets <- p53_genes %>%
+#   mutate(Entrez_ID = mapIds(org.Hs.eg.db,
+#                             keys = SYMBOL,
+#                             column = "ENTREZID",
+#                             keytype = "SYMBOL",
+#                             multiVals = "first"))
+# 
+#p53_target_genes <- na.omit(p53_targets$Entrez_ID)
+
+# saveRDS(p53_target_genes, "data/new/RUV/p53_target_genes_symbolentrez.RDS")
+#this already has both SYMBOL and Entrez_ID
+
+p53_target_genes <- readRDS("data/new/RUV/p53_target_genes_symbolentrez.RDS")
+
+all_toptables_RUV <- bind_rows(
+  DOX_24T_R %>% mutate(Drug = "DOX", Timepoint = "24T"),
+  DOX_24R_R %>% mutate(Drug = "DOX", Timepoint = "24R"),
+  DOX_144R_R %>% mutate(Drug = "DOX", Timepoint = "144R"),
+)
+
+filtered_toptables_RUV_p53 <- all_toptables_RUV %>%
+  filter(Entrez_ID %in% p53_target_genes) %>%
+  mutate(abs_logFC = abs(logFC)) 
+  
+
+filtered_toptables_RUV_p53 <- filtered_toptables_RUV_p53 %>%
+  mutate(
+    Drug = factor(Drug, levels = c("DOX")),
+    Timepoint = factor(Timepoint, levels = c("24T", "24R", "144R"), 
+                       labels = c("Timepoint: 24T", "Timepoint: 24R", "Timepoint: 144R"))
+  )
+
+wilcox_results_p53 <- filtered_toptables_RUV_p53 %>%
+  wilcox_test(abs_logFC ~ Timepoint) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  mutate(significance = ifelse(p < 0.05, "*", "")) %>% 
+  mutate(Conditions = paste(group1, "vs", group2, sep = " "))
+
+#make a little thing of your timepoint comparisons
+pairs_p53 <- wilcox_results_p53 %>% 
+  dplyr::select(group1, group2) %>% 
+  distinct()
+
+max_per_timepoint_p53 <- filtered_toptables_RUV_p53 %>% 
+  group_by(Timepoint) %>% 
+  summarise(max_logFC = max(abs_logFC, na.rm = TRUE), .groups = "drop")
+  
+#Join max values for group1
+star_positions_p53 <- pairs_p53 %>%
+  left_join(max_per_timepoint_p53, by = c("group1" = "Timepoint"))
+names(star_positions_p53)[names(star_positions_p53) == "max_logFC"] <- "max1"
+
+#Join max values for group2, with suffixes to avoid name conflict
+star_positions_p53 <- star_positions_p53 %>%
+  left_join(max_per_timepoint_p53, by = c("group2" = "Timepoint"), suffix = c(".group1", ".group2"))
+names(star_positions_p53)[names(star_positions_p53) == "max_logFC"] <- "max2"
+
+star_positions_p53 <- star_positions_p53 %>% 
+  mutate(y_pos = pmax(max1, max2, na.rm = TRUE) + 0.2)
+
+#now star positions has the same group1 and group2 as wilcoxon
+
+wilcox_results_plot_p53 <- wilcox_results_p53 %>%
+  left_join(star_positions_p53, by = c("group1", "group2")) %>%
+  mutate(x_position = 1.5)  
+
+wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>% 
+  mutate(group1 = gsub("Timepoint: ", "", group1),
+         group2 = gsub("Timepoint: ", "", group2))
+
+wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>%
+  mutate(x_position = case_when(
+    group1 == "24T" & group2 == "24R" ~ 1.5,
+    group1 == "24T" & group2 == "144R" ~ 2,
+    group1 == "24R" & group2 == "144R" ~ 2.5
+  ))
+
+####logFC####
+ggplot(filtered_toptables_RUV_p53, aes(x = Timepoint, y = logFC, fill = Timepoint)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "Timepoint: 24T" = "#238B45",
+    "Timepoint: 24R" = "#74C476",
+    "Timepoint: 144R" = "#C7E9C0")) +  
+  facet_wrap(~ Drug) +  
+  # geom_text(
+  #   data = wilcox_results_plot_p53, 
+  #   aes(x = x_position, y = y_pos, label = significance), 
+  #   size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+  # ) +
+  theme_bw() +
+  xlab("") +
+  ylab("Log Fold Change") +  
+  ggtitle("Log Fold Change for p53 Target Genes") +
+  theme(
+    plot.title = element_text(size = rel(1.5), hjust = 0.5),
+    axis.title = element_text(size = 15, color = "black"),
+    axis.line = element_line(linewidth = 1.5),
+    strip.background = element_rect(fill = "gray"),  
+    strip.text = element_text(size = 12, color = "black", face = "bold"),  
+    axis.text.x = element_text(size = 8, color = "black", angle = 0)
+  )
+
+####abs logFC####
+ggplot(filtered_toptables_RUV_p53, aes(x = Timepoint, y = abs_logFC, fill = Timepoint)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "Timepoint: 24T" = "#238B45",
+    "Timepoint: 24R" = "#74C476",
+    "Timepoint: 144R" = "#C7E9C0")) +  
+  facet_wrap(~ Drug) +  
+  # geom_text(
+  #   data = wilcox_results_plot_p53, 
+  #   aes(x = x_position, y = y_pos, label = significance), 
+  #   size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+  # ) +
+  theme_bw() +
+  xlab("") +
+  ylab("|Log Fold Change|") +  
+  ggtitle("|Log Fold Change| for p53 Target Genes") +
+  theme(
+    plot.title = element_text(size = rel(1.5), hjust = 0.5),
+    axis.title = element_text(size = 15, color = "black"),
+    axis.line = element_line(linewidth = 1.5),
+    strip.background = element_rect(fill = "gray"),  
+    strip.text = element_text(size = 12, color = "black", face = "bold"),  
+    axis.text.x = element_text(size = 8, color = "black", angle = 0)
+  )
+```
+###logFC boxplots with all timepoint comparisons wilcoxon
+```{r logFC p53 boxplots all comparisons, fig.height = 10, fig.width = 8}
+#try this where each of my timepoints are compared like the wilcoxon test - plot all of these and see which are significant
+
+Comparisons <- tribble(
+  ~group1, ~group2,
+  "24T",   "24R",
+  "24T",   "144R",
+  "24R",   "144R"
+)
+
+# Expand your filtered_toptables_RUV_p53 to include comparisons
+filtered_toptables_RUV_p53_comp <- filtered_toptables_RUV_p53 %>%
+  # Create a cross join with the comparisons
+  crossing(Comparisons) %>%
+  # Keep only the rows where the gene's timepoint matches one of the groups in the comparison
+  filter(Timepoint %in% c(group1, group2)) %>%
+  mutate(
+    Conditions = factor(paste(group1, "vs", group2),
+                        levels = c("24T vs 24R", "24T vs 144R", "24R vs 144R"))
+  )
+
+
+# filtered_toptables_RUV_p53_comp <- filtered_toptables_RUV_p53_comp %>%
+#   mutate(
+#     Drug = factor(Drug, levels = c("DOX")),
+#     Timepoint_raw = Timepoint,  #save unmod version(24T, 24R, 144R)
+#     Timepoint = factor(Timepoint, levels = c("24T", "24R", "144R"), 
+#                        labels = c("24T", "24R", "144R")),
+#     Conditions = factor(paste(group1, "vs", group2),
+#                         levels = c("24T vs 24R", "24T vs 144R", "24R vs 144R"))
+#   )
+
+wilcox_results_p53 <- filtered_toptables_RUV_p53_comp %>%
+  wilcox_test(abs_logFC ~ Timepoint) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  mutate(significance = ifelse(p < 0.05, "*", "")) %>% 
+  mutate(Comparisons = paste(group1, "vs", group2, sep = " "))
+
+#make a little thing of your timepoint comparisons
+pairs_p53 <- wilcox_results_p53 %>% 
+  dplyr::select(group1, group2) %>% 
+  distinct()
+
+max_per_timepoint_p53 <- filtered_toptables_RUV_p53_comp %>% 
+  group_by(Timepoint) %>% 
+  summarise(max_logFC = max(abs_logFC, na.rm = TRUE), .groups = "drop")
+  
+#Join max values for group1
+star_positions_p53 <- pairs_p53 %>%
+  left_join(max_per_timepoint_p53, by = c("group1" = "Timepoint"))
+names(star_positions_p53)[names(star_positions_p53) == "max_logFC"] <- "max1"
+
+#Join max values for group2, with suffixes to avoid name conflict
+star_positions_p53 <- star_positions_p53 %>%
+  left_join(max_per_timepoint_p53, by = c("group2" = "Timepoint"), suffix = c(".group1", ".group2"))
+names(star_positions_p53)[names(star_positions_p53) == "max_logFC"] <- "max2"
+
+star_positions_p53 <- star_positions_p53 %>% 
+  mutate(y_pos = pmax(max1, max2, na.rm = TRUE) + 0.2)
+
+#now star positions has the same group1 and group2 as wilcoxon
+
+wilcox_results_plot_p53 <- wilcox_results_p53 %>%
+  left_join(star_positions_p53, by = c("group1", "group2")) %>%
+  mutate(x_position = 1.5)  
+
+wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>% 
+  mutate(group1 = gsub("Timepoint: ", "", group1),
+         group2 = gsub("Timepoint: ", "", group2))
+
+wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>%
+  mutate(
+    group1_raw = str_remove(group1, "^Timepoint: "),
+    group2_raw = str_remove(group2, "^Timepoint: ")
+  )
+
+wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>%
+  mutate(x_position = case_when(
+    group1 == "24T" & group2 == "24R" ~ 1.5,
+    group1 == "24T" & group2 == "144R" ~ 2,
+    group1 == "24R" & group2 == "144R" ~ 2.5
+  ))
+
+####logFC####
+ggplot(filtered_toptables_RUV_p53_comp, aes(x = Timepoint, y = logFC, fill = Timepoint)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "24T" = "#238B45",
+    "24R" = "#74C476",
+    "144R" = "#C7E9C0")) +  
+  facet_wrap(~Conditions) +  
+  geom_text(
+    data = wilcox_results_plot_p53, 
+    aes(x = x_position, y = y_pos, label = significance), 
+    size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+  ) +
+  theme_bw() +
+  xlab("") +
+  ylab("Log Fold Change") +  
+  ggtitle("Log Fold Change for p53 Target Genes") +
+  theme(
+    plot.title = element_text(size = rel(1.5), hjust = 0.5),
+    axis.title = element_text(size = 15, color = "black"),
+    axis.line = element_line(linewidth = 1.5),
+    strip.background = element_rect(fill = "gray"),  
+    strip.text = element_text(size = 12, color = "black", face = "bold"),  
+    axis.text.x = element_text(size = 8, color = "black", angle = 0)
+  )
+
+####abs logFC####
+ggplot(filtered_toptables_RUV_p53_comp, aes(x = Conditions, y = abs_logFC, fill = Timepoint)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "24T" = "#238B45",
+    "24R" = "#74C476",
+    "144R" = "#C7E9C0")) +  
+  facet_grid(~Conditions) +  
+  geom_text(
+    data = wilcox_results_plot_p53, 
+    aes(x = x_position, y = y_pos, label = significance), 
+    size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+  ) +
+  theme_bw() +
+  xlab("") +
+  ylab("|Log Fold Change|") +  
+  ggtitle("|Log Fold Change| for p53 Target Genes") +
+  theme(
+    plot.title = element_text(size = rel(1.5), hjust = 0.5),
+    axis.title = element_text(size = 15, color = "black"),
+    axis.line = element_line(linewidth = 1.5),
+    strip.background = element_rect(fill = "gray"),  
+    strip.text = element_text(size = 12, color = "black", face = "bold"),  
+    axis.text.x = element_text(size = 8, color = "black", angle = 0)
+  )
+```
+```{r test (come back to me later), include = FALSE}
+Comparisons <- tribble(
+  ~group1, ~group2,
+  "24T",   "24R",
+  "24T",   "144R",
+  "24R",   "144R"
+)
+
+wilcox_results_p53 <- filtered_toptables_RUV_p53_comp %>%
+  wilcox_test(abs_logFC ~ Timepoint) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  mutate(significance = ifelse(p < 0.05, "*", "")) %>%
+  mutate(Comparisons = paste(group1, "vs", group2, sep = " "))
+
+#make a little thing of your timepoint comparisons
+pairs_p53 <- wilcox_results_p53 %>% 
+  dplyr::select(group1, group2) %>% 
+  distinct()
+
+max_per_timepoint_p53 <- filtered_toptables_RUV_p53_comp %>% 
+  group_by(Timepoint) %>% 
+  summarise(max_logFC = max(abs_logFC, na.rm = TRUE), .groups = "drop")
+  
+#Join max values for group1
+star_positions_p53 <- pairs_p53 %>%
+  left_join(max_per_timepoint_p53, by = c("group1" = "Timepoint"))
+names(star_positions_p53)[names(star_positions_p53) == "max_logFC"] <- "max1"
+
+#Join max values for group2, with suffixes to avoid name conflict
+star_positions_p53 <- star_positions_p53 %>%
+  left_join(max_per_timepoint_p53, by = c("group2" = "Timepoint"), suffix = c(".group1", ".group2"))
+names(star_positions_p53)[names(star_positions_p53) == "max_logFC"] <- "max2"
+
+star_positions_p53 <- star_positions_p53 %>% 
+  mutate(y_pos = pmax(max1, max2, na.rm = TRUE) + 0.2)
+
+#now star positions has the same group1 and group2 as wilcoxon
+
+wilcox_results_plot_p53 <- wilcox_results_p53 %>%
+  left_join(star_positions_p53, by = c("group1", "group2")) %>%
+  mutate(x_position = 1.5)  
+
+wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>%
+  mutate(x_position = case_when(
+    group1 == "24T" & group2 == "24R" ~ 1.5,
+    group1 == "24T" & group2 == "144R" ~ 2,
+    group1 == "24R" & group2 == "144R" ~ 2.5
+  ))
+
+# wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>% 
+#   mutate(Comparisons = factor(paste(group1, "vs", group2),
+#                          levels = c("24T vs 24R", 
+#                                     "24T vs 144R", 
+#                                     "24R vs 144R"))
+#   )
+
+wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>%
+  mutate(
+    # create ordered pairs so the smaller/lower factor is always first
+    group_ordered = map2_chr(group1, group2, ~ paste(sort(c(.x, .y)), collapse = " vs ")),
+    Comparisons = factor(group_ordered, levels = c("24T vs 24R", "24T vs 144R", "24R vs 144R"))
+  )
+
+# LogFC plot
+ggplot(filtered_toptables_RUV_p53_comp, aes(x = Timepoint, y = logFC, fill = Timepoint)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "24T" = "#238B45",
+    "24R" = "#74C476",
+    "144R" = "#C7E9C0")) +  
+  facet_wrap(~Conditions) +  
+  geom_text(
+    data = wilcox_results_plot_p53, 
+    aes(x = x_position, y = y_pos, label = p.adj.signif),
+    size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+  ) +
+  theme_bw() +
+  xlab("") +
+  ylab("Log Fold Change") +  
+  ggtitle("Log Fold Change for p53 Target Genes") +
+  theme(
+    plot.title = element_text(size = rel(1.5), hjust = 0.5),
+    axis.title = element_text(size = 15, color = "black"),
+    axis.line = element_line(linewidth = 1.5),
+    strip.background = element_rect(fill = "gray"),  
+    strip.text = element_text(size = 12, color = "black", face = "bold"),  
+    axis.text.x = element_text(size = 8, color = "black")
+  )
+
+# Absolute logFC plot
+ggplot(filtered_toptables_RUV_p53_comp, aes(x = Timepoint, y = abs_logFC, fill = Timepoint)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "24T" = "#238B45",
+    "24R" = "#74C476",
+    "144R" = "#C7E9C0")) +  
+  facet_wrap(~Conditions) +  
+  geom_text(
+    data = wilcox_results_plot_p53, 
+    aes(x = x_position, y = y_pos, label = significance),
+    size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+  ) +
+  theme_bw() +
+  xlab("") +
+  ylab("|Log Fold Change|") +  
+  ggtitle("|Log Fold Change| for p53 Target Genes") +
+  theme(
+    plot.title = element_text(size = rel(1.5), hjust = 0.5),
+    axis.title = element_text(size = 15, color = "black"),
+    axis.line = element_line(linewidth = 1.5),
+    strip.background = element_rect(fill = "gray"),  
+    strip.text = element_text(size = 12, color = "black", face = "bold"),  
+    axis.text.x = element_text(size = 8, color = "black")
+  )
+```
+
 
 #Read in my DEGs Data
 ```{r Read and Process DEGs Data}
@@ -8135,11 +8709,345 @@ legend('bottomleft',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4"
 
 Now that I've finished up with Cormotif, I want to make comparisons across DEGs and Cormotif analysis to identify DEGs within my motifs
 I also want to find out if any of my DEGs within a certain category (DDR, DIC, p53 target genes) are enriched in a motif.
-```{r DDR Genes Enrichment Motifs}
-#start by reading in the DEG list
+```{r Cormotif DDR Enrichment Proportion Barplots}
+
+DNA_damage_genes <- readRDS("data/new/RUV/DNA_damage_genes_symbolentrez.RDS")
+
+DNA_damage_genes <- readRDS("data/new/RUV/DDR_genes_entrezid.RDS")
+
+total_DNA_damage_genes <- length(DNA_damage_genes)  #Total number of DNA damage genes
+#should be 65 genes
+
+#define my Cormotif gene lists
+CMF_genes <- list(
+  "Motif1" = motif1_genes_matrix, "Motif2" = motif2_genes_matrix, "Motif3" = motif3_genes_matrix
+)
+
+all_tested_genes <- unique(unlist(CMF_genes))
+#this has the 12087 used for clustlike+ p.post together
+#usual gene set is 14319
+
+#compute my sets
+ddr_set <- unique(na.omit(DNA_damage_genes))
+
+motif_enrichment <- purrr::map_dfr(names(CMF_genes), function(motif_name) {
+  motif_genes <- unique(CMF_genes[[motif_name]])
+  
+  # Count in motif 
+  in_motif_ddr     <- sum(motif_genes %in% ddr_set)
+  #number of genes inside the motif that are DDR
+  in_motif_non_ddr <- length(motif_genes) - in_motif_ddr
+  #number of genes inside motif that are NOT DDR
+  
+  # Count outside motif 
+  other_genes <- setdiff(all_tested_genes, motif_genes)
+  #checking the difference between all genes and motif genes
+  out_motif_ddr     <- sum(other_genes %in% ddr_set)
+  #all genes outside motif that are DDR
+  out_motif_non_ddr <- length(other_genes) - out_motif_ddr
+  #all genes outside the motif that are NOT DDR
+  
+  # Build contingency table
+  contingency_ddr_cmf <- matrix(c(in_motif_ddr, in_motif_non_ddr,
+                          out_motif_ddr, out_motif_non_ddr),
+                        nrow = 2, byrow = TRUE)
+  
+  # Perform chi-squared test
+  chi_test_ddr_cmf <- chisq.test(contingency_ddr_cmf)
+  p_value <- chi_test_ddr_cmf$p.value
+  
+  # Output summary
+  tibble(
+    Motif = motif_name,
+    In_Motif_DDR = in_motif_ddr,
+    In_Motif_NonDDR = in_motif_non_ddr,
+    Out_Motif_DDR = out_motif_ddr,
+    Out_Motif_NonDDR = out_motif_non_ddr,
+    Total_Genes = length(motif_genes),
+    DNA_Damage_Proportion = in_motif_ddr / length(motif_genes) * 100,
+    P_Value = chi_test_ddr_cmf$p.value
+  )
+}) %>%
+  mutate(Significance = case_when(
+    P_Value < 0.05  ~ "*",
+    TRUE            ~ ""
+  ))
+
+# Recreate motif_long from motif_enrichment (with fixed column names)
+motif_long <- motif_enrichment %>%
+  select(Motif, In_Motif_DDR, In_Motif_NonDDR, P_Value) %>%  # include P_Value
+  pivot_longer(cols = c(In_Motif_DDR, In_Motif_NonDDR),
+               names_to = "Category", values_to = "Count") %>%
+  mutate(
+    Category = ifelse(Category == "In_Motif_DDR", "Yes", "No"),
+    Fraction = Count / ave(Count, Motif, FUN = sum),
+    
+    # Add significance stars inline
+    Significant = case_when(
+      P_Value < 0.05  ~ "*",
+      TRUE            ~ ""
+    )
+  )
+
+#now I want to make sure that the yes is at the top so I have to reorder
+motif_long$Category <- factor(motif_long$Category, levels = c("Yes", "No"))
+
+#ensure that the stars are also on top for significance
+label_positions <- motif_long %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.01)  # 101% above the bar for visual clarity
+
+# Plot with corrected star positioning
+ggplot(motif_long, aes(x = Motif, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions %>% filter(Significant != ""),
+    aes(x = Motif, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion of DNA Damage Genes per Cormotif Motif",
+    x = "Cormotif Motif",
+    y = "Percentage",
+    fill = "DDR Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
 
 
+```
 
+```{r DIC Genes Cormotif Proportion Barplots}
+
+DOX_cardiotox_genes <- readRDS("data/new/RUV/DIC_genes_entrezid.RDS")
+
+total_DIC_genes <- length(DOX_cardiotox_genes)  #Total number of DNA damage genes
+#should be 29
+
+#define my Cormotif gene lists
+CMF_genes <- list(
+  "Motif1" = motif1_genes_matrix, "Motif2" = motif2_genes_matrix, "Motif3" = motif3_genes_matrix
+)
+
+all_tested_genes <- unique(unlist(CMF_genes))
+#this has the 12087 used for clustlike+ p.post together
+#usual gene set is 14319
+
+#compute my sets
+dic_set <- unique(na.omit(DOX_cardiotox_genes))
+
+motif_enrichment_dic <- purrr::map_dfr(names(CMF_genes), function(motif_name) {
+  motif_genes <- unique(CMF_genes[[motif_name]])
+  
+  # Count in motif 
+  in_motif_dic     <- sum(motif_genes %in% dic_set)
+  #number of genes inside the motif that are dic
+  in_motif_non_dic <- length(motif_genes) - in_motif_dic
+  #number of genes inside motif that are NOT dic
+  
+  # Count outside motif 
+  other_genes <- setdiff(all_tested_genes, motif_genes)
+  #checking the difference between all genes and motif genes
+  out_motif_dic     <- sum(other_genes %in% dic_set)
+  #all genes outside motif that are dic
+  out_motif_non_dic <- length(other_genes) - out_motif_dic
+  #all genes outside the motif that are NOT dic
+  
+  # Build contingency table
+  contingency_dic_cmf <- matrix(c(in_motif_dic, in_motif_non_dic,
+                          out_motif_dic, out_motif_non_dic),
+                        nrow = 2, byrow = TRUE)
+  
+  # Perform chi-squared test
+  chi_test_dic_cmf <- chisq.test(contingency_dic_cmf)
+  p_value <- chi_test_dic_cmf$p.value
+  
+  # Output summary
+  tibble(
+    Motif = motif_name,
+    In_Motif_dic = in_motif_dic,
+    In_Motif_Nondic = in_motif_non_dic,
+    Out_Motif_dic = out_motif_dic,
+    Out_Motif_Nondic = out_motif_non_dic,
+    Total_Genes = length(motif_genes),
+    DNA_Damage_Proportion = in_motif_dic / length(motif_genes) * 100,
+    P_Value = chi_test_dic_cmf$p.value
+  )
+}) %>%
+  mutate(Significance = case_when(
+    P_Value < 0.05  ~ "*",
+    TRUE            ~ ""
+  ))
+
+# Recreate motif_long from motif_enrichment (with fixed column names)
+motif_long_dic <- motif_enrichment_dic %>%
+  select(Motif, In_Motif_dic, In_Motif_Nondic, P_Value) %>%  # include P_Value
+  pivot_longer(cols = c(In_Motif_dic, In_Motif_Nondic),
+               names_to = "Category", values_to = "Count") %>%
+  mutate(
+    Category = ifelse(Category == "In_Motif_dic", "Yes", "No"),
+    Fraction = Count / ave(Count, Motif, FUN = sum),
+    
+    # Add significance stars inline
+    Significant = case_when(
+      P_Value < 0.05  ~ "*",
+      TRUE            ~ ""
+    )
+  )
+
+#now I want to make sure that the yes is at the top so I have to reorder
+motif_long_dic$Category <- factor(motif_long_dic$Category, levels = c("Yes", "No"))
+
+#ensure that the stars are also on top for significance
+label_positions_dic <- motif_long_dic %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.01)  # 101% above the bar for visual clarity
+
+# Plot with corrected star positioning
+ggplot(motif_long_dic, aes(x = Motif, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions %>% filter(Significant != ""),
+    aes(x = Motif, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion of DOX Cardiotox Genes per Cormotif Motif",
+    x = "Cormotif Motif",
+    y = "Percentage",
+    fill = "DIC Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+
+```
+
+```{r Cormotif p53 Target Gene Enrichment Proportion Barplots}
+
+p53_target_genes <- readRDS("data/new/RUV/p53_targetgenes_entrezid.RDS")
+
+total_p53_genes <- length(p53_target_genes)  #Total number of p53 target genes
+#should be 300
+
+#define my Cormotif gene lists
+CMF_genes <- list(
+  "Motif1" = motif1_genes_matrix, "Motif2" = motif2_genes_matrix, "Motif3" = motif3_genes_matrix
+)
+
+all_tested_genes <- unique(unlist(CMF_genes))
+#this has the 12087 used for clustlike+ p.post together
+#usual gene set is 14319
+
+#compute my sets
+p53_set <- unique(na.omit(p53_target_genes))
+
+motif_enrichment_p53 <- purrr::map_dfr(names(CMF_genes), function(motif_name) {
+  motif_genes <- unique(CMF_genes[[motif_name]])
+  
+  # Count in motif 
+  in_motif_p53     <- sum(motif_genes %in% p53_set)
+  #number of genes inside the motif that are p53
+  in_motif_non_p53 <- length(motif_genes) - in_motif_p53
+  #number of genes inside motif that are NOT p53
+  
+  # Count outside motif 
+  other_genes <- setdiff(all_tested_genes, motif_genes)
+  #checking the difference between all genes and motif genes
+  out_motif_p53     <- sum(other_genes %in% p53_set)
+  #all genes outside motif that are p53
+  out_motif_non_p53 <- length(other_genes) - out_motif_p53
+  #all genes outside the motif that are NOT p53
+  
+  # Build contingency table
+  contingency_p53_cmf <- matrix(c(in_motif_p53, in_motif_non_p53,
+                          out_motif_p53, out_motif_non_p53),
+                        nrow = 2, byrow = TRUE)
+  
+  # Perform chi-squared test
+  chi_test_p53_cmf <- chisq.test(contingency_p53_cmf)
+  p_value <- chi_test_p53_cmf$p.value
+  
+  # Output summary
+  tibble(
+    Motif = motif_name,
+    In_Motif_p53 = in_motif_p53,
+    In_Motif_Nonp53 = in_motif_non_p53,
+    Out_Motif_p53 = out_motif_p53,
+    Out_Motif_Nonp53 = out_motif_non_p53,
+    Total_Genes = length(motif_genes),
+    DNA_Damage_Proportion = in_motif_p53 / length(motif_genes) * 100,
+    P_Value = chi_test_p53_cmf$p.value
+  )
+}) %>%
+  mutate(Significance = case_when(
+    P_Value < 0.05  ~ "*",
+    TRUE            ~ ""
+  ))
+
+# Recreate motif_long from motif_enrichment (with fixed column names)
+motif_long_p53 <- motif_enrichment_p53 %>%
+  select(Motif, In_Motif_p53, In_Motif_Nonp53, P_Value) %>%  # include P_Value
+  pivot_longer(cols = c(In_Motif_p53, In_Motif_Nonp53),
+               names_to = "Category", values_to = "Count") %>%
+  mutate(
+    Category = ifelse(Category == "In_Motif_p53", "Yes", "No"),
+    Fraction = Count / ave(Count, Motif, FUN = sum),
+    
+    # Add significance stars inline
+    Significant = case_when(
+      P_Value < 0.05  ~ "*",
+      TRUE            ~ ""
+    )
+  )
+
+#now I want to make sure that the yes is at the top so I have to reorder
+motif_long_p53$Category <- factor(motif_long_p53$Category, levels = c("Yes", "No"))
+
+#ensure that the stars are also on top for significance
+label_positions_p53 <- motif_long_p53 %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.01)  # 101% above the bar for visual clarity
+
+# Plot with corrected star positioning
+ggplot(motif_long_p53, aes(x = Motif, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions %>% filter(Significant != ""),
+    aes(x = Motif, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion of p53 Target Genes per Cormotif Motif",
+    x = "Cormotif Motif",
+    y = "Percentage",
+    fill = "p53 Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
 
 
 ```
