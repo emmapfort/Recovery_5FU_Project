@@ -5626,254 +5626,254 @@ ggplot(filtered_toptables_RUV_p53, aes(x = Timepoint, y = abs_logFC, fill = Time
 ```
 ###logFC boxplots with all timepoint comparisons wilcoxon
 ```{r logFC p53 boxplots all comparisons, fig.height = 10, fig.width = 8}
-#try this where each of my timepoints are compared like the wilcoxon test - plot all of these and see which are significant
-
-Comparisons <- tribble(
-  ~group1, ~group2,
-  "24T",   "24R",
-  "24T",   "144R",
-  "24R",   "144R"
-)
-
-# Expand your filtered_toptables_RUV_p53 to include comparisons
-filtered_toptables_RUV_p53_comp <- filtered_toptables_RUV_p53 %>%
-  # Create a cross join with the comparisons
-  crossing(Comparisons) %>%
-  # Keep only the rows where the gene's timepoint matches one of the groups in the comparison
-  filter(Timepoint %in% c(group1, group2)) %>%
-  mutate(
-    Conditions = factor(paste(group1, "vs", group2),
-                        levels = c("24T vs 24R", "24T vs 144R", "24R vs 144R"))
-  )
-
-
-# filtered_toptables_RUV_p53_comp <- filtered_toptables_RUV_p53_comp %>%
+# #try this where each of my timepoints are compared like the wilcoxon test - plot all of these and see which are significant
+# 
+# Comparisons <- tribble(
+#   ~group1, ~group2,
+#   "24T",   "24R",
+#   "24T",   "144R",
+#   "24R",   "144R"
+# )
+# 
+# # Expand your filtered_toptables_RUV_p53 to include comparisons
+# filtered_toptables_RUV_p53_comp <- filtered_toptables_RUV_p53 %>%
+#   # Create a cross join with the comparisons
+#   crossing(Comparisons) %>%
+#   # Keep only the rows where the gene's timepoint matches one of the groups in the comparison
+#   filter(Timepoint %in% c(group1, group2)) %>%
 #   mutate(
-#     Drug = factor(Drug, levels = c("DOX")),
-#     Timepoint_raw = Timepoint,  #save unmod version(24T, 24R, 144R)
-#     Timepoint = factor(Timepoint, levels = c("24T", "24R", "144R"), 
-#                        labels = c("24T", "24R", "144R")),
 #     Conditions = factor(paste(group1, "vs", group2),
 #                         levels = c("24T vs 24R", "24T vs 144R", "24R vs 144R"))
 #   )
-
-wilcox_results_p53 <- filtered_toptables_RUV_p53_comp %>%
-  wilcox_test(abs_logFC ~ Timepoint) %>%
-  adjust_pvalue(method = "bonferroni") %>%
-  mutate(significance = ifelse(p < 0.05, "*", "")) %>% 
-  mutate(Comparisons = paste(group1, "vs", group2, sep = " "))
-
-#make a little thing of your timepoint comparisons
-pairs_p53 <- wilcox_results_p53 %>% 
-  dplyr::select(group1, group2) %>% 
-  distinct()
-
-max_per_timepoint_p53 <- filtered_toptables_RUV_p53_comp %>% 
-  group_by(Timepoint) %>% 
-  summarise(max_logFC = max(abs_logFC, na.rm = TRUE), .groups = "drop")
-  
-#Join max values for group1
-star_positions_p53 <- pairs_p53 %>%
-  left_join(max_per_timepoint_p53, by = c("group1" = "Timepoint"))
-names(star_positions_p53)[names(star_positions_p53) == "max_logFC"] <- "max1"
-
-#Join max values for group2, with suffixes to avoid name conflict
-star_positions_p53 <- star_positions_p53 %>%
-  left_join(max_per_timepoint_p53, by = c("group2" = "Timepoint"), suffix = c(".group1", ".group2"))
-names(star_positions_p53)[names(star_positions_p53) == "max_logFC"] <- "max2"
-
-star_positions_p53 <- star_positions_p53 %>% 
-  mutate(y_pos = pmax(max1, max2, na.rm = TRUE) + 0.2)
-
-#now star positions has the same group1 and group2 as wilcoxon
-
-wilcox_results_plot_p53 <- wilcox_results_p53 %>%
-  left_join(star_positions_p53, by = c("group1", "group2")) %>%
-  mutate(x_position = 1.5)  
-
-wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>% 
-  mutate(group1 = gsub("Timepoint: ", "", group1),
-         group2 = gsub("Timepoint: ", "", group2))
-
-wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>%
-  mutate(
-    group1_raw = str_remove(group1, "^Timepoint: "),
-    group2_raw = str_remove(group2, "^Timepoint: ")
-  )
-
-wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>%
-  mutate(x_position = case_when(
-    group1 == "24T" & group2 == "24R" ~ 1.5,
-    group1 == "24T" & group2 == "144R" ~ 2,
-    group1 == "24R" & group2 == "144R" ~ 2.5
-  ))
-
-####logFC####
-ggplot(filtered_toptables_RUV_p53_comp, aes(x = Timepoint, y = logFC, fill = Timepoint)) +
-  geom_boxplot() +
-  scale_fill_manual(values = c(
-    "24T" = "#238B45",
-    "24R" = "#74C476",
-    "144R" = "#C7E9C0")) +  
-  facet_wrap(~Conditions) +  
-  geom_text(
-    data = wilcox_results_plot_p53, 
-    aes(x = x_position, y = y_pos, label = significance), 
-    size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
-  ) +
-  theme_bw() +
-  xlab("") +
-  ylab("Log Fold Change") +  
-  ggtitle("Log Fold Change for p53 Target Genes") +
-  theme(
-    plot.title = element_text(size = rel(1.5), hjust = 0.5),
-    axis.title = element_text(size = 15, color = "black"),
-    axis.line = element_line(linewidth = 1.5),
-    strip.background = element_rect(fill = "gray"),  
-    strip.text = element_text(size = 12, color = "black", face = "bold"),  
-    axis.text.x = element_text(size = 8, color = "black", angle = 0)
-  )
-
-####abs logFC####
-ggplot(filtered_toptables_RUV_p53_comp, aes(x = Conditions, y = abs_logFC, fill = Timepoint)) +
-  geom_boxplot() +
-  scale_fill_manual(values = c(
-    "24T" = "#238B45",
-    "24R" = "#74C476",
-    "144R" = "#C7E9C0")) +  
-  facet_grid(~Conditions) +  
-  geom_text(
-    data = wilcox_results_plot_p53, 
-    aes(x = x_position, y = y_pos, label = significance), 
-    size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
-  ) +
-  theme_bw() +
-  xlab("") +
-  ylab("|Log Fold Change|") +  
-  ggtitle("|Log Fold Change| for p53 Target Genes") +
-  theme(
-    plot.title = element_text(size = rel(1.5), hjust = 0.5),
-    axis.title = element_text(size = 15, color = "black"),
-    axis.line = element_line(linewidth = 1.5),
-    strip.background = element_rect(fill = "gray"),  
-    strip.text = element_text(size = 12, color = "black", face = "bold"),  
-    axis.text.x = element_text(size = 8, color = "black", angle = 0)
-  )
+# 
+# 
+# # filtered_toptables_RUV_p53_comp <- filtered_toptables_RUV_p53_comp %>%
+# #   mutate(
+# #     Drug = factor(Drug, levels = c("DOX")),
+# #     Timepoint_raw = Timepoint,  #save unmod version(24T, 24R, 144R)
+# #     Timepoint = factor(Timepoint, levels = c("24T", "24R", "144R"), 
+# #                        labels = c("24T", "24R", "144R")),
+# #     Conditions = factor(paste(group1, "vs", group2),
+# #                         levels = c("24T vs 24R", "24T vs 144R", "24R vs 144R"))
+# #   )
+# 
+# wilcox_results_p53 <- filtered_toptables_RUV_p53_comp %>%
+#   wilcox_test(abs_logFC ~ Timepoint) %>%
+#   adjust_pvalue(method = "bonferroni") %>%
+#   mutate(significance = ifelse(p < 0.05, "*", "")) %>% 
+#   mutate(Comparisons = paste(group1, "vs", group2, sep = " "))
+# 
+# #make a little thing of your timepoint comparisons
+# pairs_p53 <- wilcox_results_p53 %>% 
+#   dplyr::select(group1, group2) %>% 
+#   distinct()
+# 
+# max_per_timepoint_p53 <- filtered_toptables_RUV_p53_comp %>% 
+#   group_by(Timepoint) %>% 
+#   summarise(max_logFC = max(abs_logFC, na.rm = TRUE), .groups = "drop")
+#   
+# #Join max values for group1
+# star_positions_p53 <- pairs_p53 %>%
+#   left_join(max_per_timepoint_p53, by = c("group1" = "Timepoint"))
+# names(star_positions_p53)[names(star_positions_p53) == "max_logFC"] <- "max1"
+# 
+# #Join max values for group2, with suffixes to avoid name conflict
+# star_positions_p53 <- star_positions_p53 %>%
+#   left_join(max_per_timepoint_p53, by = c("group2" = "Timepoint"), suffix = c(".group1", ".group2"))
+# names(star_positions_p53)[names(star_positions_p53) == "max_logFC"] <- "max2"
+# 
+# star_positions_p53 <- star_positions_p53 %>% 
+#   mutate(y_pos = pmax(max1, max2, na.rm = TRUE) + 0.2)
+# 
+# #now star positions has the same group1 and group2 as wilcoxon
+# 
+# wilcox_results_plot_p53 <- wilcox_results_p53 %>%
+#   left_join(star_positions_p53, by = c("group1", "group2")) %>%
+#   mutate(x_position = 1.5)  
+# 
+# wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>% 
+#   mutate(group1 = gsub("Timepoint: ", "", group1),
+#          group2 = gsub("Timepoint: ", "", group2))
+# 
+# wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>%
+#   mutate(
+#     group1_raw = str_remove(group1, "^Timepoint: "),
+#     group2_raw = str_remove(group2, "^Timepoint: ")
+#   )
+# 
+# wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>%
+#   mutate(x_position = case_when(
+#     group1 == "24T" & group2 == "24R" ~ 1.5,
+#     group1 == "24T" & group2 == "144R" ~ 2,
+#     group1 == "24R" & group2 == "144R" ~ 2.5
+#   ))
+# 
+# ####logFC####
+# ggplot(filtered_toptables_RUV_p53_comp, aes(x = Timepoint, y = logFC, fill = Timepoint)) +
+#   geom_boxplot() +
+#   scale_fill_manual(values = c(
+#     "24T" = "#238B45",
+#     "24R" = "#74C476",
+#     "144R" = "#C7E9C0")) +  
+#   facet_wrap(~Conditions) +  
+#   geom_text(
+#     data = wilcox_results_plot_p53, 
+#     aes(x = x_position, y = y_pos, label = significance), 
+#     size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+#   ) +
+#   theme_bw() +
+#   xlab("") +
+#   ylab("Log Fold Change") +  
+#   ggtitle("Log Fold Change for p53 Target Genes") +
+#   theme(
+#     plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#     axis.title = element_text(size = 15, color = "black"),
+#     axis.line = element_line(linewidth = 1.5),
+#     strip.background = element_rect(fill = "gray"),  
+#     strip.text = element_text(size = 12, color = "black", face = "bold"),  
+#     axis.text.x = element_text(size = 8, color = "black", angle = 0)
+#   )
+# 
+# ####abs logFC####
+# ggplot(filtered_toptables_RUV_p53_comp, aes(x = Conditions, y = abs_logFC, fill = Timepoint)) +
+#   geom_boxplot() +
+#   scale_fill_manual(values = c(
+#     "24T" = "#238B45",
+#     "24R" = "#74C476",
+#     "144R" = "#C7E9C0")) +  
+#   facet_grid(~Conditions) +  
+#   geom_text(
+#     data = wilcox_results_plot_p53, 
+#     aes(x = x_position, y = y_pos, label = significance), 
+#     size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+#   ) +
+#   theme_bw() +
+#   xlab("") +
+#   ylab("|Log Fold Change|") +  
+#   ggtitle("|Log Fold Change| for p53 Target Genes") +
+#   theme(
+#     plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#     axis.title = element_text(size = 15, color = "black"),
+#     axis.line = element_line(linewidth = 1.5),
+#     strip.background = element_rect(fill = "gray"),  
+#     strip.text = element_text(size = 12, color = "black", face = "bold"),  
+#     axis.text.x = element_text(size = 8, color = "black", angle = 0)
+#   )
 ```
 ```{r test (come back to me later), include = FALSE}
-Comparisons <- tribble(
-  ~group1, ~group2,
-  "24T",   "24R",
-  "24T",   "144R",
-  "24R",   "144R"
-)
-
-wilcox_results_p53 <- filtered_toptables_RUV_p53_comp %>%
-  wilcox_test(abs_logFC ~ Timepoint) %>%
-  adjust_pvalue(method = "bonferroni") %>%
-  mutate(significance = ifelse(p < 0.05, "*", "")) %>%
-  mutate(Comparisons = paste(group1, "vs", group2, sep = " "))
-
-#make a little thing of your timepoint comparisons
-pairs_p53 <- wilcox_results_p53 %>% 
-  dplyr::select(group1, group2) %>% 
-  distinct()
-
-max_per_timepoint_p53 <- filtered_toptables_RUV_p53_comp %>% 
-  group_by(Timepoint) %>% 
-  summarise(max_logFC = max(abs_logFC, na.rm = TRUE), .groups = "drop")
-  
-#Join max values for group1
-star_positions_p53 <- pairs_p53 %>%
-  left_join(max_per_timepoint_p53, by = c("group1" = "Timepoint"))
-names(star_positions_p53)[names(star_positions_p53) == "max_logFC"] <- "max1"
-
-#Join max values for group2, with suffixes to avoid name conflict
-star_positions_p53 <- star_positions_p53 %>%
-  left_join(max_per_timepoint_p53, by = c("group2" = "Timepoint"), suffix = c(".group1", ".group2"))
-names(star_positions_p53)[names(star_positions_p53) == "max_logFC"] <- "max2"
-
-star_positions_p53 <- star_positions_p53 %>% 
-  mutate(y_pos = pmax(max1, max2, na.rm = TRUE) + 0.2)
-
-#now star positions has the same group1 and group2 as wilcoxon
-
-wilcox_results_plot_p53 <- wilcox_results_p53 %>%
-  left_join(star_positions_p53, by = c("group1", "group2")) %>%
-  mutate(x_position = 1.5)  
-
-wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>%
-  mutate(x_position = case_when(
-    group1 == "24T" & group2 == "24R" ~ 1.5,
-    group1 == "24T" & group2 == "144R" ~ 2,
-    group1 == "24R" & group2 == "144R" ~ 2.5
-  ))
-
-# wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>% 
-#   mutate(Comparisons = factor(paste(group1, "vs", group2),
-#                          levels = c("24T vs 24R", 
-#                                     "24T vs 144R", 
-#                                     "24R vs 144R"))
+# Comparisons <- tribble(
+#   ~group1, ~group2,
+#   "24T",   "24R",
+#   "24T",   "144R",
+#   "24R",   "144R"
+# )
+# 
+# wilcox_results_p53 <- filtered_toptables_RUV_p53_comp %>%
+#   wilcox_test(abs_logFC ~ Timepoint) %>%
+#   adjust_pvalue(method = "bonferroni") %>%
+#   mutate(significance = ifelse(p < 0.05, "*", "")) %>%
+#   mutate(Comparisons = paste(group1, "vs", group2, sep = " "))
+# 
+# #make a little thing of your timepoint comparisons
+# pairs_p53 <- wilcox_results_p53 %>% 
+#   dplyr::select(group1, group2) %>% 
+#   distinct()
+# 
+# max_per_timepoint_p53 <- filtered_toptables_RUV_p53_comp %>% 
+#   group_by(Timepoint) %>% 
+#   summarise(max_logFC = max(abs_logFC, na.rm = TRUE), .groups = "drop")
+#   
+# #Join max values for group1
+# star_positions_p53 <- pairs_p53 %>%
+#   left_join(max_per_timepoint_p53, by = c("group1" = "Timepoint"))
+# names(star_positions_p53)[names(star_positions_p53) == "max_logFC"] <- "max1"
+# 
+# #Join max values for group2, with suffixes to avoid name conflict
+# star_positions_p53 <- star_positions_p53 %>%
+#   left_join(max_per_timepoint_p53, by = c("group2" = "Timepoint"), suffix = c(".group1", ".group2"))
+# names(star_positions_p53)[names(star_positions_p53) == "max_logFC"] <- "max2"
+# 
+# star_positions_p53 <- star_positions_p53 %>% 
+#   mutate(y_pos = pmax(max1, max2, na.rm = TRUE) + 0.2)
+# 
+# #now star positions has the same group1 and group2 as wilcoxon
+# 
+# wilcox_results_plot_p53 <- wilcox_results_p53 %>%
+#   left_join(star_positions_p53, by = c("group1", "group2")) %>%
+#   mutate(x_position = 1.5)  
+# 
+# wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>%
+#   mutate(x_position = case_when(
+#     group1 == "24T" & group2 == "24R" ~ 1.5,
+#     group1 == "24T" & group2 == "144R" ~ 2,
+#     group1 == "24R" & group2 == "144R" ~ 2.5
+#   ))
+# 
+# # wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>% 
+# #   mutate(Comparisons = factor(paste(group1, "vs", group2),
+# #                          levels = c("24T vs 24R", 
+# #                                     "24T vs 144R", 
+# #                                     "24R vs 144R"))
+# #   )
+# 
+# wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>%
+#   mutate(
+#     # create ordered pairs so the smaller/lower factor is always first
+#     group_ordered = map2_chr(group1, group2, ~ paste(sort(c(.x, .y)), collapse = " vs ")),
+#     Comparisons = factor(group_ordered, levels = c("24T vs 24R", "24T vs 144R", "24R vs 144R"))
 #   )
-
-wilcox_results_plot_p53 <- wilcox_results_plot_p53 %>%
-  mutate(
-    # create ordered pairs so the smaller/lower factor is always first
-    group_ordered = map2_chr(group1, group2, ~ paste(sort(c(.x, .y)), collapse = " vs ")),
-    Comparisons = factor(group_ordered, levels = c("24T vs 24R", "24T vs 144R", "24R vs 144R"))
-  )
-
-# LogFC plot
-ggplot(filtered_toptables_RUV_p53_comp, aes(x = Timepoint, y = logFC, fill = Timepoint)) +
-  geom_boxplot() +
-  scale_fill_manual(values = c(
-    "24T" = "#238B45",
-    "24R" = "#74C476",
-    "144R" = "#C7E9C0")) +  
-  facet_wrap(~Conditions) +  
-  geom_text(
-    data = wilcox_results_plot_p53, 
-    aes(x = x_position, y = y_pos, label = p.adj.signif),
-    size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
-  ) +
-  theme_bw() +
-  xlab("") +
-  ylab("Log Fold Change") +  
-  ggtitle("Log Fold Change for p53 Target Genes") +
-  theme(
-    plot.title = element_text(size = rel(1.5), hjust = 0.5),
-    axis.title = element_text(size = 15, color = "black"),
-    axis.line = element_line(linewidth = 1.5),
-    strip.background = element_rect(fill = "gray"),  
-    strip.text = element_text(size = 12, color = "black", face = "bold"),  
-    axis.text.x = element_text(size = 8, color = "black")
-  )
-
-# Absolute logFC plot
-ggplot(filtered_toptables_RUV_p53_comp, aes(x = Timepoint, y = abs_logFC, fill = Timepoint)) +
-  geom_boxplot() +
-  scale_fill_manual(values = c(
-    "24T" = "#238B45",
-    "24R" = "#74C476",
-    "144R" = "#C7E9C0")) +  
-  facet_wrap(~Conditions) +  
-  geom_text(
-    data = wilcox_results_plot_p53, 
-    aes(x = x_position, y = y_pos, label = significance),
-    size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
-  ) +
-  theme_bw() +
-  xlab("") +
-  ylab("|Log Fold Change|") +  
-  ggtitle("|Log Fold Change| for p53 Target Genes") +
-  theme(
-    plot.title = element_text(size = rel(1.5), hjust = 0.5),
-    axis.title = element_text(size = 15, color = "black"),
-    axis.line = element_line(linewidth = 1.5),
-    strip.background = element_rect(fill = "gray"),  
-    strip.text = element_text(size = 12, color = "black", face = "bold"),  
-    axis.text.x = element_text(size = 8, color = "black")
-  )
+# 
+# # LogFC plot
+# ggplot(filtered_toptables_RUV_p53_comp, aes(x = Timepoint, y = logFC, fill = Timepoint)) +
+#   geom_boxplot() +
+#   scale_fill_manual(values = c(
+#     "24T" = "#238B45",
+#     "24R" = "#74C476",
+#     "144R" = "#C7E9C0")) +  
+#   facet_wrap(~Conditions) +  
+#   geom_text(
+#     data = wilcox_results_plot_p53, 
+#     aes(x = x_position, y = y_pos, label = p.adj.signif),
+#     size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+#   ) +
+#   theme_bw() +
+#   xlab("") +
+#   ylab("Log Fold Change") +  
+#   ggtitle("Log Fold Change for p53 Target Genes") +
+#   theme(
+#     plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#     axis.title = element_text(size = 15, color = "black"),
+#     axis.line = element_line(linewidth = 1.5),
+#     strip.background = element_rect(fill = "gray"),  
+#     strip.text = element_text(size = 12, color = "black", face = "bold"),  
+#     axis.text.x = element_text(size = 8, color = "black")
+#   )
+# 
+# # Absolute logFC plot
+# ggplot(filtered_toptables_RUV_p53_comp, aes(x = Timepoint, y = abs_logFC, fill = Timepoint)) +
+#   geom_boxplot() +
+#   scale_fill_manual(values = c(
+#     "24T" = "#238B45",
+#     "24R" = "#74C476",
+#     "144R" = "#C7E9C0")) +  
+#   facet_wrap(~Conditions) +  
+#   geom_text(
+#     data = wilcox_results_plot_p53, 
+#     aes(x = x_position, y = y_pos, label = significance),
+#     size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+#   ) +
+#   theme_bw() +
+#   xlab("") +
+#   ylab("|Log Fold Change|") +  
+#   ggtitle("|Log Fold Change| for p53 Target Genes") +
+#   theme(
+#     plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#     axis.title = element_text(size = 15, color = "black"),
+#     axis.line = element_line(linewidth = 1.5),
+#     strip.background = element_rect(fill = "gray"),  
+#     strip.text = element_text(size = 12, color = "black", face = "bold"),  
+#     axis.text.x = element_text(size = 8, color = "black")
+#   )
 ```
 
 
@@ -8505,11 +8505,11 @@ legend('bottomleft',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4"
 # #plot the motifs
 # plotMotif(motif.fit_RUV_log2, title = "Log2 RUVs Norm Counts")
 # 
-# #plot the probability legend
-# myColors <-  rev(c("#FFFFFF", "#E6E6E6" ,"#CCCCCC", "#B3B3B3", "#999999", "#808080", "#666666","#4C4C4C", "#333333", "#191919","#000000"))
-# 
-# plot.new()
-# legend('bottomleft',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4",  "0.5", "0.6", "0.7", "0.8","0.9", "1")), box.col="white",title = "Probability\nlegend", horiz=FALSE,title.cex=.8)
+#plot the probability legend
+myColors <-  rev(c("#FFFFFF", "#E6E6E6" ,"#CCCCCC", "#B3B3B3", "#999999", "#808080", "#666666","#4C4C4C", "#333333", "#191919","#000000"))
+
+plot.new()
+legend('bottomleft',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4",  "0.5", "0.6", "0.7", "0.8","0.9", "1")), box.col="white",title = "Probability\nlegend", horiz=FALSE,title.cex=.8)
 
 ```
 ##Cormotif Log2cpm of Normalized Counts RUVs
@@ -8525,6 +8525,7 @@ lognormcounts_CMF_cpm <- cpm(lognormcounts_CMF_rep + 1, log = TRUE)
 lognormcounts_CMF_cpm <- as.data.frame(lognormcounts_CMF_cpm) %>% 
   dplyr::select(-(contains("6R"))) %>% 
   as.matrix()
+#14319 genes in 36 cols
 
 #write.csv(x = logNC_CMF_RUV, file = "data/new/RUV/Cormotif_log2normcounts_RUV_matrix.csv")
 
@@ -8591,6 +8592,1125 @@ plot.new()
 legend('bottomleft',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4",  "0.5", "0.6", "0.7", "0.8","0.9", "1")), box.col="white",title = "Probability\nlegend", horiz=FALSE,title.cex=.8)
 
 ```
+
+#Log2cpm Norm Counts Cormotif Downstream Analysis
+```{r Cormotif log2cpm Norm Counts clustlike + p.post}
+
+#extract the posterior probability that these DEGs belong to motifs
+gene_prob_all_RUV <- motif.fit_RUV_logNC_cpm$bestmotif$p.post
+rownames(gene_prob_all_RUV) <- rownames(lognormcounts_CMF_cpm)
+
+#assign each gene to a motif with max post prob
+assigned_motifs_RUV <- apply(gene_prob_all_RUV, 1, which.max)
+max_probs_RUV <- apply(gene_prob_all_RUV, 1, max)
+
+#combine these into a dataframe - motif assigned genes (p.post)
+motif_assignment_df_RUV <- gene_prob_all_RUV %>%
+  as.data.frame() %>%
+  rownames_to_column("Gene") %>%
+  mutate(
+    Assigned_Motif = assigned_motifs_RUV[Gene],
+    Max_Probability = max_probs_RUV[Gene]
+  )
+
+#make some histograms of the unfiltered data from Cormotif p.post
+
+gene_prob_all_RUV %>% 
+  as.data.frame() %>% 
+  ggplot(., aes(x = V1))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle("Cormotif Genes p.post RUV M1")
+
+gene_prob_all_RUV %>% 
+  as.data.frame() %>% 
+  ggplot(., aes(x = V2))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle("Cormotif Genes p.post RUV M2")
+
+
+#extract the cluster likelihood - which DEGs are most likely to be in this cluster
+motif_prob_RUV <- motif.fit_RUV_logNC_cpm$bestmotif$clustlike
+rownames(motif_prob_RUV) <- rownames(gene_prob_all_RUV)
+# write.csv(motif_prob_RUV,"data/new/cormotif_probability_genelist_all_RUV_log2cpm_NormCounts.csv")
+
+#make some histograms to look at the distribution of clustlike genes without filtering
+motif_prob_RUV %>% 
+  as.data.frame() %>% 
+  ggplot(., aes(x = V1))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle("Cormotif Genes clustlike Distribution M1")
+
+motif_prob_RUV %>% 
+  as.data.frame() %>% 
+  ggplot(., aes(x = V2))+
+  geom_histogram(bins = 50)+
+  xlim(0,1)+
+  ggtitle("Cormotif Genes clustlike Distribution M2")
+
+
+```
+
+##P.post and Clustlike Together log2cpm norm counts Cormotif RUV
+```{r Use p.post and clustlike together}
+#begin with the clustlike cutoffs and then overlay the p.post to check if the genes are present in both
+
+#these filters are the combination of the above analysis to get a gene set that fits in both p.post and clustlike
+
+####motif 1####
+#filter 1: clustlike
+clust1_genes_RUV <- 
+  motif_prob_RUV %>%
+  as.data.frame() %>%
+  filter(V1>0.8 & V2<0.5) %>% 
+  rownames
+length(clust1_genes_RUV)
+#13600 genes
+
+### Filter 2: Gene-level posterior pattern
+prob_filtered_genes_1_RUV <- rownames(gene_prob_all_RUV[(gene_prob_all_RUV[,1] >0.05 & gene_prob_all_RUV[,1] <0.5 & gene_prob_all_RUV[,2] <0.5 & gene_prob_all_RUV[,3] <0.5),])
+### Final intersection of both filters
+final_genes_1_RUV <- intersect(clust1_genes_RUV, prob_filtered_genes_1_RUV)
+cat("Number of genes passing both filters:", length(final_genes_1_RUV), "\n")
+#7673 genes pass both filters here
+
+####motif 2####
+#filter 1: clustlike
+clust2_genes_RUV <- motif_prob_RUV %>%
+  as.data.frame() %>%
+  filter(V2>0.5 & V1<0.5) %>% 
+  rownames
+
+length(clust2_genes_RUV)
+#517 genes
+
+### Filter 2: Gene-level posterior pattern
+prob_filtered_genes_2_RUV <- rownames(gene_prob_all_RUV[(gene_prob_all_RUV[,1] >0.3 & gene_prob_all_RUV[,2] >0.5 & gene_prob_all_RUV[,3] >0.5),])
+### Final intersection of both filters
+final_genes_2_RUV <- intersect(clust2_genes_RUV, prob_filtered_genes_2_RUV)
+cat("Number of genes passing both filters:", length(final_genes_2_RUV), "\n")
+
+#501 genes pass both filters here
+
+#what is the proportion of my genes that are included?
+#p.post and clustlike together
+7673+501
+#8174
+(8174/14319)*100
+#57.08% of my genes are represented here out of the 14319 original
+
+#what is the proportion of my genes that are included?
+#clustlike only
+13600+517
+#14117
+(14117/14319)*100
+#98.6% of my genes are included with clustlike only
+#want to find out which genes are not assigned to motifs
+
+final_genes_list_RUV <- union(final_genes_1_RUV, final_genes_2_RUV)
+length(final_genes_list_RUV)
+#8174 genes as found above
+initial_genes_list_RUV <- rownames(lognormcounts_CMF_cpm)
+length(initial_genes_list_RUV)
+#14319 genes as usual
+
+unassigned_genes_list_RUV <- setdiff(initial_genes_list_RUV, final_genes_list_RUV)
+length(unassigned_genes_list_RUV)
+#6145 genes not assigned
+
+final_genes_list_clustlike_RUV <- union(clust1_genes_RUV, clust2_genes_RUV)
+length(final_genes_list_clustlike_RUV)
+#14117 genes as above with clustlike only
+
+unassigned_genes_list_RUV_clustlike <- setdiff(initial_genes_list_RUV, final_genes_list_clustlike_RUV)
+length(unassigned_genes_list_RUV_clustlike)
+#202 genes not assigned
+
+# saveRDS(unassigned_genes_list_RUV, "data/new/RUV/CMF/unassigned_genes_RUVlog2cpm_NormCounts_Cormotif.RDS")
+
+# saveRDS(unassigned_genes_list_RUV_clustlike, "data/new/RUV/CMF/unassigned_genes_clustlike_RUVslog2cpm_NormCounts_Cormotif.RDS")
+
+#now, ensure that none of these genes are shared amongst categories
+vennCor_final_RUV <- list(final_genes_1_RUV, final_genes_2_RUV)
+ggVennDiagram(
+  vennCor_final_RUV,
+  category.names = c("M1", "M2")
+) + ggtitle("Cormotif DEGs clustlike + p.post RUVs log2cpm NC")+
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),  # Increase title size
+    text = element_text(size = 16)  # Increase text size globally
+  )
+
+vennCor_final_RUV_clust <- list(clust1_genes_RUV, clust2_genes_RUV)
+ggVennDiagram(
+  vennCor_final_RUV_clust,
+  category.names = c("M1", "M2")
+) + ggtitle("Cormotif DEGs clustlike RUVs log2cpm NC")+
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),  # Increase title size
+    text = element_text(size = 16)  # Increase text size globally
+  )
+
+#no overlapping genes found in these gene sets
+
+clusterdata_dxr_fin_RUV <- data.frame(
+  Category = c("Motif 1", "Motif 2"), 
+  Value = c(length(final_genes_1_RUV), length(final_genes_2_RUV)
+))
+
+clusterdata_dxr_fin_RUV_clust <- data.frame(
+  Category = c("Motif 1", "Motif 2"), 
+  Value = c(length(clust1_genes_RUV), length(clust2_genes_RUV)
+))
+
+
+piecolors_dxr_fin <- c("Motif 1" = "#007896", 
+                       "Motif 2" = "#58508D")
+
+#make a piechart of these distributions
+clusterdata_dxr_fin_RUV %>% ggplot(aes(x = "", y = Value, fill = Category))+
+  geom_bar(width = 1, stat = "identity")+
+  coord_polar("y", start = 0)+
+  geom_text(aes(label = Value),
+            position = position_stack(vjust = 0.5),
+            size = 4, color = "black")+
+  labs(title = "Distr of Gene Clusters Cormotif RUVs", x = NULL, y = NULL)+
+  theme_void()+
+  scale_fill_manual(values = piecolors_dxr_fin)
+
+clusterdata_dxr_fin_RUV_clust %>% ggplot(aes(x = "", y = Value, fill = Category))+
+  geom_bar(width = 1, stat = "identity")+
+  coord_polar("y", start = 0)+
+  geom_text(aes(label = Value),
+            position = position_stack(vjust = 0.5),
+            size = 4, color = "black")+
+  labs(title = "Distr of Gene Clusters Cormotif RUVs clustlike", x = NULL, y = NULL)+
+  theme_void()+
+  scale_fill_manual(values = piecolors_dxr_fin)
+
+#now, continue by plotting the logFC of all of these gene sets per motif, as well as look at some random genes for log2cpm to see if the patterns are reflected in the example genes
+```
+###clustlike RUVs log2cpm Norm Counts RUVs logFC
+```{r Cormotif log2cpm Norm Counts RUVs Plot logFC}
+####clustlike + p.post logFC of initial set####
+
+##motif 1
+length(final_genes_1_RUV)
+##motif 2 
+length(final_genes_2_RUV)
+
+#Combine the toptables I have from pairwise analysis into a single dataframe
+d24_toptable_dxr_RUV <- Toptable_RUV_24T %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Time = "24T")
+
+d24r_toptable_dxr_RUV <- Toptable_RUV_24R %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Time = "24R")
+
+d144r_toptable_dxr_RUV <- Toptable_RUV_144R %>% 
+  rownames_to_column(var = "entrezgene_ID") %>% 
+  mutate(Time = "144R")
+
+combined_toptables_dxr_RUV <- bind_rows(
+  d24_toptable_dxr_RUV,
+  d24r_toptable_dxr_RUV,
+  d144r_toptable_dxr_RUV)
+
+#Filter the data based on each motif
+filt_toptable_dxr_fin_RUV <- combined_toptables_dxr_RUV %>% 
+  dplyr::filter(entrezgene_ID  %in% final_genes_1_RUV) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC Motif 1 RUVs clustlike + p.post (n=7673)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_2_dxr_fin_RUV <- combined_toptables_dxr_RUV %>% 
+  dplyr::filter(entrezgene_ID  %in% final_genes_2_RUV) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC Motif 2 RUVs clustlike + p.post (n=501)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+
+#plots
+filt_toptable_dxr_fin_RUV
+filt_toptable_2_dxr_fin_RUV 
+
+
+#now plot the abs logFC for each of these too
+filt_toptable_abs_fin_RUV <- combined_toptables_dxr_RUV %>% 
+  dplyr::filter(entrezgene_ID  %in% final_genes_1_RUV) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC Motif 1 RUVs clustlike + p.post (n=7673)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_2_abs_fin_RUV <- combined_toptables_dxr_RUV %>% 
+  dplyr::filter(entrezgene_ID  %in% final_genes_2_RUV) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC Motif 2 RUVs clustlike + p.post (n=501)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_3_abs_fin <- combined_toptables_dxr %>% 
+  dplyr::filter(entrezgene_ID  %in% final_genes_3) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC for all genes in Motif 3 (n=231)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#plots
+filt_toptable_abs_fin_RUV
+filt_toptable_2_abs_fin_RUV
+
+
+####Now do this but have it for the clustlike only genes
+##motif 1
+length(clust1_genes_RUV)
+#13600
+##motif 2 
+length(clust2_genes_RUV)
+#517 genes
+
+#Filter the data based on each motif
+filt_toptable_dxr_fin_RUV_clust <- combined_toptables_dxr_RUV %>% 
+  dplyr::filter(entrezgene_ID  %in% clust1_genes_RUV) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC Motif 1 RUVs clustlike (n=13600)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_2_dxr_fin_RUV_clust <- combined_toptables_dxr_RUV %>% 
+  dplyr::filter(entrezgene_ID  %in% clust2_genes_RUV) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = logFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("logFC")+
+  theme_bw()+
+  ggtitle("LogFC Motif 2 RUVs clustlike (n=517)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+
+#plots
+filt_toptable_dxr_fin_RUV_clust
+filt_toptable_2_dxr_fin_RUV_clust
+
+
+#now plot the abs logFC for each of these too
+filt_toptable_abs_fin_RUV_clust <- combined_toptables_dxr_RUV %>% 
+  dplyr::filter(entrezgene_ID  %in% clust2_genes_RUV) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC Motif 1 RUVs clustlike (n=13600)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+#motif 2
+filt_toptable_2_abs_fin_RUV_clust <- combined_toptables_dxr_RUV %>% 
+  dplyr::filter(entrezgene_ID  %in% clust2_genes_RUV) %>% 
+  mutate(absFC = abs(logFC)) %>% 
+  mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+  ggplot(., aes(x = time, y = absFC))+
+  geom_boxplot(aes(fill = time))+
+  scale_fill_manual(values = time_col)+
+  guides(fill = guide_legend(title = "Time"))+
+  theme_bw()+
+  xlab(" ")+
+  ylab("|logFC|")+
+  theme_bw()+
+  ggtitle("Abs LogFC Motif 2 RUVs clustlike (n=517)")+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        strip.background = element_rect(fill = "#CAD899"),
+        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+
+
+#plots
+filt_toptable_abs_fin_RUV_clust
+filt_toptable_2_abs_fin_RUV_clust
+
+
+```
+
+###log2cpm Example Genes Cormotif RUVs log2cpm Norm Counts
+```{r log2cpm Example Genes Cormotif log2cpm Norm Counts}
+#use the final genes from cross-verifying with clustlike + p.post
+
+#Load in my count matrices
+#final_genes_1_RUV
+#final_genes_2_RUV
+
+#clust1_genes_RUV
+#clust2_genes_RUV
+
+#these are all the genes that are present in each category, make them into dataframes by filtering out the rest of the genes in my main boxplot df
+boxplots_cormotif <- boxplot1
+
+motif1_genes_fin_RUV <- boxplots_cormotif[boxplots_cormotif$Entrez_ID %in% final_genes_1_RUV,]
+dim(motif1_genes_fin_RUV)
+#7602 genes in 44 cols
+motif2_genes_fin_RUV <- boxplots_cormotif[boxplots_cormotif$Entrez_ID %in% final_genes_2_RUV,]
+dim(motif2_genes_fin_RUV)
+#501 genes in 44 cols
+
+#pull out some random genes for each using sample
+
+m1_genes_fin_RUV <- motif1_genes_fin_RUV[sample(nrow(motif1_genes_fin_RUV), 3), , drop = FALSE]
+
+#Define gene list(s)
+#these are the genes pulled out by m1_genes
+initial_test_genes1_fin_RUV <- c(m1_genes_fin_RUV$SYMBOL)  
+#Add more gene symbols as needed or add more categories
+
+#Now put in the function I want to use to generate boxplots of genes
+process_gene_data_1_fin_RUV <- function(gene) {
+  gene_data <- m1_genes_fin_RUV %>% filter(SYMBOL == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2CPM") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6REP$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in initial_test_genes1_fin_RUV) {
+  gene_data <- process_gene_data_1_fin_RUV(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2CPM, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2CPM Expression", gene, "Motif 1 RUVs")) +
+    labs(x = "Treatment", y = "log2CPM") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+#####motif 2#####
+
+m2_genes_fin_RUV <- motif2_genes_fin_RUV[sample(nrow(motif2_genes_fin_RUV), 3), , drop = FALSE]
+
+#Define gene list(s)
+#these are the genes pulled out by m1_genes
+initial_test_genes2_fin_RUV <- c(m2_genes_fin_RUV$SYMBOL)  
+#Add more gene symbols as needed or add more categories
+
+#Now put in the function I want to use to generate boxplots of genes
+process_gene_datam2_fin_RUV <- function(gene) {
+  gene_data <- motif2_genes_fin_RUV %>% filter(SYMBOL == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2CPM") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6REP$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+#this function is saved under process_gene_data so I will save as an R object
+
+#saveRDS(process_gene_data, "data/new/process_gene_data_funct.RDS")
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in initial_test_genes2_fin_RUV) {
+  gene_data <- process_gene_datam2_fin_RUV(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2CPM, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2CPM Expression", gene, "Motif 2 RUVs")) +
+    labs(x = "Treatment", y = "log2CPM") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+```
+
+##log2cpm Example Genes Cormotif clustlike
+
+```{r log2cpm Example Genes Cormotif RUVs clustlike}
+#use the final genes from cross-verifying with clustlike + p.post
+
+#Load in my count matrices
+
+#clust1_genes_RUV
+#clust2_genes_RUV
+
+#these are all the genes that are present in each category, make them into dataframes by filtering out the rest of the genes in my main boxplot df
+boxplots_cormotif <- boxplot1
+
+motif1_genes_fin_RUV_clust <- boxplots_cormotif[boxplots_cormotif$Entrez_ID %in% clust1_genes_RUV,]
+dim(motif1_genes_fin_RUV_clust)
+#13600 genes in 44 cols
+motif2_genes_fin_RUV_clust <- boxplots_cormotif[boxplots_cormotif$Entrez_ID %in% clust2_genes_RUV,]
+dim(motif2_genes_fin_RUV_clust)
+#517 genes in 44 cols
+
+#pull out some random genes for each using sample
+
+m1_genes_fin_RUV_clust <- motif1_genes_fin_RUV_clust[sample(nrow(motif1_genes_fin_RUV_clust), 3), , drop = FALSE]
+
+#Define gene list(s)
+#these are the genes pulled out by m1_genes
+initial_test_genes1_fin_RUV_clust <- c(m1_genes_fin_RUV_clust$SYMBOL)  
+#Add more gene symbols as needed or add more categories
+
+#Now put in the function I want to use to generate boxplots of genes
+process_gene_data_1_fin_RUV_clust <- function(gene) {
+  gene_data <- m1_genes_fin_RUV_clust %>% filter(SYMBOL == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2CPM") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6REP$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in initial_test_genes1_fin_RUV_clust) {
+  gene_data <- process_gene_data_1_fin_RUV_clust(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2CPM, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2CPM Expression", gene, "M1 RUVs clustlike")) +
+    labs(x = "Treatment", y = "log2CPM") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+#####motif 2#####
+
+m2_genes_fin_RUV_clust <- motif2_genes_fin_RUV_clust[sample(nrow(motif2_genes_fin_RUV_clust), 3), , drop = FALSE]
+
+#Define gene list(s)
+#these are the genes pulled out by m1_genes
+initial_test_genes2_fin_RUV_clust <- c(m2_genes_fin_RUV_clust$SYMBOL)  
+#Add more gene symbols as needed or add more categories
+
+#Now put in the function I want to use to generate boxplots of genes
+process_gene_datam2_fin_RUV_clust <- function(gene) {
+  gene_data <- motif2_genes_fin_RUV_clust %>% filter(SYMBOL == gene)
+  long_data <- gene_data %>%
+    pivot_longer(cols = -c(Entrez_ID, SYMBOL), names_to = "Sample", values_to = "log2CPM") %>%
+    mutate(
+      Drug = case_when(
+        grepl("DOX", Sample) ~ "DOX",
+        grepl("DMSO", Sample) ~ "DMSO",
+        TRUE ~ NA_character_
+      ),
+      Timepoint = case_when(
+        grepl("_24T_", Sample) ~ "24T",
+        grepl("_24R_", Sample) ~ "24R",
+        grepl("_144R_", Sample) ~ "144R",
+        TRUE ~ NA_character_
+      ),
+      Indv = case_when(
+        grepl("Ind1$", Sample) ~ "1",
+        grepl("Ind2$", Sample) ~ "2",
+        grepl("Ind3$", Sample) ~ "3",
+        grepl("Ind4$", Sample) ~ "4",
+        grepl("Ind5$", Sample) ~ "5",
+        grepl("Ind6$", Sample) ~ "6",
+        grepl("Ind6REP$", Sample) ~ "6R",
+        TRUE ~ NA_character_
+      ),
+      Condition = paste(Drug, Timepoint, sep = "_")
+    )
+  long_data$Condition <- factor(
+    long_data$Condition,
+    levels = c(
+      "DOX_24T", 
+      "DMSO_24T", 
+      "DOX_24R", 
+      "DMSO_24R", 
+      "DOX_144R", 
+      "DMSO_144R"
+    )
+  )
+  return(long_data)
+}
+
+#this function is saved under process_gene_data so I will save as an R object
+
+#saveRDS(process_gene_data, "data/new/process_gene_data_funct.RDS")
+
+#Generate Boxplots from the above function using our gene list above
+for (gene in initial_test_genes2_fin_RUV_clust) {
+  gene_data <- process_gene_datam2_fin_RUV_clust(gene)
+  p <- ggplot(gene_data, aes(x = Condition, y = log2CPM, fill = Drug)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_point(aes(color = Indv), size = 2, alpha = 0.5, position = position_jitter(width = -1, height = 0)) +
+    scale_fill_manual(values = c("DOX" = "#499FBD", "DMSO" = "#BBBBBC")) +
+    ggtitle(paste("Log2CPM Expression", gene, "M2 RUVs clustlike")) +
+    labs(x = "Treatment", y = "log2CPM") +
+    theme_bw() +
+    theme(
+      plot.title = element_text(size = rel(2), hjust = 0.5),
+      axis.title = element_text(size = 15, color = "black"),
+      axis.text.x = element_text(size = 10, color = "black", angle = 90, hjust = 1)
+    )
+  print(p)
+}
+
+```
+
+
+###Cormotif RUVs log2cpm Norm Counts GO/KEGG
+```{r GO/KEGG log2cpm Norm Counts Cormotif}
+#now take these final gene sets for each motif - clustlike + p.post consensus genes
+
+# final_genes_1_RUV
+# final_genes_2_RUV
+
+#clust1_genes_RUV
+#clust2_genes_RUV
+
+
+library(gprofiler2)
+#####Motif 1 Gene Set#####
+# motif1_genes_matrix_RUV <- as.matrix(final_genes_1_RUV) 
+# colnames(motif1_genes_matrix_RUV) <- c("entrezgene_ID")
+
+# saveRDS(motif1_genes_matrix_RUV, "data/new/RUV/CMF/motif1_genes_matrix_RUV.RDS")
+
+motif1_genes_matrix_RUV <- readRDS("data/new/RUV/CMF/motif1_genes_matrix_RUV.RDS")
+length(motif1_genes_matrix_RUV)
+#7602 genes in this set for motif 1
+
+motif1_mat_GOKEGG_RUV <- gost(query = motif1_genes_matrix_RUV,
+                          organism = "hsapiens",
+                          ordered_query = FALSE,
+                          measure_underrepresentation = FALSE,
+                          evcodes = FALSE,
+                          user_threshold = 0.05,
+                          correction_method = c("fdr"),
+                          sources = c("GO:BP", "KEGG"))
+
+motif1_GOKEGG_genes_RUV <- gostplot(motif1_mat_GOKEGG_RUV, capped = FALSE, interactive = TRUE)
+motif1_GOKEGG_genes_RUV
+
+table_motif1_GOKEGG_genes_RUV <- motif1_mat_GOKEGG_RUV$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_motif1_GOKEGG_genes_RUV %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+# write.csv(table_motif1_GOKEGG_genes, "data/new/table_motif1_GOKEGG_genes.csv")
+
+#GO:BP
+table_motif1_genes_GOBP_RUV <- table_motif1_GOKEGG_genes_RUV %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+# saveRDS(table_motif1_genes_GOBP, "data/table_motif1_genes_GOBP.RDS")
+
+table_motif1_genes_GOBP_RUV %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("M1 Enriched GO:BP Terms RUVs")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_motif1_genes_KEGG_RUV <- table_motif1_GOKEGG_genes_RUV %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_motif1_genes_KEGG_RUV %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("M1 DEGs Enriched KEGG Terms RUVs")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#####Motif 2 Genes#####
+# motif2_genes_matrix_RUV <- as.matrix(final_genes_2_RUV) 
+# colnames(motif2_genes_matrix_RUV) <- c("entrezgene_ID")
+
+# saveRDS(motif2_genes_matrix_RUV, "data/new/RUV/CMF/motif2_genes_matrix_RUV.RDS")
+
+motif2_genes_matrix_RUV <- readRDS("data/new/RUV/CMF/motif2_genes_matrix_RUV.RDS")
+length(motif2_genes_matrix_RUV)
+#501 genes in this set for motif 2
+
+motif2_mat_GOKEGG_RUV <- gost(query = motif2_genes_matrix_RUV,
+                          organism = "hsapiens",
+                          ordered_query = FALSE,
+                          measure_underrepresentation = FALSE,
+                          evcodes = FALSE,
+                          user_threshold = 0.05,
+                          correction_method = c("fdr"),
+                          sources = c("GO:BP", "KEGG"))
+
+motif2_GOKEGG_genes_RUV <- gostplot(motif2_mat_GOKEGG_RUV, capped = FALSE, interactive = TRUE)
+motif2_GOKEGG_genes_RUV
+
+table_motif2_GOKEGG_genes_RUV <- motif2_mat_GOKEGG_RUV$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_motif2_GOKEGG_genes_RUV %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+# write.csv(table_motif2_GOKEGG_genes, "data/new/table_motif2_GOKEGG_genes.csv")
+
+#GO:BP
+table_motif2_genes_GOBP_RUV <- table_motif2_GOKEGG_genes_RUV %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+# saveRDS(table_motif2_genes_GOBP, "data/table_motif2_genes_GOBP.RDS")
+
+table_motif2_genes_GOBP_RUV %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("M2 Enriched GO:BP Terms RUVs")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_motif2_genes_KEGG_RUV <- table_motif2_GOKEGG_genes_RUV %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_motif2_genes_KEGG_RUV %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("M2 DEGs Enriched KEGG Terms RUVs")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+```
+
+```{r GO/KEGG Cormotif log2cpm clustlike only}
+
+#now take these final gene sets for each motif - clustlike + p.post consensus genes
+
+#clust1_genes_RUV
+#clust2_genes_RUV
+
+
+# library(gprofiler2)
+#####Motif 1 Gene Set#####
+# motif1_genes_matrix_RUV_clust <- as.matrix(clust1_genes_RUV)
+# colnames(motif1_genes_matrix_RUV_clust) <- c("entrezgene_ID")
+
+# saveRDS(motif1_genes_matrix_RUV_clust, "data/new/RUV/CMF/motif1_genes_matrix_RUV_clustlike.RDS")
+
+motif1_genes_matrix_RUV_clust <- readRDS("data/new/RUV/CMF/motif1_genes_matrix_RUV_clustlike.RDS")
+length(motif1_genes_matrix_RUV_clust)
+#13600 genes in this set for motif 1
+
+motif1_mat_GOKEGG_RUV_clust <- gost(query = motif1_genes_matrix_RUV_clust,
+                          organism = "hsapiens",
+                          ordered_query = FALSE,
+                          measure_underrepresentation = FALSE,
+                          evcodes = FALSE,
+                          user_threshold = 0.05,
+                          correction_method = c("fdr"),
+                          sources = c("GO:BP", "KEGG"))
+
+motif1_GOKEGG_genes_RUV_clust <- gostplot(motif1_mat_GOKEGG_RUV_clust, capped = FALSE, interactive = TRUE)
+motif1_GOKEGG_genes_RUV_clust
+
+table_motif1_GOKEGG_genes_RUV_clust <- motif1_mat_GOKEGG_RUV_clust$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_motif1_GOKEGG_genes_RUV_clust %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+# write.csv(table_motif1_GOKEGG_genes, "data/new/table_motif1_GOKEGG_genes.csv")
+
+#GO:BP
+table_motif1_genes_GOBP_RUV_clust <- table_motif1_GOKEGG_genes_RUV_clust %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+# saveRDS(table_motif1_genes_GOBP, "data/table_motif1_genes_GOBP.RDS")
+
+table_motif1_genes_GOBP_RUV_clust %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("M1 Enriched GO:BP Terms RUVs clustlike")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_motif1_genes_KEGG_RUV_clust <- table_motif1_GOKEGG_genes_RUV_clust %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_motif1_genes_KEGG_RUV_clust %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("M1 DEGs Enriched KEGG Terms RUVs clustlike")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#####Motif 2 Genes#####
+# motif2_genes_matrix_RUV_clust <- as.matrix(clust2_genes_RUV)
+# colnames(motif2_genes_matrix_RUV_clust) <- c("entrezgene_ID")
+
+# saveRDS(motif2_genes_matrix_RUV_clust, "data/new/RUV/CMF/motif2_genes_matrix_RUV_clustlike.RDS")
+
+motif2_genes_matrix_RUV_clust <- readRDS("data/new/RUV/CMF/motif2_genes_matrix_RUV_clustlike.RDS")
+length(motif2_genes_matrix_RUV_clust)
+#517 genes in this set for motif 2
+
+motif2_mat_GOKEGG_RUV_clust <- gost(query = motif2_genes_matrix_RUV_clust,
+                          organism = "hsapiens",
+                          ordered_query = FALSE,
+                          measure_underrepresentation = FALSE,
+                          evcodes = FALSE,
+                          user_threshold = 0.05,
+                          correction_method = c("fdr"),
+                          sources = c("GO:BP", "KEGG"))
+
+motif2_GOKEGG_genes_RUV_clust <- gostplot(motif2_mat_GOKEGG_RUV_clust, capped = FALSE, interactive = TRUE)
+motif2_GOKEGG_genes_RUV_clust
+
+table_motif2_GOKEGG_genes_RUV_clust <- motif2_mat_GOKEGG_RUV_clust$result %>% 
+  dplyr::select(c(source, term_id, term_name, intersection_size, term_size, p_value))
+
+table_motif2_GOKEGG_genes_RUV_clust %>% 
+  mutate_at(.vars = 6, .funs = scales::label_scientific(digits=4)) %>% 
+  kableExtra::kable(.,) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE, position = "left", bootstrap_options = c("striped", "hover")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+# write.csv(table_motif2_GOKEGG_genes, "data/new/table_motif2_GOKEGG_genes.csv")
+
+#GO:BP
+table_motif2_genes_GOBP_RUV_clust <- table_motif2_GOKEGG_genes_RUV_clust %>% 
+  dplyr::filter(source=="GO:BP") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+# saveRDS(table_motif2_genes_GOBP, "data/table_motif2_genes_GOBP.RDS")
+
+table_motif2_genes_GOBP_RUV_clust %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("M2 Enriched GO:BP Terms RUVs clustlike")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("GO:BP term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+#KEGG
+table_motif2_genes_KEGG_RUV_clust <- table_motif2_GOKEGG_genes_RUV_clust %>% 
+  dplyr::filter(source=="KEGG") %>% 
+  dplyr::select(p_value, term_name, intersection_size) %>% 
+  dplyr::slice_min(., n=10, order_by=p_value) %>% 
+  mutate(log_val = -log10(p_value))
+
+table_motif2_genes_KEGG_RUV_clust %>% ggplot(., aes(x = log_val, y = reorder(term_name, p_value), col= intersection_size)) +
+  geom_point(aes(size = intersection_size)) +
+  ggtitle("M2 DEGs Enriched KEGG Terms RUVs clustlike")+
+  xlab(expression("-log"[10]~"p-value"))+
+  guides(col="none", size= guide_legend(title = "# of intersected \n terms"))+
+  ylab("KEGG term")+
+  scale_y_discrete(labels = scales::label_wrap(30))+
+  theme_bw()+
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+        axis.title = element_text(size = 15, colour = "black"),
+        axis.ticks = element_line(linewidth = 1.5),
+        axis.line = element_line(linewidth = 1.5),
+        axis.text = element_text(size = 10, colour = "black", angle = 0),
+        strip.text = element_text(size = 15, colour = "black", face = "bold"))
+
+```
+
 
 ##Attempt Cormotif with Norm Counts Only
 ```{r RUVs Cormotif Plain Norm Counts}
@@ -8915,7 +10035,7 @@ label_positions_dic <- motif_long_dic %>%
 ggplot(motif_long_dic, aes(x = Motif, y = Fraction, fill = Category)) +
   geom_bar(stat = "identity", position = "stack") +
   geom_text(
-    data = label_positions %>% filter(Significant != ""),
+    data = label_positions_dic %>% filter(Significant != ""),
     aes(x = Motif, y = y_pos, label = Significant),
     size = 6,
     color = "black",
@@ -9028,7 +10148,7 @@ label_positions_p53 <- motif_long_p53 %>%
 ggplot(motif_long_p53, aes(x = Motif, y = Fraction, fill = Category)) +
   geom_bar(stat = "identity", position = "stack") +
   geom_text(
-    data = label_positions %>% filter(Significant != ""),
+    data = label_positions_p53 %>% filter(Significant != ""),
     aes(x = Motif, y = y_pos, label = Significant),
     size = 6,
     color = "black",
@@ -9038,6 +10158,575 @@ ggplot(motif_long_p53, aes(x = Motif, y = Fraction, fill = Category)) +
   scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
   labs(
     title = "Proportion of p53 Target Genes per Cormotif Motif",
+    x = "Cormotif Motif",
+    y = "Percentage",
+    fill = "p53 Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+
+
+```
+##Cormotif Proportion Barplots New Motifs RUVs Corrected
+###DDR Genes Proportion Barplot RUVs Cormotif
+```{r DDR Genes Proportion Barplot Cormotif RUVs clustlike}
+# DNA_damage_genes <- readRDS("data/new/RUV/DNA_damage_genes_symbolentrez.RDS")
+
+DNA_damage_genes <- readRDS("data/new/RUV/DDR_genes_entrezid.RDS")
+
+total_DNA_damage_genes <- length(DNA_damage_genes)  #Total number of DNA damage genes
+#should be 65 genes
+
+#define my Cormotif gene lists
+CMF_genes_RUV <- list(
+  "Motif1" = final_genes_1_RUV, 
+  "Motif2" = final_genes_2_RUV
+)
+
+all_tested_genes_RUV <- unique(unlist(CMF_genes_RUV))
+#this has the 12087 used for clustlike+ p.post together
+#usual gene set is 14319
+
+#compute my sets
+ddr_set <- unique(na.omit(DNA_damage_genes))
+
+motif_enrichment_RUV <- purrr::map_dfr(names(CMF_genes_RUV), function(motif_name) {
+  motif_genes_RUV <- unique(CMF_genes_RUV[[motif_name]])
+  
+  # Count in motif 
+  in_motif_ddr_RUV     <- sum(motif_genes_RUV %in% ddr_set)
+  #number of genes inside the motif that are DDR
+  in_motif_non_ddr_RUV <- length(motif_genes_RUV) - in_motif_ddr_RUV
+  #number of genes inside motif that are NOT DDR
+  
+  # Count outside motif 
+  other_genes_RUV <- setdiff(all_tested_genes_RUV, motif_genes_RUV)
+  #checking the difference between all genes and motif genes
+  out_motif_ddr_RUV     <- sum(other_genes_RUV %in% ddr_set)
+  #all genes outside motif that are DDR
+  out_motif_non_ddr_RUV <- length(other_genes_RUV) - out_motif_ddr_RUV
+  #all genes outside the motif that are NOT DDR
+  
+  # Build contingency table
+  contingency_ddr_cmf_RUV <- matrix(c(in_motif_ddr_RUV, in_motif_non_ddr_RUV,
+                          out_motif_ddr_RUV, out_motif_non_ddr_RUV),
+                        nrow = 2, byrow = TRUE)
+  
+  # Perform chi-squared test
+  chi_test_ddr_cmf_RUV <- chisq.test(contingency_ddr_cmf_RUV)
+  p_value_RUV <- chi_test_ddr_cmf_RUV$p.value
+  
+  # Output summary
+  tibble(
+    Motif = motif_name,
+    In_Motif_DDR = in_motif_ddr_RUV,
+    In_Motif_NonDDR = in_motif_non_ddr_RUV,
+    Out_Motif_DDR = out_motif_ddr_RUV,
+    Out_Motif_NonDDR = out_motif_non_ddr_RUV,
+    Total_Genes = length(motif_genes_RUV),
+    DNA_Damage_Proportion = in_motif_ddr_RUV / length(motif_genes_RUV) * 100,
+    P_Value = chi_test_ddr_cmf_RUV$p.value
+  )
+}) %>%
+  mutate(Significance = case_when(
+    P_Value < 0.05  ~ "*",
+    TRUE            ~ ""
+  ))
+
+# Recreate motif_long from motif_enrichment (with fixed column names)
+motif_long_RUV <- motif_enrichment_RUV %>%
+  select(Motif, In_Motif_DDR, In_Motif_NonDDR, P_Value) %>%  # include P_Value
+  pivot_longer(cols = c(In_Motif_DDR, In_Motif_NonDDR),
+               names_to = "Category", values_to = "Count") %>%
+  mutate(
+    Category = ifelse(Category == "In_Motif_DDR", "Yes", "No"),
+    Fraction = Count / ave(Count, Motif, FUN = sum),
+    
+    # Add significance stars inline
+    Significant = case_when(
+      P_Value < 0.05  ~ "*",
+      TRUE            ~ ""
+    )
+  )
+
+#now I want to make sure that the yes is at the top so I have to reorder
+motif_long_RUV$Category <- factor(motif_long_RUV$Category, levels = c("Yes", "No"))
+
+#ensure that the stars are also on top for significance
+label_positions_RUV <- motif_long_RUV %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.01)  # 101% above the bar for visual clarity
+
+# Plot with corrected star positioning
+ggplot(motif_long_RUV, aes(x = Motif, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions_RUV %>% filter(Significant != ""),
+    aes(x = Motif, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion DDR Genes per Motif RUVs clustlike + p.post",
+    x = "Cormotif Motif",
+    y = "Percentage",
+    fill = "DDR Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+```
+
+###DIC Genes Cormotif RUVs
+```{r DIC Genes Proportion Barplot Cormotif RUVs}
+DOX_cardiotox_genes <- readRDS("data/new/RUV/DIC_genes_entrezid.RDS")
+
+total_DIC_genes <- length(DOX_cardiotox_genes)  #Total number of DNA damage genes
+#should be 29
+
+#define my Cormotif gene lists
+CMF_genes_RUV_clust <- list(
+  "Motif1" = clust1_genes_RUV, "Motif2" = clust2_genes_RUV
+)
+
+all_tested_genes <- unique(unlist(CMF_genes_RUV_clust))
+#this has the 12087 used for clustlike+ p.post together
+#usual gene set is 14319
+
+#compute my sets
+dic_set <- unique(na.omit(DOX_cardiotox_genes))
+
+motif_enrichment_dic_RUV_clust <- purrr::map_dfr(names(CMF_genes_RUV_clust), function(motif_name) {
+  motif_genes_RUV_clust <- unique(CMF_genes_RUV_clust[[motif_name]])
+  
+  # Count in motif 
+  in_motif_dic_RUV_clust <- sum(motif_genes_RUV_clust %in% dic_set)
+  #number of genes inside the motif that are dic
+  in_motif_non_dic_RUV_clust <- length(motif_genes_RUV_clust) - in_motif_dic_RUV_clust
+  #number of genes inside motif that are NOT dic
+  
+  # Count outside motif 
+  other_genes_RUV_clust <- setdiff(all_tested_genes, motif_genes_RUV_clust)
+  #checking the difference between all genes and motif genes
+  out_motif_dic_RUV_clust     <- sum(other_genes_RUV_clust %in% dic_set)
+  #all genes outside motif that are dic
+  out_motif_non_dic_RUV_clust <- length(other_genes_RUV_clust) - out_motif_dic_RUV_clust
+  #all genes outside the motif that are NOT dic
+  
+  # Build contingency table
+  contingency_dic_cmf_RUV_clust <- matrix(c(in_motif_dic_RUV_clust, in_motif_non_dic_RUV_clust,
+                          out_motif_dic_RUV_clust, out_motif_non_dic_RUV_clust),
+                        nrow = 2, byrow = TRUE)
+  
+  # Perform chi-squared test
+  chi_test_dic_cmf_RUV_clust <- chisq.test(contingency_dic_cmf_RUV_clust)
+  p_value <- chi_test_dic_cmf_RUV_clust$p.value
+  
+  # Output summary
+  tibble(
+    Motif = motif_name,
+    In_Motif_dic = in_motif_dic_RUV_clust,
+    In_Motif_Nondic = in_motif_non_dic_RUV_clust,
+    Out_Motif_dic = out_motif_dic_RUV_clust,
+    Out_Motif_Nondic = out_motif_non_dic_RUV_clust,
+    Total_Genes = length(motif_genes_RUV_clust),
+    DNA_Damage_Proportion = in_motif_dic_RUV_clust / length(motif_genes_RUV_clust) * 100,
+    P_Value = chi_test_dic_cmf_RUV_clust$p.value
+  )
+}) %>%
+  mutate(Significance = case_when(
+    P_Value < 0.05  ~ "*",
+    TRUE            ~ ""
+  ))
+
+# Recreate motif_long from motif_enrichment (with fixed column names)
+motif_long_dic_RUV_clust <- motif_enrichment_dic_RUV_clust %>%
+  select(Motif, In_Motif_dic, In_Motif_Nondic, P_Value) %>%  # include P_Value
+  pivot_longer(cols = c(In_Motif_dic, In_Motif_Nondic),
+               names_to = "Category", values_to = "Count") %>%
+  mutate(
+    Category = ifelse(Category == "In_Motif_dic", "Yes", "No"),
+    Fraction = Count / ave(Count, Motif, FUN = sum),
+    
+    # Add significance stars inline
+    Significant = case_when(
+      P_Value < 0.05  ~ "*",
+      TRUE            ~ ""
+    )
+  )
+
+#now I want to make sure that the yes is at the top so I have to reorder
+motif_long_dic_RUV_clust$Category <- factor(motif_long_dic_RUV_clust$Category, levels = c("Yes", "No"))
+
+#ensure that the stars are also on top for significance
+label_positions_dic_RUV_clust <- motif_long_dic_RUV_clust %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.01)  # 101% above the bar for visual clarity
+
+# Plot with corrected star positioning
+ggplot(motif_long_dic_RUV_clust, aes(x = Motif, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions_dic_RUV_clust %>% filter(Significant != ""),
+    aes(x = Motif, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion DOX Cardiotox Genes per Motif RUVs clustlike",
+    x = "Cormotif Motif",
+    y = "Percentage",
+    fill = "DIC Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+```
+
+###DIC Genes RUVs Cormotif Proportion Barplot clustlike + p.post
+```{r DIC Genes Proportion Barplot Cormotif RUVs clust+p.post}
+DOX_cardiotox_genes <- readRDS("data/new/RUV/DIC_genes_entrezid.RDS")
+
+total_DIC_genes <- length(DOX_cardiotox_genes)  #Total number of DNA damage genes
+#should be 29
+
+#define my Cormotif gene lists
+CMF_genes_RUV <- list(
+  "Motif1" = clust1_genes_RUV, "Motif2" = clust2_genes_RUV
+)
+
+all_tested_genes <- unique(unlist(CMF_genes_RUV_clust))
+#this has the 12087 used for clustlike+ p.post together
+#usual gene set is 14319
+
+#compute my sets
+dic_set <- unique(na.omit(DOX_cardiotox_genes))
+
+motif_enrichment_dic_RUV_clust <- purrr::map_dfr(names(CMF_genes_RUV_clust), function(motif_name) {
+  motif_genes_RUV_clust <- unique(CMF_genes_RUV_clust[[motif_name]])
+  
+  # Count in motif 
+  in_motif_dic_RUV_clust <- sum(motif_genes_RUV_clust %in% dic_set)
+  #number of genes inside the motif that are dic
+  in_motif_non_dic_RUV_clust <- length(motif_genes_RUV_clust) - in_motif_dic_RUV_clust
+  #number of genes inside motif that are NOT dic
+  
+  # Count outside motif 
+  other_genes_RUV_clust <- setdiff(all_tested_genes, motif_genes_RUV_clust)
+  #checking the difference between all genes and motif genes
+  out_motif_dic_RUV_clust     <- sum(other_genes_RUV_clust %in% dic_set)
+  #all genes outside motif that are dic
+  out_motif_non_dic_RUV_clust <- length(other_genes_RUV_clust) - out_motif_dic_RUV_clust
+  #all genes outside the motif that are NOT dic
+  
+  # Build contingency table
+  contingency_dic_cmf_RUV_clust <- matrix(c(in_motif_dic_RUV_clust, in_motif_non_dic_RUV_clust,
+                          out_motif_dic_RUV_clust, out_motif_non_dic_RUV_clust),
+                        nrow = 2, byrow = TRUE)
+  
+  # Perform chi-squared test
+  chi_test_dic_cmf_RUV_clust <- chisq.test(contingency_dic_cmf_RUV_clust)
+  p_value <- chi_test_dic_cmf_RUV_clust$p.value
+  
+  # Output summary
+  tibble(
+    Motif = motif_name,
+    In_Motif_dic = in_motif_dic_RUV_clust,
+    In_Motif_Nondic = in_motif_non_dic_RUV_clust,
+    Out_Motif_dic = out_motif_dic_RUV_clust,
+    Out_Motif_Nondic = out_motif_non_dic_RUV_clust,
+    Total_Genes = length(motif_genes_RUV_clust),
+    DNA_Damage_Proportion = in_motif_dic_RUV_clust / length(motif_genes_RUV_clust) * 100,
+    P_Value = chi_test_dic_cmf_RUV_clust$p.value
+  )
+}) %>%
+  mutate(Significance = case_when(
+    P_Value < 0.05  ~ "*",
+    TRUE            ~ ""
+  ))
+
+# Recreate motif_long from motif_enrichment (with fixed column names)
+motif_long_dic_RUV_clust <- motif_enrichment_dic_RUV_clust %>%
+  select(Motif, In_Motif_dic, In_Motif_Nondic, P_Value) %>%  # include P_Value
+  pivot_longer(cols = c(In_Motif_dic, In_Motif_Nondic),
+               names_to = "Category", values_to = "Count") %>%
+  mutate(
+    Category = ifelse(Category == "In_Motif_dic", "Yes", "No"),
+    Fraction = Count / ave(Count, Motif, FUN = sum),
+    
+    # Add significance stars inline
+    Significant = case_when(
+      P_Value < 0.05  ~ "*",
+      TRUE            ~ ""
+    )
+  )
+
+#now I want to make sure that the yes is at the top so I have to reorder
+motif_long_dic_RUV_clust$Category <- factor(motif_long_dic_RUV_clust$Category, levels = c("Yes", "No"))
+
+#ensure that the stars are also on top for significance
+label_positions_dic_RUV_clust <- motif_long_dic_RUV_clust %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.01)  # 101% above the bar for visual clarity
+
+# Plot with corrected star positioning
+ggplot(motif_long_dic_RUV_clust, aes(x = Motif, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions_dic_RUV_clust %>% filter(Significant != ""),
+    aes(x = Motif, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion DOX Cardiotox Genes per Motif RUVs clustlike",
+    x = "Cormotif Motif",
+    y = "Percentage",
+    fill = "DIC Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+```
+
+###p53 Target Genes Cormotif RUVs
+```{r p53 Target Genes Proportion Barplot Cormotif RUVs}
+p53_target_genes <- readRDS("data/new/RUV/p53_targetgenes_entrezid.RDS")
+
+total_p53_genes <- length(p53_target_genes)  #Total number of p53 target genes
+#should be 300
+
+#define my Cormotif gene lists
+CMF_genes_RUV_clust <- list(
+  "Motif1" = motif1_genes_matrix_RUV_clust, "Motif2" = motif2_genes_matrix_RUV_clust
+)
+
+all_tested_genes_RUV_clust <- unique(unlist(CMF_genes_RUV_clust))
+#this has the 14117 used for clustlike only
+#usual gene set is 14319
+
+#compute my sets
+p53_set <- unique(na.omit(p53_target_genes))
+
+motif_enrichment_p53_RUV_clust <- purrr::map_dfr(names(CMF_genes_RUV_clust), function(motif_name) {
+  motif_genes_RUV_clust <- unique(CMF_genes_RUV_clust[[motif_name]])
+  
+  # Count in motif 
+  in_motif_p53_RUV_clust     <- sum(motif_genes_RUV_clust %in% p53_set)
+  #number of genes inside the motif that are p53
+  in_motif_non_p53_RUV_clust <- length(motif_genes_RUV_clust) - in_motif_p53_RUV_clust
+  #number of genes inside motif that are NOT p53
+  
+  # Count outside motif 
+  other_genes_RUV_clust <- setdiff(all_tested_genes_RUV_clust, motif_genes_RUV_clust)
+  #checking the difference between all genes and motif genes
+  out_motif_p53_RUV_clust <- sum(other_genes_RUV_clust %in% p53_set)
+  #all genes outside motif that are p53
+  out_motif_non_p53_RUV_clust <- length(other_genes_RUV_clust) - out_motif_p53_RUV_clust
+  #all genes outside the motif that are NOT p53
+  
+  # Build contingency table
+  contingency_p53_cmf_RUV_clust <- matrix(c(in_motif_p53_RUV_clust, in_motif_non_p53_RUV_clust,
+                          out_motif_p53_RUV_clust, out_motif_non_p53_RUV_clust),
+                        nrow = 2, byrow = TRUE)
+  
+  # Perform chi-squared test
+  chi_test_p53_cmf_RUV_clust <- chisq.test(contingency_p53_cmf_RUV_clust)
+  p_value_RUV_clust <- chi_test_p53_cmf_RUV_clust$p.value
+  
+  # Output summary
+  tibble(
+    Motif = motif_name,
+    In_Motif_p53 = in_motif_p53_RUV_clust,
+    In_Motif_Nonp53 = in_motif_non_p53_RUV_clust,
+    Out_Motif_p53 = out_motif_p53_RUV_clust,
+    Out_Motif_Nonp53 = out_motif_non_p53_RUV_clust,
+    Total_Genes = length(motif_genes_RUV_clust),
+    DNA_Damage_Proportion = in_motif_p53_RUV_clust / length(motif_genes_RUV_clust) * 100,
+    P_Value = chi_test_p53_cmf_RUV_clust$p.value
+  )
+}) %>%
+  mutate(Significance = case_when(
+    P_Value < 0.05  ~ "*",
+    TRUE            ~ ""
+  ))
+
+# Recreate motif_long from motif_enrichment (with fixed column names)
+motif_long_p53_RUV_clust <- motif_enrichment_p53_RUV_clust %>%
+  select(Motif, In_Motif_p53, In_Motif_Nonp53, P_Value) %>%  # include P_Value
+  pivot_longer(cols = c(In_Motif_p53, In_Motif_Nonp53),
+               names_to = "Category", values_to = "Count") %>%
+  mutate(
+    Category = ifelse(Category == "In_Motif_p53", "Yes", "No"),
+    Fraction = Count / ave(Count, Motif, FUN = sum),
+    
+    # Add significance stars inline
+    Significant = case_when(
+      P_Value < 0.05  ~ "*",
+      TRUE            ~ ""
+    )
+  )
+
+#now I want to make sure that the yes is at the top so I have to reorder
+motif_long_p53_RUV_clust$Category <- factor(motif_long_p53_RUV_clust$Category, levels = c("Yes", "No"))
+
+#ensure that the stars are also on top for significance
+label_positions_p53_RUV_clust <- motif_long_p53_RUV_clust %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.01)  # 101% above the bar for visual clarity
+
+# Plot with corrected star positioning
+ggplot(motif_long_p53_RUV_clust, aes(x = Motif, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions_p53_RUV_clust %>% filter(Significant != ""),
+    aes(x = Motif, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion p53 Target Genes per Motif RUVs clustlike",
+    x = "Cormotif Motif",
+    y = "Percentage",
+    fill = "p53 Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+
+
+```
+###p53 Target Genes Cormotif RUVs p.post + clustlike
+```{r p53 Target Genes Cormotif RUVs p.post + clustlike}
+
+p53_target_genes <- readRDS("data/new/RUV/p53_targetgenes_entrezid.RDS")
+
+total_p53_genes <- length(p53_target_genes)  #Total number of p53 target genes
+#should be 300
+
+#define my Cormotif gene lists
+CMF_genes_RUV <- list(
+  "Motif1" = final_genes_1_RUV, 
+  "Motif2" = final_genes_2_RUV
+)
+#7602 genes motif 1 + 501 genes motif 2
+
+all_tested_genes_RUV <- unique(unlist(CMF_genes_RUV))
+#this has the 8103 genes used for clustlike + p.post
+#usual gene set is 14319
+
+#compute my sets
+p53_set <- unique(na.omit(p53_target_genes))
+
+motif_enrichment_p53_RUV <- purrr::map_dfr(names(CMF_genes_RUV), function(motif_name) {
+  motif_genes_RUV <- unique(CMF_genes_RUV[[motif_name]])
+  
+  # Count in motif 
+  in_motif_p53_RUV     <- sum(motif_genes_RUV %in% p53_set)
+  #number of genes inside the motif that are p53
+  in_motif_non_p53_RUV <- length(motif_genes_RUV) - in_motif_p53_RUV
+  #number of genes inside motif that are NOT p53
+  
+  # Count outside motif 
+  other_genes_RUV <- setdiff(all_tested_genes_RUV, motif_genes_RUV)
+  #checking the difference between all genes and motif genes
+  out_motif_p53_RUV <- sum(other_genes_RUV %in% p53_set)
+  #all genes outside motif that are p53
+  out_motif_non_p53_RUV <- length(other_genes_RUV) - out_motif_p53_RUV
+  #all genes outside the motif that are NOT p53
+  
+  # Build contingency table
+  contingency_p53_cmf_RUV <- matrix(c(in_motif_p53_RUV, in_motif_non_p53_RUV,
+                          out_motif_p53_RUV, out_motif_non_p53_RUV),
+                        nrow = 2, byrow = TRUE)
+  
+  # Perform chi-squared test
+  chi_test_p53_cmf_RUV <- chisq.test(contingency_p53_cmf_RUV)
+  p_value_RUV <- chi_test_p53_cmf_RUV$p.value
+  
+  # Output summary
+  tibble(
+    Motif = motif_name,
+    In_Motif_p53 = in_motif_p53_RUV,
+    In_Motif_Nonp53 = in_motif_non_p53_RUV,
+    Out_Motif_p53 = out_motif_p53_RUV,
+    Out_Motif_Nonp53 = out_motif_non_p53_RUV,
+    Total_Genes = length(motif_genes_RUV),
+    DNA_Damage_Proportion = in_motif_p53_RUV / length(motif_genes_RUV) * 100,
+    P_Value = chi_test_p53_cmf_RUV$p.value
+  )
+}) %>%
+  mutate(Significance = case_when(
+    P_Value < 0.05  ~ "*",
+    TRUE            ~ ""
+  ))
+
+# Recreate motif_long from motif_enrichment (with fixed column names)
+motif_long_p53_RUV <- motif_enrichment_p53_RUV %>%
+  select(Motif, In_Motif_p53, In_Motif_Nonp53, P_Value) %>%  # include P_Value
+  pivot_longer(cols = c(In_Motif_p53, In_Motif_Nonp53),
+               names_to = "Category", values_to = "Count") %>%
+  mutate(
+    Category = ifelse(Category == "In_Motif_p53", "Yes", "No"),
+    Fraction = Count / ave(Count, Motif, FUN = sum),
+    
+    # Add significance stars inline
+    Significant = case_when(
+      P_Value < 0.05  ~ "*",
+      TRUE            ~ ""
+    )
+  )
+
+#now I want to make sure that the yes is at the top so I have to reorder
+motif_long_p53_RUV$Category <- factor(motif_long_p53_RUV$Category, levels = c("Yes", "No"))
+
+#ensure that the stars are also on top for significance
+label_positions_p53_RUV <- motif_long_p53_RUV %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.01)  # 101% above the bar for visual clarity
+
+# Plot with corrected star positioning
+ggplot(motif_long_p53_RUV, aes(x = Motif, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions_p53_RUV %>% filter(Significant != ""),
+    aes(x = Motif, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion p53 Target Genes per Motif RUVs clustlike + p.post",
     x = "Cormotif Motif",
     y = "Percentage",
     fill = "p53 Gene"
