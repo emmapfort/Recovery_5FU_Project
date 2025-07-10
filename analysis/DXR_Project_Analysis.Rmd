@@ -8674,7 +8674,7 @@ prob_filtered_genes_1_RUV <- rownames(gene_prob_all_RUV[(gene_prob_all_RUV[,1] >
 ### Final intersection of both filters
 final_genes_1_RUV <- intersect(clust1_genes_RUV, prob_filtered_genes_1_RUV)
 cat("Number of genes passing both filters:", length(final_genes_1_RUV), "\n")
-#7673 genes pass both filters here
+#7602 genes pass both filters here
 
 ####motif 2####
 #filter 1: clustlike
@@ -8986,7 +8986,7 @@ filt_toptable_2_dxr_fin_RUV_clust
 
 #now plot the abs logFC for each of these too
 filt_toptable_abs_fin_RUV_clust <- combined_toptables_dxr_RUV %>% 
-  dplyr::filter(entrezgene_ID  %in% clust2_genes_RUV) %>% 
+  dplyr::filter(entrezgene_ID  %in% clust1_genes_RUV) %>% 
   mutate(absFC = abs(logFC)) %>% 
   mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
   ggplot(., aes(x = time, y = absFC))+
@@ -9830,8 +9830,7 @@ legend('bottomleft',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4"
 Now that I've finished up with Cormotif, I want to make comparisons across DEGs and Cormotif analysis to identify DEGs within my motifs
 I also want to find out if any of my DEGs within a certain category (DDR, DIC, p53 target genes) are enriched in a motif.
 ```{r Cormotif DDR Enrichment Proportion Barplots}
-
-DNA_damage_genes <- readRDS("data/new/RUV/DNA_damage_genes_symbolentrez.RDS")
+#testing for each motif whether DNA damage response genes are enriched in that motif compared to all other tested genes
 
 DNA_damage_genes <- readRDS("data/new/RUV/DDR_genes_entrezid.RDS")
 
@@ -9853,6 +9852,9 @@ ddr_set <- unique(na.omit(DNA_damage_genes))
 motif_enrichment <- purrr::map_dfr(names(CMF_genes), function(motif_name) {
   motif_genes <- unique(CMF_genes[[motif_name]])
   
+  # #print results
+  # print(motif_enrichment)
+  
   # Count in motif 
   in_motif_ddr     <- sum(motif_genes %in% ddr_set)
   #number of genes inside the motif that are DDR
@@ -9872,9 +9874,12 @@ motif_enrichment <- purrr::map_dfr(names(CMF_genes), function(motif_name) {
                           out_motif_ddr, out_motif_non_ddr),
                         nrow = 2, byrow = TRUE)
   
-  # Perform chi-squared test
-  chi_test_ddr_cmf <- chisq.test(contingency_ddr_cmf)
-  p_value <- chi_test_ddr_cmf$p.value
+  #print results to check size of contingency table
+  print(contingency_ddr_cmf)
+  
+  # Perform fisher's exact test - sample size too small for chi-square
+  fisher_test_ddr_cmf <- fisher.test(contingency_ddr_cmf)
+  p_value <- fisher_test_ddr_cmf$p.value
   
   # Output summary
   tibble(
@@ -9885,7 +9890,7 @@ motif_enrichment <- purrr::map_dfr(names(CMF_genes), function(motif_name) {
     Out_Motif_NonDDR = out_motif_non_ddr,
     Total_Genes = length(motif_genes),
     DNA_Damage_Proportion = in_motif_ddr / length(motif_genes) * 100,
-    P_Value = chi_test_ddr_cmf$p.value
+    P_Value = fisher_test_ddr_cmf$p.value
   )
 }) %>%
   mutate(Significance = case_when(
@@ -9942,6 +9947,9 @@ ggplot(motif_long, aes(x = Motif, y = Fraction, fill = Category)) +
     plot.title = element_text(size = 16, hjust = 0.5)
   )
 
+#print the proportions so I know the exact percentages and p values
+print(motif_long)
+
 
 ```
 
@@ -9967,6 +9975,9 @@ dic_set <- unique(na.omit(DOX_cardiotox_genes))
 motif_enrichment_dic <- purrr::map_dfr(names(CMF_genes), function(motif_name) {
   motif_genes <- unique(CMF_genes[[motif_name]])
   
+  # #print this result to compare
+  # print(motif_enrichment_dic)
+  
   # Count in motif 
   in_motif_dic     <- sum(motif_genes %in% dic_set)
   #number of genes inside the motif that are dic
@@ -9985,10 +9996,12 @@ motif_enrichment_dic <- purrr::map_dfr(names(CMF_genes), function(motif_name) {
   contingency_dic_cmf <- matrix(c(in_motif_dic, in_motif_non_dic,
                           out_motif_dic, out_motif_non_dic),
                         nrow = 2, byrow = TRUE)
+  #print my contingency table to check sample size 
+  print(contingency_dic_cmf)
   
-  # Perform chi-squared test
-  chi_test_dic_cmf <- chisq.test(contingency_dic_cmf)
-  p_value <- chi_test_dic_cmf$p.value
+  # Perform fisher's exact test (sample size too small for chi-square)
+  fisher_test_dic_cmf <- fisher.test(contingency_dic_cmf)
+  p_value <- fisher_test_dic_cmf$p.value
   
   # Output summary
   tibble(
@@ -9999,7 +10012,7 @@ motif_enrichment_dic <- purrr::map_dfr(names(CMF_genes), function(motif_name) {
     Out_Motif_Nondic = out_motif_non_dic,
     Total_Genes = length(motif_genes),
     DNA_Damage_Proportion = in_motif_dic / length(motif_genes) * 100,
-    P_Value = chi_test_dic_cmf$p.value
+    P_Value = fisher_test_dic_cmf$p.value
   )
 }) %>%
   mutate(Significance = case_when(
@@ -10056,6 +10069,9 @@ ggplot(motif_long_dic, aes(x = Motif, y = Fraction, fill = Category)) +
     plot.title = element_text(size = 16, hjust = 0.5)
   )
 
+#print this so I know the p-value and percentages
+print(motif_long_dic)
+
 ```
 
 ```{r Cormotif p53 Target Gene Enrichment Proportion Barplots}
@@ -10080,6 +10096,9 @@ p53_set <- unique(na.omit(p53_target_genes))
 motif_enrichment_p53 <- purrr::map_dfr(names(CMF_genes), function(motif_name) {
   motif_genes <- unique(CMF_genes[[motif_name]])
   
+  # #print this dataset
+  # print(motif_enrichment_p53)
+  
   # Count in motif 
   in_motif_p53     <- sum(motif_genes %in% p53_set)
   #number of genes inside the motif that are p53
@@ -10098,10 +10117,12 @@ motif_enrichment_p53 <- purrr::map_dfr(names(CMF_genes), function(motif_name) {
   contingency_p53_cmf <- matrix(c(in_motif_p53, in_motif_non_p53,
                           out_motif_p53, out_motif_non_p53),
                         nrow = 2, byrow = TRUE)
+  #print the results so I can visualize the contingency tables for my motifs
+  print(contingency_p53_cmf)
   
-  # Perform chi-squared test
-  chi_test_p53_cmf <- chisq.test(contingency_p53_cmf)
-  p_value <- chi_test_p53_cmf$p.value
+  # Perform fishers exact test (sample size too small for chi-square)
+  fisher_test_p53_cmf <- fisher.test(contingency_p53_cmf)
+  p_value <- fisher_test_p53_cmf$p.value
   
   # Output summary
   tibble(
@@ -10112,7 +10133,7 @@ motif_enrichment_p53 <- purrr::map_dfr(names(CMF_genes), function(motif_name) {
     Out_Motif_Nonp53 = out_motif_non_p53,
     Total_Genes = length(motif_genes),
     DNA_Damage_Proportion = in_motif_p53 / length(motif_genes) * 100,
-    P_Value = chi_test_p53_cmf$p.value
+    P_Value = fisher_test_p53_cmf$p.value
   )
 }) %>%
   mutate(Significance = case_when(
@@ -10169,11 +10190,14 @@ ggplot(motif_long_p53, aes(x = Motif, y = Fraction, fill = Category)) +
     plot.title = element_text(size = 16, hjust = 0.5)
   )
 
+#print these data to check percentages and p-value
+print(motif_long_p53)
 
 ```
+
 ##Cormotif Proportion Barplots New Motifs RUVs Corrected
 ###DDR Genes Proportion Barplot RUVs Cormotif
-```{r DDR Genes Proportion Barplot Cormotif RUVs clustlike}
+```{r DDR Genes Proportion Barplot Cormotif RUVs clustlike only}
 # DNA_damage_genes <- readRDS("data/new/RUV/DNA_damage_genes_symbolentrez.RDS")
 
 DNA_damage_genes <- readRDS("data/new/RUV/DDR_genes_entrezid.RDS")
@@ -10197,6 +10221,9 @@ ddr_set <- unique(na.omit(DNA_damage_genes))
 motif_enrichment_RUV <- purrr::map_dfr(names(CMF_genes_RUV), function(motif_name) {
   motif_genes_RUV <- unique(CMF_genes_RUV[[motif_name]])
   
+  #print these results
+  # print(motif_enrichment_RUV)
+  
   # Count in motif 
   in_motif_ddr_RUV     <- sum(motif_genes_RUV %in% ddr_set)
   #number of genes inside the motif that are DDR
@@ -10216,9 +10243,12 @@ motif_enrichment_RUV <- purrr::map_dfr(names(CMF_genes_RUV), function(motif_name
                           out_motif_ddr_RUV, out_motif_non_ddr_RUV),
                         nrow = 2, byrow = TRUE)
   
-  # Perform chi-squared test
-  chi_test_ddr_cmf_RUV <- chisq.test(contingency_ddr_cmf_RUV)
-  p_value_RUV <- chi_test_ddr_cmf_RUV$p.value
+  #print the contingency table to check sample size
+  print(contingency_ddr_cmf_RUV)
+  
+  # Perform fisher's exact test - sample size too small and unreliable for chi-square
+  fisher_test_ddr_cmf_RUV <- fisher.test(contingency_ddr_cmf_RUV)
+  p_value_RUV <- fisher_test_ddr_cmf_RUV$p.value
   
   # Output summary
   tibble(
@@ -10229,7 +10259,7 @@ motif_enrichment_RUV <- purrr::map_dfr(names(CMF_genes_RUV), function(motif_name
     Out_Motif_NonDDR = out_motif_non_ddr_RUV,
     Total_Genes = length(motif_genes_RUV),
     DNA_Damage_Proportion = in_motif_ddr_RUV / length(motif_genes_RUV) * 100,
-    P_Value = chi_test_ddr_cmf_RUV$p.value
+    P_Value = fisher_test_ddr_cmf_RUV$p.value
   )
 }) %>%
   mutate(Significance = case_when(
@@ -10285,10 +10315,14 @@ ggplot(motif_long_RUV, aes(x = Motif, y = Fraction, fill = Category)) +
     axis.text = element_text(size = 12),
     plot.title = element_text(size = 16, hjust = 0.5)
   )
+
+#print this to see p-value and percentages
+print(motif_long_RUV)
+
 ```
 
 ###DIC Genes Cormotif RUVs
-```{r DIC Genes Proportion Barplot Cormotif RUVs}
+```{r DIC Genes Proportion Barplot Cormotif RUVs clustlike only}
 DOX_cardiotox_genes <- readRDS("data/new/RUV/DIC_genes_entrezid.RDS")
 
 total_DIC_genes <- length(DOX_cardiotox_genes)  #Total number of DNA damage genes
@@ -10300,37 +10334,44 @@ CMF_genes_RUV_clust <- list(
 )
 
 all_tested_genes <- unique(unlist(CMF_genes_RUV_clust))
-#this has the 12087 used for clustlike+ p.post together
+#this has the 14117 genes used for clustlike only
 #usual gene set is 14319
 
 #compute my sets
 dic_set <- unique(na.omit(DOX_cardiotox_genes))
 
 motif_enrichment_dic_RUV_clust <- purrr::map_dfr(names(CMF_genes_RUV_clust), function(motif_name) {
-  motif_genes_RUV_clust <- unique(CMF_genes_RUV_clust[[motif_name]])
+  motif_genes_dic_RUV_clust <- unique(CMF_genes_RUV_clust[[motif_name]])
+  
+  #print this to get a summary of results
+  # print(motif_enrichment_dic_RUV_clust)
   
   # Count in motif 
-  in_motif_dic_RUV_clust <- sum(motif_genes_RUV_clust %in% dic_set)
+  in_motif_dic_RUV_clust <- sum(motif_genes_dic_RUV_clust %in% dic_set)
   #number of genes inside the motif that are dic
-  in_motif_non_dic_RUV_clust <- length(motif_genes_RUV_clust) - in_motif_dic_RUV_clust
+  in_motif_non_dic_RUV_clust <- length(motif_genes_dic_RUV_clust) - in_motif_dic_RUV_clust
   #number of genes inside motif that are NOT dic
   
   # Count outside motif 
-  other_genes_RUV_clust <- setdiff(all_tested_genes, motif_genes_RUV_clust)
+  other_genes_dic_RUV_clust <- setdiff(all_tested_genes, motif_genes_dic_RUV_clust)
   #checking the difference between all genes and motif genes
-  out_motif_dic_RUV_clust     <- sum(other_genes_RUV_clust %in% dic_set)
+  out_motif_dic_RUV_clust     <- sum(other_genes_dic_RUV_clust %in% dic_set)
   #all genes outside motif that are dic
-  out_motif_non_dic_RUV_clust <- length(other_genes_RUV_clust) - out_motif_dic_RUV_clust
+  out_motif_non_dic_RUV_clust <- length(other_genes_dic_RUV_clust) - out_motif_dic_RUV_clust
   #all genes outside the motif that are NOT dic
   
   # Build contingency table
-  contingency_dic_cmf_RUV_clust <- matrix(c(in_motif_dic_RUV_clust, in_motif_non_dic_RUV_clust,
-                          out_motif_dic_RUV_clust, out_motif_non_dic_RUV_clust),
-                        nrow = 2, byrow = TRUE)
+  contingency_dic_cmf_RUV_clust <- matrix(c(in_motif_dic_RUV_clust,
+                                            in_motif_non_dic_RUV_clust,
+                                            out_motif_dic_RUV_clust,
+                                            out_motif_non_dic_RUV_clust),
+                                          nrow = 2, byrow = TRUE)
+  #print
+  print(contingency_dic_cmf_RUV_clust)
   
-  # Perform chi-squared test
-  chi_test_dic_cmf_RUV_clust <- chisq.test(contingency_dic_cmf_RUV_clust)
-  p_value <- chi_test_dic_cmf_RUV_clust$p.value
+  # Perform fisher's exact test (sample size too small for chi-square)
+  fisher_test_dic_cmf_RUV_clust <- fisher.test(contingency_dic_cmf_RUV_clust)
+  p_value <- fisher_test_dic_cmf_RUV_clust$p.value
   
   # Output summary
   tibble(
@@ -10339,9 +10380,9 @@ motif_enrichment_dic_RUV_clust <- purrr::map_dfr(names(CMF_genes_RUV_clust), fun
     In_Motif_Nondic = in_motif_non_dic_RUV_clust,
     Out_Motif_dic = out_motif_dic_RUV_clust,
     Out_Motif_Nondic = out_motif_non_dic_RUV_clust,
-    Total_Genes = length(motif_genes_RUV_clust),
-    DNA_Damage_Proportion = in_motif_dic_RUV_clust / length(motif_genes_RUV_clust) * 100,
-    P_Value = chi_test_dic_cmf_RUV_clust$p.value
+    Total_Genes = length(motif_genes_dic_RUV_clust),
+    DNA_Damage_Proportion = in_motif_dic_RUV_clust / length(motif_genes_dic_RUV_clust) * 100,
+    P_Value = fisher_test_dic_cmf_RUV_clust$p.value
   )
 }) %>%
   mutate(Significance = case_when(
@@ -10397,6 +10438,10 @@ ggplot(motif_long_dic_RUV_clust, aes(x = Motif, y = Fraction, fill = Category)) 
     axis.text = element_text(size = 12),
     plot.title = element_text(size = 16, hjust = 0.5)
   )
+
+#print these data to check p-value and percentages
+print(motif_long_dic_RUV_clust)
+
 ```
 
 ###DIC Genes RUVs Cormotif Proportion Barplot clustlike + p.post
@@ -10408,52 +10453,57 @@ total_DIC_genes <- length(DOX_cardiotox_genes)  #Total number of DNA damage gene
 
 #define my Cormotif gene lists
 CMF_genes_RUV <- list(
-  "Motif1" = clust1_genes_RUV, "Motif2" = clust2_genes_RUV
+  "Motif1" = final_genes_1_RUV, "Motif2" = final_genes_2_RUV
 )
 
-all_tested_genes <- unique(unlist(CMF_genes_RUV_clust))
+all_tested_genes <- unique(unlist(CMF_genes_RUV))
 #this has the 12087 used for clustlike+ p.post together
 #usual gene set is 14319
 
 #compute my sets
 dic_set <- unique(na.omit(DOX_cardiotox_genes))
 
-motif_enrichment_dic_RUV_clust <- purrr::map_dfr(names(CMF_genes_RUV_clust), function(motif_name) {
-  motif_genes_RUV_clust <- unique(CMF_genes_RUV_clust[[motif_name]])
+motif_enrichment_dic_RUV <- purrr::map_dfr(names(CMF_genes_RUV), function(motif_name) {
+  motif_genes_dic_RUV <- unique(CMF_genes_RUV[[motif_name]])
+  
+  # print(motif_enrichment_dic_RUV)
   
   # Count in motif 
-  in_motif_dic_RUV_clust <- sum(motif_genes_RUV_clust %in% dic_set)
+  in_motif_dic_RUV <- sum(motif_genes_dic_RUV %in% dic_set)
   #number of genes inside the motif that are dic
-  in_motif_non_dic_RUV_clust <- length(motif_genes_RUV_clust) - in_motif_dic_RUV_clust
+  in_motif_non_dic_RUV <- length(motif_genes_dic_RUV) - in_motif_dic_RUV
   #number of genes inside motif that are NOT dic
   
   # Count outside motif 
-  other_genes_RUV_clust <- setdiff(all_tested_genes, motif_genes_RUV_clust)
+  other_genes_dic_RUV <- setdiff(all_tested_genes, motif_genes_dic_RUV)
   #checking the difference between all genes and motif genes
-  out_motif_dic_RUV_clust     <- sum(other_genes_RUV_clust %in% dic_set)
+  out_motif_dic_RUV     <- sum(other_genes_dic_RUV %in% dic_set)
   #all genes outside motif that are dic
-  out_motif_non_dic_RUV_clust <- length(other_genes_RUV_clust) - out_motif_dic_RUV_clust
+  out_motif_non_dic_RUV <- length(other_genes_dic_RUV) - out_motif_dic_RUV
   #all genes outside the motif that are NOT dic
   
   # Build contingency table
-  contingency_dic_cmf_RUV_clust <- matrix(c(in_motif_dic_RUV_clust, in_motif_non_dic_RUV_clust,
-                          out_motif_dic_RUV_clust, out_motif_non_dic_RUV_clust),
+  contingency_dic_cmf_RUV <- matrix(c(in_motif_dic_RUV, in_motif_non_dic_RUV,
+                          out_motif_dic_RUV, out_motif_non_dic_RUV),
                         nrow = 2, byrow = TRUE)
   
-  # Perform chi-squared test
-  chi_test_dic_cmf_RUV_clust <- chisq.test(contingency_dic_cmf_RUV_clust)
-  p_value <- chi_test_dic_cmf_RUV_clust$p.value
+  #print contingency table
+  print(contingency_dic_cmf_RUV)
+  
+  # Perform fisher's exact test
+  fisher_test_dic_cmf_RUV <- fisher.test(contingency_dic_cmf_RUV)
+  p_value <- fisher_test_dic_cmf_RUV$p.value
   
   # Output summary
   tibble(
     Motif = motif_name,
-    In_Motif_dic = in_motif_dic_RUV_clust,
-    In_Motif_Nondic = in_motif_non_dic_RUV_clust,
-    Out_Motif_dic = out_motif_dic_RUV_clust,
-    Out_Motif_Nondic = out_motif_non_dic_RUV_clust,
-    Total_Genes = length(motif_genes_RUV_clust),
-    DNA_Damage_Proportion = in_motif_dic_RUV_clust / length(motif_genes_RUV_clust) * 100,
-    P_Value = chi_test_dic_cmf_RUV_clust$p.value
+    In_Motif_dic = in_motif_dic_RUV,
+    In_Motif_Nondic = in_motif_non_dic_RUV,
+    Out_Motif_dic = out_motif_dic_RUV,
+    Out_Motif_Nondic = out_motif_non_dic_RUV,
+    Total_Genes = length(motif_genes_dic_RUV),
+    DNA_Damage_Proportion = in_motif_dic_RUV / length(motif_genes_dic_RUV) * 100,
+    P_Value = fisher_test_dic_cmf_RUV$p.value
   )
 }) %>%
   mutate(Significance = case_when(
@@ -10462,7 +10512,7 @@ motif_enrichment_dic_RUV_clust <- purrr::map_dfr(names(CMF_genes_RUV_clust), fun
   ))
 
 # Recreate motif_long from motif_enrichment (with fixed column names)
-motif_long_dic_RUV_clust <- motif_enrichment_dic_RUV_clust %>%
+motif_long_dic_RUV <- motif_enrichment_dic_RUV %>%
   select(Motif, In_Motif_dic, In_Motif_Nondic, P_Value) %>%  # include P_Value
   pivot_longer(cols = c(In_Motif_dic, In_Motif_Nondic),
                names_to = "Category", values_to = "Count") %>%
@@ -10478,18 +10528,18 @@ motif_long_dic_RUV_clust <- motif_enrichment_dic_RUV_clust %>%
   )
 
 #now I want to make sure that the yes is at the top so I have to reorder
-motif_long_dic_RUV_clust$Category <- factor(motif_long_dic_RUV_clust$Category, levels = c("Yes", "No"))
+motif_long_dic_RUV$Category <- factor(motif_long_dic_RUV$Category, levels = c("Yes", "No"))
 
 #ensure that the stars are also on top for significance
-label_positions_dic_RUV_clust <- motif_long_dic_RUV_clust %>%
+label_positions_dic_RUV <- motif_long_dic_RUV %>%
   filter(Category == "Yes") %>%
   mutate(y_pos = Fraction + 1.01)  # 101% above the bar for visual clarity
 
 # Plot with corrected star positioning
-ggplot(motif_long_dic_RUV_clust, aes(x = Motif, y = Fraction, fill = Category)) +
+ggplot(motif_long_dic_RUV, aes(x = Motif, y = Fraction, fill = Category)) +
   geom_bar(stat = "identity", position = "stack") +
   geom_text(
-    data = label_positions_dic_RUV_clust %>% filter(Significant != ""),
+    data = label_positions_dic_RUV %>% filter(Significant != ""),
     aes(x = Motif, y = y_pos, label = Significant),
     size = 6,
     color = "black",
@@ -10512,7 +10562,7 @@ ggplot(motif_long_dic_RUV_clust, aes(x = Motif, y = Fraction, fill = Category)) 
 ```
 
 ###p53 Target Genes Cormotif RUVs
-```{r p53 Target Genes Proportion Barplot Cormotif RUVs}
+```{r p53 Target Genes Proportion Barplot Cormotif RUVs clustlike only}
 p53_target_genes <- readRDS("data/new/RUV/p53_targetgenes_entrezid.RDS")
 
 total_p53_genes <- length(p53_target_genes)  #Total number of p53 target genes
@@ -10520,7 +10570,7 @@ total_p53_genes <- length(p53_target_genes)  #Total number of p53 target genes
 
 #define my Cormotif gene lists
 CMF_genes_RUV_clust <- list(
-  "Motif1" = motif1_genes_matrix_RUV_clust, "Motif2" = motif2_genes_matrix_RUV_clust
+  "Motif1" = clust1_genes_RUV, "Motif2" = clust2_genes_RUV
 )
 
 all_tested_genes_RUV_clust <- unique(unlist(CMF_genes_RUV_clust))
@@ -10531,30 +10581,35 @@ all_tested_genes_RUV_clust <- unique(unlist(CMF_genes_RUV_clust))
 p53_set <- unique(na.omit(p53_target_genes))
 
 motif_enrichment_p53_RUV_clust <- purrr::map_dfr(names(CMF_genes_RUV_clust), function(motif_name) {
-  motif_genes_RUV_clust <- unique(CMF_genes_RUV_clust[[motif_name]])
+  motif_genes_p53_RUV_clust <- unique(CMF_genes_RUV_clust[[motif_name]])
   
   # Count in motif 
-  in_motif_p53_RUV_clust     <- sum(motif_genes_RUV_clust %in% p53_set)
+  in_motif_p53_RUV_clust     <- sum(motif_genes_p53_RUV_clust %in% p53_set)
   #number of genes inside the motif that are p53
-  in_motif_non_p53_RUV_clust <- length(motif_genes_RUV_clust) - in_motif_p53_RUV_clust
+  in_motif_non_p53_RUV_clust <- length(motif_genes_p53_RUV_clust) - in_motif_p53_RUV_clust
   #number of genes inside motif that are NOT p53
   
   # Count outside motif 
-  other_genes_RUV_clust <- setdiff(all_tested_genes_RUV_clust, motif_genes_RUV_clust)
+  other_genes_p53_RUV_clust <- setdiff(all_tested_genes_RUV_clust, motif_genes_p53_RUV_clust)
   #checking the difference between all genes and motif genes
-  out_motif_p53_RUV_clust <- sum(other_genes_RUV_clust %in% p53_set)
+  out_motif_p53_RUV_clust <- sum(other_genes_p53_RUV_clust %in% p53_set)
   #all genes outside motif that are p53
-  out_motif_non_p53_RUV_clust <- length(other_genes_RUV_clust) - out_motif_p53_RUV_clust
+  out_motif_non_p53_RUV_clust <- length(other_genes_p53_RUV_clust) - out_motif_p53_RUV_clust
   #all genes outside the motif that are NOT p53
   
   # Build contingency table
-  contingency_p53_cmf_RUV_clust <- matrix(c(in_motif_p53_RUV_clust, in_motif_non_p53_RUV_clust,
-                          out_motif_p53_RUV_clust, out_motif_non_p53_RUV_clust),
-                        nrow = 2, byrow = TRUE)
+  contingency_p53_cmf_RUV_clust <- matrix(c(in_motif_p53_RUV_clust,
+                                            in_motif_non_p53_RUV_clust,
+                                            out_motif_p53_RUV_clust,
+                                            out_motif_non_p53_RUV_clust),
+                                          nrow = 2, byrow = TRUE)
   
-  # Perform chi-squared test
-  chi_test_p53_cmf_RUV_clust <- chisq.test(contingency_p53_cmf_RUV_clust)
-  p_value_RUV_clust <- chi_test_p53_cmf_RUV_clust$p.value
+  #print my contingency table
+  print(contingency_p53_cmf_RUV_clust)
+  
+  # Perform fisher's exact test
+  fisher_test_p53_cmf_RUV_clust <- fisher.test(contingency_p53_cmf_RUV_clust)
+  p_value_RUV_clust <- fisher_test_p53_cmf_RUV_clust$p.value
   
   # Output summary
   tibble(
@@ -10563,9 +10618,9 @@ motif_enrichment_p53_RUV_clust <- purrr::map_dfr(names(CMF_genes_RUV_clust), fun
     In_Motif_Nonp53 = in_motif_non_p53_RUV_clust,
     Out_Motif_p53 = out_motif_p53_RUV_clust,
     Out_Motif_Nonp53 = out_motif_non_p53_RUV_clust,
-    Total_Genes = length(motif_genes_RUV_clust),
-    DNA_Damage_Proportion = in_motif_p53_RUV_clust / length(motif_genes_RUV_clust) * 100,
-    P_Value = chi_test_p53_cmf_RUV_clust$p.value
+    Total_Genes = length(motif_genes_p53_RUV_clust),
+    DNA_Damage_Proportion = in_motif_p53_RUV_clust / length(motif_genes_p53_RUV_clust) * 100,
+    P_Value = fisher_test_p53_cmf_RUV_clust$p.value
   )
 }) %>%
   mutate(Significance = case_when(
@@ -10622,6 +10677,8 @@ ggplot(motif_long_p53_RUV_clust, aes(x = Motif, y = Fraction, fill = Category)) 
     plot.title = element_text(size = 16, hjust = 0.5)
   )
 
+#print this dataframe to look at p-value and percentage
+print(motif_long_p53_RUV_clust)
 
 ```
 ###p53 Target Genes Cormotif RUVs p.post + clustlike
@@ -10647,30 +10704,35 @@ all_tested_genes_RUV <- unique(unlist(CMF_genes_RUV))
 p53_set <- unique(na.omit(p53_target_genes))
 
 motif_enrichment_p53_RUV <- purrr::map_dfr(names(CMF_genes_RUV), function(motif_name) {
-  motif_genes_RUV <- unique(CMF_genes_RUV[[motif_name]])
+  motif_genes_p53_RUV <- unique(CMF_genes_RUV[[motif_name]])
+  
+  #print results
+  # print(motif_enrichment_p53_RUV)
   
   # Count in motif 
-  in_motif_p53_RUV     <- sum(motif_genes_RUV %in% p53_set)
+  in_motif_p53_RUV     <- sum(motif_genes_p53_RUV %in% p53_set)
   #number of genes inside the motif that are p53
-  in_motif_non_p53_RUV <- length(motif_genes_RUV) - in_motif_p53_RUV
+  in_motif_non_p53_RUV <- length(motif_genes_p53_RUV) - in_motif_p53_RUV
   #number of genes inside motif that are NOT p53
   
   # Count outside motif 
-  other_genes_RUV <- setdiff(all_tested_genes_RUV, motif_genes_RUV)
+  other_genes_p53_RUV <- setdiff(all_tested_genes_RUV, motif_genes_p53_RUV)
   #checking the difference between all genes and motif genes
-  out_motif_p53_RUV <- sum(other_genes_RUV %in% p53_set)
+  out_motif_p53_RUV <- sum(other_genes_p53_RUV %in% p53_set)
   #all genes outside motif that are p53
-  out_motif_non_p53_RUV <- length(other_genes_RUV) - out_motif_p53_RUV
+  out_motif_non_p53_RUV <- length(other_genes_p53_RUV) - out_motif_p53_RUV
   #all genes outside the motif that are NOT p53
   
   # Build contingency table
   contingency_p53_cmf_RUV <- matrix(c(in_motif_p53_RUV, in_motif_non_p53_RUV,
                           out_motif_p53_RUV, out_motif_non_p53_RUV),
                         nrow = 2, byrow = TRUE)
+  #print my contingency tables
+  print(contingency_p53_cmf_RUV)
   
-  # Perform chi-squared test
-  chi_test_p53_cmf_RUV <- chisq.test(contingency_p53_cmf_RUV)
-  p_value_RUV <- chi_test_p53_cmf_RUV$p.value
+  # Perform fisher's exact test
+  fisher_test_p53_cmf_RUV <- fisher.test(contingency_p53_cmf_RUV)
+  p_value_RUV <- fisher_test_p53_cmf_RUV$p.value
   
   # Output summary
   tibble(
@@ -10679,9 +10741,9 @@ motif_enrichment_p53_RUV <- purrr::map_dfr(names(CMF_genes_RUV), function(motif_
     In_Motif_Nonp53 = in_motif_non_p53_RUV,
     Out_Motif_p53 = out_motif_p53_RUV,
     Out_Motif_Nonp53 = out_motif_non_p53_RUV,
-    Total_Genes = length(motif_genes_RUV),
-    DNA_Damage_Proportion = in_motif_p53_RUV / length(motif_genes_RUV) * 100,
-    P_Value = chi_test_p53_cmf_RUV$p.value
+    Total_Genes = length(motif_genes_p53_RUV),
+    DNA_Damage_Proportion = in_motif_p53_RUV / length(motif_genes_p53_RUV) * 100,
+    P_Value = fisher_test_p53_cmf_RUV$p.value
   )
 }) %>%
   mutate(Significance = case_when(
@@ -10738,6 +10800,8 @@ ggplot(motif_long_p53_RUV, aes(x = Motif, y = Fraction, fill = Category)) +
     plot.title = element_text(size = 16, hjust = 0.5)
   )
 
-
+print(motif_long_p53_RUV)
 ```
+
+
 
