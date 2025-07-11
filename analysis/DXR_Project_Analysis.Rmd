@@ -10803,5 +10803,282 @@ ggplot(motif_long_p53_RUV, aes(x = Motif, y = Fraction, fill = Category)) +
 print(motif_long_p53_RUV)
 ```
 
+#Final Cormotif RUVs Analysis
+We will continue forward with the RUVs corrected data based on log2cpm of normalized counts
+We will then use the Cormotif gene sets based on p.post and clustlike together
+##DDR Proportion Bar plots Redo
+```{r DDR Cormotif RUVs Proportion Barplots}
 
+#I am going to alter my strategy to identify the proportion of genes within one motif that are or are not DDR, do the same for the second motif, and then test between the two for differences in their proportions
+
+#read in my DDR gene set
+DNA_damage_genes <- readRDS("data/new/RUV/DDR_genes_entrezid.RDS")
+
+ddr_set <- unique(na.omit(DNA_damage_genes))
+
+#DDR genes inside each motif
+in_motif1_DDR <- sum(final_genes_1_RUV %in% ddr_set)
+in_motif2_DDR <- sum(final_genes_2_RUV %in% ddr_set)
+
+#non-DDR genes inside each motif
+in_motif1_nonDDR <- length(final_genes_1_RUV) - in_motif1_DDR
+in_motif2_nonDDR <- length(final_genes_2_RUV) - in_motif2_DDR
+
+#make contingency tables for fishers exact tests
+contingency_motifs_DDR <- matrix(c(
+  in_motif1_DDR, in_motif1_nonDDR,
+  in_motif2_DDR, in_motif2_nonDDR),
+  nrow = 2, byrow = TRUE
+)
+
+#print the contingency tables
+print(contingency_motifs_DDR)
+
+#perform a fisher's exact test (small sample size)
+fisher_test_motifs_DDR <- fisher.test(contingency_motifs_DDR)
+#print fisher's exact test results
+print(fisher_test_motifs_DDR)
+
+#make a summary table of all of these data to plot
+motif_summary_DDR <- tibble(
+  Motif = c("Motif1", "Motif2"),
+  DDR = c(in_motif1_DDR, in_motif2_DDR),
+  non_DDR = c(in_motif1_nonDDR, in_motif2_nonDDR)
+) %>%
+  pivot_longer(cols = c(DDR, non_DDR), names_to = "Category", values_to = "Count") %>%
+  mutate(
+    Category = ifelse(Category == "DDR", "Yes", "No"),
+    Fraction = Count / ave(Count, Motif, FUN = sum),
+    Significant = ifelse(Category == "Yes" & fisher_test_motifs_DDR$p.value < 0.05, "*", "")
+  )
+
+#position significance stars just above bars
+label_positions_DDR <- motif_summary_DDR %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.01)
+
+#change the ordering so that yes is on the top
+motif_summary_DDR$Category <- factor(motif_summary_DDR$Category, levels = c("Yes", "No"))
+
+#plot the proportions in a barplot
+ggplot(motif_summary_DDR, aes(x = Motif, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions_DDR %>% filter(Significant != ""),
+    aes(x = Motif, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion of DDR Genes in Motif 1 vs Motif 2 (RUVs clust + p.post)",
+    x = "Cormotif Motif",
+    y = "Percentage",
+    fill = "DDR Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+
+
+#print the proportions and p values
+prop_motif1_DDR <- in_motif1_DDR / length(final_genes_1_RUV)
+prop_motif2_DDR <- in_motif2_DDR / length(final_genes_2_RUV)
+p_val_DDR <- fisher_test_motifs_DDR$p.value
+
+cat(sprintf("Motif1: %.2f%% DDR genes (%d/%d)\n", 100*prop_motif1_DDR, in_motif1_DDR, length(final_genes_1_RUV)))
+cat(sprintf("Motif2: %.2f%% DDR genes (%d/%d)\n", 100*prop_motif2_DDR, in_motif2_DDR, length(final_genes_2_RUV)))
+cat(sprintf("DDR Fisher's Exact Test p-value: %.5f\n", p_val_DDR))
+cat(sprintf("Odds ratio: %.3f\n", fisher_test_motifs_DDR$estimate))
+
+
+
+```
+
+##DIC Proportion Bar plots Redo
+```{r DIC Genes Proportion Barplots RUVs clustlike + p.post}
+
+#read in my DIC gene set
+DOX_cardiotox_genes <- readRDS("data/new/RUV/DIC_genes_entrezid.RDS")
+
+dic_set <- unique(na.omit(DOX_cardiotox_genes))
+
+#DIC genes inside each motif
+in_motif1_DIC <- sum(final_genes_1_RUV %in% dic_set)
+in_motif2_DIC <- sum(final_genes_2_RUV %in% dic_set)
+
+#non-DIC genes inside each motif
+in_motif1_nonDIC <- length(final_genes_1_RUV) - in_motif1_DIC
+in_motif2_nonDIC <- length(final_genes_2_RUV) - in_motif2_DIC
+
+#make contingency tables for fishers exact tests
+contingency_motifs_DIC <- matrix(c(
+  in_motif1_DIC, in_motif1_nonDIC,
+  in_motif2_DIC, in_motif2_nonDIC),
+  nrow = 2, byrow = TRUE
+)
+
+#print the contingency tables
+print(contingency_motifs_DIC)
+
+#perform a fisher's exact test (small sample size)
+fisher_test_motifs_DIC <- fisher.test(contingency_motifs_DIC)
+#print fisher's exact test results
+print(fisher_test_motifs_DIC)
+
+#make a summary table of all of these data to plot
+motif_summary_DIC <- tibble(
+  Motif = c("Motif1", "Motif2"),
+  DIC = c(in_motif1_DIC, in_motif2_DIC),
+  non_DIC = c(in_motif1_nonDIC, in_motif2_nonDIC)
+) %>%
+  pivot_longer(cols = c(DIC, non_DIC), names_to = "Category", values_to = "Count") %>%
+  mutate(
+    Category = ifelse(Category == "DIC", "Yes", "No"),
+    Fraction = Count / ave(Count, Motif, FUN = sum),
+    Significant = ifelse(Category == "Yes" & fisher_test_motifs_DIC$p.value < 0.05, "*", "")
+  )
+
+#position significance stars just above bars
+label_positions_DIC <- motif_summary_DIC %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.01)
+
+#change the ordering so that yes is on the top
+motif_summary_DIC$Category <- factor(motif_summary_DIC$Category, levels = c("Yes", "No"))
+
+#plot the proportions in a barplot
+ggplot(motif_summary_DIC, aes(x = Motif, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions_DIC %>% filter(Significant != ""),
+    aes(x = Motif, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion of DIC Genes in Motif 1 vs Motif 2 (RUVs clust + p.post)",
+    x = "Cormotif Motif",
+    y = "Percentage",
+    fill = "DIC Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+
+
+#print the proportions and p values
+prop_motif1_DIC <- in_motif1_DIC / length(final_genes_1_RUV)
+prop_motif2_DIC <- in_motif2_DIC / length(final_genes_2_RUV)
+p_val_DIC <- fisher_test_motifs_DIC$p.value
+
+cat(sprintf("Motif1: %.2f%% DIC genes (%d/%d)\n", 100*prop_motif1_DIC, in_motif1_DIC, length(final_genes_1_RUV)))
+cat(sprintf("Motif2: %.2f%% DIC genes (%d/%d)\n", 100*prop_motif2_DIC, in_motif2_DIC, length(final_genes_2_RUV)))
+cat(sprintf("DIC Fisher's Exact Test p-value: %.5f\n", p_val_DIC))
+cat(sprintf("Odds ratio: %.3f\n", fisher_test_motifs_DIC$estimate))
+
+
+```
+
+##p53 Targets Proportion Barplots Redo
+```{r p53 Cormotif RUVs Proportion Barplots clustlike + p.post}
+
+#read in my p53 gene set
+p53_target_genes <- readRDS("data/new/RUV/p53_targetgenes_entrezid.RDS")
+
+p53_set <- unique(na.omit(p53_target_genes))
+
+#p53 genes inside each motif
+in_motif1_p53 <- sum(final_genes_1_RUV %in% p53_set)
+in_motif2_p53 <- sum(final_genes_2_RUV %in% p53_set)
+
+#non-p53 genes inside each motif
+in_motif1_nonp53 <- length(final_genes_1_RUV) - in_motif1_p53
+in_motif2_nonp53 <- length(final_genes_2_RUV) - in_motif2_p53
+
+#make contingency tables for fishers exact tests
+contingency_motifs_p53 <- matrix(c(
+  in_motif1_p53, in_motif1_nonp53,
+  in_motif2_p53, in_motif2_nonp53),
+  nrow = 2, byrow = TRUE
+)
+
+#print the contingency tables
+print(contingency_motifs_p53)
+
+#perform a fisher's exact test (small sample size)
+fisher_test_motifs_p53 <- fisher.test(contingency_motifs_p53)
+#print fisher's exact test results
+print(fisher_test_motifs_p53)
+
+#make a summary table of all of these data to plot
+motif_summary_p53 <- tibble(
+  Motif = c("Motif1", "Motif2"),
+  p53 = c(in_motif1_p53, in_motif2_p53),
+  non_p53 = c(in_motif1_nonp53, in_motif2_nonp53)
+) %>%
+  pivot_longer(cols = c(p53, non_p53), names_to = "Category", values_to = "Count") %>%
+  mutate(
+    Category = ifelse(Category == "p53", "Yes", "No"),
+    Fraction = Count / ave(Count, Motif, FUN = sum),
+    Significant = ifelse(Category == "Yes" & fisher_test_motifs_p53$p.value < 0.05, "*", "")
+  )
+
+#position significance stars just above bars
+label_positions_p53 <- motif_summary_p53 %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.01)
+
+#change the ordering so that yes is on the top
+motif_summary_p53$Category <- factor(motif_summary_p53$Category, levels = c("Yes", "No"))
+
+#plot the proportions in a barplot
+ggplot(motif_summary_p53, aes(x = Motif, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions_p53 %>% filter(Significant != ""),
+    aes(x = Motif, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion of p53 Genes in Motif 1 vs Motif 2 (RUVs clust + p.post)",
+    x = "Cormotif Motif",
+    y = "Percentage",
+    fill = "p53 Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+
+
+#print the proportions and p values
+prop_motif1_p53 <- in_motif1_p53 / length(final_genes_1_RUV)
+prop_motif2_p53 <- in_motif2_p53 / length(final_genes_2_RUV)
+p_val_p53 <- fisher_test_motifs_p53$p.value
+
+cat(sprintf("Motif1: %.2f%% p53 genes (%d/%d)\n", 100*prop_motif1_p53, in_motif1_p53, length(final_genes_1_RUV)))
+cat(sprintf("Motif2: %.2f%% p53 genes (%d/%d)\n", 100*prop_motif2_p53, in_motif2_p53, length(final_genes_2_RUV)))
+cat(sprintf("p53 Fisher's Exact Test p-value: %.5f\n", p_val_p53))
+cat(sprintf("Odds ratio: %.3f\n", fisher_test_motifs_p53$estimate))
+
+
+```
 
