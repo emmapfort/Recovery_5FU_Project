@@ -12187,7 +12187,7 @@ cat(sprintf("Odds ratio: %.3f\n", fisher_test_motifs_p53$estimate))
 ```
 
 #Flow Cytometry Barplot
-```{r Flow Cytometry Data Barplot and Boxplots}
+```{r Flow Cytometry Data Barplot and Boxplots, fig.width=3, fig.height=3}
 #Individuals for Flow Cytometry
 #1 = 84-1
 #2 = 87-1
@@ -12204,39 +12204,68 @@ flow <- flow_dxr %>% column_to_rownames("Line")
 
 ####now that I've loaded in the lenient gating number for each, let's make a boxplot
 
-flow_dxr %>% ggplot(aes(x=Line, y=Purity, color = Line)) +
+flow_dxr %>% ggplot(aes(x=Individual, y=Purity, color = Line)) +
   geom_boxplot() +
   theme_bw(base_size = 16) + 
   labs(title = "Percent TNNT2 Positive iPSC-CMs") +
   ylim(0,105) +
-  scale_color_manual(values = flow_col_ind)
+  scale_color_manual(values = ind_col)
   
 
 ##make subsets based on species
-flow_dxr %>% ggplot(aes(x=Species, y=Purity, color = Line)) +
+flow_dxr %>% ggplot(aes(x=Individual, y=Purity, color = Individual)) +
   geom_boxplot() +
   theme_bw(base_size = 15) + 
   labs(title = "Percent TNNT2 Positive iPSC-CMs") +
   ylim(0,105) +
-  scale_color_manual(values = flow_col_ind)
-  
-ggplot(H_flow, aes(x = Species, y = Purity))+
-  geom_boxplot(aes(fill = Species), show.legend = FALSE)+
-  geom_point(aes(color = Line, size = 5, alpha = 0.9), show.legend = leg_show) +
-  ylim(0,105) +
-  labs(title = "Percent TNNT2 Positive iPSC-CMs")+
-  theme_bw(base_size = 16)+
-  scale_color_manual(values = flow_col_h)+
-  scale_fill_manual(values = c("lightyellow"))
-
+  scale_color_manual(values = ind_col)
 
 leg_show <- c(size = FALSE, color = TRUE, alpha = FALSE)
 
-flow_col_ind <- c(H21792 = "#4DD091", H20682 = "#FF5C77", H28126 = "#FFA23A", H24280 = "#C05780", H22422 = "#F4D283",'H84-1' = "#ABD33D",'H78-1'= "#FFF000")
+  
+ggplot(flow_dxr, aes(x = Individual, y = Purity))+
+  geom_boxplot(aes(fill = Individual), show.legend = FALSE)+
+  geom_point(aes(color = Individual, size = 5, alpha = 0.9), show.legend = leg_show) +
+  ylim(0,105) +
+  labs(title = "Percent TNNT2 Positive iPSC-CMs")+
+  theme_bw(base_size = 16)+
+  scale_color_manual(values = c("#003F5C", 
+                                "#45AE91", 
+                                "#58209D", 
+                                "#8B3E9B", 
+                                "#FF6361", 
+                                "#BC4169", 
+                                "#FF2362"))
 
-flow_col_h <- c(H21792 = "#4DD091", H20682 = "#FF5C77", H28126 = "#FFA23A", H24280 = "#C05780", H22422 = "#F4D283",'H84-1' = "#ABD33D",'H78-1'= "#FFF000")
+###make a barplot as well
+####put a line where the average is - 91.34
 
+flow_dxr_df <- as.data.frame(flow_dxr)
 
+# Compute mean value
+avg_vals_dxr <- mean(flow_dxr_df$Purity)
+
+# Plot
+ggplot(flow_dxr_df, aes(x = Individual, y = Purity)) +
+  geom_bar(stat = "identity", 
+           fill = ind_col_norep,
+           width = 0.9) +
+  geom_hline(yintercept = avg_vals_dxr, 
+             linetype = "dashed", 
+             color = "black", 
+             linewidth = 0.7) +
+  # annotate("text", x = 5, 
+  #          y = avg_vals_dxr + 2, 
+  #          label = paste0(round(avg_vals_dxr, 1), "%"),
+  #          color = "black", 
+  #          hjust = 3.9) +
+  scale_y_continuous(limits = c(0, 100), 
+                     expand = c(0, 0)) +
+  scale_x_discrete(expand = expansion(mult = c(0.02, 0.02)))+
+  labs(title = "iPSC-CM Purity",
+       y = "TNNT2 Expression (%)", 
+       x = "Individual") +
+  theme_minimal(base_size = 14)
 
 ```
 
