@@ -174,7 +174,7 @@ library(SummarizedExperiment)
 #    )
 
 #now save this as a matrix
-#counts_raw_matrix <- counts_raw_df %>% column_to_rownames(var = "X") %>% as.matrix()
+# counts_raw_matrix <- counts_raw_df %>% column_to_rownames(var = "X") %>% as.matrix()
 
 counts_raw_matrix <- readRDS("data/new/counts_raw_matrix.RDS")
 
@@ -2499,6 +2499,36 @@ for (gene in top5_D144R_geneslist_1) {
 
 
 ```
+```{r Top DEGs all timepoints list}
+#find the top 10 DEGs for the entire dataset with my combined toptables
+#Combine the toptables I have from pairwise analysis into a single dataframe
+d24_toptable_dxr_RUV <- Toptable_RUV_24T %>% 
+  rownames_to_column(var = "Entrez_ID") %>% 
+  mutate(Time = "24")
+
+d24r_toptable_dxr_RUV <- Toptable_RUV_24R %>% 
+  rownames_to_column(var = "Entrez_ID") %>% 
+  mutate(Time = "24R")
+
+d144r_toptable_dxr_RUV <- Toptable_RUV_144R %>% 
+  rownames_to_column(var = "Entrez_ID") %>% 
+  mutate(Time = "144R")
+
+combined_toptables_dxr_RUV <- bind_rows(
+  d24_toptable_dxr_RUV,
+  d24r_toptable_dxr_RUV,
+  d144r_toptable_dxr_RUV)
+
+combined_toptables_dxr_RUV
+  
+top10_DEGs_RUV <- combined_toptables_dxr_RUV[order(combined_toptables_dxr_RUV$adj.P.Val), ][1:10,]
+
+print(top10_DEGs_RUV$SYMBOL)
+print(top10_DEGs_RUV$Entrez_ID)
+
+```
+
+
 ##LogFC DEGs RUVs k=1 All Conditions
 ```{r RUV logFC DEGs all Conditions}
 # Toptable_RUV_24T
@@ -2619,6 +2649,76 @@ filt_toptable_dxr_144r_RUV
 
 
 ```
+
+##LogFC Heatmap Across Timepoints RUVs
+```{r LogFC HM RUVs Timepoint Comparisons}
+#format my data so that I have a matrix of my logFC values and genes
+
+logFC_wide_RUV <- combined_toptables_dxr_RUV %>%
+  select(Entrez_ID, Time, logFC) %>%
+  pivot_wider(names_from = Time, values_from = logFC) %>%
+  drop_na() %>% 
+  column_to_rownames("Entrez_ID")
+
+#now that I've pivoted my logFC data into a wide format I can compute the Spearman correlation between the timepoints
+
+#convert to matrix + remove gene column
+logFC_matrix_RUV <- as.matrix(logFC_wide_RUV)
+
+# Compute Spearman correlation between columns (timepoints)
+logFC_cor_RUV <- cor(logFC_matrix_RUV, 
+                     y = NULL,
+                     use = "everything",
+                     method = "spearman")
+
+# Define color palettes for annotations
+annot_col_cor = list(timepoints = c("24T" = "#238B45",
+                                    "24R" = "#74C476",
+                                    "144R" = "#C7E9C0"))
+
+time_colors <- c("24T" = "#238B45",
+                 "24R" = "#74C476",
+                 "144R" = "#C7E9C0")
+
+timepoints <- c("24T", "24R", "144R")
+
+# Create annotations
+top_annotation_RUV_time <- HeatmapAnnotation(
+  Timepoint = timepoints,
+  col = list(Timepoint = time_colors),
+  annotation_name_side = "left"
+)
+
+# Draw heatmap
+Heatmap(logFC_cor_RUV,
+        name = "Spearman",
+        col = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red")),
+        top_annotation = top_annotation_RUV_time,
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(sprintf("%.2f", logFC_cor_RUV[i, j]), x, y, 
+                    gp = gpar(fontsize = 10))
+        },
+        column_title = "Spearman Correlation of logFC")
+
+####Spearman Heatmap####
+heatmap_spearman_RUV_time <- Heatmap(logFC_cor_RUV,
+                           name = "Spearman",
+                           top_annotation = top_annotation_RUV_time,
+                           show_row_names = TRUE,
+                           show_column_names = TRUE,
+                           cluster_rows = TRUE,
+                           cluster_columns = FALSE,
+                           border = TRUE)
+
+# Draw the heatmap
+draw(heatmap_spearman_RUV_time)
+
+
+```
+
+
 ##Volcano Plots of RUVs Corrected Data k=1
 ```{r Volcano Plots RUVs Corrected k1}
 #make a function to generate volcano plots + add gene numbers
@@ -2731,7 +2831,6 @@ entrez_category_DDR <- tribble(
   11200, "DNA Repair", 1643, "DNA Repair", 8243, "DNA Repair", 5981, "DNA Repair",
   7157, "p53 Regulators / Targets", 4193, "p53 Regulators / Targets", 5371, "p53 Regulators / Targets",
   27244, "p53 Regulators / Targets", 50484, "p53 Regulators / Targets",
-  5916, "DOX Cardiotoxicity", 7799, "DOX Cardiotoxicity", 4292, "DOX Cardiotoxicity",
   207, "Miscellaneous / Broad", 25, "Miscellaneous / Broad"
 )
 
@@ -2794,10 +2893,13 @@ ordered_genes_DDR <- gene_order_df_DDR$Gene
 logFC_mat_DDR <- logFC_mat_DDR[ordered_genes_DDR, ]
 signif_mat_DDR <- signif_mat_DDR[ordered_genes_DDR, ]
 
-category_colors_DDR <- structure(
-  c("darkorange", "steelblue", "darkgreen", "firebrick", "gold", "mediumpurple", "gray60"),
-  names = sort(unique(entrez_category_DDR$Category))
-)
+category_levels <- sort(unique(entrez_category_DDR$Category))
+
+category_colors_DDR <- setNames(
+  c("darkorange", "steelblue", "darkgreen", "firebrick", "gold", "mediumpurple"),
+  category_levels
+  )
+
 
 ha_left_DDR <- rowAnnotation(
   Category = gene_order_df_DDR$Category,
@@ -3102,124 +3204,6 @@ Heatmap(logFC_mat_p53,
 
 ```
 
-
-```{r AIC LogFC Plots, fig.height=14, fig.width=8, include = FALSE}
-# #load in the appropriate files
-# deg_files <- list(
-#   "DOX_24T" = "data/new/DEGs/Toptable_V.D24T.csv",
-#   "DOX_24R" = "data/new/DEGs/Toptable_V.D24R.csv",
-#   "DOX_144R" = "data/new/DEGs/Toptable_V.D144R.csv"
-# )
-# 
-# 
-# # ----------------- AC Cardiotoxicity Entrez IDs -----------------
-# entrez_ids <- c(
-#   6272, 8029, 11128, 79899, 54477, 121665, 5095, 22863, 57161, 4692,
-#   8214, 23151, 56606, 108, 22999, 56895, 9603, 3181, 4023, 10499,
-#   92949, 4363, 10057, 5243, 5244, 5880, 1535, 2950, 847, 5447,
-#   3038, 3077, 4846, 3958, 23327, 29899, 23155, 80856, 55020, 78996,
-#   23262, 150383, 9620, 79730, 344595, 5066, 6251, 3482, 9588, 339416,
-#   7292, 55157, 87769, 23409, 720, 3107, 54535, 1590, 80059, 7991,
-#   57110, 8803, 323, 54826, 5916, 23371, 283337, 64078, 80010, 1933,
-#   10818, 51020
-# ) %>% as.character()
-# 
-# #load in my DE genes and filter them by the entrez id
-# 
-# ac_data_list <- map2_dfr(deg_files, names(deg_files), function(file, label) {
-#   read_csv(file, show_col_types = FALSE) %>%
-#     mutate(
-#       Entrez_ID = as.character(Entrez_ID),
-#       Condition = label,
-#       Condition = ifelse(str_detect(label, "DOX"), "CX.5461", "DOX")
-#     ) %>%
-#     filter(Entrez_ID %in% entrez_ids)
-# })
-# 
-# #create full gene × condition table
-# all_conditions <- names(deg_files)
-# all_combos <- crossing(
-#   Entrez_ID = entrez_ids %>% as.character(),
-#   Condition = all_conditions
-# ) %>%
-#   mutate(
-#     Drug = ifelse(str_detect(Condition, "CX"), "CX.5461", "DOX")
-#   )
-# 
-# # ----------------- Merge and Fill Missing Values -----------------
-# complete_ac <- all_combos %>%
-#   left_join(ac_data_list, by = c("Entrez_ID", "Condition", "Drug")) %>%
-#   mutate(
-#     logFC = ifelse(is.na(logFC), 0, logFC),
-#     adj.P.Val = ifelse(is.na(adj.P.Val), 1, adj.P.Val)
-#   )
-# 
-# # ----------------- Annotate Gene Symbols -----------------
-# complete_ac <- complete_ac %>%
-#   mutate(
-#     Gene = mapIds(org.Hs.eg.db, keys = Entrez_ID,
-#                   column = "SYMBOL", keytype = "ENTREZID", multiVals = "first")
-#   )
-# 
-# # ----------------- Order Conditions -----------------
-# complete_ac$Condition <- factor(complete_ac$Condition, levels = c(
-#   "CX_0.1_3", "CX_0.1_24", "CX_0.1_48",
-#   "CX_0.5_3", "CX_0.5_24", "CX_0.5_48",
-#   "DOX_0.1_3", "DOX_0.1_24", "DOX_0.1_48",
-#   "DOX_0.5_3", "DOX_0.5_24", "DOX_0.5_48"
-# ))
-# 
-# # ----------------- Wilcoxon Test: CX vs DOX (paired by condition) -----------------
-# condition_pairs <- tibble(
-#   cx = c("CX_0.1_3", "CX_0.1_24", "CX_0.1_48", "CX_0.5_3", "CX_0.5_24", "CX_0.5_48"),
-#   dox = c("DOX_0.1_3", "DOX_0.1_24", "DOX_0.1_48", "DOX_0.5_3", "DOX_0.5_24", "DOX_0.5_48")
-# )
-# 
-# wilcox_results <- map2_dfr(condition_pairs$cx, condition_pairs$dox, function(cx_label, dox_label) {
-#   cx_vals <- complete_ac %>% filter(Condition == cx_label) %>% pull(logFC)
-#   dox_vals <- complete_ac %>% filter(Condition == dox_label) %>% pull(logFC)
-#   
-#   test <- tryCatch(wilcox.test(cx_vals, dox_vals), error = function(e) NULL)
-#   pval <- if (!is.null(test)) test$p.value else NA
-#   
-#   tibble(
-#     Condition = dox_label,
-#     p_value = signif(pval, 3),
-#     label = case_when(
-#       pval < 0.001 ~ "***",
-#       pval < 0.01  ~ "**",
-#       pval < 0.05  ~ "*",
-#       TRUE         ~ ""
-#     ),
-#     y_pos = max(c(cx_vals, dox_vals), na.rm = TRUE) + 0.5
-#   )
-# })
-# 
-# # ----------------- Plot Boxplot with Wilcoxon Stars -----------------
-# ggplot(complete_ac, aes(x = Condition, y = logFC, fill = Drug)) +
-#   geom_boxplot(outlier.size = 0.6) +
-#   geom_text(data = wilcox_results,
-#             aes(x = Condition, y = y_pos, label = label),
-#             inherit.aes = FALSE,
-#             size = 4, vjust = 0) +
-#   scale_fill_manual(values = c("CX.5461" = "blue", "DOX" = "red")) +
-#   labs(
-#     title = "LogFC of AC Cardiotoxicity Genes",
-#     x = "Condition",
-#     y = "logFC",
-#     fill = "Drug"
-#   ) +
-#   theme_bw(base_size = 14) +
-#   theme(
-#     plot.title = element_text(size = rel(1.5), hjust = 0.5),
-#     axis.title = element_text(size = 14),
-#     axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
-#     legend.title = element_text(size = 14),
-#     legend.text = element_text(size = 12)
-#   )
-
-```
-
 ##Create a Venn Diagram of DEGs from Original DEA
 ```{r Overlap of DEGs Original}
 #plot a venn diagram with all of your conditions from your toptables
@@ -3435,6 +3419,25 @@ ggVennDiagram(
     text = element_text(size = 16)  # Increase text size globally
   )
 
+####I want to make this proportional
+#use the eulerr package to do so
+
+library(eulerr)
+
+venn_prop_RUV <- euler(list(
+  `24T` = DEG1_RUV,
+  `24R` = DEG2_RUV,
+  `144R` = DEG3_RUV
+))
+
+plot(venn_prop_RUV,
+     fills = list(fill = c("#238B45", "#74C476", "#C7E9C0"), 
+                  alpha = 1),
+     labels = list(font = 4),
+     quantities = list(cex = 0.75),
+     main = "")
+
+
 #try and use the VennDetail package to extract the genes from each condition
 #Set 1 - DOX_24T only genes
 #Set 2 - DOX_24T shared genes
@@ -3553,11 +3556,193 @@ DOX144R_DEGs_GO_RUV <- DOX_144R_DEGs_RUV %>%
   dplyr::filter(., adj.P.Val < 0.05) %>% 
   dplyr::select("Entrez_ID")
 ```
+###Proportion of DEGs in Gene Set RUVs corrected
+```{r Proportion of DEGs}
+#check the proportion of my genes in my gene set that are DEGs by timepoint
+
+#make this into a pie chart or a bar graph
+#read in my full gene set
+all_genes <- readRDS("data/new/RUV/all_genes_set.RDS") 
+
+#convert Entrez_ID to Gene Symbols
+all_genes_set <- mapIds(org.Hs.eg.db, 
+                        keys = all_genes,
+                        column = "SYMBOL",
+                        keytype = "ENTREZID",
+                        multiVals = "first")
+
+#load in my DEGs
+#load in DEGs for all timepoints 
+DOX_24T_R <- read.csv("data/new/DEGs/Toptable_RUV_24T_final.csv") %>% 
+  dplyr::select(-(X))
+DOX_24R_R <- read.csv("data/new/DEGs/Toptable_RUV_24R_final.csv") %>% 
+  dplyr::select(-(X))
+DOX_144R_R <- read.csv("data/new/DEGs/Toptable_RUV_144R_final.csv") %>% 
+  dplyr::select(-(X))
+
+# Extract Significant DEGs from these lists
+DEGs_24T_R <- DOX_24T_R$Entrez_ID[DOX_24T_R$adj.P.Val < 0.05]
+# saveRDS(DEGs_24T_R, "data/new/RUV/DEGs_sig_list_24T_RUVs_set.RDS")
+
+DEGs_24R_R <- DOX_24R_R$Entrez_ID[DOX_24R_R$adj.P.Val < 0.05]
+# saveRDS(DEGs_24R_R, "data/new/RUV/DEGs_sig_list_24R_RUVs_set.RDS")
+
+DEGs_144R_R <- DOX_144R_R$Entrez_ID[DOX_144R_R$adj.P.Val < 0.05]
+# saveRDS(DEGs_144R_R, "data/new/RUV/DEGs_sig_list_144R_RUVs_set.RDS")
+
+#make a list of all of my DEGs
+timepoint_DEGs_RUV <- list(
+  "24T" = DEGs_24T_R,
+  "24R" = DEGs_24R_R,
+  "144R" = DEGs_144R_R
+)
+
+# Function to compute proportions
+get_proportions_degs <- function(degs, total_genes) {
+  deg_count <- length(degs)
+  non_deg_count <- total_genes - deg_count
+  data.frame(
+    Category = c("DEGs", "Non-DEGs"),
+    Count = c(deg_count, non_deg_count),
+    Proportion = c(deg_count / total_genes, non_deg_count / total_genes)
+  )
+}
+
+# Compute proportions for each timepoint
+prop_24T <- get_proportions_degs(DEGs_24T_R, length(all_genes_set))
+prop_24R <- get_proportions_degs(DEGs_24R_R, length(all_genes_set))
+prop_144R <- get_proportions_degs(DEGs_144R_R, length(all_genes_set))
+
+# Combine for bar plot
+prop_bar <- rbind(
+  cbind(Timepoint = "24T", prop_24T),
+  cbind(Timepoint = "24R", prop_24R),
+  cbind(Timepoint = "144R", prop_144R)
+)
+
+#pie chart for 24T
+ggplot(prop_24T, aes(x = "", y = Count, fill = Category)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  labs(title = "DEGs vs Non-DEGs (24T)") +
+  theme_void()
+
+#pie chart for 24R
+ggplot(prop_24R, aes(x = "", y = Count, fill = Category)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  labs(title = "DEGs vs Non-DEGs (24R)") +
+  theme_void()
+
+#pie chart for 144R
+ggplot(prop_144R, aes(x = "", y = Count, fill = Category)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  labs(title = "DEGs vs Non-DEGs (144R)") +
+  theme_void()
+
+library(patchwork)
+
+#put the desired colors here for your pie charts
+degs_prop_colors <- c("DEGs" = "red", "Non-DEGs" = "blue")
+
+#labels for percentage based on proportion
+prop_24T$Label <- paste0(round(prop_24T$Proportion * 100, 1), "%")
+prop_24R$Label <- paste0(round(prop_24R$Proportion * 100, 1), "%")
+prop_144R$Label <- paste0(round(prop_144R$Proportion * 100, 1), "%")
+
+#create each plot and assign to variables
+plot_24T <- ggplot(prop_24T, aes(x = "", y = Count, fill = Category)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  geom_text(aes(label = Label), 
+            position = position_stack(vjust = 0.6), 
+            color = "white", 
+            size = 4) +
+  scale_fill_manual(values = degs_prop_colors) +
+  labs(title = "24hr Treatment") +
+  theme_void()
+
+plot_24R <- ggplot(prop_24R, aes(x = "", y = Count, fill = Category)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  geom_text(aes(label = Label), 
+            position = position_stack(vjust = 0.6), 
+            color = "white", 
+            size = 4) +
+  scale_fill_manual(values = degs_prop_colors) +
+  labs(title = "24hr Recovery") +
+  theme_void()
+
+plot_144R <- ggplot(prop_144R, aes(x = "", y = Count, fill = Category)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  geom_text(aes(label = Label), 
+            position = position_stack(vjust = 0.6), 
+            color = "white", 
+            size = 4) +
+  scale_fill_manual(values = degs_prop_colors) +
+  labs(title = "144hr Recovery") +
+  theme_void()
+
+#combine all three pie charts in a row
+combined_prop_degs_plots <- 
+  plot_24T + 
+  plot_24R + 
+  plot_144R +
+  plot_layout(ncol = 3, nrow = 1, guides = "collect") + 
+  plot_annotation(title = "Proportion of DEGs vs Non-DEGs")
+
+#show the combined pie chart plot
+combined_prop_degs_plots
+
+#combine all three pie charts in a column
+combined_prop_degs_plots_col <- 
+  plot_24T + 
+  plot_24R + 
+  plot_144R +
+  plot_layout(ncol = 1, nrow = 3, guides = "collect") + 
+  plot_annotation(title = "Proportion of DEGs vs Non-DEGs")
+
+#show the combined pie chart plot in 1 column
+combined_prop_degs_plots_col
+
+####proportion bar plots####
+#first factor the timepoints so that they are in the right order
+prop_bar$Timepoint <- factor(prop_bar$Timepoint, 
+                             levels = c("24T", "24R", "144R"))
+
+#percentage labels
+prop_bar$Label <- paste0(round(prop_bar$Proportion * 100, 1), "%")
+
+#plot the bar plot
+ggplot(prop_bar, aes(x = Timepoint, 
+                     y = Proportion, 
+                     fill = Category)) +
+  geom_bar(stat = "identity", 
+           position = "fill") +
+  geom_text(aes(label = Label),
+            position = position_fill(vjust = 0.5),
+            color = "white",
+            size = 4) +
+  scale_fill_manual(values = degs_prop_colors) +
+  labs(title = "Proportion of DEGs vs Non-DEGs by Timepoint",
+       y = "Proportion", 
+       x = "Timepoint") +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal()
+
+
+```
+
 
 ###GO KEGG Overlap of DEGs From Original Data
 ```{r GO KEGG Overlap DEGs Original}
 #####DOX24 Genes#####
 library(gprofiler2)
+
+#define your background gene set (all expressed genes for me)
+all_genes <- rownames(filcpm_matrix)
 
 D24_DEGs_mat <- as.matrix(DOX24T_DEGs_GO)
 
@@ -3567,6 +3752,7 @@ DOX_24_dxr_gene <- gost(query = D24_DEGs_mat,
                       measure_underrepresentation = FALSE,
                       evcodes = FALSE,
                       user_threshold = 0.05,
+                      custom_bg = all_genes,
                       correction_method = c("fdr"),
                       sources = c("GO:BP", "KEGG"))
 
@@ -3640,6 +3826,7 @@ DOX_24Tshare_dxr_gene <- gost(query = D24Tshare_DEGs_mat,
                       measure_underrepresentation = FALSE,
                       evcodes = FALSE,
                       user_threshold = 0.05,
+                      custom_bg = all_genes,
                       correction_method = c("fdr"),
                       sources = c("GO:BP", "KEGG"))
 
@@ -3847,6 +4034,7 @@ DOX_144Rshare_dxr_gene <- gost(query = D144Rshare_DEGs_mat,
                       measure_underrepresentation = FALSE,
                       evcodes = FALSE,
                       user_threshold = 0.05,
+                      custom_bg = all_genes,
                       correction_method = c("fdr"),
                       sources = c("GO:BP", "KEGG"))
 
@@ -3921,6 +4109,7 @@ DOX_24_up_dxr_gene <- gost(query = D24_DEGs_up_mat,
                       measure_underrepresentation = FALSE,
                       evcodes = FALSE,
                       user_threshold = 0.05,
+                      custom_bg = all_genes,
                       correction_method = c("fdr"),
                       sources = c("GO:BP", "KEGG"))
 
@@ -3994,6 +4183,7 @@ DOX_24_down_dxr_gene <- gost(query = D24_DEGs_down_mat,
                       measure_underrepresentation = FALSE,
                       evcodes = FALSE,
                       user_threshold = 0.05,
+                      custom_bg = all_genes,
                       correction_method = c("fdr"),
                       sources = c("GO:BP", "KEGG"))
 
@@ -4068,6 +4258,7 @@ DOX_24Tshare_up_dxr_gene <- gost(query = D24Tshare_DEGs_up_mat,
                       measure_underrepresentation = FALSE,
                       evcodes = FALSE,
                       user_threshold = 0.05,
+                      custom_bg = all_genes,
                       correction_method = c("fdr"),
                       sources = c("GO:BP", "KEGG"))
 
@@ -4141,6 +4332,7 @@ DOX_24Tshare_down_dxr_gene <- gost(query = D24Tshare_DEGs_down_mat,
                       measure_underrepresentation = FALSE,
                       evcodes = FALSE,
                       user_threshold = 0.05,
+                      custom_bg = all_genes,
                       correction_method = c("fdr"),
                       sources = c("GO:BP", "KEGG"))
 
@@ -4219,6 +4411,7 @@ DOX_24_dxr_gene_RUV <- gost(query = D24_DEGs_vec_RUV,
                       measure_underrepresentation = FALSE,
                       evcodes = FALSE,
                       user_threshold = 0.05,
+                      custom_bg = all_genes,
                       correction_method = c("fdr"),
                       sources = c("GO:BP", "KEGG"))
 
@@ -4295,6 +4488,7 @@ DOX_24Tshare_dxr_gene_RUV <- gost(query = D24Tshare_DEGs_mat_RUV,
                       measure_underrepresentation = FALSE,
                       evcodes = FALSE,
                       user_threshold = 0.05,
+                      custom_bg = all_genes,
                       correction_method = c("fdr"),
                       sources = c("GO:BP", "KEGG"))
 
@@ -4369,6 +4563,7 @@ DOX_24R_dxr_gene_RUV <- gost(query = D24R_DEGs_mat_RUV,
                       measure_underrepresentation = FALSE,
                       evcodes = FALSE,
                       user_threshold = 0.05,
+                      custom_bg = all_genes,
                       correction_method = c("fdr"),
                       sources = c("GO:BP", "KEGG"))
 
@@ -4443,6 +4638,7 @@ DOX_144R_dxr_gene_RUV <- gost(query = D144R_DEGs_mat_RUV,
                       measure_underrepresentation = FALSE,
                       evcodes = FALSE,
                       user_threshold = 0.05,
+                      custom_bg = all_genes,
                       correction_method = c("fdr"),
                       sources = c("GO:BP", "KEGG"))
 
@@ -4517,6 +4713,7 @@ DOX_144Rshare_dxr_gene_RUV <- gost(query = D144Rshare_DEGs_mat_RUV,
                       measure_underrepresentation = FALSE,
                       evcodes = FALSE,
                       user_threshold = 0.05,
+                      custom_bg = all_genes,
                       correction_method = c("fdr"),
                       sources = c("GO:BP", "KEGG"))
 
@@ -4656,6 +4853,7 @@ all_data_DDR_RUV <- bind_rows(mapply(extract_data_DDR_R, deg_list_RUV, names(deg
 
 # DDR_genesymbols_list_RUV <- all_data_DDR_RUV$Gene
 # write.csv(DDR_genesymbols_list_RUV, "data/new/RUV/DDR_Genes_list_RUV.csv")
+# saveRDS(DDR_genesymbols_list_RUV, "data/new/RUV/DDR_Genes_list_RUV.RDS")
 
 # Create matrices
 logFC_matddr_R <- acast(all_data_DDR_RUV, Gene ~ Condition, value.var = "logFC")
@@ -4692,9 +4890,11 @@ ordered_genes_DDR_RUV <- gene_order_df_DDR_RUV$Gene
 logFC_mat_DDR_RUV <- logFC_mat_DDR_RUV[ordered_genes_DDR_RUV, ]
 signif_mat_DDR_RUV <- signif_mat_DDR_RUV[ordered_genes_DDR_RUV, ]
 
-category_colors_DDR <- structure(
-  c("darkorange", "steelblue", "darkgreen", "firebrick", "mediumpurple", "gray60"),
-  names = sort(unique(entrez_category_DDR$Category))
+category_levels <- sort(unique(entrez_category_DDR$Category))
+
+category_colors_DDR <- setNames(
+  c("darkorange", "steelblue", "darkgreen", "firebrick", "gold", "mediumpurple"),
+  category_levels
 )
 
 ha_left_DDR_RUV <- rowAnnotation(
@@ -5219,14 +5419,14 @@ ha_left_DIC_RUV <- rowAnnotation(
 # Draw heatmap
 Heatmap(logFC_mat_DIC_RUV,
         name = "logFC",
-        top_annotation = col_annot,
+        top_annotation = col_annot_RUV,
         left_annotation = ha_left_DIC_RUV,
         cluster_columns = FALSE,
         cluster_rows = FALSE,
         show_row_names = TRUE,
         show_column_names = FALSE,
         cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(signif_mat_DIC[i, j], x, y, gp = gpar(fontsize = 9))
+          grid.text(signif_mat_DIC_RUV[i, j], x, y, gp = gpar(fontsize = 9))
         },
         column_title = "DIC Genes Expression (n=29)\nDOX Recovery (RUVs Corrected)",
         column_title_gp = gpar(fontsize = 14, fontface = "bold")
@@ -5369,8 +5569,249 @@ ggplot(filtered_toptables_RUV_DIC, aes(x = Timepoint, y = abs_logFC, fill = Time
   )
 ```
 
+#AIC Genes RUVs Corrected
+```{r AIC Genes RUVs logFC HM, fig.height=12, fig.width=8}
+#plot a list of 38 AIC genes identified by Renee in her paper
+# Load DEG files
+load_deg <- function(path) read.csv(path)
+
+DOX_24T_R <- load_deg("data/new/DEGs/Toptable_RUV_24T_final.csv")
+DOX_24R_R <- load_deg("data/new/DEGs/Toptable_RUV_24R_final.csv")
+DOX_144R_R <- load_deg("data/new/DEGs/Toptable_RUV_144R_final.csv")
+
+#the data I have is in hgnc_symbols, I want to convert this to entrez_id like my df
+AIC_genes_set <- tribble(~SYMBOL,
+                         "PELI2", "LGALS3", "LRRTM4", "PCCA", "NCOA2",
+                         "NDN", "ADCY2", "TUSC3", "PLAAT1", "SORT1",
+                         "GPSM2", "CLCC1", "SUCLA2", "LNPK", "NEDD4L",
+                         "PLEKHA5", "GRAMD4", "TTC38", "CDPF1", "CELSR1",
+                         "CYREN", "POLR3A", "LPL", "DGCR6", "NSUN7",
+                         "APBB2", "DUBR", "PAM", "PPIP5K2", "GIN1",
+                         "RARG", "TNS2", "ZNF740", "SLC28A3", "RMI1",
+                         "EEF1B2", "FRS2", "HDDC2")
+
+gene_df_AIC_RUV <- tibble(HGNC = AIC_genes_set)
+
+gene_df_AIC_RUV <- gene_df_AIC_RUV %>% 
+  mutate(Entrez_ID = mapIds(org.Hs.eg.db,
+                            keys = AIC_genes_set$SYMBOL,
+                            column = "ENTREZID", 
+                            keytype = "SYMBOL", 
+                            multiVals = "first")) %>% 
+  unnest_wider(HGNC) %>% 
+  mutate(Entrez_ID = as.character(Entrez_ID))
+
+# AIC_genes_symb <- gene_df_AIC_RUV %>%
+#   dplyr::select("SYMBOL", "Entrez_ID")
+# saveRDS(AIC_genes_symb, "data/new/RUV/AIC_genelist_symbolentrez_RUV.RDS")
+
+#now I've put together a dataframe with the HGNC, Category, and Entrez_ID
+#plus I've ensured that Entrez_ID is a character for later joining
+
+entrez_ids_AIC_RUV <- gene_df_AIC_RUV$Entrez_ID
+
+# Extract relevant DEG values
+extract_data_AIC_RUV <- function(df, name) {
+  df %>%
+    filter(Entrez_ID %in% entrez_ids_AIC_RUV) %>%
+    mutate(
+      Gene = mapIds(org.Hs.eg.db, as.character(Entrez_ID),
+                    column = "SYMBOL", keytype = "ENTREZID", multiVals = "first"),
+      Condition = name,
+      Signif = ifelse(adj.P.Val < 0.05, "*", "")
+    )
+}
+
+# DEG list
+deg_list_RUV <- list("DOX_24T" = DOX_24T_R, 
+                 "DOX_24R" = DOX_24R_R, 
+                 "DOX_144R" = DOX_144R_R
+)
+
+# Combine all DEGs and annotate
+all_data_AIC_RUV <- bind_rows(mapply(extract_data_AIC_RUV, 
+                             deg_list_RUV, 
+                             names(deg_list_RUV), 
+                             SIMPLIFY = FALSE)) %>%
+  mutate(Entrez_ID = as.character(Entrez_ID)) %>% 
+  left_join(gene_df_AIC_RUV, 
+            by = "Entrez_ID")
+#I've also made sure here that Entrez_ID is a character and not an integer
+
+# Create matrices
+logFC_matAIC_RUV <- acast(all_data_AIC_RUV, Gene ~ Condition, value.var = "logFC")
+signif_matAIC_RUV <- acast(all_data_AIC_RUV, Gene ~ Condition, value.var = "Signif")
+
+# Set desired order
+desired_order <- c("DOX_24T",
+                   "DOX_24R",
+                   "DOX_144R")
+
+logFC_mat_AIC_RUV <- logFC_matAIC_RUV[, desired_order, drop = FALSE]
+signif_mat_AIC_RUV <- signif_matAIC_RUV[, desired_order, drop = FALSE]
+
+# Column annotation
+meta_AIC_R <- str_split_fixed(colnames(logFC_mat_AIC_RUV), "_", 3)
+meta_AIC_R <- str_split_fixed(colnames(logFC_mat_AIC_RUV), "_", 2)
+col_annot_RUV <- HeatmapAnnotation(
+  Drug = meta_AIC_R[, 1],
+  Time = meta_AIC_R[, 2],
+  col = list(
+    Drug = c("DOX" = "#499FBD"),
+    Time = c("24T" = "#238B45", 
+             "24R" = "#74C476", 
+             "144R" = "#C7E9C0")
+  ),
+  annotation_height = unit(c(2, 2, 2), "cm")
+)
+
+# Draw heatmap
+Heatmap(logFC_mat_AIC_RUV,
+        name = "logFC",
+        top_annotation = col_annot_RUV,
+        cluster_columns = FALSE,
+        cluster_rows = FALSE,
+        show_row_names = TRUE,
+        show_column_names = FALSE,
+        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(signif_mat_AIC_RUV[i, j], x, y, gp = gpar(fontsize = 9))
+        },
+        column_title = "AIC Genes Expression (n=38)\nDOX Recovery (RUVs Corrected)",
+        column_title_gp = gpar(fontsize = 14, fontface = "bold")
+)
+```
+
+##AIC Genes RUVs logFC Boxplots
+```{r AIC logFC Boxplots RUVs}
+#get an overall idea of the logFC of these genes over timepoints
+
+# Read AIC gene list - named AIC_list
+
+AIC_list <- readRDS("data/new/RUV/AIC_genelist_symbolentrez_RUV.RDS")
+###this already has both SYMBOL and Entrez_ID###
+
+all_toptables_RUV <- bind_rows(
+  DOX_24T_R %>% mutate(Drug = "DOX", Timepoint = "24T"),
+  DOX_24R_R %>% mutate(Drug = "DOX", Timepoint = "24R"),
+  DOX_144R_R %>% mutate(Drug = "DOX", Timepoint = "144R"),
+)
+
+filtered_toptables_RUV_AIC <- all_toptables_RUV %>%
+  filter(Entrez_ID %in% AIC_list$Entrez_ID) %>%
+  mutate(abs_logFC = abs(logFC)) %>% 
+  dplyr::select(-("X"))
+
+filtered_toptables_RUV_AIC <- filtered_toptables_RUV_AIC %>%
+  mutate(
+    Drug = factor(Drug, levels = c("DOX")),
+    Timepoint = factor(Timepoint, levels = c("24T", "24R", "144R"), 
+                       labels = c("Timepoint: 24T", "Timepoint: 24R", "Timepoint: 144R"))
+  )
+
+wilcox_results_AIC <- filtered_toptables_RUV_AIC %>%
+  wilcox_test(abs_logFC ~ Timepoint) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  mutate(significance = ifelse(p < 0.05, "*", ""))
+
+#make a little thing of your timepoint comparisons
+pairs_AIC <- wilcox_results_AIC %>% 
+  dplyr::select(group1, group2) %>% 
+  distinct()
+
+max_per_timepoint_AIC <- filtered_toptables_RUV_AIC %>% 
+  group_by(Timepoint) %>% 
+  summarise(max_logFC = max(abs_logFC, na.rm = TRUE), .groups = "drop")
+  
+#Join max values for group1
+star_positions_AIC <- pairs_AIC %>%
+  left_join(max_per_timepoint_AIC, by = c("group1" = "Timepoint"))
+names(star_positions_AIC)[names(star_positions_AIC) == "max_logFC"] <- "max1"
+
+#Join max values for group2, with suffixes to avoid name conflict
+star_positions_AIC <- star_positions_AIC %>%
+  left_join(max_per_timepoint_AIC, by = c("group2" = "Timepoint"), suffix = c(".group1", ".group2"))
+names(star_positions_AIC)[names(star_positions_AIC) == "max_logFC"] <- "max2"
+
+star_positions_AIC <- star_positions_AIC %>% 
+  mutate(y_pos = pmax(max1, max2, na.rm = TRUE) + 0.2)
+
+#now star positions has the same group1 and group2 as wilcoxon
+
+#I want to leave off the stars for now as they're confusing
+
+wilcox_results_plot_AIC <- wilcox_results_AIC %>%
+  left_join(star_positions_AIC, by = c("group1", "group2")) %>%
+  mutate(x_position = 1.5)  
+
+wilcox_results_plot_AIC <- wilcox_results_plot_AIC %>% 
+  mutate(group1 = gsub("Timepoint: ", "", group1),
+         group2 = gsub("Timepoint: ", "", group2))
+
+wilcox_results_plot_AIC <- wilcox_results_plot_AIC %>%
+  mutate(x_position = case_when(
+    group1 == "24T" & group2 == "24R" ~ 1.5,
+    group1 == "24T" & group2 == "144R" ~ 2,
+    group1 == "24R" & group2 == "144R" ~ 2.5
+  ))
+
+####logFC####
+ggplot(filtered_toptables_RUV_AIC, aes(x = Timepoint, y = logFC, fill = Timepoint)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "Timepoint: 24T" = "#238B45",
+    "Timepoint: 24R" = "#74C476",
+    "Timepoint: 144R" = "#C7E9C0")) +  
+  facet_wrap(~ Drug) +  
+  # geom_text(
+  #   data = wilcox_results_plot_AIC, 
+  #   aes(x = x_position, y = y_pos, label = significance), 
+  #   size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+  # ) +
+  theme_bw() +
+  xlab("") +
+  ylab("Log Fold Change") +  
+  ggtitle("Log Fold Change for AIC Genes") +
+  theme(
+    plot.title = element_text(size = rel(1.5), hjust = 0.5),
+    axis.title = element_text(size = 15, color = "black"),
+    axis.line = element_line(linewidth = 1.5),
+    strip.background = element_rect(fill = "gray"),  
+    strip.text = element_text(size = 12, color = "black", face = "bold"),  
+    axis.text.x = element_text(size = 8, color = "black", angle = 0)
+  )
+
+####abs logFC####
+ggplot(filtered_toptables_RUV_AIC, aes(x = Timepoint, y = abs_logFC, fill = Timepoint)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "Timepoint: 24T" = "#238B45",
+    "Timepoint: 24R" = "#74C476",
+    "Timepoint: 144R" = "#C7E9C0")) +  
+  facet_wrap(~ Drug) +  
+  # geom_text(
+  #   data = wilcox_results_plot_AIC, 
+  #   aes(x = x_position, y = y_pos, label = significance), 
+  #   size = 6, fontface = "bold", color = "black", inherit.aes = FALSE
+  # ) +
+  theme_bw() +
+  xlab("") +
+  ylab("|Log Fold Change|") +  
+  ggtitle("|Log Fold Change| for AIC Genes") +
+  theme(
+    plot.title = element_text(size = rel(1.5), hjust = 0.5),
+    axis.title = element_text(size = 15, color = "black"),
+    axis.line = element_line(linewidth = 1.5),
+    strip.background = element_rect(fill = "gray"),  
+    strip.text = element_text(size = 12, color = "black", face = "bold"),  
+    axis.text.x = element_text(size = 8, color = "black", angle = 0)
+  )
+
+
+```
+
+
 #p53 Target Genes logFC Heatmap RUVs Corrected
-```{r RUVs p53 Target Genes logFC HM, fig.height=50, fig.width=10}
+```{r RUVs p53 Target Genes logFC HM, fig.height=80, fig.width=15}
 # Load libraries
 
 # Load DEG files
@@ -5874,6 +6315,671 @@ ggplot(filtered_toptables_RUV_p53, aes(x = Timepoint, y = abs_logFC, fill = Time
 #     strip.text = element_text(size = 12, color = "black", face = "bold"),  
 #     axis.text.x = element_text(size = 8, color = "black")
 #   )
+```
+
+
+I am going to now identify the proportion of DDR genes within my timepoints and compare against non-DEGs for all timepoints
+#Proportion Barplots of Gene Sets
+```{r Proportion Barplot DDR RUVs DEGs vs nonDEGs}
+
+#read in my DDR gene set
+DNA_damage <- readRDS("data/new/RUV/DDR_Genes_list_RUV.RDS")
+
+#pull out only the unique values that are not NA (there aren't any anyways)
+ddr_set <- unique(na.omit(DNA_damage$Entrez_ID))
+#pull out the gene symbols
+gene_symbols_DDR_R <- names(DNA_damage)
+#pull out the entrez ids
+entrezids_DDR_R <- unname(DNA_damage)
+#calculate the total length of my gene set for proportion analysis
+total_ddr_genes <- length(ddr_set)
+cat("Total DNA damage genes:", total_ddr_genes, "\n")
+#should be 65 total genes
+
+#load in DEGs for all timepoints 
+DOX_24T_R <- read.csv("data/new/DEGs/Toptable_RUV_24T_final.csv") %>% 
+  dplyr::select(-(X))
+DOX_24R_R <- read.csv("data/new/DEGs/Toptable_RUV_24R_final.csv") %>% 
+  dplyr::select(-(X))
+DOX_144R_R <- read.csv("data/new/DEGs/Toptable_RUV_144R_final.csv") %>% 
+  dplyr::select(-(X))
+
+# Extract Significant DEGs from these lists
+DEGs_24T_R <- DOX_24T_R$Entrez_ID[DOX_24T_R$adj.P.Val < 0.05]
+DEGs_24R_R <- DOX_24R_R$Entrez_ID[DOX_24R_R$adj.P.Val < 0.05]
+DEGs_144R_R <- DOX_144R_R$Entrez_ID[DOX_144R_R$adj.P.Val < 0.05]
+
+#make a list of all of my DEGs
+timepoint_DEGs_RUV <- list(
+  "24T" = DEGs_24T_R,
+  "24R" = DEGs_24R_R,
+  "144R" = DEGs_144R_R
+)
+
+#then pull the background (all genes tested)
+all_genes <- rownames(filcpm_matrix)
+length(all_genes)
+#14319 in length, containing all genes tested (background)
+
+#fisher's exact test framework
+fisher_results_ddr <- purrr::map_dfr(names(timepoint_DEGs_RUV), function(tp_ddr) {
+  degs_ddr <- unique(timepoint_DEGs_RUV[[tp_ddr]])
+  non_degs_ddr <- setdiff(all_genes, degs_ddr)
+
+  in_deg_ddr     <- sum(degs_ddr %in% ddr_set)
+  in_deg_nonddr  <- length(degs_ddr) - in_deg_ddr
+  out_deg_ddr    <- sum(non_degs_ddr %in% ddr_set)
+  out_deg_nonddr <- length(non_degs_ddr) - out_deg_ddr
+
+  contingency_deg_ddr <- matrix(c(in_deg_ddr, in_deg_nonddr,
+                          out_deg_ddr, out_deg_nonddr),
+                        nrow = 2, byrow = TRUE)
+
+  test_ddr <- fisher.test(contingency_deg_ddr)
+  #print these results
+  print(test_ddr)
+
+  tibble(
+    Timepoint = tp_ddr,
+    In_DEG_DDR = in_deg_ddr,
+    In_DEG_NonDDR = in_deg_nonddr,
+    Out_DEG_DDR = out_deg_ddr,
+    Out_DEG_NonDDR = out_deg_nonddr,
+    Total_DEGs = length(degs_ddr),
+    Proportion_DDR = in_deg_ddr / length(degs_ddr),
+    P_Value = test_ddr$p.value,
+    Significant = ifelse(test_ddr$p.value < 0.05, "*", "")
+  )
+})
+
+#configure my results for plotting
+motif_long_degs_ddr <- fisher_results_ddr %>%
+  select(Timepoint, In_DEG_DDR, In_DEG_NonDDR, P_Value, Significant) %>%
+  pivot_longer(cols = c(In_DEG_DDR, In_DEG_NonDDR),
+               names_to = "Category", values_to = "Count") %>%
+  mutate(
+    Category = ifelse(Category == "In_DEG_DDR", "Yes", "No"),
+    Fraction = Count / ave(Count, Timepoint, FUN = sum)
+  )
+
+#set category order (Yes on top)
+motif_long_degs_ddr$Category <- 
+  factor(motif_long_degs_ddr$Category, levels = c("Yes", "No"))
+
+#label positions for significance stars
+label_positions_degs_ddr <- motif_long_degs_ddr %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.01)
+
+#plot results in a barplot
+ggplot(motif_long_degs_ddr, aes(x = Timepoint, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions_degs_ddr %>% filter(Significant != ""),
+    aes(y = y_pos, label = Significant),
+    size = 6,
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion of DNA Damage Genes in DEGs vs NonDEGs (24T, 24R, 144R)",
+    x = "Timepoint",
+    y = "Percentage",
+    fill = "DNA Damage Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+
+#--- Optional: Print result table ---#
+print(fisher_results_ddr)
+
+
+
+
+###########################################
+#DDR genes inside each timepoint
+in_24T_DDR <- sum(DEGs_24T_R %in% ddr_set)
+in_24R_DDR <- sum(DEGs_24R_R %in% ddr_set)
+in_144R_DDR <- sum(DEGs_144R_R %in% ddr_set)
+
+#non-DDR genes inside each motif
+in_24T_nonDDR <- length(DEGs_24T_R) - in_24T_DDR
+in_24R_nonDDR <- length(DEGs_24R_R) - in_24R_DDR
+in_144R_nonDDR <- length(DEGs_144R_R) - in_144R_DDR
+
+#make contingency tables for fishers exact tests
+contingency_degs_ddr <- matrix(c(
+  in_24T_DDR, in_24T_nonDDR,
+  in_24R_DDR, in_24R_nonDDR,
+  in_144R_DDR, in_144R_nonDDR),
+  nrow = 3, byrow = TRUE
+)
+
+#print the contingency tables
+print(contingency_degs_ddr)
+
+#perform a fisher's exact test (small sample size)
+fisher_test_degs_ddr <- fisher.test(contingency_degs_ddr)
+#print fisher's exact test results
+print(fisher_test_motifs_DDR)
+
+#make a summary table of all of these data to plot
+motif_summary_DDR <- tibble(
+  Motif = c("Motif1", "Motif2"),
+  DDR = c(in_motif1_DDR, in_motif2_DDR),
+  non_DDR = c(in_motif1_nonDDR, in_motif2_nonDDR)
+) %>%
+  pivot_longer(cols = c(DDR, non_DDR), names_to = "Category", values_to = "Count") %>%
+  mutate(
+    Category = ifelse(Category == "DDR", "Yes", "No"),
+    Fraction = Count / ave(Count, Motif, FUN = sum),
+    Significant = ifelse(Category == "Yes" & fisher_test_motifs_DDR$p.value < 0.05, "*", "")
+  )
+
+#position significance stars just above bars
+label_positions_DDR <- motif_summary_DDR %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.01)
+
+#change the ordering so that yes is on the top
+motif_summary_DDR$Category <- factor(motif_summary_DDR$Category, levels = c("Yes", "No"))
+
+#plot the proportions in a barplot
+ggplot(motif_summary_DDR, aes(x = Motif, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions_DDR %>% filter(Significant != ""),
+    aes(x = Motif, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion of DDR Genes in Motif 1 vs Motif 2 (RUVs clust + p.post)",
+    x = "Cormotif Motif",
+    y = "Percentage",
+    fill = "DDR Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+
+
+#print the proportions and p values
+prop_motif1_DDR <- in_motif1_DDR / length(final_genes_1_RUV)
+prop_motif2_DDR <- in_motif2_DDR / length(final_genes_2_RUV)
+p_val_DDR <- fisher_test_motifs_DDR$p.value
+
+cat(sprintf("Motif1: %.2f%% DDR genes (%d/%d)\n", 100*prop_motif1_DDR, in_motif1_DDR, length(final_genes_1_RUV)))
+cat(sprintf("Motif2: %.2f%% DDR genes (%d/%d)\n", 100*prop_motif2_DDR, in_motif2_DDR, length(final_genes_2_RUV)))
+cat(sprintf("DDR Fisher's Exact Test p-value: %.5f\n", p_val_DDR))
+cat(sprintf("Odds ratio: %.3f\n", fisher_test_motifs_DDR$estimate))
+
+```
+
+
+```{r Proportion Barplot DEGs vs nonDEGs, fig.height=6, fig.width=10}
+# Inputs:
+#  - DEGs_24T_R, DEGs_24R_R, DEGs_144R_R: vectors of significant DEG Entrez IDs
+#  - all_genes: vector of all tested genes (e.g., from full expression matrix)
+#  - ddr_set: vector of DNA damage response gene Entrez IDs
+
+#read in my DDR gene set
+DNA_damage <- readRDS("data/new/RUV/DDR_genes_entrezid.RDS")
+
+#pull out only the unique values that are not NA (there aren't any anyways)
+ddr_set <- unique(na.omit(DNA_damage))
+#pull out the entrez ids
+entrezids_DDR_R <- unname(DNA_damage)
+#calculate the total length of my gene set for proportion analysis
+total_ddr_genes <- length(ddr_set)
+cat("Total DNA damage genes:", total_ddr_genes, "\n")
+#should be 65 total genes
+
+#DEGs list
+timepoint_DEGs_ddr <- list(
+  "24T"   = DEGs_24T_R,
+  "24R"   = DEGs_24R_R,
+  "144R"  = DEGs_144R_R
+)
+
+#then pull the background (all genes tested)
+all_genes <- rownames(filcpm_matrix)
+length(all_genes)
+#14319 in length, containing all genes tested (background)
+
+
+#collect results into a data frame
+proportion_data_ddr <- purrr::map_dfr(names(timepoint_DEGs_ddr), function(tp_ddr) {
+  degs_ddr <- unique(timepoint_DEGs_ddr[[tp_ddr]])
+  nondegs_ddr <- setdiff(all_genes, degs_ddr)
+  
+  in_deg_ddr <- sum(degs_ddr %in% ddr_set)
+  in_deg_nonddr <- length(degs_ddr) - in_deg_ddr
+  in_deg_total <- length(degs_ddr)
+  
+  in_nondeg_ddr <- sum(nondegs_ddr %in% ddr_set)
+  in_nondeg_nonddr <- length(nondegs_ddr) - in_nondeg_ddr
+  in_nondeg_total <- length(nondegs_ddr)
+  
+  #fisher's exact test for DEGs vs non-DEGs
+  contingency_degs_ddr <- matrix(c(in_deg_ddr, in_deg_nonddr,
+                          in_nondeg_ddr, in_nondeg_nonddr),
+                        nrow = 2, byrow = TRUE)
+
+  fisher_res_ddr <- fisher.test(contingency_degs_ddr)
+  p_val_ddr <- fisher_res_ddr$p.value
+  sig_ddr <- ifelse(p_val_ddr < 0.05, "*", "")
+  
+  #print the fisher's exact test values
+  print(fisher_res_ddr)
+  
+tibble(
+  Timepoint = rep(tp_ddr, 4),
+  Group = c("DEGs", "DEGs", "nonDEGs", "nonDEGs"),
+  Category = c("Yes", "No", "Yes", "No"),
+  Count = c(in_deg_ddr, in_deg_nonddr, in_nondeg_ddr, in_nondeg_nonddr),
+  Total = c(length(degs_ddr), length(degs_ddr), length(nondegs_ddr), length(nondegs_ddr)),
+  P_Value = rep(p_val_ddr, 4),
+  Significant = rep(sig_ddr, 4)
+)
+}) %>%
+  mutate(
+    Fraction = Count / Total,
+    Group_Label = paste(Timepoint, Group, sep = "_"),
+    Group_Label = factor(Group_Label, levels = c(
+      "24T_DEGs", "24T_nonDEGs",
+      "24R_DEGs", "24R_nonDEGs",
+      "144R_DEGs", "144R_nonDEGs"
+    )),
+    Category = factor(Category, levels = c("Yes", "No"))  # Stack "Yes" on top
+  )
+
+# Prepare position labels
+label_positions_ddr <- proportion_data_ddr %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.02)
+
+#make it so that yes is on top
+proportion_data_ddr$Category <- factor(proportion_data_ddr$Category, levels = c("Yes", "No"))
+
+#plot
+ggplot(proportion_data_ddr, aes(x = Group_Label, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions_ddr %>% filter(Significant != ""),
+    aes(x = Group_Label, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion of DDR Genes in DEGs vs nonDEGs per Timepoint",
+    x = "Timepoint and Group",
+    y = "Percentage",
+    fill = "DDR Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+
+```
+
+##Proportion Barplot DIC Genes
+```{r DIC Proportion Barplot DEGs vs nonDEGs, fig.height=6, fig.width=10}
+
+# Inputs:
+#  - DEGs_24T_R, DEGs_24R_R, DEGs_144R_R: vectors of significant DEG Entrez IDs
+#  - all_genes: vector of all tested genes (e.g., from full expression matrix)
+#  - ddr_set: vector of DNA damage response gene Entrez IDs
+
+#read in my DIC gene set
+DIC_genes <- readRDS("data/new/RUV/DIC_genes_entrezid.RDS")
+
+#pull out only the unique values that are not NA (there aren't any anyways)
+dic_set <- unique(na.omit(DIC_genes))
+#pull out the entrez ids
+entrezids_dic <- unname(DIC_genes)
+#calculate the total length of my gene set for proportion analysis
+total_dic_genes <- length(dic_set)
+cat("Total DIC genes:", total_dic_genes, "\n")
+#should be 27 total genes
+
+#DEGs list
+timepoint_DEGs_dic <- list(
+  "24T"   = DEGs_24T_R,
+  "24R"   = DEGs_24R_R,
+  "144R"  = DEGs_144R_R
+)
+
+#then pull the background (all genes tested)
+all_genes <- rownames(filcpm_matrix)
+length(all_genes)
+#14319 in length, containing all genes tested (background)
+
+
+#collect results into a data frame
+proportion_data_dic <- purrr::map_dfr(names(timepoint_DEGs_dic), function(tp_dic) {
+  degs_dic <- unique(timepoint_DEGs_dic[[tp_dic]])
+  nondegs_dic <- setdiff(all_genes, degs_dic)
+  
+  in_deg_dic <- sum(degs_dic %in% dic_set)
+  in_deg_nondic <- length(degs_dic) - in_deg_dic
+  in_deg_total <- length(degs_dic)
+  
+  in_nondeg_dic <- sum(nondegs_dic %in% dic_set)
+  in_nondeg_nondic <- length(nondegs_dic) - in_nondeg_dic
+  in_nondeg_total <- length(nondegs_dic)
+  
+  #fisher's exact test for DEGs vs non-DEGs
+  contingency_degs_dic <- matrix(c(in_deg_dic, in_deg_nondic,
+                          in_nondeg_dic, in_nondeg_nondic),
+                        nrow = 2, byrow = TRUE)
+
+  fisher_res_dic <- fisher.test(contingency_degs_dic)
+  p_val_dic <- fisher_res_dic$p.value
+  sig_dic <- ifelse(p_val_dic < 0.05, "*", "")
+  
+  #print the fisher's exact test values
+  print(fisher_res_dic)
+  
+tibble(
+  Timepoint = rep(tp_dic, 4),
+  Group = c("DEGs", "DEGs", "nonDEGs", "nonDEGs"),
+  Category = c("Yes", "No", "Yes", "No"),
+  Count = c(in_deg_dic, in_deg_nondic, in_nondeg_dic, in_nondeg_nondic),
+  Total = c(length(degs_dic), length(degs_dic), length(nondegs_dic), length(nondegs_dic)),
+  P_Value = rep(p_val_dic, 4),
+  Significant = rep(sig_dic, 4)
+)
+}) %>%
+  mutate(
+    Fraction = Count / Total,
+    Group_Label = paste(Timepoint, Group, sep = "_"),
+    Group_Label = factor(Group_Label, levels = c(
+      "24T_DEGs", "24T_nonDEGs",
+      "24R_DEGs", "24R_nonDEGs",
+      "144R_DEGs", "144R_nonDEGs"
+    )),
+    Category = factor(Category, levels = c("Yes", "No"))  # Stack "Yes" on top
+  )
+
+# Prepare position labels
+label_positions_dic <- proportion_data_dic %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.02)
+
+#make it so that yes is on top
+proportion_data_dic$Category <- factor(proportion_data_dic$Category, levels = c("Yes", "No"))
+
+#plot
+ggplot(proportion_data_dic, aes(x = Group_Label, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions_dic %>% filter(Significant != ""),
+    aes(x = Group_Label, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion of DIC Genes in DEGs vs nonDEGs per Timepoint",
+    x = "Timepoint and Group",
+    y = "Percentage",
+    fill = "DIC Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+
+```
+
+##Proportion Barplots AIC DEGs
+```{r AIC Proportion Barplots fig.height=6, fig.width=10}
+# Inputs:
+#  - DEGs_24T_R, DEGs_24R_R, DEGs_144R_R: vectors of significant DEG Entrez IDs
+#  - all_genes: vector of all tested genes (e.g., from full expression matrix)
+#  - aic_set: vector of AIC gene Entrez IDs
+
+# AIC_entrez <- AIC_genelist_symbolentrez_RUV$Entrez_ID
+# saveRDS(AIC_entrez, "data/new/RUV/AIC_genes_entrezid.RDS")
+
+#read in my AIC gene set
+AIC_genes <- readRDS("data/new/RUV/AIC_genes_entrezid.RDS")
+
+#pull out only the unique values that are not NA (there aren't any anyways)
+AIC_set <- unique(na.omit(AIC_genes))
+#pull out the entrez ids
+entrezids_AIC <- unname(AIC_set)
+#calculate the total length of my gene set for proportion analysis
+total_AIC_genes <- length(AIC_set)
+cat("Total AIC Target genes:", total_AIC_genes, "\n")
+#should be 38 total genes
+
+#DEGs list
+timepoint_DEGs_AIC <- list(
+  "24T"   = DEGs_24T_R,
+  "24R"   = DEGs_24R_R,
+  "144R"  = DEGs_144R_R
+)
+
+#then pull the background (all genes tested)
+all_genes <- rownames(filcpm_matrix)
+length(all_genes)
+#14319 in length, containing all genes tested (background)
+
+
+#collect results into a data frame
+proportion_data_AIC <- purrr::map_dfr(names(timepoint_DEGs_AIC), function(tp_AIC) {
+  degs_AIC <- unique(timepoint_DEGs_AIC[[tp_AIC]])
+  nondegs_AIC <- setdiff(all_genes, degs_AIC)
+  
+  in_deg_AIC <- sum(degs_AIC %in% AIC_set)
+  in_deg_nonAIC <- length(degs_AIC) - in_deg_AIC
+  in_deg_total <- length(degs_AIC)
+  
+  in_nondeg_AIC <- sum(nondegs_AIC %in% AIC_set)
+  in_nondeg_nonAIC <- length(nondegs_AIC) - in_nondeg_AIC
+  in_nondeg_total <- length(nondegs_AIC)
+  
+  #fisher's exact test for DEGs vs non-DEGs
+  contingency_degs_AIC <- matrix(c(in_deg_AIC, in_deg_nonAIC,
+                          in_nondeg_AIC, in_nondeg_nonAIC),
+                        nrow = 2, byrow = TRUE)
+
+  fisher_res_AIC <- fisher.test(contingency_degs_AIC)
+  p_val_AIC <- fisher_res_AIC$p.value
+  sig_AIC <- ifelse(p_val_AIC < 0.05, "*", "")
+  
+  #print the fisher's exact test values
+  print(fisher_res_AIC)
+  
+tibble(
+  Timepoint = rep(tp_AIC, 4),
+  Group = c("DEGs", "DEGs", "nonDEGs", "nonDEGs"),
+  Category = c("Yes", "No", "Yes", "No"),
+  Count = c(in_deg_AIC, in_deg_nonAIC, in_nondeg_AIC, in_nondeg_nonAIC),
+  Total = c(length(degs_AIC), length(degs_AIC), length(nondegs_AIC), length(nondegs_AIC)),
+  P_Value = rep(p_val_AIC, 4),
+  Significant = rep(sig_AIC, 4)
+)
+}) %>%
+  mutate(
+    Fraction = Count / Total,
+    Group_Label = paste(Timepoint, Group, sep = "_"),
+    Group_Label = factor(Group_Label, levels = c(
+      "24T_DEGs", "24T_nonDEGs",
+      "24R_DEGs", "24R_nonDEGs",
+      "144R_DEGs", "144R_nonDEGs"
+    )),
+    Category = factor(Category, levels = c("Yes", "No"))  # Stack "Yes" on top
+  )
+
+# Prepare position labels
+label_positions_AIC <- proportion_data_AIC %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.02)
+
+#make it so that yes is on top
+proportion_data_AIC$Category <- factor(proportion_data_AIC$Category, levels = c("Yes", "No"))
+
+#plot
+ggplot(proportion_data_AIC, aes(x = Group_Label, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions_AIC %>% filter(Significant != ""),
+    aes(x = Group_Label, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion of AIC Genes in DEGs vs nonDEGs per Timepoint",
+    x = "Timepoint and Group",
+    y = "Percentage",
+    fill = "AIC Gene"
+  ) +
+   theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+```
+
+##Proportion Barplots p53 DEGs
+```{r p53 Proportion Barplots DEGs vs nonDEGs, fig.height=6, fig.width=10}
+
+# Inputs:
+#  - DEGs_24T_R, DEGs_24R_R, DEGs_144R_R: vectors of significant DEG Entrez IDs
+#  - all_genes: vector of all tested genes (e.g., from full expression matrix)
+#  - ddr_set: vector of DNA damage response gene Entrez IDs
+
+#read in my gene set
+p53_target_genes <- readRDS("data/new/RUV/p53_targetgenes_entrezid.RDS")
+
+#pull out only the unique values that are not NA (there aren't any anyways)
+p53_set <- unique(na.omit(p53_target_genes))
+#pull out the entrez ids
+entrezids_p53 <- unname(p53_set)
+#calculate the total length of my gene set for proportion analysis
+total_p53_genes <- length(p53_set)
+cat("Total p53 Target genes:", total_p53_genes, "\n")
+#should be 300 total genes
+
+#DEGs list
+timepoint_DEGs_p53 <- list(
+  "24T"   = DEGs_24T_R,
+  "24R"   = DEGs_24R_R,
+  "144R"  = DEGs_144R_R
+)
+
+#then pull the background (all genes tested)
+all_genes <- rownames(filcpm_matrix)
+length(all_genes)
+#14319 in length, containing all genes tested (background)
+
+
+#collect results into a data frame
+proportion_data_p53 <- purrr::map_dfr(names(timepoint_DEGs_p53), function(tp_p53) {
+  degs_p53 <- unique(timepoint_DEGs_p53[[tp_p53]])
+  nondegs_p53 <- setdiff(all_genes, degs_p53)
+  
+  in_deg_p53 <- sum(degs_p53 %in% p53_set)
+  in_deg_nonp53 <- length(degs_p53) - in_deg_p53
+  in_deg_total <- length(degs_p53)
+  
+  in_nondeg_p53 <- sum(nondegs_p53 %in% p53_set)
+  in_nondeg_nonp53 <- length(nondegs_p53) - in_nondeg_p53
+  in_nondeg_total <- length(nondegs_p53)
+  
+  #fisher's exact test for DEGs vs non-DEGs
+  contingency_degs_p53 <- matrix(c(in_deg_p53, in_deg_nonp53,
+                          in_nondeg_p53, in_nondeg_nonp53),
+                        nrow = 2, byrow = TRUE)
+
+  fisher_res_p53 <- fisher.test(contingency_degs_p53)
+  p_val_p53 <- fisher_res_p53$p.value
+  sig_p53 <- ifelse(p_val_p53 < 0.05, "*", "")
+  
+  #print the fisher's exact test values
+  print(fisher_res_p53)
+  
+tibble(
+  Timepoint = rep(tp_p53, 4),
+  Group = c("DEGs", "DEGs", "nonDEGs", "nonDEGs"),
+  Category = c("Yes", "No", "Yes", "No"),
+  Count = c(in_deg_p53, in_deg_nonp53, in_nondeg_p53, in_nondeg_nonp53),
+  Total = c(length(degs_p53), length(degs_p53), length(nondegs_p53), length(nondegs_p53)),
+  P_Value = rep(p_val_p53, 4),
+  Significant = rep(sig_p53, 4)
+)
+}) %>%
+  mutate(
+    Fraction = Count / Total,
+    Group_Label = paste(Timepoint, Group, sep = "_"),
+    Group_Label = factor(Group_Label, levels = c(
+      "24T_DEGs", "24T_nonDEGs",
+      "24R_DEGs", "24R_nonDEGs",
+      "144R_DEGs", "144R_nonDEGs"
+    )),
+    Category = factor(Category, levels = c("Yes", "No"))  # Stack "Yes" on top
+  )
+
+# Prepare position labels
+label_positions_p53 <- proportion_data_p53 %>%
+  filter(Category == "Yes") %>%
+  mutate(y_pos = Fraction + 1.02)
+
+#make it so that yes is on top
+proportion_data_p53$Category <- factor(proportion_data_p53$Category, levels = c("Yes", "No"))
+
+#plot
+ggplot(proportion_data_p53, aes(x = Group_Label, y = Fraction, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    data = label_positions_p53 %>% filter(Significant != ""),
+    aes(x = Group_Label, y = y_pos, label = Significant),
+    size = 6,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 1.08)) +
+  scale_fill_manual(values = c("Yes" = "#e41a1c", "No" = "#377eb8")) +
+  labs(
+    title = "Proportion of p53 Genes in DEGs vs nonDEGs per Timepoint",
+    x = "Timepoint and Group",
+    y = "Percentage",
+    fill = "p53 Gene"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
 ```
 
 
@@ -7689,6 +8795,9 @@ for (gene in initial_test_genes3_fin) {
 ```{r Cormotif GO KEGG Final Genes}
 #now take these final gene sets for each motif - clustlike + p.post consensus genes
 
+#define my background gene set
+all_genes
+
 # final_genes_1
 # final_genes_2
 # final_genes_3
@@ -7710,6 +8819,7 @@ motif1_mat_GOKEGG <- gost(query = motif1_genes_matrix,
                           measure_underrepresentation = FALSE,
                           evcodes = FALSE,
                           user_threshold = 0.05,
+                          custom_bg = all_genes,
                           correction_method = c("fdr"),
                           sources = c("GO:BP", "KEGG"))
 
@@ -7789,6 +8899,7 @@ motif2_mat_GOKEGG <- gost(query = motif2_genes_matrix,
                           measure_underrepresentation = FALSE,
                           evcodes = FALSE,
                           user_threshold = 0.05,
+                          custom_bg = all_genes,
                           correction_method = c("fdr"),
                           sources = c("GO:BP", "KEGG"))
 
@@ -7870,6 +8981,7 @@ motif3_mat_GOKEGG <- gost(query = motif3_genes_matrix,
                           measure_underrepresentation = FALSE,
                           evcodes = FALSE,
                           user_threshold = 0.05,
+                          custom_bg = all_genes,
                           correction_method = c("fdr"),
                           sources = c("GO:BP", "KEGG"))
 
@@ -8012,6 +9124,7 @@ unassign_mat_GOKEGG <- gost(query = unassigned_genes_matrix,
                           measure_underrepresentation = FALSE,
                           evcodes = FALSE,
                           user_threshold = 0.05,
+                          custom_bg = all_genes,
                           correction_method = c("fdr"),
                           sources = c("GO:BP", "KEGG"))
 
@@ -8711,14 +9824,14 @@ cat("Number of genes passing both filters:", length(final_genes_2_RUV), "\n")
 
 final_genes_list_RUV <- union(final_genes_1_RUV, final_genes_2_RUV)
 length(final_genes_list_RUV)
-#8174 genes as found above
+#8103 genes as found above
 initial_genes_list_RUV <- rownames(lognormcounts_CMF_cpm)
 length(initial_genes_list_RUV)
 #14319 genes as usual
 
 unassigned_genes_list_RUV <- setdiff(initial_genes_list_RUV, final_genes_list_RUV)
 length(unassigned_genes_list_RUV)
-#6145 genes not assigned
+#6216 genes not assigned
 
 final_genes_list_clustlike_RUV <- union(clust1_genes_RUV, clust2_genes_RUV)
 length(final_genes_list_clustlike_RUV)
@@ -8793,7 +9906,7 @@ clusterdata_dxr_fin_RUV_clust %>% ggplot(aes(x = "", y = Value, fill = Category)
 #now, continue by plotting the logFC of all of these gene sets per motif, as well as look at some random genes for log2cpm to see if the patterns are reflected in the example genes
 ```
 ###clustlike RUVs log2cpm Norm Counts RUVs logFC
-```{r Cormotif log2cpm Norm Counts RUVs Plot logFC}
+```{r logFC Cormotif log2cpm Norm Counts RUVs Plot}
 ####clustlike + p.post logFC of initial set####
 
 ##motif 1
@@ -8801,27 +9914,34 @@ length(final_genes_1_RUV)
 ##motif 2 
 length(final_genes_2_RUV)
 
+#read in my toptables from pairwise analysis
+Toptable_RUV_24T <- read.csv("data/new/DEGs/Toptable_RUV_24T_final.csv")
+Toptable_RUV_24R <- read.csv("data/new/DEGs/Toptable_RUV_24R_final.csv")
+Toptable_RUV_144R <- read.csv("data/new/DEGs/Toptable_RUV_144R_final.csv")
+
 #Combine the toptables I have from pairwise analysis into a single dataframe
 d24_toptable_dxr_RUV <- Toptable_RUV_24T %>% 
-  rownames_to_column(var = "entrezgene_ID") %>% 
+  dplyr::select(-(X)) %>% 
   mutate(Time = "24T")
 
 d24r_toptable_dxr_RUV <- Toptable_RUV_24R %>% 
-  rownames_to_column(var = "entrezgene_ID") %>% 
+  dplyr::select(-(X)) %>% 
   mutate(Time = "24R")
 
 d144r_toptable_dxr_RUV <- Toptable_RUV_144R %>% 
-  rownames_to_column(var = "entrezgene_ID") %>% 
+  dplyr::select(-(X)) %>% 
   mutate(Time = "144R")
 
+#combine your toptables together and then select the columns I want
 combined_toptables_dxr_RUV <- bind_rows(
   d24_toptable_dxr_RUV,
   d24r_toptable_dxr_RUV,
   d144r_toptable_dxr_RUV)
 
+
 #Filter the data based on each motif
 filt_toptable_dxr_fin_RUV <- combined_toptables_dxr_RUV %>% 
-  dplyr::filter(entrezgene_ID  %in% final_genes_1_RUV) %>% 
+  dplyr::filter(Entrez_ID  %in% final_genes_1_RUV) %>% 
   mutate(absFC = abs(logFC)) %>% 
   mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
   ggplot(., aes(x = time, y = logFC))+
@@ -8832,7 +9952,7 @@ filt_toptable_dxr_fin_RUV <- combined_toptables_dxr_RUV %>%
   xlab(" ")+
   ylab("logFC")+
   theme_bw()+
-  ggtitle("LogFC Motif 1 RUVs clustlike + p.post (n=7673)")+
+  ggtitle("LogFC Motif 1 RUVs clustlike + p.post (n=7602)")+
   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
         axis.title = element_text(size = 15, colour = "black"),
         strip.background = element_rect(fill = "#CAD899"),
@@ -8841,7 +9961,7 @@ filt_toptable_dxr_fin_RUV <- combined_toptables_dxr_RUV %>%
 
 #motif 2
 filt_toptable_2_dxr_fin_RUV <- combined_toptables_dxr_RUV %>% 
-  dplyr::filter(entrezgene_ID  %in% final_genes_2_RUV) %>% 
+  dplyr::filter(Entrez_ID  %in% final_genes_2_RUV) %>% 
   mutate(absFC = abs(logFC)) %>% 
   mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
   ggplot(., aes(x = time, y = logFC))+
@@ -8867,7 +9987,7 @@ filt_toptable_2_dxr_fin_RUV
 
 #now plot the abs logFC for each of these too
 filt_toptable_abs_fin_RUV <- combined_toptables_dxr_RUV %>% 
-  dplyr::filter(entrezgene_ID  %in% final_genes_1_RUV) %>% 
+  dplyr::filter(Entrez_ID  %in% final_genes_1_RUV) %>% 
   mutate(absFC = abs(logFC)) %>% 
   mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
   ggplot(., aes(x = time, y = absFC))+
@@ -8878,7 +9998,7 @@ filt_toptable_abs_fin_RUV <- combined_toptables_dxr_RUV %>%
   xlab(" ")+
   ylab("|logFC|")+
   theme_bw()+
-  ggtitle("Abs LogFC Motif 1 RUVs clustlike + p.post (n=7673)")+
+  ggtitle("Abs LogFC Motif 1 RUVs clustlike + p.post (n=7602)")+
   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
         axis.title = element_text(size = 15, colour = "black"),
         strip.background = element_rect(fill = "#CAD899"),
@@ -8887,7 +10007,7 @@ filt_toptable_abs_fin_RUV <- combined_toptables_dxr_RUV %>%
 
 #motif 2
 filt_toptable_2_abs_fin_RUV <- combined_toptables_dxr_RUV %>% 
-  dplyr::filter(entrezgene_ID  %in% final_genes_2_RUV) %>% 
+  dplyr::filter(Entrez_ID  %in% final_genes_2_RUV) %>% 
   mutate(absFC = abs(logFC)) %>% 
   mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
   ggplot(., aes(x = time, y = absFC))+
@@ -8905,129 +10025,109 @@ filt_toptable_2_abs_fin_RUV <- combined_toptables_dxr_RUV %>%
         axis.text.x = element_text(size = 8, colour = "white", angle = 15),
         strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
 
-#motif 2
-filt_toptable_3_abs_fin <- combined_toptables_dxr %>% 
-  dplyr::filter(entrezgene_ID  %in% final_genes_3) %>% 
-  mutate(absFC = abs(logFC)) %>% 
-  mutate(time = factor(Time, levels = c("24", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
-  ggplot(., aes(x = time, y = absFC))+
-  geom_boxplot(aes(fill = time))+
-  scale_fill_manual(values = time_col)+
-  guides(fill = guide_legend(title = "Time"))+
-  theme_bw()+
-  xlab(" ")+
-  ylab("|logFC|")+
-  theme_bw()+
-  ggtitle("Abs LogFC for all genes in Motif 3 (n=231)")+
-  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
-        axis.title = element_text(size = 15, colour = "black"),
-        strip.background = element_rect(fill = "#CAD899"),
-        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
-        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
 
 #plots
 filt_toptable_abs_fin_RUV
 filt_toptable_2_abs_fin_RUV
 
 
-####Now do this but have it for the clustlike only genes
-##motif 1
-length(clust1_genes_RUV)
-#13600
-##motif 2 
-length(clust2_genes_RUV)
-#517 genes
-
-#Filter the data based on each motif
-filt_toptable_dxr_fin_RUV_clust <- combined_toptables_dxr_RUV %>% 
-  dplyr::filter(entrezgene_ID  %in% clust1_genes_RUV) %>% 
-  mutate(absFC = abs(logFC)) %>% 
-  mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
-  ggplot(., aes(x = time, y = logFC))+
-  geom_boxplot(aes(fill = time))+
-  scale_fill_manual(values = time_col)+
-  guides(fill = guide_legend(title = "Time"))+
-  theme_bw()+
-  xlab(" ")+
-  ylab("logFC")+
-  theme_bw()+
-  ggtitle("LogFC Motif 1 RUVs clustlike (n=13600)")+
-  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
-        axis.title = element_text(size = 15, colour = "black"),
-        strip.background = element_rect(fill = "#CAD899"),
-        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
-        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
-
-#motif 2
-filt_toptable_2_dxr_fin_RUV_clust <- combined_toptables_dxr_RUV %>% 
-  dplyr::filter(entrezgene_ID  %in% clust2_genes_RUV) %>% 
-  mutate(absFC = abs(logFC)) %>% 
-  mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
-  ggplot(., aes(x = time, y = logFC))+
-  geom_boxplot(aes(fill = time))+
-  scale_fill_manual(values = time_col)+
-  guides(fill = guide_legend(title = "Time"))+
-  theme_bw()+
-  xlab(" ")+
-  ylab("logFC")+
-  theme_bw()+
-  ggtitle("LogFC Motif 2 RUVs clustlike (n=517)")+
-  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
-        axis.title = element_text(size = 15, colour = "black"),
-        strip.background = element_rect(fill = "#CAD899"),
-        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
-        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
-
-
-#plots
-filt_toptable_dxr_fin_RUV_clust
-filt_toptable_2_dxr_fin_RUV_clust
-
-
-#now plot the abs logFC for each of these too
-filt_toptable_abs_fin_RUV_clust <- combined_toptables_dxr_RUV %>% 
-  dplyr::filter(entrezgene_ID  %in% clust1_genes_RUV) %>% 
-  mutate(absFC = abs(logFC)) %>% 
-  mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
-  ggplot(., aes(x = time, y = absFC))+
-  geom_boxplot(aes(fill = time))+
-  scale_fill_manual(values = time_col)+
-  guides(fill = guide_legend(title = "Time"))+
-  theme_bw()+
-  xlab(" ")+
-  ylab("|logFC|")+
-  theme_bw()+
-  ggtitle("Abs LogFC Motif 1 RUVs clustlike (n=13600)")+
-  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
-        axis.title = element_text(size = 15, colour = "black"),
-        strip.background = element_rect(fill = "#CAD899"),
-        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
-        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
-
-#motif 2
-filt_toptable_2_abs_fin_RUV_clust <- combined_toptables_dxr_RUV %>% 
-  dplyr::filter(entrezgene_ID  %in% clust2_genes_RUV) %>% 
-  mutate(absFC = abs(logFC)) %>% 
-  mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
-  ggplot(., aes(x = time, y = absFC))+
-  geom_boxplot(aes(fill = time))+
-  scale_fill_manual(values = time_col)+
-  guides(fill = guide_legend(title = "Time"))+
-  theme_bw()+
-  xlab(" ")+
-  ylab("|logFC|")+
-  theme_bw()+
-  ggtitle("Abs LogFC Motif 2 RUVs clustlike (n=517)")+
-  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
-        axis.title = element_text(size = 15, colour = "black"),
-        strip.background = element_rect(fill = "#CAD899"),
-        axis.text.x = element_text(size = 8, colour = "white", angle = 15),
-        strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
-
-
-#plots
-filt_toptable_abs_fin_RUV_clust
-filt_toptable_2_abs_fin_RUV_clust
+# ####Now do this but have it for the clustlike only genes
+# ##motif 1
+# length(clust1_genes_RUV)
+# #13600
+# ##motif 2 
+# length(clust2_genes_RUV)
+# #517 genes
+# 
+# #Filter the data based on each motif
+# filt_toptable_dxr_fin_RUV_clust <- combined_toptables_dxr_RUV %>% 
+#   dplyr::filter(entrezgene_ID  %in% clust1_genes_RUV) %>% 
+#   mutate(absFC = abs(logFC)) %>% 
+#   mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+#   ggplot(., aes(x = time, y = logFC))+
+#   geom_boxplot(aes(fill = time))+
+#   scale_fill_manual(values = time_col)+
+#   guides(fill = guide_legend(title = "Time"))+
+#   theme_bw()+
+#   xlab(" ")+
+#   ylab("logFC")+
+#   theme_bw()+
+#   ggtitle("LogFC Motif 1 RUVs clustlike (n=13600)")+
+#   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#         axis.title = element_text(size = 15, colour = "black"),
+#         strip.background = element_rect(fill = "#CAD899"),
+#         axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+#         strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+# 
+# #motif 2
+# filt_toptable_2_dxr_fin_RUV_clust <- combined_toptables_dxr_RUV %>% 
+#   dplyr::filter(entrezgene_ID  %in% clust2_genes_RUV) %>% 
+#   mutate(absFC = abs(logFC)) %>% 
+#   mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+#   ggplot(., aes(x = time, y = logFC))+
+#   geom_boxplot(aes(fill = time))+
+#   scale_fill_manual(values = time_col)+
+#   guides(fill = guide_legend(title = "Time"))+
+#   theme_bw()+
+#   xlab(" ")+
+#   ylab("logFC")+
+#   ggtitle("LogFC Motif 2 RUVs clustlike (n=517)")+
+#   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#         axis.title = element_text(size = 15, colour = "black"),
+#         strip.background = element_rect(fill = "#CAD899"),
+#         axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+#         strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+# 
+# 
+# #plots
+# filt_toptable_dxr_fin_RUV_clust
+# filt_toptable_2_dxr_fin_RUV_clust
+# 
+# 
+# #now plot the abs logFC for each of these too
+# filt_toptable_abs_fin_RUV_clust <- combined_toptables_dxr_RUV %>% 
+#   dplyr::filter(entrezgene_ID  %in% clust1_genes_RUV) %>% 
+#   mutate(absFC = abs(logFC)) %>% 
+#   mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+#   ggplot(., aes(x = time, y = absFC))+
+#   geom_boxplot(aes(fill = time))+
+#   scale_fill_manual(values = time_col)+
+#   guides(fill = guide_legend(title = "Time"))+
+#   theme_bw()+
+#   xlab(" ")+
+#   ylab("|logFC|")+
+#   theme_bw()+
+#   ggtitle("Abs LogFC Motif 1 RUVs clustlike (n=13600)")+
+#   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#         axis.title = element_text(size = 15, colour = "black"),
+#         strip.background = element_rect(fill = "#CAD899"),
+#         axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+#         strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+# 
+# #motif 2
+# filt_toptable_2_abs_fin_RUV_clust <- combined_toptables_dxr_RUV %>% 
+#   dplyr::filter(entrezgene_ID  %in% clust2_genes_RUV) %>% 
+#   mutate(absFC = abs(logFC)) %>% 
+#   mutate(time = factor(Time, levels = c("24T", "24R", "144R"), labels = c("24hr", "24hr Recovery", "144hr Recovery"))) %>% 
+#   ggplot(., aes(x = time, y = absFC))+
+#   geom_boxplot(aes(fill = time))+
+#   scale_fill_manual(values = time_col)+
+#   guides(fill = guide_legend(title = "Time"))+
+#   theme_bw()+
+#   xlab(" ")+
+#   ylab("|logFC|")+
+#   theme_bw()+
+#   ggtitle("Abs LogFC Motif 2 RUVs clustlike (n=517)")+
+#   theme(plot.title = element_text(size = rel(1.5), hjust = 0.5),
+#         axis.title = element_text(size = 15, colour = "black"),
+#         strip.background = element_rect(fill = "#CAD899"),
+#         axis.text.x = element_text(size = 8, colour = "white", angle = 15),
+#         strip.text.x = element_text(size = 12, colour = "black", face = "bold"))
+# 
+# 
+# #plots
+# filt_toptable_abs_fin_RUV_clust
+# filt_toptable_2_abs_fin_RUV_clust
 
 
 ```
@@ -9394,6 +10494,7 @@ motif1_mat_GOKEGG_RUV <- gost(query = motif1_genes_matrix_RUV,
                           measure_underrepresentation = FALSE,
                           evcodes = FALSE,
                           user_threshold = 0.05,
+                          custom_bg = all_genes,
                           correction_method = c("fdr"),
                           sources = c("GO:BP", "KEGG"))
 
@@ -9474,6 +10575,7 @@ motif2_mat_GOKEGG_RUV <- gost(query = motif2_genes_matrix_RUV,
                           measure_underrepresentation = FALSE,
                           evcodes = FALSE,
                           user_threshold = 0.05,
+                          custom_bg = all_genes,
                           correction_method = c("fdr"),
                           sources = c("GO:BP", "KEGG"))
 
@@ -9565,6 +10667,7 @@ motif1_mat_GOKEGG_RUV_clust <- gost(query = motif1_genes_matrix_RUV_clust,
                           measure_underrepresentation = FALSE,
                           evcodes = FALSE,
                           user_threshold = 0.05,
+                          custom_bg = all_genes,
                           correction_method = c("fdr"),
                           sources = c("GO:BP", "KEGG"))
 
@@ -9645,6 +10748,7 @@ motif2_mat_GOKEGG_RUV_clust <- gost(query = motif2_genes_matrix_RUV_clust,
                           measure_underrepresentation = FALSE,
                           evcodes = FALSE,
                           user_threshold = 0.05,
+                          custom_bg = all_genes,
                           correction_method = c("fdr"),
                           sources = c("GO:BP", "KEGG"))
 
@@ -11078,6 +12182,60 @@ cat(sprintf("Motif1: %.2f%% p53 genes (%d/%d)\n", 100*prop_motif1_p53, in_motif1
 cat(sprintf("Motif2: %.2f%% p53 genes (%d/%d)\n", 100*prop_motif2_p53, in_motif2_p53, length(final_genes_2_RUV)))
 cat(sprintf("p53 Fisher's Exact Test p-value: %.5f\n", p_val_p53))
 cat(sprintf("Odds ratio: %.3f\n", fisher_test_motifs_p53$estimate))
+
+
+```
+
+#Flow Cytometry Barplot
+```{r Flow Cytometry Data Barplot and Boxplots}
+#Individuals for Flow Cytometry
+#1 = 84-1
+#2 = 87-1
+#3 = 78-1
+#4 = 75-1
+#5 = 17-3
+#6 = 90-1
+
+flow_dxr <- read_csv("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/DXR Project/Flow/Recovery_flow_purity.csv",
+                     show_col_types = FALSE)
+# View(flow_dxr)
+
+flow <- flow_dxr %>% column_to_rownames("Line")
+
+####now that I've loaded in the lenient gating number for each, let's make a boxplot
+
+flow_dxr %>% ggplot(aes(x=Line, y=Purity, color = Line)) +
+  geom_boxplot() +
+  theme_bw(base_size = 16) + 
+  labs(title = "Percent TNNT2 Positive iPSC-CMs") +
+  ylim(0,105) +
+  scale_color_manual(values = flow_col_ind)
+  
+
+##make subsets based on species
+flow_dxr %>% ggplot(aes(x=Species, y=Purity, color = Line)) +
+  geom_boxplot() +
+  theme_bw(base_size = 15) + 
+  labs(title = "Percent TNNT2 Positive iPSC-CMs") +
+  ylim(0,105) +
+  scale_color_manual(values = flow_col_ind)
+  
+ggplot(H_flow, aes(x = Species, y = Purity))+
+  geom_boxplot(aes(fill = Species), show.legend = FALSE)+
+  geom_point(aes(color = Line, size = 5, alpha = 0.9), show.legend = leg_show) +
+  ylim(0,105) +
+  labs(title = "Percent TNNT2 Positive iPSC-CMs")+
+  theme_bw(base_size = 16)+
+  scale_color_manual(values = flow_col_h)+
+  scale_fill_manual(values = c("lightyellow"))
+
+
+leg_show <- c(size = FALSE, color = TRUE, alpha = FALSE)
+
+flow_col_ind <- c(H21792 = "#4DD091", H20682 = "#FF5C77", H28126 = "#FFA23A", H24280 = "#C05780", H22422 = "#F4D283",'H84-1' = "#ABD33D",'H78-1'= "#FFF000")
+
+flow_col_h <- c(H21792 = "#4DD091", H20682 = "#FF5C77", H28126 = "#FFA23A", H24280 = "#C05780", H22422 = "#F4D283",'H84-1' = "#ABD33D",'H78-1'= "#FFF000")
+
 
 
 ```
