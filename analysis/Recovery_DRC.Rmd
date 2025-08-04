@@ -33,19 +33,19 @@ library(readxl)
 Import Datasets
 
 ```{r Full Dataset All Individuals, results=FALSE}
-AllData <- read_excel("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/DRCs/5FUProj_DRCTime_78-1_75-1_17-3_EMP_240226.xlsx",
+AllData <- read_excel("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/DXR Project/DRCs/5FUProj_DRCTime_78-1_75-1_17-3_EMP_240226.xlsx",
      sheet = "Fin_Sheet_Analysis")
 View(AllData)
 
-Ind1_75_data <- read_excel("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/DRCs/5FUProj_DRCTime_78-1_75-1_17-3_EMP_240226.xlsx",
+Ind1_75_data <- read_excel("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/DXR Project/DRCs/5FUProj_DRCTime_78-1_75-1_17-3_EMP_240226.xlsx",
      sheet = "Fin_75_Sheet")
 View(Ind1_75_data)
 
-Ind2_78_data <- read_excel("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/DRCs/5FUProj_DRCTime_78-1_75-1_17-3_EMP_240226.xlsx",
+Ind2_78_data <- read_excel("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/DXR Project/DRCs/5FUProj_DRCTime_78-1_75-1_17-3_EMP_240226.xlsx",
      sheet = "Fin_78_Sheet")
 View(Ind2_78_data)
 
-Ind3_17_data <- read_excel("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/5FU Project/DRCs/5FUProj_DRCTime_78-1_75-1_17-3_EMP_240226.xlsx",
+Ind3_17_data <- read_excel("C:/Users/emmap/OneDrive/Desktop/Ward Lab/Experiments/DXR Project/DRCs/5FUProj_DRCTime_78-1_75-1_17-3_EMP_240226.xlsx",
      sheet = "Fin_17_Sheet")
 View(Ind3_17_data)
 
@@ -3055,6 +3055,149 @@ legend(x = "bottomleft", legend = c("Ind1 24hr", "Ind2 24hr", "Ind3 24hr", "Ind1
 
 #had to change the legends to show all of the line types and colors
 #24hr = line 1, 48hr = line 2, 72hr = line 3
+
+```
+
+```{r 24hr Only for Figure 1}
+#I want to make a small plot that only contains 24hr and calculates an average LD50 for all three cell lines
+#I also want to place a grey line on the graph where my concentration is
+par(mar = c(3.0, 3.0, 1.2, 1), mgp = c(2, .7, 0))
+layout(matrix(c(1, 2, 1, 3, 1, 4), nrow = 2, ncol = 3), heights = c(0.3, 1, 1, 1))
+#layout.show(3)
+plot.new()
+text(0.5,0.5,"DOXORUBICIN RECOVERY CONCENTRATION-RESPONSE",cex = 2,font = 2)
+#24hr plots
+doxtox24_75_model <- drm(response~Conc, data = dox24tox_75, fct = LL.4(fixed = c(NA, 0, 100, NA)))
+plot(doxtox24_75_model, type = "none", broken = TRUE, 
+     xt = c(0.01, 0.1, 0.5, 1, 5, 10, 50, 100, 1000), xttrim = FALSE,  
+     ylim = c(0,110), cex = 1, col = "#9ACCDE", lwd = 4, ylab = "Percent Viability (%)",
+     xlab = "Concentration (uM)", main = "24HR FOLLOWING TREATMENT", lty = c(1),
+     xaxs = "i", yaxs = "i")
+
+par(new=TRUE)
+doxtox24_78_model <- drm(response~Conc, data = dox24tox_78, fct = LL.4(fixed = c(NA, 0, 100, NA)))
+plot(doxtox24_78_model, add = TRUE, col = "#499FBD", lwd = 4, lty = c(1), type = "none")
+
+par(new=TRUE)
+doxtox24_17_model <- drm(response~Conc, data = dox24tox_17, fct = LL.4(fixed = c(NA, 0, 100, NA)))
+plot(doxtox24_17_model, add = TRUE, col = "#254F5E", lwd = 4, lty = c(1), type = "none")
+
+par(new=TRUE)
+legend(x = "bottomleft", legend = c("75-1", "78-1", "17-3"), lty = c(1, 1, 1, 1), col = c("#9ACCDE", "#499FBD", "#254F5E"), lwd = 4, cex = 1, title = "iPSC-CM Lines")
+
+```
+
+
+```{r 24hr Only w LD50 and conc line}
+
+conc_labels <- c(0.01, 0.1, 0.5, 1, 10, 50, 100, 1000)
+pct_labels <- c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
+
+# Fit models
+doxtox24_78_model <- drm(response ~ Conc, data = dox24tox_78, fct = LL.4(fixed = c(NA, 0, 100, NA)))
+doxtox24_75_model <- drm(response ~ Conc, data = dox24tox_75, fct = LL.4(fixed = c(NA, 0, 100, NA)))
+doxtox24_17_model <- drm(response ~ Conc, data = dox24tox_17, fct = LL.4(fixed = c(NA, 0, 100, NA)))
+
+# Extract LD50 (ED50)
+ed75 <- ED(doxtox24_78_model, 50, interval = "delta")[1]
+ed78 <- ED(doxtox24_75_model, 50, interval = "delta")[1]
+ed17 <- ED(doxtox24_17_model, 50, interval = "delta")[1]
+
+avg_ld50 <- mean(c(ed78, ed75, ed17))
+
+# Plot first model, then overlay
+plot(doxtox24_78_model, type = "none", broken = TRUE,
+     ylim = c(0,100), col = "#9ACCDE", lwd = 3,
+     ylab = "Percent Viability (%)", xlab = "Concentration (uM)",
+     main = "24hr Treatment", log = "x", axes = FALSE)
+
+plot(doxtox24_75_model, add = TRUE, col = "#499FBD", lwd = 3, type = "none")
+plot(doxtox24_17_model, add = TRUE, col = "#254F5E", lwd = 3, type = "none")
+
+axis(1, at = conc_labels, labels = conc_labels, las = 2, cex.axis = 0.8)
+
+axis(2, at = pct_labels, labels = pct_labels, las = 2, cex.axis = 0.7)
+
+# Grey vertical reference line (example at 0.5 uM)
+abline(v = 0.5, col = "grey50", lty = 2, lwd = 2)
+# text(x = 0.5, y = 99, 
+#      labels = "0.5 µM", 
+#      col = "grey30", pos = 4, cex = 0.8, font = 2)
+
+# LD50 vertical lines for each line
+# abline(v = ed78, col = "#9ACCDE", lty = 2, lwd = 2)
+# abline(v = ed75, col = "#499FBD", lty = 2, lwd = 2)
+# abline(v = ed17, col = "#254F5E", lty = 2, lwd = 2)
+
+# Average LD50 line in red
+abline(v = avg_ld50, col = "red", lty = 3, lwd = 2)
+text(x = avg_ld50, y = 99,        # y=105 puts it just above top of plot
+     labels = paste0("Avg LD50 = ", round(avg_ld50, 2), " µM"),
+     col = "red", pos = 4, cex = 0.8, font = 2)
+
+# Legend
+# legend("bottomleft",
+#        legend = c(
+#          paste0("Ind3"),
+#          paste0("Ind4"),
+#          paste0("Ind5"),
+#          paste0("Avg LD50 = ", round(avg_ld50, 2), " µM")
+#        ),
+#        col = c("#9ACCDE", "#499FBD", "#254F5E", "red"),
+#        lwd = 3, lty = c(1,1,1,3), cex = 0.8,
+#        title = "Individuals")
+
+# Legend
+legend("bottomleft",
+       legend = c(
+         paste0("Ind3 (LD50 =", round(ed78, 2), " µM)"),
+         paste0("Ind4 (LD50 =", round(ed75, 2), " µM)"),
+         paste0("Ind5 (LD50 =", round(ed17, 2), " µM)")
+         # paste0("Avg LD50 =", round(avg_ld50, 2), " µM")
+       ),
+       col = c("#9ACCDE", "#499FBD", "#254F5E"),
+       lwd = 3, lty = c(1,1,1,3), cex = 0.8,
+       title = "Individuals")
+
+
+```
+
+
+```{r 24hr only Separate Legend}
+par(mar = c(4, 4, 2, 2), oma = c(0, 0, 0, 0))
+layout(matrix(c(1,2), nrow=2), heights = c(4, 2))
+
+#I swapped 78-1 and 75-1 for this so I could have the individual numbers in order (Ind3, 4, 5)
+# Plot in first (big) panel
+plot(doxtox24_78_model, type = "none", broken = TRUE,
+     ylim = c(0, 100), col = "#9ACCDE", lwd = 3,
+     ylab = "Percent Viability (%)", xlab = "Concentration (uM)",
+     main = "24hr Treatment", log = "x",
+     axes = FALSE)
+plot(doxtox24_75_model, add = TRUE, col = "#499FBD", lwd = 3, type = "none")
+plot(doxtox24_17_model, add = TRUE, col = "#254F5E", lwd = 3, type = "none")
+axis(2, at = pct_labels, labels = pct_labels, las = 2)
+axis(1, at = conc_labels, labels = conc_labels, las = 2)
+box()
+#line for conc 0.5
+abline(v = 0.5, col = "grey50", lty = 2, lwd = 2)
+#line for avg ld50
+abline(v = avg_ld50, col = "red", lty = 3, lwd = 2)
+
+# Empty plot for legend
+plot.new()
+legend("center",
+       legend = c(
+         paste0("Ind3 (LD50 =", round(ed75, 2), " µM)"),
+         paste0("Ind4 (LD50 =", round(ed78, 2), " µM)"),
+         paste0("Ind5 (LD50 =", round(ed17, 2), " µM)"),
+         paste0("Avg LD50 =", round(avg_ld50, 2), " µM")
+       ),
+       col = c("#9ACCDE", "#499FBD", "#254F5E", "red"),
+       lwd = 3, lty = c(1,1,1,3),
+       cex = 0.7,
+       horiz = FALSE,
+       bty = "o")
 
 ```
 
